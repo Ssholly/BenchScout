@@ -52,7 +52,10 @@ export async function POST(request: Request) {
 			data: { email, token, expiresAt },
 		});
 
-		const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+		// 🚀 UPDATED: Now points directly to your live Vercel domain
+		const appUrl =
+			process.env.NEXT_PUBLIC_APP_URL ||
+			"https://bench-scout-cayzaxcxr-sholly.vercel.app";
 		const verifyLink = `${appUrl}/verify?token=${token}&email=${encodeURIComponent(email)}`;
 
 		const emailHtml = `
