@@ -4,8 +4,8 @@ import Topbar from "@/components/Topbar";
 import ProfileModal from "@/components/ProfileModal";
 
 export const metadata = {
-	title: "LabPro Connect",
-	description: "Advanced MLS Dashboard",
+	title: "BenchScout",
+	description: "YOUR MLS CAREER HUB",
 };
 
 export default function RootLayout({
