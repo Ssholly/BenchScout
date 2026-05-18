@@ -1,0 +1,37 @@
+{
+  "name": "labpro-connect",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "@prisma/client": "^6.19.3",
+    "@vercel/blob": "^2.3.3",
+    "bcryptjs": "^3.0.3",
+    "cheerio": "^1.2.0",
+    "next": "^16.2.5",
+    "nodemailer": "^8.0.7",
+    "pdf-parse": "^2.4.5",
+    "pdf-ts": "^0.0.2",
+    "pdf2json": "^4.0.3",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "resend": "^6.12.3"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/node": "^20",
+    "@types/nodemailer": "^8.0.0",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.4",
+    "prisma": "^6.19.3",
+    "typescript": "^5"
+  }
+}

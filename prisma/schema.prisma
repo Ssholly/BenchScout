@@ -1,0 +1,103 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite" 
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String       @id @default(cuid())
+  name          String
+  email         String       @unique
+  password      String       // We will hash this in the backend
+  location      String       @default("All Nigeria")
+  keywords      String?      // The AI will populate this from the resume
+  resumeUrl     String?      // Link to their uploaded PDF
+  minScore      Int          @default(70)
+  isVerified    Boolean      @default(false) // <--- ADDED: Blocks login until email is confirmed
+  createdAt     DateTime     @default(now())
+  
+  // ==========================================
+  // 🚀 PILLAR 1: THE VAULT (Extended)
+  // ==========================================
+  cvParsedText  String?      // Hidden text extracted for the AI Cover Letter Engine
+  licenseUrl    String?      // Link to MLSCN practicing license
+  degreeUrl     String?      // Link to B.MLS degree
+  
+  // ==========================================
+  // 🚀 PILLAR 3: AUTONOMOUS PREFERENCES
+  // ==========================================
+  strictMls     Boolean      @default(true)
+  alertsActive  Boolean      @default(false)
+  alertTier     String       @default("Tier 1 & Tier 2")
+  alertKeywords String?      
+  autoSendEmail Boolean      @default(false)
+
+  jobs          Job[]
+  history       RunHistory[]
+}
+
+model Job {
+  id        String   @id @default(cuid())
+  
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  role      String
+  company   String
+  loc       String
+  salary    String
+  skills    String
+  url       String
+  score     Int
+  tier      Int
+  applied   Boolean  @default(false)
+  status    String?  @default("applied") 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt // <--- CRITICAL FIX: Allows the Match Graph to map resurrected jobs correctly
+}
+
+model RunHistory {
+  id        String   @id @default(cuid())
+  
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  matches   Int
+  t1Count   Int
+  trigger   String
+  status    String
+  createdAt DateTime @default(now())
+}
+
+// ==========================================
+// NEW: EMAIL VERIFICATION & OUTBOX QUEUE
+// ==========================================
+
+model VerificationToken {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+model EmailQueue {
+  id          String   @id @default(cuid())
+  emailTo     String
+  subject     String
+  htmlBody    String
+  status      String   @default("PENDING") // PENDING, FAILED, SENT
+  retryCount  Int      @default(0)
+  createdAt   DateTime @default(now())
+}
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
