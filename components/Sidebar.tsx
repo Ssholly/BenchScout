@@ -403,6 +403,7 @@ export default function Sidebar() {
 								/>
 							</svg>
 						</div>
+
 						<div style={{ flex: 1 }}>
 							<h1
 								style={{
@@ -415,11 +416,13 @@ export default function Sidebar() {
 								<span style={{ color: "#0f172a" }}>Bench</span>
 								<span style={{ color: "#0058bc" }}>Scout</span>
 							</h1>
+
+							{/* 🚀 FIXED ALIGNMENT CONTAINER */}
 							<div
 								style={{
 									display: "flex",
 									alignItems: "center",
-									gap: "6px",
+									justifyContent: "space-between", // Pushes dot to the right edge neatly
 									marginTop: "2px",
 								}}
 							>
@@ -429,9 +432,11 @@ export default function Sidebar() {
 										color: "#64748b",
 										fontWeight: 800,
 										letterSpacing: "1.5px",
+										lineHeight: "1", // Forces baseline to behave perfectly
+										display: "block",
 									}}
 								>
-									YOUR MLS HUB
+									YOUR MLS CAREER HUB
 								</span>
 								<span
 									style={{
@@ -440,10 +445,13 @@ export default function Sidebar() {
 										borderRadius: "50%",
 										background: "#22c55e",
 										boxShadow: "0 0 8px #22c55e",
+										display: "block", // Prevents span from rendering weirdly
+										flexShrink: 0,
 									}}
 								></span>
 							</div>
 						</div>
+
 						<button
 							onClick={() => setIsMobileOpen(false)}
 							className="mobile-close-btn"

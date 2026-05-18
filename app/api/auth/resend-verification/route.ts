@@ -43,7 +43,8 @@ export async function POST(request: Request) {
 			prisma.verificationToken.create({ data: { email, token, expiresAt } }),
 		]);
 
-		const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+		const appUrl =
+			process.env.NEXT_PUBLIC_APP_URL || "https://bench-scout.vercel.app";
 		const verifyLink = `${appUrl}/verify?token=${token}&email=${encodeURIComponent(email)}`;
 
 		const emailHtml = `

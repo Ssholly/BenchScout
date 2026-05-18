@@ -132,7 +132,7 @@ export default function ProfileModal() {
 				localStorage.setItem(`labpro_resume_name_${email}`, selectedFile.name);
 				setView("verify-sent");
 				if (data.warning) {
-					showToast(data.warning, "error"); // Show Resend API errors (e.g. unverified email)
+					showToast(data.warning, "error");
 				}
 			} else {
 				showToast(data.error, "error");
@@ -146,6 +146,11 @@ export default function ProfileModal() {
 
 	// 🚀 Handle Resending the Verification Link
 	const handleResendLink = async () => {
+		// Check if the user has typed an email first
+		if (!email) {
+			return showToast("Please enter your email address first.", "error");
+		}
+
 		setIsUploading(true);
 		try {
 			const res = await fetch("/api/auth/resend-verification", {
@@ -488,7 +493,7 @@ export default function ProfileModal() {
 										? "Manage your AI-extracted career data."
 										: view === "forgot"
 											? "Enter your email to receive a reset link."
-											: "Join BenchScout, your MLS Hub."}
+											: "Join BenchScout, your MLS Career Hub."}
 								</p>
 							</div>
 							<button
@@ -578,8 +583,35 @@ export default function ProfileModal() {
 									</div>
 
 									{view === "login" && (
-										<div style={{ textAlign: "right", marginBottom: "16px" }}>
+										<div
+											style={{
+												display: "flex",
+												justifyContent: "space-between",
+												alignItems: "center",
+												marginBottom: "16px",
+												marginTop: "8px",
+												padding: "0 2px",
+											}}
+										>
 											<button
+												type="button"
+												onClick={handleResendLink}
+												disabled={isUploading}
+												style={{
+													background: "none",
+													border: "none",
+													color: "#0058bc",
+													fontSize: "12px",
+													fontWeight: 700,
+													cursor: isUploading ? "wait" : "pointer",
+													padding: 0,
+													opacity: isUploading ? 0.5 : 1,
+												}}
+											>
+												{isUploading ? "Sending..." : "Resend verification?"}
+											</button>
+											<button
+												type="button"
 												onClick={() => setView("forgot")}
 												style={{
 													background: "none",
