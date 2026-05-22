@@ -1,9 +1,11 @@
 "use client";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import LockedPane from "@/components/LockedPane";
 
 export default function HistoryPage() {
 	const [mounted, setMounted] = useState(false);
+	const [isLoggedIn, setIsLoggedIn] = useState(false);
 	const [history, setHistory] = useState<any[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [userEmail, setUserEmail] = useState("...");
@@ -42,11 +44,21 @@ export default function HistoryPage() {
 
 	useEffect(() => {
 		setMounted(true);
+		setIsLoggedIn(!!localStorage.getItem("labpro_active_user"));
 		loadHistory();
 
 		window.addEventListener("userStateChanged", loadHistory);
 		return () => window.removeEventListener("userStateChanged", loadHistory);
 	}, []);
+
+	if (mounted && !isLoggedIn) {
+		return (
+			<LockedPane
+				title="Run History"
+				sub="Log in to view the logs of your past automated AI scraping events."
+			/>
+		);
+	}
 
 	const handleClearHistory = async () => {
 		setShowClearModal(false);
@@ -374,7 +386,6 @@ export default function HistoryPage() {
 										fontWeight: 600,
 									}}
 								>
-									{/* 🚀 THE FIX: Always show userEmail or explicitly say Auto-Send Disabled */}
 									{run.status === "run only" ? "Auto-Send Disabled" : userEmail}
 								</td>
 								<td

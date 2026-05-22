@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import DashboardAnalytics from "@/components/DashboardAnalytics";
+import LockedPane from "@/components/LockedPane";
 
 const NIGERIA_STATES = [
 	"All Nigeria",
@@ -50,6 +51,8 @@ export default function Dashboard() {
 	const [location, setLocation] = useState("All Nigeria");
 	const [dbMinScore, setDbMinScore] = useState(75);
 	const [userKeywords, setUserKeywords] = useState("");
+	const [isLoggedIn, setIsLoggedIn] = useState(false);
+	const [mounted, setMounted] = useState(false);
 
 	const [includeTier3, setIncludeTier3] = useState(true);
 	const [autoSend, setAutoSend] = useState(true);
@@ -114,9 +117,11 @@ export default function Dashboard() {
 	};
 
 	useEffect(() => {
-		const fetchUserData = async () => {
-			const activeEmail = localStorage.getItem("labpro_active_user");
+		setMounted(true);
+		const activeEmail = localStorage.getItem("labpro_active_user");
+		setIsLoggedIn(!!activeEmail);
 
+		const fetchUserData = async () => {
 			if (!activeEmail) {
 				setEmail("");
 				setTotalJobs(0);
@@ -153,8 +158,7 @@ export default function Dashboard() {
 		fetchUserData();
 
 		const savedLastRun = localStorage.getItem("labpro_last_run");
-		const activeUser = localStorage.getItem("labpro_active_user");
-		if (savedLastRun && activeUser) setLastRun(savedLastRun);
+		if (savedLastRun && activeEmail) setLastRun(savedLastRun);
 
 		const savedT3 = localStorage.getItem("labpro_tier3");
 		if (savedT3) setIncludeTier3(savedT3 === "true");
@@ -173,6 +177,15 @@ export default function Dashboard() {
 			window.removeEventListener("jobsUpdated", refreshJobStats);
 		};
 	}, []);
+
+	if (mounted && !isLoggedIn) {
+		return (
+			<LockedPane
+				title="Dashboard"
+				sub="Log in or create an account to view your analytics and run the scanner."
+			/>
+		);
+	}
 
 	const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) =>
 		setEmail(e.target.value);

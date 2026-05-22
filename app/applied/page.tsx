@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import LockedPane from "@/components/LockedPane";
 
 // Defining the shape of our data
 type Column = { id: string; title: string; color: string; bgColor: string };
@@ -18,6 +19,8 @@ type JobCard = {
 export default function AppliedPipeline() {
 	const [cards, setCards] = useState<JobCard[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
+	const [isLoggedIn, setIsLoggedIn] = useState(false);
+	const [mounted, setMounted] = useState(false);
 
 	// Our Kanban stages
 	const columns: Column[] = [
@@ -56,7 +59,6 @@ export default function AppliedPipeline() {
 		}
 
 		setIsLoading(true);
-		// DATA ISOLATION: Fetch only jobs for this specific user
 		fetch(`/api/jobs?email=${activeEmail}`)
 			.then((res) => res.json())
 			.then((data) => {
@@ -74,8 +76,6 @@ export default function AppliedPipeline() {
 				const onlyApplied = myJobs.filter((j: any) => j.applied === true);
 
 				const formattedCards: JobCard[] = onlyApplied.map((j: any) => {
-					// 🚀 THE FIX: If the job's stage is present, use it.
-					// If the status is "active" (from the scraper) or missing, force it into the "applied" column.
 					let assignedColumn = "applied";
 					if (j.stage) {
 						assignedColumn = j.stage;
@@ -106,6 +106,8 @@ export default function AppliedPipeline() {
 	};
 
 	useEffect(() => {
+		setMounted(true);
+		setIsLoggedIn(!!localStorage.getItem("labpro_active_user"));
 		loadPipeline();
 		window.addEventListener("userStateChanged", loadPipeline);
 		window.addEventListener("jobsUpdated", loadPipeline);
@@ -117,15 +119,11 @@ export default function AppliedPipeline() {
 
 	const handleCardClick = (url: string) => {
 		if (!url || url === "#" || url.trim() === "") return;
-
 		let finalUrl = url.trim();
-		if (finalUrl.includes("myjobmag.comhttps://")) {
+		if (finalUrl.includes("myjobmag.comhttps://"))
 			finalUrl = "https://" + finalUrl.split("https://")[1];
-		}
-		if (!finalUrl.startsWith("http://") && !finalUrl.startsWith("https://")) {
+		if (!finalUrl.startsWith("http://") && !finalUrl.startsWith("https://"))
 			finalUrl = "https://" + finalUrl;
-		}
-
 		try {
 			window.open(finalUrl, "_blank", "noopener,noreferrer");
 		} catch (error) {
@@ -133,30 +131,24 @@ export default function AppliedPipeline() {
 		}
 	};
 
-	// REMOVE APPLICATION LOGIC
 	const handleRemoveApplication = async (
 		e: React.MouseEvent,
 		jobId: string,
 	) => {
-		e.stopPropagation(); // Prevent the URL click from firing
-
-		// Optimistic UI Update: Instantly remove from the pipeline
+		e.stopPropagation();
 		setCards((prev) => prev.filter((card) => card.id !== jobId));
-
 		try {
 			await fetch("/api/apply", {
 				method: "DELETE",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({ jobId, revert: true }),
 			});
-			// Fire the global event so the Matches sidebar number updates
 			window.dispatchEvent(new Event("jobsUpdated"));
 		} catch (error) {
 			console.error("Failed to remove application", error);
 		}
 	};
 
-	// Drag and Drop State
 	const [draggedCardId, setDraggedCardId] = useState<string | null>(null);
 	const [dragOverColumn, setDragOverColumn] = useState<string | null>(null);
 
@@ -168,32 +160,26 @@ export default function AppliedPipeline() {
 			if (el) el.style.opacity = "0.4";
 		}, 0);
 	};
-
 	const handleDragEnd = (e: React.DragEvent, id: string) => {
 		setDraggedCardId(null);
 		setDragOverColumn(null);
 		const el = document.getElementById(id);
 		if (el) el.style.opacity = "1";
 	};
-
 	const handleDragOver = (e: React.DragEvent, columnId: string) => {
 		e.preventDefault();
 		if (dragOverColumn !== columnId) setDragOverColumn(columnId);
 	};
-
 	const handleDrop = async (e: React.DragEvent, columnId: string) => {
 		e.preventDefault();
 		setDragOverColumn(null);
 		if (!draggedCardId) return;
-
 		setCards((prev) =>
 			prev.map((card) =>
 				card.id === draggedCardId ? { ...card, columnId } : card,
 			),
 		);
-
 		try {
-			// Assuming your PUT endpoint updates BOTH status and stage to keep things synced
 			await fetch("/api/jobs/status", {
 				method: "PUT",
 				headers: { "Content-Type": "application/json" },
@@ -207,6 +193,15 @@ export default function AppliedPipeline() {
 			console.error("Database sync failed", error);
 		}
 	};
+
+	if (mounted && !isLoggedIn) {
+		return (
+			<LockedPane
+				title="Application Pipeline"
+				sub="Log in to manage your active applications and track your hiring progress."
+			/>
+		);
+	}
 
 	if (isLoading) {
 		return (
@@ -249,7 +244,6 @@ export default function AppliedPipeline() {
 					to revisit the posting.
 				</p>
 			</div>
-
 			<div
 				className="mobile-stack"
 				style={{
@@ -264,7 +258,6 @@ export default function AppliedPipeline() {
 				{columns.map((col) => {
 					const columnCards = cards.filter((c) => c.columnId === col.id);
 					const isOver = dragOverColumn === col.id;
-
 					return (
 						<div
 							key={col.id}
@@ -279,7 +272,6 @@ export default function AppliedPipeline() {
 									? "rgba(255, 255, 255, 0.6)"
 									: "rgba(255, 255, 255, 0.3)",
 								backdropFilter: "blur(24px)",
-								WebkitBackdropFilter: "blur(24px)",
 								borderRadius: "20px",
 								border: isOver
 									? `2px dashed ${col.color}`
@@ -336,7 +328,6 @@ export default function AppliedPipeline() {
 									{columnCards.length}
 								</span>
 							</div>
-
 							<div
 								style={{
 									display: "flex",
@@ -361,7 +352,7 @@ export default function AppliedPipeline() {
 											border: "1px solid rgba(255,255,255,0.8)",
 											boxShadow: "0 4px 12px -2px rgba(0,0,0,0.05)",
 											transition: "box-shadow 0.2s ease, transform 0.2s ease",
-											position: "relative", // Needed for absolute positioning of the cancel button
+											position: "relative",
 										}}
 										onMouseEnter={(e) => {
 											e.currentTarget.style.transform = "translateY(-2px)";
@@ -374,7 +365,6 @@ export default function AppliedPipeline() {
 												"0 4px 12px -2px rgba(0,0,0,0.05)";
 										}}
 									>
-										{/* THE CANCEL/REMOVE BUTTON */}
 										<button
 											onClick={(e) => handleRemoveApplication(e, card.id)}
 											title="Remove from pipeline"
@@ -419,7 +409,6 @@ export default function AppliedPipeline() {
 												<line x1="6" y1="6" x2="18" y2="18"></line>
 											</svg>
 										</button>
-
 										<div
 											style={{
 												display: "flex",
@@ -451,7 +440,6 @@ export default function AppliedPipeline() {
 												TIER {card.tier}
 											</span>
 										</div>
-
 										<h4
 											style={{
 												margin: "0 0 4px 0",
@@ -459,7 +447,7 @@ export default function AppliedPipeline() {
 												fontWeight: 800,
 												color: "#0f172a",
 												lineHeight: "1.3",
-												paddingRight: "20px", // Keep text away from the X button
+												paddingRight: "20px",
 											}}
 										>
 											{card.role}
@@ -474,7 +462,6 @@ export default function AppliedPipeline() {
 										>
 											{card.company}
 										</p>
-
 										<div
 											style={{
 												display: "flex",
@@ -516,7 +503,6 @@ export default function AppliedPipeline() {
 													{card.loc}
 												</span>
 											</div>
-
 											<div
 												style={{
 													display: "flex",
@@ -551,7 +537,6 @@ export default function AppliedPipeline() {
 										</div>
 									</div>
 								))}
-
 								{columnCards.length === 0 && (
 									<div
 										style={{

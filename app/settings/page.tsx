@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
+import LockedPane from "@/components/LockedPane";
 
 const NIGERIA_STATES = [
 	"All Nigeria",
@@ -90,6 +91,8 @@ export default function SettingsPage() {
 	const [isLoading, setIsLoading] = useState(true);
 	const [isSaving, setIsSaving] = useState(false);
 	const [isUploading, setIsUploading] = useState(false);
+	const [isLoggedIn, setIsLoggedIn] = useState(false);
+	const [mounted, setMounted] = useState(false);
 	const [toast, setToast] = useState<{
 		message: string;
 		type: "success" | "error";
@@ -187,10 +190,21 @@ export default function SettingsPage() {
 	};
 
 	useEffect(() => {
+		setMounted(true);
+		setIsLoggedIn(!!localStorage.getItem("labpro_active_user"));
 		loadSettings();
 		window.addEventListener("userStateChanged", loadSettings);
 		return () => window.removeEventListener("userStateChanged", loadSettings);
 	}, []);
+
+	if (mounted && !isLoggedIn) {
+		return (
+			<LockedPane
+				title="System Settings"
+				sub="Log in to manage your API keys, documents, and search preferences."
+			/>
+		);
+	}
 
 	const handleAddKeyword = (e: React.KeyboardEvent<HTMLInputElement>) => {
 		if (e.key === "Enter") {
@@ -320,8 +334,6 @@ export default function SettingsPage() {
 	};
 
 	const handleDeleteDoc = async (id: string) => {
-		// In a full production app, we would ping an API route to delete from Vercel Blob and DB.
-		// For now, we instantly clear it from the UI.
 		const updatedDocs = documents.map((doc) =>
 			doc.id === id ? { ...doc, size: "-", uploadedAt: null, url: null } : doc,
 		);

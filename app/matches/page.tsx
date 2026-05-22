@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import LockedPane from "@/components/LockedPane";
 
 const getAvatarStyle = (companyName: string) => {
 	const char = companyName.charAt(0).toUpperCase();
@@ -53,6 +54,7 @@ const DEFAULT_DOCS: VaultDoc[] = [
 
 export default function MatchesPage() {
 	const [mounted, setMounted] = useState(false);
+	const [isLoggedIn, setIsLoggedIn] = useState(false);
 	const [jobs, setJobs] = useState<any[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [isPreviewOpen, setIsPreviewOpen] = useState(false);
@@ -154,6 +156,7 @@ export default function MatchesPage() {
 
 	useEffect(() => {
 		setMounted(true);
+		setIsLoggedIn(!!localStorage.getItem("labpro_active_user"));
 		loadData();
 
 		window.addEventListener("userStateChanged", loadData);
@@ -164,6 +167,15 @@ export default function MatchesPage() {
 			window.removeEventListener("jobsUpdated", loadData);
 		};
 	}, []);
+
+	if (mounted && !isLoggedIn) {
+		return (
+			<LockedPane
+				title="Job Matches"
+				sub="Log in or create an account to view your personalized lab job matches and apply to roles."
+			/>
+		);
+	}
 
 	const unappliedJobs = jobs.filter((j) => !appliedJobs.includes(j.id));
 	const t1Jobs = unappliedJobs.filter((j) => j.tier === 1);
