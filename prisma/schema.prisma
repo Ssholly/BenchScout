@@ -8,42 +8,43 @@ datasource db {
 }
 
 model User {
-  id            String       @id @default(cuid())
-  name          String
-  avatarUrl     String?
-  email         String       @unique
-  // 🚀 NEW: Licensure & Compliance Fields
-  licenseUrl    String?
+  id                String       @id @default(cuid())
+  name              String
+  avatarUrl         String?
+  email             String       @unique
+  
+  // 🚀 Licensure & Compliance Fields
+  licenseUrl        String?      // Link to MLSCN practicing license
   licenseNumber     String?
   licenseExpiry     DateTime?
-  cpdPoints         Int       @default(0)
-  isLicenseVerified Boolean   @default(false)
-  password      String       // We will hash this in the backend
-  location      String       @default("All Nigeria")
-  keywords      String?      // The AI will populate this from the resume
-  resumeUrl     String?      // Link to their uploaded PDF
-  minScore      Int          @default(70)
-  isVerified    Boolean      @default(false) // <--- ADDED: Blocks login until email is confirmed
-  createdAt     DateTime     @default(now())
+  cpdPoints         Int          @default(0)
+  isLicenseVerified Boolean      @default(false)
+  
+  password          String       // We will hash this in the backend
+  location          String       @default("All Nigeria")
+  keywords          String?      // The AI will populate this from the resume
+  resumeUrl         String?      // Link to their uploaded PDF
+  minScore          Int          @default(70)
+  isVerified        Boolean      @default(false) // Blocks login until email is confirmed
+  createdAt         DateTime     @default(now())
   
   // ==========================================
   // 🚀 PILLAR 1: THE VAULT (Extended)
   // ==========================================
-  cvParsedText  String?      // Hidden text extracted for the AI Cover Letter Engine
-  licenseUrl    String?      // Link to MLSCN practicing license
-  degreeUrl     String?      // Link to B.MLS degree
+  cvParsedText      String?      // Hidden text extracted for the AI Cover Letter Engine
+  degreeUrl         String?      // Link to B.MLS degree
   
   // ==========================================
   // 🚀 PILLAR 3: AUTONOMOUS PREFERENCES
   // ==========================================
-  strictMls     Boolean      @default(true)
-  alertsActive  Boolean      @default(false)
-  alertTier     String       @default("Tier 1 & Tier 2")
-  alertKeywords String?      
-  autoSendEmail Boolean      @default(false)
+  strictMls         Boolean      @default(true)
+  alertsActive      Boolean      @default(false)
+  alertTier         String       @default("Tier 1 & Tier 2")
+  alertKeywords     String?      
+  autoSendEmail     Boolean      @default(false)
 
-  jobs          Job[]
-  history       RunHistory[]
+  jobs              Job[]
+  history           RunHistory[]
 }
 
 model Job {
@@ -63,7 +64,7 @@ model Job {
   applied   Boolean  @default(false)
   status    String?  @default("applied") 
   createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt // <--- CRITICAL FIX: Allows the Match Graph to map resurrected jobs correctly
+  updatedAt DateTime @default(now()) @updatedAt // CRITICAL FIX: Allows the Match Graph to map resurrected jobs correctly
 }
 
 model RunHistory {
@@ -110,10 +111,10 @@ model PasswordResetToken {
 }
 
 model SalaryReport {
-  id        String   @id @default(uuid())
-  role      String
-  location  String
-  salary    Int      // Stored as a raw integer (e.g., 350000)
+  id         String   @id @default(uuid())
+  role       String
+  location   String
+  salary     Int      // Stored as a raw integer (e.g., 350000)
   experience String   // e.g., "1-3 years"
   submittedAt DateTime @default(now())
   // We do not link this to the User ID to ensure anonymity
