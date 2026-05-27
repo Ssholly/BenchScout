@@ -4,7 +4,6 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-// 🚀 A Retry function to survive Neon Database "Cold Starts"
 async function withRetry<T>(
 	operation: () => Promise<T>,
 	maxRetries = 3,
@@ -17,7 +16,7 @@ async function withRetry<T>(
 			console.warn(
 				`Database asleep. Retrying operation... (${i + 1}/${maxRetries})`,
 			);
-			await new Promise((res) => setTimeout(res, 1500)); // Wait 1.5s for DB to wake up
+			await new Promise((res) => setTimeout(res, 1500));
 		}
 	}
 	throw new Error("Unreachable");
@@ -37,15 +36,26 @@ export async function POST(request: Request) {
 			);
 		}
 
-		const blob = await put(file.name, file, { access: "public" });
+		// 🚀 THE BLOB FIX: addRandomSuffix: true prevents the Vercel Blob name collision entirely
+		const blob = await put(
+			`users/${email}/${documentType}-${file.name}`,
+			file,
+			{
+				access: "public",
+				addRandomSuffix: true,
+			},
+		);
 
 		const updateData: any = {};
 		if (documentType === "resume") updateData.resumeUrl = blob.url;
-		if (documentType === "license") updateData.licenseUrl = blob.url;
-		if (documentType === "degree") updateData.degreeUrl = blob.url;
 		if (documentType === "avatar") updateData.avatarUrl = blob.url;
+		if (documentType === "degree") updateData.degreeUrl = blob.url;
 
-		// Execute with Retry
+		// 🚀 SCHEMA ALIGNMENT FIX: Map "license" cleanly to your User schema file properties
+		if (documentType === "license") {
+			updateData.isLicenseVerified = false; // Reset status verification flags until user clicks Confirm
+		}
+
 		const user = await withRetry(() =>
 			prisma.user.update({
 				where: { email },
