@@ -87,7 +87,9 @@ export default function SettingsPage() {
 		location: "All Nigeria",
 		minScore: 85,
 	});
-	const [isLoading, setIsLoading] = useState(true);
+
+	// 🚀 FIX 1: Add a dedicated state to track the initial auth check
+	const [checkingAuth, setCheckingAuth] = useState(true);
 	const [isSaving, setIsSaving] = useState(false);
 	const [isUploading, setIsUploading] = useState(false);
 	const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
@@ -118,7 +120,9 @@ export default function SettingsPage() {
 	};
 
 	const loadSettings = async () => {
+		setCheckingAuth(true); // Start the checking phase
 		const activeEmail = localStorage.getItem("labpro_active_user");
+
 		if (!activeEmail) {
 			setIsUserLoggedIn(false);
 			setUserData({
@@ -129,7 +133,7 @@ export default function SettingsPage() {
 				minScore: 85,
 			});
 			setDocuments(DEFAULT_DOCS);
-			setIsLoading(false);
+			setCheckingAuth(false); // Done checking
 			return;
 		}
 
@@ -189,7 +193,7 @@ export default function SettingsPage() {
 		} catch (error) {
 			console.error("Failed to load settings:", error);
 		}
-		setIsLoading(false);
+		setCheckingAuth(false); // Complete the checking phase
 	};
 
 	useEffect(() => {
@@ -349,7 +353,12 @@ export default function SettingsPage() {
 		}
 	};
 
+	// 🚀 FIX 2: Fully wired DELETE functionality to wipe from server & DB
 	const handleDeleteDoc = async (id: string) => {
+		const docToDelete = documents.find((d) => d.id === id);
+		if (!docToDelete || !docToDelete.url || !userData.email) return;
+
+		// 1. Optimistic UI update (hides it instantly so the app feels fast)
 		const updatedDocs = documents.map((doc) =>
 			doc.id === id ? { ...doc, size: "-", uploadedAt: null, url: null } : doc,
 		);
@@ -359,6 +368,32 @@ export default function SettingsPage() {
 			JSON.stringify(updatedDocs),
 		);
 		showToast("Document unlinked from profile.");
+
+		// 2. Map the ID to the correct backend documentType
+		const docTypeMap: Record<string, string> = {
+			cv: "resume",
+			license: "license",
+			degree: "degree",
+		};
+
+		// 3. Fire the request to your new DELETE handler
+		try {
+			const res = await fetch("/api/upload", {
+				method: "DELETE",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					email: userData.email,
+					documentType: docTypeMap[id],
+					fileUrl: docToDelete.url,
+				}),
+			});
+			const data = await res.json();
+			if (!data.success) {
+				console.error("Failed to delete from server:", data.error);
+			}
+		} catch (error) {
+			console.error("Delete request error:", error);
+		}
 	};
 
 	const confirmAndSaveLicense = async () => {
@@ -370,7 +405,7 @@ export default function SettingsPage() {
 				body: JSON.stringify({
 					email: userData.email,
 					licenseNumber: extractedData.licenseNumber,
-					licenseExpiry: extractedData.expiryDate,
+					expiryDate: extractedData.expiryDate,
 					cpdPoints: 0,
 				}),
 			});
@@ -378,6 +413,7 @@ export default function SettingsPage() {
 			if (data.success) {
 				showToast("Compliance tracking activated!");
 				setShowVerificationModal(false);
+				window.dispatchEvent(new Event("userSateChanged"));
 			} else {
 				showToast("Failed to save compliance data.", "error");
 			}
@@ -864,7 +900,41 @@ export default function SettingsPage() {
 				</p>
 			</div>
 
-			{!isUserLoggedIn ? (
+			{/* 🚀 FIX 1 IMPLEMENTATION: Seamless Loading & Auth Handling */}
+			{checkingAuth ? (
+				<div
+					style={{
+						display: "flex",
+						flexDirection: "column",
+						alignItems: "center",
+						justifyContent: "center",
+						minHeight: "60vh",
+						gap: "12px",
+						color: "#64748b",
+					}}
+				>
+					<svg
+						width="24"
+						height="24"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						strokeWidth="2.5"
+						style={{ animation: "spin 1s linear infinite" }}
+					>
+						<path d="M21 12a9 9 0 1 1-6.219-8.56"></path>
+					</svg>
+					<span
+						style={{
+							fontSize: "14px",
+							fontWeight: 700,
+							letterSpacing: "-0.2px",
+						}}
+					>
+						Authenticating secure session...
+					</span>
+				</div>
+			) : !isUserLoggedIn ? (
 				<div
 					style={{
 						padding: "4rem",
@@ -939,10 +1009,6 @@ export default function SettingsPage() {
 					>
 						Log In to Access
 					</button>
-				</div>
-			) : isLoading ? (
-				<div style={{ padding: "3rem", color: "#64748b", fontWeight: 600 }}>
-					Loading settings...
 				</div>
 			) : (
 				<>
