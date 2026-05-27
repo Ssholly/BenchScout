@@ -38,7 +38,8 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
 	try {
 		const body = await request.json();
-		const { name, email, location, keywords, minScore } = body;
+		// 🚀 Added avatarUrl to the destructured payload
+		const { name, email, location, keywords, minScore, avatarUrl } = body;
 
 		if (!email) {
 			return NextResponse.json(
@@ -68,6 +69,8 @@ export async function POST(request: Request) {
 				// Safely handle keywords whether they arrive as an array or a string
 				keywords: Array.isArray(keywords) ? keywords.join(", ") : keywords,
 				minScore: minScore,
+				// 🚀 Added avatarUrl mapping here
+				avatarUrl: avatarUrl !== undefined ? avatarUrl : undefined,
 			},
 		});
 

@@ -1,25 +1,26 @@
 "use client";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
-import LockedPane from "@/components/LockedPane";
 
 export default function HistoryPage() {
 	const [mounted, setMounted] = useState(false);
-	const [isLoggedIn, setIsLoggedIn] = useState(false);
 	const [history, setHistory] = useState<any[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [userEmail, setUserEmail] = useState("...");
 	const [showClearModal, setShowClearModal] = useState(false);
+	const [isUserLoggedIn, setIsUserLoggedIn] = useState(false); // 🚀 Added state
 
 	const loadHistory = () => {
 		const activeEmail = localStorage.getItem("labpro_active_user");
 		if (!activeEmail) {
+			setIsUserLoggedIn(false);
 			setUserEmail("...");
 			setHistory([]);
 			setIsLoading(false);
 			return;
 		}
 
+		setIsUserLoggedIn(true);
 		setUserEmail(activeEmail);
 		setIsLoading(true);
 
@@ -44,21 +45,11 @@ export default function HistoryPage() {
 
 	useEffect(() => {
 		setMounted(true);
-		setIsLoggedIn(!!localStorage.getItem("labpro_active_user"));
 		loadHistory();
 
 		window.addEventListener("userStateChanged", loadHistory);
 		return () => window.removeEventListener("userStateChanged", loadHistory);
 	}, []);
-
-	if (mounted && !isLoggedIn) {
-		return (
-			<LockedPane
-				title="Run History"
-				sub="Log in to view the logs of your past automated AI scraping events."
-			/>
-		);
-	}
 
 	const handleClearHistory = async () => {
 		setShowClearModal(false);
@@ -75,13 +66,6 @@ export default function HistoryPage() {
 			console.error("Failed to clear history", e);
 		}
 	};
-
-	if (isLoading)
-		return (
-			<div style={{ padding: "4rem", textAlign: "center", color: "#94a3b8" }}>
-				Loading...
-			</div>
-		);
 
 	return (
 		<section
@@ -258,184 +242,271 @@ export default function HistoryPage() {
 						Log of all automated AI scraping events.
 					</p>
 				</div>
-				<button
-					onClick={() => setShowClearModal(true)}
-					style={{
-						background: "rgba(255, 255, 255, 0.6)",
-						backdropFilter: "blur(12px)",
-						color: "#ef4444",
-						border: "1px solid rgba(254, 202, 202, 0.5)",
-						padding: "8px 16px",
-						borderRadius: "8px",
-						fontWeight: 700,
-						cursor: "pointer",
-						fontSize: "14px",
-						transition: "0.2s",
-					}}
-				>
-					Clear All
-				</button>
-			</div>
-
-			<div
-				className="responsive-table"
-				style={{
-					background: "rgba(255, 255, 255, 0.5)",
-					backdropFilter: "blur(24px)",
-					WebkitBackdropFilter: "blur(24px)",
-					borderRadius: "16px",
-					border: "1px solid rgba(255, 255, 255, 0.3)",
-					overflow: "hidden",
-					boxShadow: "0 4px 20px -2px rgba(0, 0, 0, 0.03)",
-				}}
-			>
-				<table
-					style={{
-						width: "100%",
-						borderCollapse: "collapse",
-						textAlign: "left",
-					}}
-				>
-					<thead
+				{isUserLoggedIn && (
+					<button
+						onClick={() => setShowClearModal(true)}
 						style={{
-							background: "rgba(255, 255, 255, 0.4)",
-							borderBottom: "1px solid rgba(0,0,0,0.05)",
+							background: "rgba(255, 255, 255, 0.6)",
+							backdropFilter: "blur(12px)",
+							color: "#ef4444",
+							border: "1px solid rgba(254, 202, 202, 0.5)",
+							padding: "8px 16px",
+							borderRadius: "8px",
+							fontWeight: 700,
+							cursor: "pointer",
+							fontSize: "14px",
+							transition: "0.2s",
 						}}
 					>
-						<tr>
-							<th
-								style={{
-									padding: "1rem 1.5rem",
-									fontSize: "11px",
-									color: "#94a3b8",
-									textTransform: "uppercase",
-									fontWeight: 800,
-								}}
-							>
-								Date & Time
-							</th>
-							<th
-								style={{
-									padding: "1rem",
-									fontSize: "11px",
-									color: "#94a3b8",
-									textTransform: "uppercase",
-									fontWeight: 800,
-								}}
-							>
-								Matches
-							</th>
-							<th
-								style={{
-									padding: "1rem",
-									fontSize: "11px",
-									color: "#94a3b8",
-									textTransform: "uppercase",
-									fontWeight: 800,
-								}}
-							>
-								Sent To
-							</th>
-							<th
-								style={{
-									padding: "1rem 1.5rem",
-									fontSize: "11px",
-									color: "#94a3b8",
-									textTransform: "uppercase",
-									fontWeight: 800,
-								}}
-							>
-								Status
-							</th>
-						</tr>
-					</thead>
-					<tbody>
-						{history.map((run) => (
-							<tr
-								key={run.id}
-								style={{ borderBottom: "1px solid rgba(0,0,0,0.05)" }}
-							>
-								<td
-									data-label="Date & Time"
+						Clear All
+					</button>
+				)}
+			</div>
+
+			{!isUserLoggedIn ? (
+				<div
+					style={{
+						padding: "4rem",
+						textAlign: "center",
+						background: "rgba(255,255,255,0.5)",
+						backdropFilter: "blur(16px)",
+						borderRadius: "16px",
+						border: "1px solid rgba(255, 255, 255, 0.3)",
+						boxShadow: "0 4px 20px -2px rgba(0, 0, 0, 0.03)",
+					}}
+				>
+					<div
+						style={{
+							width: "64px",
+							height: "64px",
+							background: "rgba(241, 245, 249, 0.8)",
+							borderRadius: "50%",
+							display: "flex",
+							alignItems: "center",
+							justifyContent: "center",
+							margin: "0 auto 1rem auto",
+							color: "#64748b",
+						}}
+					>
+						<svg
+							width="28"
+							height="28"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							strokeWidth="2"
+							strokeLinecap="round"
+							strokeLinejoin="round"
+						>
+							<rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+							<path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+						</svg>
+					</div>
+					<h2
+						style={{
+							margin: "0 0 8px 0",
+							fontSize: "18px",
+							color: "#0f172a",
+							fontWeight: 800,
+						}}
+					>
+						Run History Locked
+					</h2>
+					<p
+						style={{
+							color: "#64748b",
+							fontSize: "14px",
+							maxWidth: "400px",
+							margin: "0 auto 24px auto",
+							lineHeight: "1.5",
+						}}
+					>
+						Log in to view the logs of your past automated AI scraping events.
+					</p>
+					<button
+						onClick={() => window.dispatchEvent(new Event("openProfileModal"))}
+						style={{
+							background: "#0058bc",
+							color: "white",
+							border: "none",
+							padding: "12px 24px",
+							borderRadius: "8px",
+							fontWeight: 700,
+							cursor: "pointer",
+							boxShadow: "0 4px 12px rgba(0, 88, 188, 0.2)",
+						}}
+					>
+						Log In to Access
+					</button>
+				</div>
+			) : isLoading ? (
+				<div style={{ padding: "4rem", textAlign: "center", color: "#94a3b8" }}>
+					Loading...
+				</div>
+			) : (
+				<div
+					className="responsive-table"
+					style={{
+						background: "rgba(255, 255, 255, 0.5)",
+						backdropFilter: "blur(24px)",
+						WebkitBackdropFilter: "blur(24px)",
+						borderRadius: "16px",
+						border: "1px solid rgba(255, 255, 255, 0.3)",
+						overflow: "hidden",
+						boxShadow: "0 4px 20px -2px rgba(0, 0, 0, 0.03)",
+					}}
+				>
+					<table
+						style={{
+							width: "100%",
+							borderCollapse: "collapse",
+							textAlign: "left",
+						}}
+					>
+						<thead
+							style={{
+								background: "rgba(255, 255, 255, 0.4)",
+								borderBottom: "1px solid rgba(0,0,0,0.05)",
+							}}
+						>
+							<tr>
+								<th
 									style={{
-										padding: "1.25rem 1.5rem",
-										fontSize: "14px",
-										color: "#0f172a",
-										fontWeight: 600,
-									}}
-								>
-									{new Date(run.createdAt).toLocaleString()}
-								</td>
-								<td
-									data-label="Matches Found"
-									style={{
-										padding: "1.25rem 1rem",
-										fontSize: "14px",
+										padding: "1rem 1.5rem",
+										fontSize: "11px",
+										color: "#94a3b8",
+										textTransform: "uppercase",
 										fontWeight: 800,
-										color: "#0f172a",
 									}}
 								>
-									{run.matches}
-								</td>
-								<td
-									data-label="Dispatch Email"
+									Date & Time
+								</th>
+								<th
 									style={{
-										padding: "1.25rem 1rem",
-										fontSize: "13px",
-										color: "#64748b",
-										fontWeight: 600,
+										padding: "1rem",
+										fontSize: "11px",
+										color: "#94a3b8",
+										textTransform: "uppercase",
+										fontWeight: 800,
 									}}
 								>
-									{run.status === "run only" ? "Auto-Send Disabled" : userEmail}
-								</td>
-								<td
-									data-label="Task Status"
-									style={{ padding: "1.25rem 1.5rem" }}
+									Matches
+								</th>
+								<th
+									style={{
+										padding: "1rem",
+										fontSize: "11px",
+										color: "#94a3b8",
+										textTransform: "uppercase",
+										fontWeight: 800,
+									}}
 								>
-									<span
+									Sent To
+								</th>
+								<th
+									style={{
+										padding: "1rem 1.5rem",
+										fontSize: "11px",
+										color: "#94a3b8",
+										textTransform: "uppercase",
+										fontWeight: 800,
+									}}
+								>
+									Status
+								</th>
+							</tr>
+						</thead>
+						<tbody>
+							{(Array.isArray(history) ? history : []).map((run: any) => (
+								<tr
+									key={run.id}
+									style={{ borderBottom: "1px solid rgba(0,0,0,0.05)" }}
+								>
+									<td
+										data-label="Date & Time"
 										style={{
-											background:
-												run.status === "failed"
-													? "rgba(254, 242, 242, 0.8)"
-													: run.status === "run only"
-														? "rgba(241, 245, 249, 0.8)"
-														: "rgba(240, 249, 255, 0.8)",
-											color:
-												run.status === "failed"
-													? "#ef4444"
-													: run.status === "run only"
-														? "#64748b"
-														: "#0058bc",
-											padding: "4px 8px",
-											borderRadius: "6px",
-											fontSize: "11px",
-											fontWeight: 800,
-											textTransform: "uppercase",
+											padding: "1.25rem 1.5rem",
+											fontSize: "14px",
+											color: "#0f172a",
+											fontWeight: 600,
 										}}
 									>
-										{run.status}
-									</span>
-								</td>
-							</tr>
-						))}
-						{history.length === 0 && (
-							<tr>
-								<td
-									colSpan={4}
-									style={{
-										padding: "3rem",
-										textAlign: "center",
-										color: "#94a3b8",
-										fontSize: "14px",
-									}}
-								>
-									No run history available.
-								</td>
-							</tr>
-						)}
-					</tbody>
-				</table>
-			</div>
+										{new Date(run.createdAt).toLocaleString()}
+									</td>
+									<td
+										data-label="Matches Found"
+										style={{
+											padding: "1.25rem 1rem",
+											fontSize: "14px",
+											fontWeight: 800,
+											color: "#0f172a",
+										}}
+									>
+										{run.matches}
+									</td>
+									<td
+										data-label="Dispatch Email"
+										style={{
+											padding: "1.25rem 1rem",
+											fontSize: "13px",
+											color: "#64748b",
+											fontWeight: 600,
+										}}
+									>
+										{/* 🚀 THE FIX: Always show userEmail or explicitly say Auto-Send Disabled */}
+										{run.status === "run only"
+											? "Auto-Send Disabled"
+											: userEmail}
+									</td>
+									<td
+										data-label="Task Status"
+										style={{ padding: "1.25rem 1.5rem" }}
+									>
+										<span
+											style={{
+												background:
+													run.status === "failed"
+														? "rgba(254, 242, 242, 0.8)"
+														: run.status === "run only"
+															? "rgba(241, 245, 249, 0.8)"
+															: "rgba(240, 249, 255, 0.8)",
+												color:
+													run.status === "failed"
+														? "#ef4444"
+														: run.status === "run only"
+															? "#64748b"
+															: "#0058bc",
+												padding: "4px 8px",
+												borderRadius: "6px",
+												fontSize: "11px",
+												fontWeight: 800,
+												textTransform: "uppercase",
+											}}
+										>
+											{run.status}
+										</span>
+									</td>
+								</tr>
+							))}
+							{history.length === 0 && (
+								<tr>
+									<td
+										colSpan={4}
+										style={{
+											padding: "3rem",
+											textAlign: "center",
+											color: "#94a3b8",
+											fontSize: "14px",
+										}}
+									>
+										No run history available.
+									</td>
+								</tr>
+							)}
+						</tbody>
+					</table>
+				</div>
+			)}
 		</section>
 	);
 }

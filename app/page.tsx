@@ -1,7 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
 import DashboardAnalytics from "@/components/DashboardAnalytics";
-import LockedPane from "@/components/LockedPane";
 
 const NIGERIA_STATES = [
 	"All Nigeria",
@@ -51,8 +50,7 @@ export default function Dashboard() {
 	const [location, setLocation] = useState("All Nigeria");
 	const [dbMinScore, setDbMinScore] = useState(75);
 	const [userKeywords, setUserKeywords] = useState("");
-	const [isLoggedIn, setIsLoggedIn] = useState(false);
-	const [mounted, setMounted] = useState(false);
+	const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
 
 	const [includeTier3, setIncludeTier3] = useState(true);
 	const [autoSend, setAutoSend] = useState(true);
@@ -98,7 +96,6 @@ export default function Dashboard() {
 			const res = await fetch(`/api/jobs?email=${activeEmail}`);
 			const data = await res.json();
 			if (Array.isArray(data)) {
-				// 🚀 THE FIX: We must explicitly ignore jobs that have been "cleared" by the user!
 				const activeJobs = data.filter(
 					(j: any) =>
 						j.status !== "cleared" &&
@@ -117,12 +114,11 @@ export default function Dashboard() {
 	};
 
 	useEffect(() => {
-		setMounted(true);
-		const activeEmail = localStorage.getItem("labpro_active_user");
-		setIsLoggedIn(!!activeEmail);
-
 		const fetchUserData = async () => {
+			const activeEmail = localStorage.getItem("labpro_active_user");
+
 			if (!activeEmail) {
+				setIsUserLoggedIn(false);
 				setEmail("");
 				setTotalJobs(0);
 				setTier1Count(0);
@@ -137,6 +133,8 @@ export default function Dashboard() {
 				]);
 				return;
 			}
+
+			setIsUserLoggedIn(true);
 
 			try {
 				const res = await fetch(`/api/user?email=${activeEmail}`);
@@ -158,7 +156,8 @@ export default function Dashboard() {
 		fetchUserData();
 
 		const savedLastRun = localStorage.getItem("labpro_last_run");
-		if (savedLastRun && activeEmail) setLastRun(savedLastRun);
+		const activeUser = localStorage.getItem("labpro_active_user");
+		if (savedLastRun && activeUser) setLastRun(savedLastRun);
 
 		const savedT3 = localStorage.getItem("labpro_tier3");
 		if (savedT3) setIncludeTier3(savedT3 === "true");
@@ -167,6 +166,7 @@ export default function Dashboard() {
 		if (savedAuto) setAutoSend(savedAuto === "true");
 
 		window.addEventListener("userStateChanged", () => {
+			setIsUserLoggedIn(!!localStorage.getItem("labpro_active_user"));
 			fetchUserData();
 			refreshJobStats();
 		});
@@ -177,15 +177,6 @@ export default function Dashboard() {
 			window.removeEventListener("jobsUpdated", refreshJobStats);
 		};
 	}, []);
-
-	if (mounted && !isLoggedIn) {
-		return (
-			<LockedPane
-				title="Dashboard"
-				sub="Log in or create an account to view your analytics and run the scanner."
-			/>
-		);
-	}
 
 	const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) =>
 		setEmail(e.target.value);
@@ -352,509 +343,643 @@ export default function Dashboard() {
 				</div>
 			)}
 
-			<div
-				className="mobile-stack"
-				style={{ display: "flex", gap: "1rem", marginBottom: "1.5rem" }}
-			>
+			{!isUserLoggedIn ? (
 				<div
 					style={{
-						background: "white",
-						border: "1px solid #f1f5f9",
-						borderRadius: "12px",
-						padding: "1rem 1.25rem",
-						flex: 1,
-						position: "relative",
-						boxShadow: "0 1px 2px rgba(0,0,0,0.02)",
-					}}
-				>
-					<div
-						style={{
-							fontSize: "10px",
-							fontWeight: 800,
-							color: "#94a3b8",
-							textTransform: "uppercase",
-							marginBottom: "8px",
-							letterSpacing: "0.5px",
-						}}
-					>
-						Total Matches
-					</div>
-					<div style={{ display: "flex", alignItems: "baseline", gap: "8px" }}>
-						<div
-							style={{ fontSize: "24px", fontWeight: 800, color: "#0f172a" }}
-						>
-							{totalJobs}
-						</div>
-						{totalJobs > 0 && (
-							<span
-								style={{ fontSize: "11px", fontWeight: 700, color: "#22c55e" }}
-							>
-								+12% ↗
-							</span>
-						)}
-					</div>
-				</div>
-				<div
-					style={{
-						background: "white",
-						border: "1px solid #f1f5f9",
-						borderRadius: "12px",
-						padding: "1rem 1.25rem",
-						flex: 1,
-						position: "relative",
-						boxShadow: "0 1px 2px rgba(0,0,0,0.02)",
-					}}
-				>
-					<div
-						style={{
-							fontSize: "10px",
-							fontWeight: 800,
-							color: "#94a3b8",
-							textTransform: "uppercase",
-							marginBottom: "8px",
-							letterSpacing: "0.5px",
-						}}
-					>
-						Tier 1 (88+)
-					</div>
-					<div style={{ display: "flex", alignItems: "baseline", gap: "8px" }}>
-						<div
-							style={{ fontSize: "24px", fontWeight: 800, color: "#0f172a" }}
-						>
-							{tier1Count}
-						</div>
-					</div>
-					{tier1Count > 0 && (
-						<span
-							style={{
-								position: "absolute",
-								right: "1rem",
-								bottom: "1rem",
-								background: "#dcfce7",
-								color: "#15803d",
-								padding: "2px 8px",
-								borderRadius: "4px",
-								fontSize: "9px",
-								fontWeight: 800,
-								textTransform: "uppercase",
-							}}
-						>
-							Priority
-						</span>
-					)}
-				</div>
-				<div
-					style={{
-						background: "white",
-						border: "1px solid #f1f5f9",
-						borderRadius: "12px",
-						padding: "1rem 1.25rem",
-						flex: 1,
-						position: "relative",
-						boxShadow: "0 1px 2px rgba(0,0,0,0.02)",
-					}}
-				>
-					<div
-						style={{
-							fontSize: "10px",
-							fontWeight: 800,
-							color: "#94a3b8",
-							textTransform: "uppercase",
-							marginBottom: "8px",
-							letterSpacing: "0.5px",
-						}}
-					>
-						Tier 2 (70-87)
-					</div>
-					<div style={{ display: "flex", alignItems: "baseline", gap: "8px" }}>
-						<div
-							style={{ fontSize: "24px", fontWeight: 800, color: "#0f172a" }}
-						>
-							{tier2Count}
-						</div>
-					</div>
-					{tier2Count > 0 && (
-						<span
-							style={{
-								position: "absolute",
-								right: "1rem",
-								bottom: "1rem",
-								background: "#eff6ff",
-								color: "#1d4ed8",
-								padding: "2px 8px",
-								borderRadius: "4px",
-								fontSize: "9px",
-								fontWeight: 800,
-								textTransform: "uppercase",
-							}}
-						>
-							Standard
-						</span>
-					)}
-				</div>
-				<div
-					style={{
-						background: "white",
-						border: "1px solid #f1f5f9",
-						borderRadius: "12px",
-						padding: "1rem 1.25rem",
-						flex: 1,
-						position: "relative",
-						boxShadow: "0 1px 2px rgba(0,0,0,0.02)",
-					}}
-				>
-					<div
-						style={{
-							fontSize: "10px",
-							fontWeight: 800,
-							color: "#94a3b8",
-							textTransform: "uppercase",
-							marginBottom: "8px",
-							letterSpacing: "0.5px",
-						}}
-					>
-						System Status
-					</div>
-					<div style={{ display: "flex", alignItems: "baseline", gap: "8px" }}>
-						<div
-							style={{
-								fontSize: "24px",
-								fontWeight: 800,
-								color: isScraping ? "#0284c7" : email ? "#0f172a" : "#94a3b8",
-							}}
-						>
-							{isScraping ? "Active" : email ? "Ready" : "Offline"}
-						</div>
-					</div>
-				</div>
-				<div
-					style={{
-						background: "white",
-						border: "1px solid #f1f5f9",
-						borderRadius: "12px",
-						padding: "1rem 1.25rem",
-						flex: 1,
-						position: "relative",
-						boxShadow: "0 1px 2px rgba(0,0,0,0.02)",
-					}}
-				>
-					<div
-						style={{
-							fontSize: "10px",
-							fontWeight: 800,
-							color: "#94a3b8",
-							textTransform: "uppercase",
-							marginBottom: "8px",
-							letterSpacing: "0.5px",
-						}}
-					>
-						Last Run
-					</div>
-					<div style={{ display: "flex", alignItems: "baseline", gap: "8px" }}>
-						<div
-							style={{
-								fontSize: "24px",
-								fontWeight: 800,
-								color: email ? "#0f172a" : "#94a3b8",
-							}}
-						>
-							{lastRun}
-						</div>
-					</div>
-				</div>
-			</div>
-
-			<div
-				className="mobile-stack"
-				style={{ display: "flex", gap: "1.5rem", alignItems: "flex-start" }}
-			>
-				<div
-					style={{
-						flex: 1.3,
-						background: "white",
-						border: "1px solid #f1f5f9",
+						padding: "4rem",
+						textAlign: "center",
+						background: "rgba(255,255,255,0.5)",
+						backdropFilter: "blur(16px)",
 						borderRadius: "16px",
-						padding: "1.75rem",
-						boxShadow: "0 4px 6px -1px rgba(0,0,0,0.02)",
+						border: "1px solid rgba(255, 255, 255, 0.3)",
+						boxShadow: "0 4px 20px -2px rgba(0, 0, 0, 0.03)",
+						marginTop: "2rem",
 					}}
 				>
+					<div
+						style={{
+							width: "64px",
+							height: "64px",
+							background: "rgba(241, 245, 249, 0.8)",
+							borderRadius: "50%",
+							display: "flex",
+							alignItems: "center",
+							justifyContent: "center",
+							margin: "0 auto 1rem auto",
+							color: "#64748b",
+						}}
+					>
+						<svg
+							width="28"
+							height="28"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							strokeWidth="2"
+							strokeLinecap="round"
+							strokeLinejoin="round"
+						>
+							<rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+							<path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+						</svg>
+					</div>
 					<h2
 						style={{
+							margin: "0 0 8px 0",
 							fontSize: "18px",
-							fontWeight: 800,
 							color: "#0f172a",
-							margin: "0 0 4px 0",
+							fontWeight: 800,
 						}}
 					>
-						Run & Send Job Digest
+						Dashboard Locked
 					</h2>
 					<p
 						style={{
-							fontSize: "13px",
 							color: "#64748b",
-							margin: "0 0 1.5rem 0",
+							fontSize: "14px",
+							maxWidth: "400px",
+							margin: "0 auto 24px auto",
+							lineHeight: "1.5",
 						}}
 					>
-						Trigger the recruitment engine to scan nationwide postings.
+						Log in or create an account to view your analytics and run the
+						scanner.
 					</p>
-
+					<button
+						onClick={() => window.dispatchEvent(new Event("openProfileModal"))}
+						style={{
+							background: "#0058bc",
+							color: "white",
+							border: "none",
+							padding: "12px 24px",
+							borderRadius: "8px",
+							fontWeight: 700,
+							cursor: "pointer",
+							boxShadow: "0 4px 12px rgba(0, 88, 188, 0.2)",
+						}}
+					>
+						Log In to Access
+					</button>
+				</div>
+			) : (
+				<>
 					<div
 						className="mobile-stack"
 						style={{ display: "flex", gap: "1rem", marginBottom: "1.5rem" }}
 					>
-						<div style={{ flex: 1.5 }}>
-							<label
-								style={{
-									display: "block",
-									fontSize: "10px",
-									fontWeight: 800,
-									color: "#94a3b8",
-									marginBottom: "6px",
-									textTransform: "uppercase",
-								}}
-							>
-								Email Recipient
-							</label>
-							<input
-								type="email"
-								value={email}
-								onChange={handleEmailChange}
-								placeholder="Log in to set email..."
-								readOnly={!email}
-								style={{
-									width: "100%",
-									background: "#f8fafc",
-									border: "1px solid #e2e8f0",
-									borderRadius: "8px",
-									padding: "10px 12px",
-									fontSize: "13px",
-									color: "#0f172a",
-									outline: "none",
-									cursor: email ? "text" : "not-allowed",
-								}}
-							/>
-						</div>
-						<div style={{ flex: 1 }}>
-							<label
-								style={{
-									display: "block",
-									fontSize: "10px",
-									fontWeight: 800,
-									color: "#94a3b8",
-									marginBottom: "6px",
-									textTransform: "uppercase",
-								}}
-							>
-								Location Filter
-							</label>
-							<select
-								value={location}
-								onChange={handleLocationChange}
-								disabled={!email}
-								style={{
-									width: "100%",
-									background: "#f8fafc",
-									border: "1px solid #e2e8f0",
-									borderRadius: "8px",
-									padding: "10px 12px",
-									fontSize: "13px",
-									color: "#0f172a",
-									outline: "none",
-									appearance: "none",
-									cursor: email ? "pointer" : "not-allowed",
-								}}
-							>
-								{NIGERIA_STATES.map((state) => (
-									<option key={state} value={state}>
-										{state}
-									</option>
-								))}
-							</select>
-						</div>
-					</div>
-
-					<div style={{ display: "flex", gap: "1.5rem", marginBottom: "2rem" }}>
 						<div
 							style={{
-								display: "flex",
-								alignItems: "center",
-								cursor: email ? "pointer" : "not-allowed",
-								opacity: email ? 1 : 0.5,
-							}}
-							onClick={() => email && toggleTier3()}
-						>
-							<div style={iosSwitchStyle(includeTier3)}>
-								<div style={iosKnobStyle(includeTier3)}></div>
-							</div>
-							<span
-								style={{
-									fontSize: "13px",
-									fontWeight: 600,
-									color: "#475569",
-									marginLeft: "8px",
-								}}
-							>
-								Include Tier 3
-							</span>
-						</div>
-						<div
-							style={{
-								display: "flex",
-								alignItems: "center",
-								cursor: email ? "pointer" : "not-allowed",
-								opacity: email ? 1 : 0.5,
-							}}
-							onClick={() => email && toggleAutoSend()}
-						>
-							<div style={iosSwitchStyle(autoSend)}>
-								<div style={iosKnobStyle(autoSend)}></div>
-							</div>
-							<span
-								style={{
-									fontSize: "13px",
-									fontWeight: 600,
-									color: "#475569",
-									marginLeft: "8px",
-								}}
-							>
-								Auto-send email
-							</span>
-						</div>
-					</div>
-
-					<div style={{ marginBottom: "1.5rem" }}>
-						<div
-							style={{
-								display: "flex",
-								justifyContent: "space-between",
-								fontSize: "10px",
-								fontWeight: 800,
-								color: "#94a3b8",
-								marginBottom: "6px",
-							}}
-						>
-							<span>SCAN PROGRESS</span>
-							<span style={{ color: progress > 0 ? "#0058bc" : "#94a3b8" }}>
-								{progress}%
-							</span>
-						</div>
-						<div
-							style={{
-								width: "100%",
-								height: "6px",
-								background: "#f1f5f9",
-								borderRadius: "4px",
-								overflow: "hidden",
+								background: "white",
+								border: "1px solid #f1f5f9",
+								borderRadius: "12px",
+								padding: "1rem 1.25rem",
+								flex: 1,
+								position: "relative",
+								boxShadow: "0 1px 2px rgba(0,0,0,0.02)",
 							}}
 						>
 							<div
 								style={{
-									width: `${progress}%`,
-									height: "100%",
-									background: "#0058bc",
-									transition: "width 0.3s ease",
+									fontSize: "10px",
+									fontWeight: 800,
+									color: "#94a3b8",
+									textTransform: "uppercase",
+									marginBottom: "8px",
+									letterSpacing: "0.5px",
 								}}
-							></div>
+							>
+								Total Matches
+							</div>
+							<div
+								style={{ display: "flex", alignItems: "baseline", gap: "8px" }}
+							>
+								<div
+									style={{
+										fontSize: "24px",
+										fontWeight: 800,
+										color: "#0f172a",
+									}}
+								>
+									{totalJobs}
+								</div>
+								{totalJobs > 0 && (
+									<span
+										style={{
+											fontSize: "11px",
+											fontWeight: 700,
+											color: "#22c55e",
+										}}
+									>
+										+12% ↗
+									</span>
+								)}
+							</div>
+						</div>
+						<div
+							style={{
+								background: "white",
+								border: "1px solid #f1f5f9",
+								borderRadius: "12px",
+								padding: "1rem 1.25rem",
+								flex: 1,
+								position: "relative",
+								boxShadow: "0 1px 2px rgba(0,0,0,0.02)",
+							}}
+						>
+							<div
+								style={{
+									fontSize: "10px",
+									fontWeight: 800,
+									color: "#94a3b8",
+									textTransform: "uppercase",
+									marginBottom: "8px",
+									letterSpacing: "0.5px",
+								}}
+							>
+								Tier 1 (88+)
+							</div>
+							<div
+								style={{ display: "flex", alignItems: "baseline", gap: "8px" }}
+							>
+								<div
+									style={{
+										fontSize: "24px",
+										fontWeight: 800,
+										color: "#0f172a",
+									}}
+								>
+									{tier1Count}
+								</div>
+							</div>
+							{tier1Count > 0 && (
+								<span
+									style={{
+										position: "absolute",
+										right: "1rem",
+										bottom: "1rem",
+										background: "#dcfce7",
+										color: "#15803d",
+										padding: "2px 8px",
+										borderRadius: "4px",
+										fontSize: "9px",
+										fontWeight: 800,
+										textTransform: "uppercase",
+									}}
+								>
+									Priority
+								</span>
+							)}
+						</div>
+						<div
+							style={{
+								background: "white",
+								border: "1px solid #f1f5f9",
+								borderRadius: "12px",
+								padding: "1rem 1.25rem",
+								flex: 1,
+								position: "relative",
+								boxShadow: "0 1px 2px rgba(0,0,0,0.02)",
+							}}
+						>
+							<div
+								style={{
+									fontSize: "10px",
+									fontWeight: 800,
+									color: "#94a3b8",
+									textTransform: "uppercase",
+									marginBottom: "8px",
+									letterSpacing: "0.5px",
+								}}
+							>
+								Tier 2 (70-87)
+							</div>
+							<div
+								style={{ display: "flex", alignItems: "baseline", gap: "8px" }}
+							>
+								<div
+									style={{
+										fontSize: "24px",
+										fontWeight: 800,
+										color: "#0f172a",
+									}}
+								>
+									{tier2Count}
+								</div>
+							</div>
+							{tier2Count > 0 && (
+								<span
+									style={{
+										position: "absolute",
+										right: "1rem",
+										bottom: "1rem",
+										background: "#eff6ff",
+										color: "#1d4ed8",
+										padding: "2px 8px",
+										borderRadius: "4px",
+										fontSize: "9px",
+										fontWeight: 800,
+										textTransform: "uppercase",
+									}}
+								>
+									Standard
+								</span>
+							)}
+						</div>
+						<div
+							style={{
+								background: "white",
+								border: "1px solid #f1f5f9",
+								borderRadius: "12px",
+								padding: "1rem 1.25rem",
+								flex: 1,
+								position: "relative",
+								boxShadow: "0 1px 2px rgba(0,0,0,0.02)",
+							}}
+						>
+							<div
+								style={{
+									fontSize: "10px",
+									fontWeight: 800,
+									color: "#94a3b8",
+									textTransform: "uppercase",
+									marginBottom: "8px",
+									letterSpacing: "0.5px",
+								}}
+							>
+								System Status
+							</div>
+							<div
+								style={{ display: "flex", alignItems: "baseline", gap: "8px" }}
+							>
+								<div
+									style={{
+										fontSize: "24px",
+										fontWeight: 800,
+										color: isScraping
+											? "#0284c7"
+											: email
+												? "#0f172a"
+												: "#94a3b8",
+									}}
+								>
+									{isScraping ? "Active" : email ? "Ready" : "Offline"}
+								</div>
+							</div>
+						</div>
+						<div
+							style={{
+								background: "white",
+								border: "1px solid #f1f5f9",
+								borderRadius: "12px",
+								padding: "1rem 1.25rem",
+								flex: 1,
+								position: "relative",
+								boxShadow: "0 1px 2px rgba(0,0,0,0.02)",
+							}}
+						>
+							<div
+								style={{
+									fontSize: "10px",
+									fontWeight: 800,
+									color: "#94a3b8",
+									textTransform: "uppercase",
+									marginBottom: "8px",
+									letterSpacing: "0.5px",
+								}}
+							>
+								Last Run
+							</div>
+							<div
+								style={{ display: "flex", alignItems: "baseline", gap: "8px" }}
+							>
+								<div
+									style={{
+										fontSize: "24px",
+										fontWeight: 800,
+										color: email ? "#0f172a" : "#94a3b8",
+									}}
+								>
+									{lastRun}
+								</div>
+							</div>
 						</div>
 					</div>
-					<button
-						onClick={runScraper}
-						disabled={isScraping || !email}
-						style={{
-							width: "100%",
-							background: isScraping
-								? "#94a3b8"
-								: !email
-									? "#e2e8f0"
-									: "#0058bc",
-							color: !email ? "#94a3b8" : "white",
-							border: "none",
-							padding: "12px",
-							borderRadius: "8px",
-							fontSize: "14px",
-							fontWeight: 700,
-							cursor: isScraping || !email ? "not-allowed" : "pointer",
-						}}
-					>
-						{isScraping ? "Scanning..." : "Run job search now"}
-					</button>
-				</div>
 
-				<div
-					style={{
-						flex: 1,
-						display: "flex",
-						flexDirection: "column",
-						gap: "1.25rem",
-					}}
-				>
 					<div
+						className="mobile-stack"
 						style={{
-							background: "#0f172a",
-							borderRadius: "16px",
-							padding: "1.25rem",
-							height: "240px",
 							display: "flex",
-							flexDirection: "column",
-							border: "1px solid #1e293b",
+							gap: "1.5rem",
+							alignItems: "flex-start",
 						}}
 					>
 						<div
 							style={{
-								display: "flex",
-								flexDirection: "column",
-								gap: "6px",
-								overflowY: "auto",
-								flex: 1,
-								fontFamily: "monospace",
-								fontSize: "12px",
+								flex: 1.3,
+								background: "white",
+								border: "1px solid #f1f5f9",
+								borderRadius: "16px",
+								padding: "1.75rem",
+								boxShadow: "0 4px 6px -1px rgba(0,0,0,0.02)",
 							}}
 						>
-							{logs.map((l, i) => (
-								<div key={i} style={{ display: "flex", gap: "10px" }}>
-									<span style={{ color: "#475569" }}>{l.time}</span>
-									<span
+							<h2
+								style={{
+									fontSize: "18px",
+									fontWeight: 800,
+									color: "#0f172a",
+									margin: "0 0 4px 0",
+								}}
+							>
+								Run & Send Job Digest
+							</h2>
+							<p
+								style={{
+									fontSize: "13px",
+									color: "#64748b",
+									margin: "0 0 1.5rem 0",
+								}}
+							>
+								Trigger the recruitment engine to scan nationwide postings.
+							</p>
+
+							<div
+								className="mobile-stack"
+								style={{
+									display: "flex",
+									gap: "1rem",
+									marginBottom: "1.5rem",
+								}}
+							>
+								<div style={{ flex: 1.5 }}>
+									<label
 										style={{
-											color:
-												l.level === "ERROR"
-													? "#ef4444"
-													: l.level === "AUTH"
-														? "#facc15"
-														: "#22c55e",
-											fontWeight: 700,
+											display: "block",
+											fontSize: "10px",
+											fontWeight: 800,
+											color: "#94a3b8",
+											marginBottom: "6px",
+											textTransform: "uppercase",
 										}}
 									>
-										[{l.level}]
-									</span>
-									<span style={{ color: "#e2e8f0" }}>{l.msg}</span>
+										Email Recipient
+									</label>
+									<input
+										type="email"
+										value={email}
+										onChange={handleEmailChange}
+										placeholder="Log in to set email..."
+										readOnly={!email}
+										style={{
+											width: "100%",
+											background: "#f8fafc",
+											border: "1px solid #e2e8f0",
+											borderRadius: "8px",
+											padding: "10px 12px",
+											fontSize: "13px",
+											color: "#0f172a",
+											outline: "none",
+											cursor: email ? "text" : "not-allowed",
+										}}
+									/>
 								</div>
-							))}
-						</div>
-					</div>
-					<div
-						style={{
-							background: "#f4f9ff",
-							border: "1px solid #dbeafe",
-							borderRadius: "16px",
-							padding: "1.25rem",
-							position: "relative",
-						}}
-					>
-						<div
-							style={{ fontSize: "13px", fontWeight: 800, color: "#0f172a" }}
-						>
-							AI Recommendation
-						</div>
-						<div
-							style={{ fontSize: "12px", color: "#475569", marginTop: "4px" }}
-						>
-							{getAiRecommendation()}
-						</div>
-					</div>
-				</div>
-			</div>
+								<div style={{ flex: 1 }}>
+									<label
+										style={{
+											display: "block",
+											fontSize: "10px",
+											fontWeight: 800,
+											color: "#94a3b8",
+											marginBottom: "6px",
+											textTransform: "uppercase",
+										}}
+									>
+										Location Filter
+									</label>
+									<select
+										value={location}
+										onChange={handleLocationChange}
+										disabled={!email}
+										style={{
+											width: "100%",
+											background: "#f8fafc",
+											border: "1px solid #e2e8f0",
+											borderRadius: "8px",
+											padding: "10px 12px",
+											fontSize: "13px",
+											color: "#0f172a",
+											outline: "none",
+											appearance: "none",
+											cursor: email ? "pointer" : "not-allowed",
+										}}
+									>
+										{NIGERIA_STATES.map((state) => (
+											<option key={state} value={state}>
+												{state}
+											</option>
+										))}
+									</select>
+								</div>
+							</div>
 
-			{email && <DashboardAnalytics />}
+							<div
+								style={{
+									display: "flex",
+									gap: "1.5rem",
+									marginBottom: "2rem",
+								}}
+							>
+								<div
+									style={{
+										display: "flex",
+										alignItems: "center",
+										cursor: email ? "pointer" : "not-allowed",
+										opacity: email ? 1 : 0.5,
+									}}
+									onClick={() => email && toggleTier3()}
+								>
+									<div style={iosSwitchStyle(includeTier3)}>
+										<div style={iosKnobStyle(includeTier3)}></div>
+									</div>
+									<span
+										style={{
+											fontSize: "13px",
+											fontWeight: 600,
+											color: "#475569",
+											marginLeft: "8px",
+										}}
+									>
+										Include Tier 3
+									</span>
+								</div>
+								<div
+									style={{
+										display: "flex",
+										alignItems: "center",
+										cursor: email ? "pointer" : "not-allowed",
+										opacity: email ? 1 : 0.5,
+									}}
+									onClick={() => email && toggleAutoSend()}
+								>
+									<div style={iosSwitchStyle(autoSend)}>
+										<div style={iosKnobStyle(autoSend)}></div>
+									</div>
+									<span
+										style={{
+											fontSize: "13px",
+											fontWeight: 600,
+											color: "#475569",
+											marginLeft: "8px",
+										}}
+									>
+										Auto-send email
+									</span>
+								</div>
+							</div>
+
+							<div style={{ marginBottom: "1.5rem" }}>
+								<div
+									style={{
+										display: "flex",
+										justifyContent: "space-between",
+										fontSize: "10px",
+										fontWeight: 800,
+										color: "#94a3b8",
+										marginBottom: "6px",
+									}}
+								>
+									<span>SCAN PROGRESS</span>
+									<span style={{ color: progress > 0 ? "#0058bc" : "#94a3b8" }}>
+										{progress}%
+									</span>
+								</div>
+								<div
+									style={{
+										width: "100%",
+										height: "6px",
+										background: "#f1f5f9",
+										borderRadius: "4px",
+										overflow: "hidden",
+									}}
+								>
+									<div
+										style={{
+											width: `${progress}%`,
+											height: "100%",
+											background: "#0058bc",
+											transition: "width 0.3s ease",
+										}}
+									></div>
+								</div>
+							</div>
+							<button
+								onClick={runScraper}
+								disabled={isScraping || !email}
+								style={{
+									width: "100%",
+									background: isScraping
+										? "#94a3b8"
+										: !email
+											? "#e2e8f0"
+											: "#0058bc",
+									color: !email ? "#94a3b8" : "white",
+									border: "none",
+									padding: "12px",
+									borderRadius: "8px",
+									fontSize: "14px",
+									fontWeight: 700,
+									cursor: isScraping || !email ? "not-allowed" : "pointer",
+								}}
+							>
+								{isScraping ? "Scanning..." : "Run job search now"}
+							</button>
+						</div>
+
+						<div
+							style={{
+								flex: 1,
+								display: "flex",
+								flexDirection: "column",
+								gap: "1.25rem",
+							}}
+						>
+							<div
+								style={{
+									background: "#0f172a",
+									borderRadius: "16px",
+									padding: "1.25rem",
+									height: "240px",
+									display: "flex",
+									flexDirection: "column",
+									border: "1px solid #1e293b",
+								}}
+							>
+								<div
+									style={{
+										display: "flex",
+										flexDirection: "column",
+										gap: "6px",
+										overflowY: "auto",
+										flex: 1,
+										fontFamily: "monospace",
+										fontSize: "12px",
+									}}
+								>
+									{logs.map((l, i) => (
+										<div key={i} style={{ display: "flex", gap: "10px" }}>
+											<span style={{ color: "#475569" }}>{l.time}</span>
+											<span
+												style={{
+													color:
+														l.level === "ERROR"
+															? "#ef4444"
+															: l.level === "AUTH"
+																? "#facc15"
+																: "#22c55e",
+													fontWeight: 700,
+												}}
+											>
+												[{l.level}]
+											</span>
+											<span style={{ color: "#e2e8f0" }}>{l.msg}</span>
+										</div>
+									))}
+								</div>
+							</div>
+							<div
+								style={{
+									background: "#f4f9ff",
+									border: "1px solid #dbeafe",
+									borderRadius: "16px",
+									padding: "1.25rem",
+									position: "relative",
+								}}
+							>
+								<div
+									style={{
+										fontSize: "13px",
+										fontWeight: 800,
+										color: "#0f172a",
+									}}
+								>
+									AI Recommendation
+								</div>
+								<div
+									style={{
+										fontSize: "12px",
+										color: "#475569",
+										marginTop: "4px",
+									}}
+								>
+									{getAiRecommendation()}
+								</div>
+							</div>
+						</div>
+					</div>
+
+					{email && <DashboardAnalytics />}
+				</>
+			)}
 		</div>
 	);
 }

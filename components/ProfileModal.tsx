@@ -7,7 +7,11 @@ export default function ProfileModal() {
 	const [view, setView] = useState<
 		"login" | "signup" | "profile" | "forgot" | "verify-sent"
 	>("signup");
-	const [isUploading, setIsUploading] = useState(false);
+
+	// 🚀 THE FIX: Independent loading states
+	const [isAuthLoading, setIsAuthLoading] = useState(false);
+	const [isUploadingResume, setIsUploadingResume] = useState(false);
+	const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
 
 	const [name, setName] = useState("");
 	const [email, setEmail] = useState("");
@@ -59,11 +63,32 @@ export default function ProfileModal() {
 
 				setView("profile");
 				setEmail(activeEmail);
+
 				try {
 					const res = await fetch(`/api/user?email=${activeEmail}`);
 					const data = await res.json();
 					if (data.success && data.user) {
 						setActiveUser(data.user);
+
+						if (data.user.avatarUrl) {
+							setAvatar(data.user.avatarUrl);
+						}
+						if (data.user.resumeUrl) {
+							if (!savedResume) {
+								try {
+									const urlObj = new URL(data.user.resumeUrl);
+									const pathParts = urlObj.pathname.split("/");
+									let filePart = pathParts[pathParts.length - 1];
+									const dashIndex = filePart.indexOf("-");
+									if (dashIndex !== -1) {
+										filePart = filePart.substring(dashIndex + 1);
+									}
+									setResumeName(decodeURIComponent(filePart));
+								} catch (e) {
+									setResumeName("Resume Attached");
+								}
+							}
+						}
 					}
 				} catch (error) {}
 			} else {
@@ -83,39 +108,81 @@ export default function ProfileModal() {
 			setSelectedFile(e.target.files[0]);
 	};
 
-	const handleUpdateCv = (e: React.ChangeEvent<HTMLInputElement>) => {
+	const handleUpdateCv = async (e: React.ChangeEvent<HTMLInputElement>) => {
 		if (e.target.files && e.target.files.length > 0 && email) {
 			const newFile = e.target.files[0];
 			setResumeName(newFile.name);
 			localStorage.setItem(`labpro_resume_name_${email}`, newFile.name);
-			setIsUploading(true);
+			setIsUploadingResume(true);
 
-			setTimeout(() => {
-				setIsUploading(false);
-				showToast("Resume updated! AI skills recalibrated.");
-				window.dispatchEvent(new Event("userStateChanged"));
-			}, 2000);
+			const formData = new FormData();
+			formData.append("file", newFile);
+			formData.append("email", email);
+			formData.append("documentType", "resume");
+
+			try {
+				const res = await fetch("/api/upload", {
+					method: "POST",
+					body: formData,
+				});
+				const data = await res.json();
+
+				if (data.success) {
+					showToast("Resume updated! AI skills recalibrated.");
+					window.dispatchEvent(new Event("userStateChanged"));
+				} else {
+					showToast(data.error || "Failed to upload resume.", "error");
+				}
+			} catch (err) {
+				showToast("Network error uploading resume.", "error");
+			} finally {
+				setIsUploadingResume(false);
+			}
 		}
 	};
 
-	const handleAvatarUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+	const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
 		const file = e.target.files?.[0];
 		if (file && email) {
 			const reader = new FileReader();
 			reader.onloadend = () => {
 				const base64String = reader.result as string;
 				setAvatar(base64String);
-				localStorage.setItem(`labpro_avatar_${email}`, base64String);
-				window.dispatchEvent(new Event("userStateChanged"));
 			};
 			reader.readAsDataURL(file);
+
+			setIsUploadingAvatar(true);
+			const formData = new FormData();
+			formData.append("file", file);
+			formData.append("email", email);
+			formData.append("documentType", "avatar");
+
+			try {
+				const res = await fetch("/api/upload", {
+					method: "POST",
+					body: formData,
+				});
+				const data = await res.json();
+
+				if (data.success) {
+					setAvatar(data.url);
+					localStorage.setItem(`labpro_avatar_${email}`, data.url);
+					window.dispatchEvent(new Event("userStateChanged"));
+				} else {
+					showToast("Failed to sync avatar to cloud.", "error");
+				}
+			} catch (err) {
+				showToast("Network error syncing avatar.", "error");
+			} finally {
+				setIsUploadingAvatar(false);
+			}
 		}
 	};
 
 	const handleRegister = async () => {
 		if (!name || !email || !password || !selectedFile)
 			return showToast("Please fill all fields and select a resume.", "error");
-		setIsUploading(true);
+		setIsAuthLoading(true);
 		const formData = new FormData();
 		formData.append("name", name);
 		formData.append("email", email);
@@ -140,18 +207,16 @@ export default function ProfileModal() {
 		} catch (err: any) {
 			showToast("Network error during registration.", "error");
 		} finally {
-			setIsUploading(false);
+			setIsAuthLoading(false);
 		}
 	};
 
-	// 🚀 Handle Resending the Verification Link
 	const handleResendLink = async () => {
-		// Check if the user has typed an email first
 		if (!email) {
 			return showToast("Please enter your email address first.", "error");
 		}
 
-		setIsUploading(true);
+		setIsAuthLoading(true);
 		try {
 			const res = await fetch("/api/auth/resend-verification", {
 				method: "POST",
@@ -167,14 +232,14 @@ export default function ProfileModal() {
 		} catch (error) {
 			showToast("Network error.", "error");
 		} finally {
-			setIsUploading(false);
+			setIsAuthLoading(false);
 		}
 	};
 
 	const handleLogin = async () => {
 		if (!email || !password)
 			return showToast("Please enter email and password.", "error");
-		setIsUploading(true);
+		setIsAuthLoading(true);
 		try {
 			const res = await fetch("/api/auth/login", {
 				method: "POST",
@@ -198,14 +263,14 @@ export default function ProfileModal() {
 		} catch (err) {
 			showToast("Network error during login.", "error");
 		} finally {
-			setIsUploading(false);
+			setIsAuthLoading(false);
 		}
 	};
 
 	const handleForgotPassword = async () => {
 		if (!email)
 			return showToast("Please enter your email address first.", "error");
-		setIsUploading(true);
+		setIsAuthLoading(true);
 
 		try {
 			const res = await fetch("/api/auth/forgot", {
@@ -220,7 +285,7 @@ export default function ProfileModal() {
 		} catch (error) {
 			showToast("Network error.", "error");
 		} finally {
-			setIsUploading(false);
+			setIsAuthLoading(false);
 		}
 	};
 
@@ -408,18 +473,20 @@ export default function ProfileModal() {
 
 							<button
 								onClick={handleResendLink}
-								disabled={isUploading}
+								disabled={isAuthLoading}
 								style={{
 									background: "none",
 									border: "none",
 									color: "#64748b",
 									fontSize: "13px",
 									fontWeight: 700,
-									cursor: isUploading ? "wait" : "pointer",
+									cursor: isAuthLoading ? "wait" : "pointer",
 									marginTop: "8px",
 								}}
 							>
-								{isUploading ? "Sending..." : "Didn't receive it? Resend Link"}
+								{isAuthLoading
+									? "Sending..."
+									: "Didn't receive it? Resend Link"}
 							</button>
 						</div>
 					</div>
@@ -596,19 +663,19 @@ export default function ProfileModal() {
 											<button
 												type="button"
 												onClick={handleResendLink}
-												disabled={isUploading}
+												disabled={isAuthLoading}
 												style={{
 													background: "none",
 													border: "none",
 													color: "#0058bc",
 													fontSize: "12px",
 													fontWeight: 700,
-													cursor: isUploading ? "wait" : "pointer",
+													cursor: isAuthLoading ? "wait" : "pointer",
 													padding: 0,
-													opacity: isUploading ? 0.5 : 1,
+													opacity: isAuthLoading ? 0.5 : 1,
 												}}
 											>
-												{isUploading ? "Sending..." : "Resend verification?"}
+												{isAuthLoading ? "Sending..." : "Resend verification?"}
 											</button>
 											<button
 												type="button"
@@ -663,12 +730,12 @@ export default function ProfileModal() {
 												accept=".pdf,.doc,.docx"
 												hidden
 												onChange={handleFileChange}
-												disabled={isUploading}
+												disabled={isAuthLoading}
 											/>
 											<label
 												htmlFor="resume"
 												style={{
-													cursor: isUploading ? "wait" : "pointer",
+													cursor: isAuthLoading ? "wait" : "pointer",
 													color: "#0058bc",
 													fontWeight: 800,
 													fontSize: "14px",
@@ -699,31 +766,31 @@ export default function ProfileModal() {
 
 									<button
 										onClick={view === "signup" ? handleRegister : handleLogin}
-										disabled={isUploading}
+										disabled={isAuthLoading}
 										style={{
 											width: "100%",
-											background: isUploading ? "#94a3b8" : "#0058bc",
+											background: isAuthLoading ? "#94a3b8" : "#0058bc",
 											color: "white",
 											border: "none",
 											padding: "16px",
 											borderRadius: "12px",
 											fontSize: "15px",
 											fontWeight: 800,
-											cursor: isUploading ? "wait" : "pointer",
+											cursor: isAuthLoading ? "wait" : "pointer",
 											marginTop: "1.5rem",
 											boxShadow: "0 4px 12px rgba(0, 88, 188, 0.2)",
 											transition: "0.2s",
 										}}
 										onMouseEnter={(e) =>
-											!isUploading &&
+											!isAuthLoading &&
 											(e.currentTarget.style.transform = "translateY(-2px)")
 										}
 										onMouseLeave={(e) =>
-											!isUploading &&
+											!isAuthLoading &&
 											(e.currentTarget.style.transform = "translateY(0)")
 										}
 									>
-										{isUploading
+										{isAuthLoading
 											? "Processing..."
 											: view === "signup"
 												? "Create Account"
@@ -769,22 +836,22 @@ export default function ProfileModal() {
 									/>
 									<button
 										onClick={handleForgotPassword}
-										disabled={isUploading}
+										disabled={isAuthLoading}
 										style={{
 											width: "100%",
-											background: isUploading ? "#94a3b8" : "#0058bc",
+											background: isAuthLoading ? "#94a3b8" : "#0058bc",
 											color: "white",
 											border: "none",
 											padding: "16px",
 											borderRadius: "12px",
 											fontSize: "15px",
 											fontWeight: 800,
-											cursor: isUploading ? "wait" : "pointer",
+											cursor: isAuthLoading ? "wait" : "pointer",
 											boxShadow: "0 4px 12px rgba(0, 88, 188, 0.2)",
 											transition: "0.2s",
 										}}
 									>
-										{isUploading ? "Sending..." : "Send Reset Link"}
+										{isAuthLoading ? "Sending..." : "Send Reset Link"}
 									</button>
 									<div style={{ textAlign: "center", marginTop: "1.5rem" }}>
 										<button
@@ -854,6 +921,7 @@ export default function ProfileModal() {
 													overflow: "hidden",
 													boxShadow: "0 4px 12px rgba(0, 88, 188, 0.2)",
 													cursor: "pointer",
+													opacity: isUploadingAvatar ? 0.6 : 1,
 												}}
 											>
 												{avatar ? (
@@ -900,6 +968,30 @@ export default function ProfileModal() {
 													<circle cx="12" cy="13" r="4"></circle>
 												</svg>
 											</div>
+											{isUploadingAvatar && (
+												<div
+													style={{
+														position: "absolute",
+														top: "50%",
+														left: "50%",
+														transform: "translate(-50%, -50%)",
+														pointerEvents: "none",
+													}}
+												>
+													<span
+														style={{
+															color: "white",
+															fontSize: "10px",
+															fontWeight: 800,
+															background: "rgba(0,0,0,0.5)",
+															padding: "2px 6px",
+															borderRadius: "4px",
+														}}
+													>
+														Syncing...
+													</span>
+												</div>
+											)}
 										</div>
 
 										<div style={{ flex: 1, minWidth: 0 }}>
@@ -997,7 +1089,7 @@ export default function ProfileModal() {
 											/>
 											<button
 												onClick={() => updateCvRef.current?.click()}
-												disabled={isUploading}
+												disabled={isUploadingResume}
 												style={{
 													background: "#eff6ff",
 													color: "#0058bc",
@@ -1006,11 +1098,11 @@ export default function ProfileModal() {
 													borderRadius: "8px",
 													fontSize: "12px",
 													fontWeight: 800,
-													cursor: isUploading ? "wait" : "pointer",
+													cursor: isUploadingResume ? "wait" : "pointer",
 													flexShrink: 0,
 												}}
 											>
-												{isUploading ? "Scanning..." : "Update"}
+												{isUploadingResume ? "Scanning..." : "Update"}
 											</button>
 										</div>
 									</div>

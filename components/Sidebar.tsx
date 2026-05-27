@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { createPortal } from "react-dom";
+import ProfileComplianceOverlay from "../components/ProfileComplianceOverlay";
 
 export default function Sidebar() {
 	const pathname = usePathname();
@@ -20,8 +21,8 @@ export default function Sidebar() {
 	const [isMobileOpen, setIsMobileOpen] = useState(false);
 	const [mounted, setMounted] = useState(false);
 
-	// 🚀 New state for the Quick Scan button
 	const [isScanning, setIsScanning] = useState(false);
+	const [isComplianceOpen, setIsComplianceOpen] = useState(false);
 
 	const fetchActiveUser = async () => {
 		const activeEmail = localStorage.getItem("labpro_active_user");
@@ -47,10 +48,10 @@ export default function Sidebar() {
 						formattedName,
 					});
 
-					const savedAvatar = localStorage.getItem(
-						`labpro_avatar_${data.user.email}`,
+					setAvatar(
+						data.user.avatarUrl ||
+							localStorage.getItem(`labpro_avatar_${data.user.email}`),
 					);
-					setAvatar(savedAvatar || null);
 				}
 			} catch (error) {}
 		} else {
@@ -126,7 +127,6 @@ export default function Sidebar() {
 		}
 	}, [pathname]);
 
-	// 🚀 New function to trigger a scan directly from the sidebar
 	const handleQuickScan = async () => {
 		if (!user) {
 			window.dispatchEvent(new Event("openProfileModal"));
@@ -272,6 +272,25 @@ export default function Sidebar() {
 			),
 		},
 		{
+			name: "Salary Intelligence",
+			path: "/salary",
+			icon: (
+				<svg
+					width="20"
+					height="20"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					strokeWidth="2"
+					strokeLinecap="round"
+					strokeLinejoin="round"
+				>
+					<line x1="12" y1="1" x2="12" y2="23"></line>
+					<path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+				</svg>
+			),
+		},
+		{
 			name: "Scheduler",
 			path: "/scheduler",
 			badge: isSchedulerActive ? "ON" : null,
@@ -336,10 +355,51 @@ export default function Sidebar() {
 		<>
 			<style
 				dangerouslySetInnerHTML={{
-					__html: `.sidebar-wrapper { width: 260px; height: 100vh; flex-shrink: 0; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 9999; position: relative; } .mobile-close-btn { display: none !important; } @keyframes radarPulse { 0% { transform: scale(1); opacity: 0.8; } 100% { transform: scale(2.5); opacity: 0; } } .radar-ring { transform-origin: 12px 12px; animation: radarPulse 2s infinite ease-out; } @keyframes spin { 100% { transform: rotate(360deg); } } @media (max-width: 768px) { .mobile-close-btn { display: flex !important; margin-left: auto; } .sidebar-wrapper { position: fixed; top: 0; left: 0; transform: translateX(-100%); background: rgba(255, 255, 255, 0.95) !important; boxShadow: 20px 0 50px rgba(0,0,0,0.1); } .sidebar-wrapper.mobile-open { transform: translateX(0); } }`,
+					__html: `
+          .sidebar-wrapper { width: 260px; height: 100vh; flex-shrink: 0; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 9999; position: relative; } 
+          .mobile-close-btn { display: none !important; } 
+          @keyframes radarPulse { 0% { transform: scale(1); opacity: 0.8; } 100% { transform: scale(2.5); opacity: 0; } } 
+          .radar-ring { transform-origin: 12px 12px; animation: radarPulse 2s infinite ease-out; } 
+          @keyframes spin { 100% { transform: rotate(360deg); } } 
+          @media (max-width: 768px) { .mobile-close-btn { display: flex !important; margin-left: auto; } .sidebar-wrapper { position: fixed; top: 0; left: 0; transform: translateX(-100%); background: rgba(255, 255, 255, 0.95) !important; boxShadow: 20px 0 50px rgba(0,0,0,0.1); } .sidebar-wrapper.mobile-open { transform: translateX(0); } }
+          
+          /* 🚀 NEW BRIGHT ANIMATED BUTTON CSS */
+          .premium-btn {
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(270deg, #0058bc, #0ea5e9, #38bdf8, #0058bc);
+            background-size: 300% 300%;
+            animation: gradientShift 6s ease infinite;
+            border: none;
+            color: white;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);
+          }
+          .premium-btn:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(14, 165, 233, 0.5);
+          }
+          .premium-btn::after {
+            content: "";
+            position: absolute;
+            top: 0; left: -100%; width: 50%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transform: skewX(-20deg);
+            animation: premiumShine 3s infinite;
+          }
+          @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+          }
+          @keyframes premiumShine {
+            0% { left: -100%; }
+            20% { left: 200%; }
+            100% { left: 200%; }
+          }
+          `,
 				}}
 			/>
-
 			{mounted &&
 				isMobileOpen &&
 				createPortal(
@@ -358,7 +418,6 @@ export default function Sidebar() {
 					/>,
 					document.body,
 				)}
-
 			<div
 				className={`sidebar-wrapper ${isMobileOpen ? "mobile-open" : ""}`}
 				style={{
@@ -422,7 +481,6 @@ export default function Sidebar() {
 								/>
 							</svg>
 						</div>
-
 						<div style={{ flex: 1 }}>
 							<h1
 								style={{
@@ -435,13 +493,11 @@ export default function Sidebar() {
 								<span style={{ color: "#0f172a" }}>Bench</span>
 								<span style={{ color: "#0058bc" }}>Scout</span>
 							</h1>
-
-							{/* 🚀 FIXED ALIGNMENT CONTAINER */}
 							<div
 								style={{
 									display: "flex",
 									alignItems: "center",
-									justifyContent: "space-between", // Pushes dot to the right edge neatly
+									justifyContent: "space-between",
 									marginTop: "2px",
 								}}
 							>
@@ -451,7 +507,7 @@ export default function Sidebar() {
 										color: "#64748b",
 										fontWeight: 800,
 										letterSpacing: "1.5px",
-										lineHeight: "1", // Forces baseline to behave perfectly
+										lineHeight: "1",
 										display: "block",
 									}}
 								>
@@ -464,13 +520,12 @@ export default function Sidebar() {
 										borderRadius: "50%",
 										background: "#22c55e",
 										boxShadow: "0 0 8px #22c55e",
-										display: "block", // Prevents span from rendering weirdly
+										display: "block",
 										flexShrink: 0,
 									}}
 								></span>
 							</div>
 						</div>
-
 						<button
 							onClick={() => setIsMobileOpen(false)}
 							className="mobile-close-btn"
@@ -500,7 +555,6 @@ export default function Sidebar() {
 						</button>
 					</div>
 				</div>
-
 				<nav style={{ flex: 1, padding: "0 1rem", overflowY: "auto" }}>
 					{menuItems.map((item) => {
 						const isActive = pathname === item.path;
@@ -556,7 +610,6 @@ export default function Sidebar() {
 						);
 					})}
 				</nav>
-
 				<div
 					style={{
 						padding: "1.5rem",
@@ -566,7 +619,6 @@ export default function Sidebar() {
 						gap: "1rem",
 					}}
 				>
-					{/* 🚀 NEW: Quick Scan Button */}
 					<button
 						onClick={handleQuickScan}
 						disabled={isScanning || !user}
@@ -626,12 +678,25 @@ export default function Sidebar() {
 					</button>
 
 					<div
-						onClick={() => window.dispatchEvent(new Event("openProfileModal"))}
+						onClick={() => {
+							if (user) {
+								setIsComplianceOpen(true);
+							} else {
+								window.dispatchEvent(new Event("openProfileModal"));
+							}
+						}}
 						style={{
 							display: "flex",
 							alignItems: "center",
 							cursor: "pointer",
+							transition: "transform 0.2s",
 						}}
+						onMouseEnter={(e) =>
+							(e.currentTarget.style.transform = "translateX(4px)")
+						}
+						onMouseLeave={(e) =>
+							(e.currentTarget.style.transform = "translateX(0)")
+						}
 					>
 						<div
 							style={{
@@ -683,41 +748,53 @@ export default function Sidebar() {
 					</div>
 
 					<button
-						onClick={() => window.dispatchEvent(new Event("openProfileModal"))}
+						className="premium-btn"
+						onClick={() => {
+							window.dispatchEvent(new Event("openProfileModal"));
+						}}
 						style={{
 							width: "100%",
-							background: "#0f172a",
-							color: "white",
-							border: "none",
 							padding: "12px",
-							borderRadius: "8px",
-							fontWeight: 700,
+							borderRadius: "12px",
+							fontWeight: 800,
+							fontSize: "14px",
 							cursor: "pointer",
 							display: "flex",
 							alignItems: "center",
 							justifyContent: "center",
 							gap: "8px",
-							boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
 						}}
 					>
 						<div
 							style={{
-								width: "20px",
-								height: "20px",
-								borderRadius: "50%",
-								background: "rgba(255,255,255,0.2)",
 								display: "flex",
 								alignItems: "center",
 								justifyContent: "center",
-								fontSize: "10px",
 							}}
 						>
-							B
+							<svg
+								width="18"
+								height="18"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								strokeWidth="2.5"
+								strokeLinecap="round"
+								strokeLinejoin="round"
+							>
+								<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+								<circle cx="12" cy="7" r="4"></circle>
+							</svg>
 						</div>
 						{user ? "View Profile" : "Login / Register"}
 					</button>
 				</div>
 			</div>
+
+			<ProfileComplianceOverlay
+				isOpen={isComplianceOpen}
+				onClose={() => setIsComplianceOpen(false)}
+			/>
 		</>
 	);
 }

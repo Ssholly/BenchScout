@@ -7,21 +7,23 @@ export default function NewsInsightsPage() {
 	const [isLoading, setIsLoading] = useState(true);
 	const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
 
+	const [mlscnNews, setMlscnNews] = useState<any[]>([]);
+
 	const [stats, setStats] = useState({
-		avgSalary: "₦350k",
 		topLocations: [
-			{ name: "FCT - Abuja", count: 42, color: "#0058bc" },
-			{ name: "Lagos State", count: 35, color: "#0ea5e9" },
-			{ name: "Port Harcourt", count: 18, color: "#8b5cf6" },
-			{ name: "Kano", count: 12, color: "#14b8a6" },
+			{ name: "FCT - Abuja", count: 0, color: "#0058bc" },
+			{ name: "Lagos", count: 0, color: "#0ea5e9" },
 		],
-		topSkills: [
-			{ name: "Hematology", percent: 85, color: "#15803d" },
-			{ name: "Microbiology", percent: 72, color: "#0284c7" },
-			{ name: "Phlebotomy", percent: 64, color: "#8b5cf6" },
-			{ name: "Quality Assurance", percent: 45, color: "#f59e0b" },
+		topSkills: [{ name: "MLS", percent: 0, color: "#15803d" }],
+		topEmployers: [
+			{ name: "EHA Clinics", count: 0 },
+			{ name: "Synlab Nigeria", count: 0 },
+			{ name: "Clina-Lancet", count: 0 },
 		],
-		maxLocCount: 42,
+		maxLocCount: 1,
+		avgTime: 0,
+		activeSurge: 0,
+		hotLocation: "Nigeria",
 	});
 
 	const categories = [
@@ -32,7 +34,6 @@ export default function NewsInsightsPage() {
 		"Clinical Research",
 	];
 
-	// Utility to convert string dates to timestamps for sorting
 	const parseDate = (dateStr: string) => {
 		const parsed = new Date(dateStr);
 		return isNaN(parsed.getTime()) ? 0 : parsed.getTime();
@@ -44,16 +45,23 @@ export default function NewsInsightsPage() {
 			try {
 				const res = await fetch("/api/news");
 				const data = await res.json();
-				if (Array.isArray(data)) {
-					// SORT BY RECENCY: Newest first
-					const sortedNews = data.sort(
-						(a, b) => parseDate(b.date) - parseDate(a.date),
-					);
-					setNewsData(sortedNews);
-				}
+				if (Array.isArray(data)) setNewsData(data);
 			} catch (error) {
+				console.error("Failed to fetch internal news", error);
 			} finally {
 				if (showLoadingAnimation) setIsLoading(false);
+			}
+		};
+
+		const fetchMlscnData = async () => {
+			try {
+				const res = await fetch("/api/mlscn");
+				const data = await res.json();
+				if (data.success) {
+					setMlscnNews(data.news || []);
+				}
+			} catch (error) {
+				console.error("Failed to fetch MLSCN scraped data", error);
 			}
 		};
 
@@ -64,38 +72,41 @@ export default function NewsInsightsPage() {
 
 				if (Array.isArray(jobs) && jobs.length > 0) {
 					const totalJobs = jobs.length;
-					const t1Jobs = jobs.filter(
-						(j) =>
-							j.tier === 1 &&
-							j.salary &&
-							j.salary.toLowerCase() !== "competitive",
-					);
-					let totalSal = 0,
-						salCount = 0;
 
-					t1Jobs.forEach((j) => {
-						const nums = j.salary.match(/\d+/g);
-						if (nums && nums.length > 0) {
-							const avg =
-								nums.reduce((a: number, b: string) => a + parseInt(b), 0) /
-								nums.length;
-							const val = avg < 1000 ? avg * 1000 : avg;
-							totalSal += val;
-							salCount++;
-						}
+					let totalDays = 0;
+					let thisWeekCount = 0;
+					let lastWeekCount = 0;
+					const now = Date.now();
+					const oneWeek = 7 * 24 * 60 * 60 * 1000;
+
+					jobs.forEach((j: any) => {
+						const jobDate = new Date(j.createdAt).getTime();
+						const daysOld = Math.floor((now - jobDate) / (1000 * 60 * 60 * 24));
+						totalDays += daysOld;
+
+						if (now - jobDate < oneWeek) thisWeekCount++;
+						else if (now - jobDate < oneWeek * 2) lastWeekCount++;
 					});
-					const avgSalary =
-						salCount > 0
-							? `₦${Math.round(totalSal / salCount / 1000)}k`
-							: stats.avgSalary;
+
+					const calculatedAvgTime =
+						jobs.length > 0
+							? Math.max(1, Math.round(totalDays / jobs.length))
+							: 0;
+
+					let calculatedSurge = 0;
+					if (lastWeekCount > 0) {
+						calculatedSurge = Math.round(
+							((thisWeekCount - lastWeekCount) / lastWeekCount) * 100,
+						);
+					} else if (thisWeekCount > 0) {
+						calculatedSurge = 100;
+					}
 
 					const locCounts: Record<string, number> = {};
-					jobs.forEach((j) => {
+					jobs.forEach((j: any) => {
 						if (j.loc) {
 							let loc = j.loc.split(",")[0].trim();
-							if (loc.toLowerCase().includes("abuja")) {
-								loc = "FCT - Abuja";
-							}
+							if (loc.toLowerCase().includes("abuja")) loc = "FCT - Abuja";
 							locCounts[loc] = (locCounts[loc] || 0) + 1;
 						}
 					});
@@ -108,9 +119,11 @@ export default function NewsInsightsPage() {
 						count: loc[1],
 						color: locColors[i] || "#94a3b8",
 					}));
+					const hotLoc =
+						liveLocations.length > 0 ? liveLocations[0].name : "Nigeria";
 
 					const skillCounts: Record<string, number> = {};
-					jobs.forEach((j) => {
+					jobs.forEach((j: any) => {
 						if (j.skills) {
 							j.skills.split(",").forEach((s: string) => {
 								const sk = s.trim();
@@ -128,16 +141,36 @@ export default function NewsInsightsPage() {
 						color: skillColors[i] || "#64748b",
 					}));
 
-					setStats((prev) => ({
-						avgSalary: avgSalary,
+					const empCounts: Record<string, number> = {};
+					jobs.forEach((j: any) => {
+						if (
+							j.company &&
+							j.company !== "See posting for details" &&
+							!j.company.includes("Employer")
+						) {
+							let comp = j.company.trim();
+							empCounts[comp] = (empCounts[comp] || 0) + 1;
+						}
+					});
+					const liveEmployers = Object.entries(empCounts)
+						.sort((a, b) => b[1] - a[1])
+						.slice(0, 3)
+						.map((e) => ({ name: e[0], count: e[1] }));
+
+					setStats({
 						topLocations:
-							liveLocations.length > 0 ? liveLocations : prev.topLocations,
-						topSkills: liveSkills.length > 0 ? liveSkills : prev.topSkills,
+							liveLocations.length > 0 ? liveLocations : stats.topLocations,
+						topSkills: liveSkills.length > 0 ? liveSkills : stats.topSkills,
+						topEmployers:
+							liveEmployers.length > 0 ? liveEmployers : stats.topEmployers,
 						maxLocCount:
 							liveLocations.length > 0
 								? Math.max(...liveLocations.map((l) => l.count))
-								: prev.maxLocCount,
-					}));
+								: 1,
+						avgTime: calculatedAvgTime,
+						activeSurge: calculatedSurge,
+						hotLocation: hotLoc,
+					});
 				}
 			} catch (e) {}
 		};
@@ -151,16 +184,17 @@ export default function NewsInsightsPage() {
 			}
 			setIsUserLoggedIn(true);
 			fetchLiveNews(true);
+			fetchMlscnData();
 			fetchLiveAnalytics();
 		};
 
 		loadPage();
 		window.addEventListener("userStateChanged", loadPage);
 
-		// AUTO REFRESH LOOP: Updates every 1 minute (60000ms) silently
 		const intervalId = setInterval(() => {
 			if (localStorage.getItem("labpro_active_user")) {
 				fetchLiveNews(false);
+				fetchMlscnData();
 				fetchLiveAnalytics();
 			}
 		}, 60000);
@@ -171,11 +205,20 @@ export default function NewsInsightsPage() {
 		};
 	}, []);
 
-	// LIMIT TO 24 ARTICLES MAX
+	const combinedNews = [...newsData, ...mlscnNews].sort(
+		(a, b) => parseDate(b.date) - parseDate(a.date),
+	);
+
 	const filteredNews =
 		filter === "All"
-			? newsData.slice(0, 24)
-			: newsData.filter((news) => news.category === filter).slice(0, 24);
+			? combinedNews.slice(0, 24)
+			: combinedNews
+					.filter(
+						(news) =>
+							news.category === filter ||
+							(filter === "Regulation" && news.source === "MLSCN Portal"),
+					)
+					.slice(0, 24);
 
 	const getCategoryColor = (category: string) => {
 		switch (category) {
@@ -188,7 +231,7 @@ export default function NewsInsightsPage() {
 			case "Clinical Research":
 				return { bg: "#f3e8ff", text: "#7e22ce", solid: "#7e22ce" };
 			default:
-				return { bg: "#0058bc", text: "#ffffff", solid: "#0058bc" };
+				return { bg: "rgba(0,88,188,0.1)", text: "#0058bc", solid: "#0058bc" };
 		}
 	};
 
@@ -250,8 +293,7 @@ export default function NewsInsightsPage() {
 						className="page-sub"
 						style={{ color: "#64748b", marginTop: "4px" }}
 					>
-						Real-time analytics and updates from the Nigerian Medical Laboratory
-						sector.
+						Regulatory updates, hiring velocity, and real-time market movers.
 					</div>
 				</div>
 			</div>
@@ -261,9 +303,9 @@ export default function NewsInsightsPage() {
 					style={{
 						padding: "4rem",
 						textAlign: "center",
-						background: "rgba(255,255,255,0.5)",
-						backdropFilter: "blur(16px)",
-						borderRadius: "16px",
+						background: "rgba(255,255,255,0.4)",
+						backdropFilter: "blur(24px)",
+						borderRadius: "20px",
 						border: "1px solid rgba(255, 255, 255, 0.3)",
 						boxShadow: "0 4px 20px -2px rgba(0, 0, 0, 0.03)",
 					}}
@@ -314,8 +356,7 @@ export default function NewsInsightsPage() {
 							lineHeight: "1.5",
 						}}
 					>
-						Log in or create an account to unlock real-time salary benchmarks,
-						hiring volume telemetry, and industry news.
+						Log in to unlock regulatory alerts and live market movers.
 					</p>
 					<button
 						onClick={() => window.dispatchEvent(new Event("openProfileModal"))}
@@ -336,115 +377,22 @@ export default function NewsInsightsPage() {
 			) : (
 				<>
 					<div
-						className="mobile-stack"
-						style={{ display: "flex", gap: "1.5rem", marginBottom: "2rem" }}
+						style={{
+							display: "grid",
+							gridTemplateColumns: "1fr 1fr",
+							gap: "1.5rem",
+							marginBottom: "2rem",
+						}}
 					>
 						<div
 							style={{
-								flex: 1,
-								background: "rgba(255,255,255,0.8)",
-								backdropFilter: "blur(16px)",
+								background: "rgba(255,255,255,0.5)",
+								backdropFilter: "blur(24px)",
 								borderRadius: "20px",
-								border: "1px solid rgba(255,255,255,0.9)",
+								border: "1px solid rgba(255,255,255,0.4)",
 								padding: "1.75rem",
-								boxShadow: "0 10px 30px -10px rgba(0,88,188,0.1)",
-								transition: "transform 0.3s ease",
+								boxShadow: "0 10px 30px -10px rgba(14,165,233,0.05)",
 							}}
-							onMouseEnter={(e) =>
-								(e.currentTarget.style.transform = "translateY(-4px)")
-							}
-							onMouseLeave={(e) =>
-								(e.currentTarget.style.transform = "translateY(0)")
-							}
-						>
-							<h3
-								style={{
-									fontSize: "12px",
-									fontWeight: 800,
-									color: "#94a3b8",
-									textTransform: "uppercase",
-									letterSpacing: "1px",
-									margin: "0 0 16px 0",
-								}}
-							>
-								Avg. Tier 1 Base Salary
-							</h3>
-							<div
-								style={{
-									display: "flex",
-									alignItems: "baseline",
-									gap: "12px",
-									marginBottom: "16px",
-								}}
-							>
-								<span
-									style={{
-										fontSize: "32px",
-										fontWeight: 900,
-										color: "#0f172a",
-										letterSpacing: "-1px",
-									}}
-								>
-									{stats.avgSalary}
-								</span>
-								<span
-									style={{
-										fontSize: "13px",
-										fontWeight: 800,
-										color: "#15803d",
-										display: "flex",
-										alignItems: "center",
-										gap: "4px",
-										background: "#dcfce7",
-										padding: "4px 10px",
-										borderRadius: "20px",
-									}}
-								>
-									<svg
-										width="14"
-										height="14"
-										viewBox="0 0 24 24"
-										fill="none"
-										stroke="currentColor"
-										strokeWidth="3"
-									>
-										<polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
-										<polyline points="17 6 23 6 23 12"></polyline>
-									</svg>
-									Live
-								</span>
-							</div>
-							<p
-								style={{
-									fontSize: "12px",
-									color: "#64748b",
-									margin: 0,
-									lineHeight: "1.5",
-									fontWeight: 500,
-								}}
-							>
-								Calculated dynamically from successfully parsed Tier 1 match
-								compensations.
-							</p>
-						</div>
-
-						<div
-							style={{
-								flex: 1.5,
-								background: "rgba(255,255,255,0.8)",
-								backdropFilter: "blur(16px)",
-								borderRadius: "20px",
-								border: "1px solid rgba(255,255,255,0.9)",
-								padding: "1.75rem",
-								boxShadow: "0 10px 30px -10px rgba(14,165,233,0.1)",
-								transition: "transform 0.3s ease",
-							}}
-							onMouseEnter={(e) =>
-								(e.currentTarget.style.transform = "translateY(-4px)")
-							}
-							onMouseLeave={(e) =>
-								(e.currentTarget.style.transform = "translateY(0)")
-							}
 						>
 							<h3
 								style={{
@@ -502,7 +450,6 @@ export default function NewsInsightsPage() {
 													width: `${(loc.count / stats.maxLocCount) * 100}%`,
 													background: `linear-gradient(90deg, ${loc.color}aa 0%, ${loc.color} 100%)`,
 													borderRadius: "4px",
-													transition: "width 1s cubic-bezier(0.4, 0, 0.2, 1)",
 													position: "relative",
 												}}
 											>
@@ -537,21 +484,13 @@ export default function NewsInsightsPage() {
 
 						<div
 							style={{
-								flex: 1.5,
-								background: "rgba(255,255,255,0.8)",
-								backdropFilter: "blur(16px)",
+								background: "rgba(255,255,255,0.5)",
+								backdropFilter: "blur(24px)",
 								borderRadius: "20px",
-								border: "1px solid rgba(255,255,255,0.9)",
+								border: "1px solid rgba(255,255,255,0.4)",
 								padding: "1.75rem",
-								boxShadow: "0 10px 30px -10px rgba(139,92,246,0.1)",
-								transition: "transform 0.3s ease",
+								boxShadow: "0 10px 30px -10px rgba(139,92,246,0.05)",
 							}}
-							onMouseEnter={(e) =>
-								(e.currentTarget.style.transform = "translateY(-4px)")
-							}
-							onMouseLeave={(e) =>
-								(e.currentTarget.style.transform = "translateY(0)")
-							}
 						>
 							<h3
 								style={{
@@ -609,7 +548,6 @@ export default function NewsInsightsPage() {
 													width: `${skill.percent}%`,
 													background: `linear-gradient(90deg, ${skill.color}aa 0%, ${skill.color} 100%)`,
 													borderRadius: "4px",
-													transition: "width 1s cubic-bezier(0.4, 0, 0.2, 1)",
 													position: "relative",
 												}}
 											>
@@ -641,9 +579,212 @@ export default function NewsInsightsPage() {
 								))}
 							</div>
 						</div>
+
+						<div
+							style={{
+								background: "rgba(255,255,255,0.5)",
+								backdropFilter: "blur(24px)",
+								borderRadius: "20px",
+								border: "1px solid rgba(255,255,255,0.4)",
+								padding: "1.75rem",
+								boxShadow: "0 10px 30px -10px rgba(0,88,188,0.05)",
+							}}
+						>
+							<h3
+								style={{
+									fontSize: "12px",
+									fontWeight: 800,
+									color: "#0058bc",
+									textTransform: "uppercase",
+									letterSpacing: "1px",
+									margin: "0 0 16px 0",
+									display: "flex",
+									alignItems: "center",
+									gap: "8px",
+								}}
+							>
+								<svg
+									width="14"
+									height="14"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									strokeWidth="3"
+								>
+									<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+									<circle cx="9" cy="7" r="4"></circle>
+									<path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+									<path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+								</svg>
+								Top Active Employers
+							</h3>
+							<div
+								style={{
+									display: "flex",
+									flexDirection: "column",
+									gap: "12px",
+								}}
+							>
+								{stats.topEmployers.map((emp, idx) => (
+									<button
+										key={idx}
+										onClick={() => {
+											window.location.href = `/matches?employer=${encodeURIComponent(
+												emp.name,
+											)}`;
+										}}
+										style={{
+											background: "white",
+											width: "100%",
+											padding: "12px",
+											borderRadius: "12px",
+											border: "1px solid rgba(0,0,0,0.05)",
+											display: "flex",
+											justifyContent: "space-between",
+											alignItems: "center",
+											cursor: "pointer",
+											transition: "0.2s",
+										}}
+										onMouseEnter={(e) =>
+											(e.currentTarget.style.borderColor = "#bfdbfe")
+										}
+										onMouseLeave={(e) =>
+											(e.currentTarget.style.borderColor = "rgba(0,0,0,0.05)")
+										}
+									>
+										<div
+											style={{
+												fontSize: "13px",
+												fontWeight: 800,
+												color: "#0f172a",
+												whiteSpace: "nowrap",
+												overflow: "hidden",
+												textOverflow: "ellipsis",
+												paddingRight: "10px",
+											}}
+										>
+											{emp.name}
+										</div>
+										<span
+											style={{
+												background: "#eff6ff",
+												color: "#1d4ed8",
+												padding: "4px 8px",
+												borderRadius: "6px",
+												fontSize: "11px",
+												fontWeight: 800,
+												whiteSpace: "nowrap",
+											}}
+										>
+											{emp.count} Active Role{emp.count !== 1 ? "s" : ""}
+										</span>
+									</button>
+								))}
+							</div>
+						</div>
+
+						<div
+							style={{
+								background: "rgba(255,255,255,0.5)",
+								backdropFilter: "blur(24px)",
+								borderRadius: "20px",
+								border: "1px solid rgba(255,255,255,0.4)",
+								padding: "1.75rem",
+								boxShadow: "0 10px 30px -10px rgba(14,165,233,0.05)",
+							}}
+						>
+							<h3
+								style={{
+									fontSize: "12px",
+									fontWeight: 800,
+									color: "#0f172a",
+									textTransform: "uppercase",
+									letterSpacing: "1px",
+									margin: "0 0 20px 0",
+								}}
+							>
+								Hiring Velocity Radar
+							</h3>
+							<div
+								style={{
+									display: "flex",
+									justifyContent: "space-between",
+									marginBottom: "16px",
+								}}
+							>
+								<div>
+									<div
+										style={{
+											fontSize: "10px",
+											color: "#94a3b8",
+											fontWeight: 800,
+											textTransform: "uppercase",
+										}}
+									>
+										Avg. Time Active
+									</div>
+									<div
+										style={{
+											fontSize: "24px",
+											fontWeight: 900,
+											color: "#0f172a",
+										}}
+									>
+										{stats.avgTime}{" "}
+										<span
+											style={{
+												fontSize: "12px",
+												color: "#64748b",
+												fontWeight: 600,
+											}}
+										>
+											Days
+										</span>
+									</div>
+								</div>
+								<div>
+									<div
+										style={{
+											fontSize: "10px",
+											color: "#94a3b8",
+											fontWeight: 800,
+											textTransform: "uppercase",
+										}}
+									>
+										Hiring Surge
+									</div>
+									<div
+										style={{
+											fontSize: "24px",
+											fontWeight: 900,
+											color: stats.activeSurge >= 0 ? "#15803d" : "#ef4444",
+										}}
+									>
+										{stats.activeSurge > 0 ? "+" : ""}
+										{stats.activeSurge}%
+									</div>
+								</div>
+							</div>
+							<div
+								style={{
+									fontSize: "12px",
+									color: "#475569",
+									background: "white",
+									padding: "10px",
+									borderRadius: "8px",
+									border: "1px solid rgba(0,0,0,0.05)",
+									lineHeight: "1.5",
+								}}
+							>
+								Clinical Diagnostics roles in{" "}
+								<strong style={{ color: "#0058bc" }}>
+									{stats.hotLocation}
+								</strong>{" "}
+								are driving current market momentum.
+							</div>
+						</div>
 					</div>
 
-					{/* 🚀 THE FIX: Floating, sticky, centered navigation pill */}
 					<div
 						style={{
 							position: "sticky",
@@ -663,12 +804,12 @@ export default function NewsInsightsPage() {
 								padding: "10px 16px",
 								msOverflowStyle: "none",
 								scrollbarWidth: "none",
-								background: "rgba(255, 255, 255, 0.8)",
-								backdropFilter: "blur(20px)",
-								WebkitBackdropFilter: "blur(20px)",
+								background: "rgba(255, 255, 255, 0.6)",
+								backdropFilter: "blur(24px)",
+								WebkitBackdropFilter: "blur(24px)",
 								borderRadius: "100px",
 								boxShadow: "0 10px 30px -5px rgba(0, 0, 0, 0.08)",
-								border: "1px solid rgba(255, 255, 255, 0.9)",
+								border: "1px solid rgba(255, 255, 255, 0.6)",
 								pointerEvents: "auto",
 								maxWidth: "100%",
 							}}
@@ -697,18 +838,6 @@ export default function NewsInsightsPage() {
 												? `0 6px 20px ${catColors.solid}50`
 												: "none",
 										}}
-										onMouseEnter={(e) => {
-											if (!isActive && !isLoading) {
-												e.currentTarget.style.color = catColors.solid;
-												e.currentTarget.style.background = "rgba(0,0,0,0.03)";
-											}
-										}}
-										onMouseLeave={(e) => {
-											if (!isActive && !isLoading) {
-												e.currentTarget.style.color = "#475569";
-												e.currentTarget.style.background = "transparent";
-											}
-										}}
 									>
 										{cat}
 									</button>
@@ -719,14 +848,7 @@ export default function NewsInsightsPage() {
 
 					<style
 						dangerouslySetInnerHTML={{
-							__html: ` 
-              @keyframes pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.2); } 100% { opacity: 1; transform: scale(1); } } 
-              @keyframes shimmer { 0% { background-position: -1000px 0; } 100% { background-position: 1000px 0; } } 
-              .skeleton { background: #f1f5f9; background-image: linear-gradient(90deg, #f1f5f9 0px, #e2e8f0 40px, #f1f5f9 80px); background-size: 1000px 100%; animation: shimmer 2s infinite linear; border-radius: 6px; } 
-              .article-card:hover .read-more { color: #0ea5e9 !important; padding-right: 4px; }
-              /* Hide scrollbar for the floating nav pill */
-              ::-webkit-scrollbar { display: none; }
-              `,
+							__html: `@keyframes pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.2); } 100% { opacity: 1; transform: scale(1); } } @keyframes shimmer { 0% { background-position: -1000px 0; } 100% { background-position: 1000px 0; } } .skeleton { background: rgba(255,255,255,0.5); background-image: linear-gradient(90deg, rgba(255,255,255,0) 0px, rgba(255,255,255,0.8) 40px, rgba(255,255,255,0) 80px); background-size: 1000px 100%; animation: shimmer 2s infinite linear; border-radius: 6px; } .article-card:hover .read-more { color: #0ea5e9 !important; padding-right: 4px; } ::-webkit-scrollbar { display: none; }`,
 						}}
 					/>
 
@@ -743,7 +865,7 @@ export default function NewsInsightsPage() {
 								<div
 									key={i}
 									style={{
-										background: "rgba(255,255,255,0.7)",
+										background: "rgba(255,255,255,0.5)",
 										borderRadius: "20px",
 										border: "1px solid rgba(255,255,255,0.4)",
 										padding: "1.5rem",
@@ -800,24 +922,6 @@ export default function NewsInsightsPage() {
 										className="skeleton"
 										style={{ width: "90%", height: "14px" }}
 									></div>
-									<div
-										style={{
-											marginTop: "auto",
-											paddingTop: "1.25rem",
-											borderTop: "1px solid rgba(0,0,0,0.04)",
-											display: "flex",
-											justifyContent: "space-between",
-										}}
-									>
-										<div
-											className="skeleton"
-											style={{ width: "120px", height: "14px" }}
-										></div>
-										<div
-											className="skeleton"
-											style={{ width: "60px", height: "14px" }}
-										></div>
-									</div>
 								</div>
 							))
 						) : filteredNews.length === 0 ? (
@@ -827,11 +931,10 @@ export default function NewsInsightsPage() {
 									padding: "6rem",
 									textAlign: "center",
 									color: "#64748b",
-									background: "rgba(255,255,255,0.5)",
-									backdropFilter: "blur(16px)",
+									background: "rgba(255,255,255,0.4)",
+									backdropFilter: "blur(24px)",
 									borderRadius: "24px",
 									border: "1px solid rgba(255, 255, 255, 0.3)",
-									boxShadow: "0 4px 20px -2px rgba(0, 0, 0, 0.03)",
 								}}
 							>
 								<div style={{ fontSize: "48px", marginBottom: "1rem" }}>📰</div>
@@ -850,21 +953,24 @@ export default function NewsInsightsPage() {
 								</p>
 							</div>
 						) : (
-							filteredNews.map((article: any) => {
-								const catStyle = getCategoryColor(article.category);
+							filteredNews.map((article: any, index: number) => {
+								const catStyle = getCategoryColor(
+									article.category || "Regulation",
+								);
 								return (
 									<div
-										key={article.id}
+										key={article.id || index}
 										className="article-card"
+										onClick={() => window.open(article.url, "_blank")}
 										style={{
-											background: "rgba(255,255,255,0.85)",
-											backdropFilter: "blur(12px)",
+											background: "rgba(255,255,255,0.6)",
+											backdropFilter: "blur(24px)",
 											borderRadius: "20px",
-											border: "1px solid rgba(255,255,255,0.9)",
+											border: "1px solid rgba(255,255,255,0.5)",
 											padding: "1.5rem",
 											display: "flex",
 											flexDirection: "column",
-											boxShadow: "0 4px 15px -3px rgba(0, 0, 0, 0.04)",
+											boxShadow: "0 4px 15px -3px rgba(0, 0, 0, 0.02)",
 											transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
 											cursor: "pointer",
 											position: "relative",
@@ -873,30 +979,14 @@ export default function NewsInsightsPage() {
 										onMouseEnter={(e) => {
 											e.currentTarget.style.transform = "translateY(-6px)";
 											e.currentTarget.style.boxShadow =
-												"0 20px 40px -8px rgba(0, 88, 188, 0.12)";
-											e.currentTarget.style.borderColor =
-												"rgba(0, 88, 188, 0.1)";
+												"0 20px 40px -8px rgba(0, 88, 188, 0.08)";
 										}}
 										onMouseLeave={(e) => {
 											e.currentTarget.style.transform = "translateY(0)";
 											e.currentTarget.style.boxShadow =
-												"0 4px 15px -3px rgba(0, 0, 0, 0.04)";
-											e.currentTarget.style.borderColor =
-												"rgba(255,255,255,0.9)";
+												"0 4px 15px -3px rgba(0, 0, 0, 0.02)";
 										}}
-										onClick={() => window.open(article.url, "_blank")}
 									>
-										<div
-											style={{
-												position: "absolute",
-												top: 0,
-												left: 0,
-												width: "100%",
-												height: "4px",
-												background: catStyle.solid,
-												opacity: 0.8,
-											}}
-										/>
 										<div
 											style={{
 												display: "flex",
@@ -917,7 +1007,7 @@ export default function NewsInsightsPage() {
 													letterSpacing: "0.5px",
 												}}
 											>
-												{article.category}
+												{article.category || "Regulation"}
 											</span>
 											<span
 												style={{
@@ -964,7 +1054,7 @@ export default function NewsInsightsPage() {
 												alignItems: "center",
 												marginTop: "auto",
 												paddingTop: "1.25rem",
-												borderTop: "1px solid #f1f5f9",
+												borderTop: "1px solid rgba(0,0,0,0.05)",
 											}}
 										>
 											<span
@@ -976,7 +1066,7 @@ export default function NewsInsightsPage() {
 											>
 												Source:{" "}
 												<span style={{ color: "#0f172a" }}>
-													{article.source}
+													{article.source || "MLSCN"}
 												</span>
 											</span>
 											<span

@@ -10,7 +10,14 @@ datasource db {
 model User {
   id            String       @id @default(cuid())
   name          String
+  avatarUrl     String?
   email         String       @unique
+  // 🚀 NEW: Licensure & Compliance Fields
+  licenseUrl    String?
+  licenseNumber     String?
+  licenseExpiry     DateTime?
+  cpdPoints         Int       @default(0)
+  isLicenseVerified Boolean   @default(false)
   password      String       // We will hash this in the backend
   location      String       @default("All Nigeria")
   keywords      String?      // The AI will populate this from the resume
@@ -100,4 +107,35 @@ model PasswordResetToken {
   token     String   @unique
   expiresAt DateTime
   createdAt DateTime @default(now())
+}
+
+model SalaryReport {
+  id        String   @id @default(uuid())
+  role      String
+  location  String
+  salary    Int      // Stored as a raw integer (e.g., 350000)
+  experience String   // e.g., "1-3 years"
+  submittedAt DateTime @default(now())
+  // We do not link this to the User ID to ensure anonymity
+}
+
+model CpdEvent {
+  id          String   @id @default(cuid())
+  title       String
+  location    String?
+  date        String?  // Storing as string to handle formats like "TBD" or "Ongoing"
+  cpdUnits    Int?
+  url         String?  @unique // Ensures we don't scrape the same link twice
+  isManual    Boolean  @default(false) // Distinguishes scraped vs admin entry
+  createdAt   DateTime @default(now())
+}
+
+model MlscnNews {
+  id          String   @id @default(cuid())
+  title       String
+  date        String?
+  excerpt     String?
+  url         String?  @unique
+  source      String   @default("MLSCN")
+  createdAt   DateTime @default(now())
 }

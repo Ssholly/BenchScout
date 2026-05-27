@@ -1,7 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
-import LockedPane from "@/components/LockedPane";
 
 const NIGERIA_STATES = [
 	"All Nigeria",
@@ -91,8 +90,7 @@ export default function SettingsPage() {
 	const [isLoading, setIsLoading] = useState(true);
 	const [isSaving, setIsSaving] = useState(false);
 	const [isUploading, setIsUploading] = useState(false);
-	const [isLoggedIn, setIsLoggedIn] = useState(false);
-	const [mounted, setMounted] = useState(false);
+	const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
 	const [toast, setToast] = useState<{
 		message: string;
 		type: "success" | "error";
@@ -102,6 +100,14 @@ export default function SettingsPage() {
 	const fileInputRef = useRef<HTMLInputElement>(null);
 	const [activeUploadId, setActiveUploadId] = useState<string | null>(null);
 	const [documents, setDocuments] = useState<VaultDoc[]>(DEFAULT_DOCS);
+
+	const [showVerificationModal, setShowVerificationModal] = useState(false);
+	const [extractedData, setExtractedData] = useState({
+		fullName: "",
+		licenseNumber: "",
+		expiryDate: "",
+	});
+	const [isVerifying, setIsVerifying] = useState(false);
 
 	const showToast = (
 		message: string,
@@ -114,6 +120,7 @@ export default function SettingsPage() {
 	const loadSettings = async () => {
 		const activeEmail = localStorage.getItem("labpro_active_user");
 		if (!activeEmail) {
+			setIsUserLoggedIn(false);
 			setUserData({
 				name: "",
 				email: "",
@@ -125,6 +132,8 @@ export default function SettingsPage() {
 			setIsLoading(false);
 			return;
 		}
+
+		setIsUserLoggedIn(true);
 
 		try {
 			const res = await fetch(`/api/user?email=${activeEmail}`);
@@ -140,34 +149,29 @@ export default function SettingsPage() {
 					minScore: data.user.minScore || 85,
 				});
 
-				// Map live database URLs back to the local documents state
 				const updatedDocs = [...DEFAULT_DOCS];
-				if (data.user.resumeUrl) {
+				if (data.user.resumeUrl)
 					updatedDocs[0] = {
 						...updatedDocs[0],
 						url: data.user.resumeUrl,
 						size: "Secure",
 						uploadedAt: "Cloud",
 					};
-				}
-				if (data.user.licenseUrl) {
+				if (data.user.licenseUrl)
 					updatedDocs[1] = {
 						...updatedDocs[1],
 						url: data.user.licenseUrl,
 						size: "Secure",
 						uploadedAt: "Cloud",
 					};
-				}
-				if (data.user.degreeUrl) {
+				if (data.user.degreeUrl)
 					updatedDocs[2] = {
 						...updatedDocs[2],
 						url: data.user.degreeUrl,
 						size: "Secure",
 						uploadedAt: "Cloud",
 					};
-				}
 
-				// Check local storage for metadata overlays (like file sizes) if they exist
 				const savedMeta = localStorage.getItem(`labpro_vault_${activeEmail}`);
 				if (savedMeta) {
 					const parsedMeta = JSON.parse(savedMeta);
@@ -185,26 +189,14 @@ export default function SettingsPage() {
 		} catch (error) {
 			console.error("Failed to load settings:", error);
 		}
-
 		setIsLoading(false);
 	};
 
 	useEffect(() => {
-		setMounted(true);
-		setIsLoggedIn(!!localStorage.getItem("labpro_active_user"));
 		loadSettings();
 		window.addEventListener("userStateChanged", loadSettings);
 		return () => window.removeEventListener("userStateChanged", loadSettings);
 	}, []);
-
-	if (mounted && !isLoggedIn) {
-		return (
-			<LockedPane
-				title="System Settings"
-				sub="Log in to manage your API keys, documents, and search preferences."
-			/>
-		);
-	}
 
 	const handleAddKeyword = (e: React.KeyboardEvent<HTMLInputElement>) => {
 		if (e.key === "Enter") {
@@ -230,18 +222,13 @@ export default function SettingsPage() {
 	const handleUpdateProfile = async () => {
 		setIsSaving(true);
 		try {
-			const payload = {
-				...userData,
-				keywords: userData.keywords.join(", "),
-			};
-
+			const payload = { ...userData, keywords: userData.keywords.join(", ") };
 			const res = await fetch("/api/user", {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify(payload),
 			});
 			const data = await res.json();
-
 			if (data.success) {
 				showToast("Profile updated successfully!");
 				window.dispatchEvent(new Event("userStateChanged"));
@@ -275,13 +262,12 @@ export default function SettingsPage() {
 		}
 
 		setIsUploading(true);
-		showToast("Securing document in the cloud...", "success");
+		showToast("Securing document and analyzing...", "success");
 
 		const formData = new FormData();
 		formData.append("file", file);
 		formData.append("email", userData.email);
 
-		// Map UI IDs to API Document Types
 		const docTypeMap: Record<string, string> = {
 			cv: "resume",
 			license: "license",
@@ -290,13 +276,27 @@ export default function SettingsPage() {
 		formData.append("documentType", docTypeMap[activeUploadId]);
 
 		try {
-			const res = await fetch("/api/upload", {
+			const uploadPromise = fetch("/api/upload", {
 				method: "POST",
 				body: formData,
-			});
-			const data = await res.json();
+			}).then((res) => res.json());
 
-			if (data.success) {
+			let aiPromise: Promise<any> = Promise.resolve(null);
+			if (activeUploadId === "license") {
+				const scanForm = new FormData();
+				scanForm.append("file", file);
+				aiPromise = fetch("/api/extract-license", {
+					method: "POST",
+					body: scanForm,
+				}).then((res) => res.json());
+			}
+
+			const [uploadData, scanData] = (await Promise.all([
+				uploadPromise,
+				aiPromise,
+			])) as [any, any];
+
+			if (uploadData.success) {
 				const updatedDocs = documents.map((doc) => {
 					if (doc.id === activeUploadId) {
 						return {
@@ -307,25 +307,41 @@ export default function SettingsPage() {
 								month: "short",
 								year: "numeric",
 							}),
-							url: data.url,
+							url: uploadData.url,
 						};
 					}
 					return doc;
 				});
 
 				setDocuments(updatedDocs);
-				// Cache metadata locally so sizes/dates persist
 				localStorage.setItem(
 					`labpro_vault_${userData.email}`,
 					JSON.stringify(updatedDocs),
 				);
-				showToast(data.message || "Document secured!");
+				showToast("Document secured in Vault!");
 			} else {
-				showToast(`Upload failed: ${data.error}`, "error");
+				throw new Error(uploadData.error || "Database update failed");
 			}
-		} catch (error) {
-			console.error("Upload Error:", error);
-			showToast("System encountered a network error.", "error");
+
+			if (activeUploadId === "license" && scanData) {
+				if (scanData.success && scanData.data) {
+					setExtractedData({
+						fullName: scanData.data.fullName || userData.name || "",
+						licenseNumber: scanData.data.licenseNumber || "",
+						expiryDate: scanData.data.expiryDate || "",
+					});
+					setShowVerificationModal(true);
+				} else {
+					showToast(
+						`AI Error: ${scanData.error || "Could not read license."}`,
+						"error",
+					);
+					console.error("Backend AI Error Details:", scanData);
+				}
+			}
+		} catch (error: any) {
+			console.error("Pipeline Error:", error);
+			showToast(`Error: ${error.message}`, "error");
 		} finally {
 			setIsUploading(false);
 			setActiveUploadId(null);
@@ -345,11 +361,37 @@ export default function SettingsPage() {
 		showToast("Document unlinked from profile.");
 	};
 
+	const confirmAndSaveLicense = async () => {
+		setIsVerifying(true);
+		try {
+			const res = await fetch("/api/user/compliance", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					email: userData.email,
+					licenseNumber: extractedData.licenseNumber,
+					licenseExpiry: extractedData.expiryDate,
+					cpdPoints: 0,
+				}),
+			});
+			const data = await res.json();
+			if (data.success) {
+				showToast("Compliance tracking activated!");
+				setShowVerificationModal(false);
+			} else {
+				showToast("Failed to save compliance data.", "error");
+			}
+		} catch (error) {
+			showToast("Network error during save.", "error");
+		}
+		setIsVerifying(false);
+	};
+
 	const inputStyle = {
 		width: "100%",
 		padding: "10px 14px",
 		borderRadius: "10px",
-		border: "none",
+		border: "1px solid rgba(0,0,0,0.1)",
 		background: "rgba(255,255,255,0.8)",
 		boxShadow: "inset 0 2px 4px rgba(0,0,0,0.02)",
 		fontSize: "13px",
@@ -367,22 +409,8 @@ export default function SettingsPage() {
 		textTransform: "uppercase" as "uppercase",
 	};
 
-	if (isLoading)
-		return (
-			<div style={{ padding: "3rem", color: "#64748b", fontWeight: 600 }}>
-				Loading settings...
-			</div>
-		);
-
 	return (
-		<div
-			style={{
-				padding: "0 1rem",
-				maxWidth: "950px",
-				margin: "0 auto",
-				position: "relative",
-			}}
-		>
+		<div style={{ padding: "0 1.5rem", width: "100%", position: "relative" }}>
 			<input
 				type="file"
 				ref={fileInputRef}
@@ -400,8 +428,8 @@ export default function SettingsPage() {
 						transform: "translateX(-50%)",
 						background:
 							toast.type === "success"
-								? "rgba(15, 23, 42, 0.85)"
-								: "rgba(153, 27, 27, 0.85)",
+								? "rgba(15, 23, 42, 0.95)"
+								: "rgba(153, 27, 27, 0.95)",
 						backdropFilter: "blur(12px)",
 						color: "white",
 						padding: "14px 28px",
@@ -419,6 +447,183 @@ export default function SettingsPage() {
 					{toast.type === "success" ? "✓" : "✕"} {toast.message}
 				</div>
 			)}
+
+			{showVerificationModal &&
+				createPortal(
+					<div
+						style={{
+							position: "fixed",
+							top: 0,
+							left: 0,
+							right: 0,
+							bottom: 0,
+							background: "rgba(248, 250, 252, 0.8)",
+							backdropFilter: "blur(12px)",
+							zIndex: 99999,
+							display: "flex",
+							alignItems: "center",
+							justifyContent: "center",
+							padding: "1rem",
+						}}
+					>
+						<div
+							style={{
+								background: "white",
+								width: "100%",
+								maxWidth: "450px",
+								borderRadius: "24px",
+								overflow: "hidden",
+								boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
+								border: "1px solid rgba(0,0,0,0.05)",
+							}}
+						>
+							<div
+								style={{
+									padding: "2rem",
+									borderBottom: "1px solid #f1f5f9",
+									textAlign: "center",
+								}}
+							>
+								<div
+									style={{
+										width: "64px",
+										height: "64px",
+										background: "#eff6ff",
+										borderRadius: "50%",
+										display: "flex",
+										alignItems: "center",
+										justifyContent: "center",
+										margin: "0 auto 16px auto",
+										color: "#0058bc",
+									}}
+								>
+									<svg
+										width="32"
+										height="32"
+										viewBox="0 0 24 24"
+										fill="none"
+										stroke="currentColor"
+										strokeWidth="2.5"
+										strokeLinecap="round"
+										strokeLinejoin="round"
+									>
+										<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+										<path d="m9 12 2 2 4-4"></path>
+									</svg>
+								</div>
+								<h3
+									style={{
+										fontSize: "20px",
+										fontWeight: 800,
+										color: "#0f172a",
+										margin: "0 0 8px 0",
+									}}
+								>
+									Verify Your License
+								</h3>
+								<p
+									style={{
+										fontSize: "14px",
+										color: "#64748b",
+										margin: 0,
+										lineHeight: "1.5",
+									}}
+								>
+									BenchScout AI has extracted your details. Please confirm them
+									to activate automated renewal tracking.
+								</p>
+							</div>
+
+							<div style={{ padding: "2rem", background: "#f8fafc" }}>
+								<div style={{ marginBottom: "1.5rem" }}>
+									<label style={labelStyle}>Full Name on License</label>
+									<input
+										type="text"
+										value={extractedData.fullName}
+										onChange={(e) =>
+											setExtractedData({
+												...extractedData,
+												fullName: e.target.value,
+											})
+										}
+										style={inputStyle}
+									/>
+								</div>
+								<div style={{ marginBottom: "1.5rem" }}>
+									<label style={labelStyle}>MLSCN Registration Number</label>
+									<input
+										type="text"
+										value={extractedData.licenseNumber}
+										onChange={(e) =>
+											setExtractedData({
+												...extractedData,
+												licenseNumber: e.target.value,
+											})
+										}
+										placeholder="e.g. RA 12345"
+										style={inputStyle}
+									/>
+								</div>
+								<div style={{ marginBottom: "1.5rem" }}>
+									<label style={labelStyle}>Expiry Date</label>
+									<input
+										type="date"
+										value={extractedData.expiryDate}
+										onChange={(e) =>
+											setExtractedData({
+												...extractedData,
+												expiryDate: e.target.value,
+											})
+										}
+										style={inputStyle}
+									/>
+								</div>
+
+								<div
+									style={{ display: "flex", gap: "12px", marginTop: "2rem" }}
+								>
+									<button
+										onClick={() => setShowVerificationModal(false)}
+										style={{
+											flex: 1,
+											padding: "12px",
+											background: "white",
+											border: "1px solid #cbd5e1",
+											borderRadius: "10px",
+											color: "#475569",
+											fontWeight: 700,
+											cursor: "pointer",
+										}}
+									>
+										Cancel
+									</button>
+									<button
+										onClick={confirmAndSaveLicense}
+										disabled={isVerifying}
+										style={{
+											flex: 2,
+											padding: "12px",
+											background: "#0058bc",
+											border: "none",
+											borderRadius: "10px",
+											color: "white",
+											fontWeight: 700,
+											cursor: isVerifying ? "wait" : "pointer",
+											display: "flex",
+											alignItems: "center",
+											justifyContent: "center",
+											gap: "8px",
+											boxShadow: "0 4px 12px rgba(0,88,188,0.2)",
+										}}
+									>
+										{isVerifying ? "Saving..." : "Confirm & Activate"}
+									</button>
+								</div>
+							</div>
+						</div>
+					</div>,
+					document.body,
+				)}
 
 			{previewDoc &&
 				createPortal(
@@ -632,7 +837,7 @@ export default function SettingsPage() {
 										<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
 										<polyline points="7 10 12 15 17 10"></polyline>
 										<line x1="12" y1="15" x2="12" y2="3"></line>
-									</svg>
+									</svg>{" "}
 									Open Original File
 								</a>
 							</div>
@@ -641,7 +846,7 @@ export default function SettingsPage() {
 					document.body,
 				)}
 
-			<div style={{ marginBottom: "2rem" }}>
+			<div style={{ marginBottom: "2rem", marginTop: "1rem" }}>
 				<h1
 					className="page-title"
 					style={{
@@ -659,635 +864,721 @@ export default function SettingsPage() {
 				</p>
 			</div>
 
-			<div
-				style={{
-					background: "rgba(255, 255, 255, 0.4)",
-					backdropFilter: "blur(24px)",
-					WebkitBackdropFilter: "blur(24px)",
-					borderRadius: "20px",
-					border: "1px solid rgba(255, 255, 255, 0.3)",
-					boxShadow: "0 4px 20px -2px rgba(0,0,0,0.03)",
-					overflow: "hidden",
-					marginBottom: "2rem",
-				}}
-			>
+			{!isUserLoggedIn ? (
 				<div
 					style={{
-						padding: "1.25rem 1.5rem",
-						borderBottom: "1px solid rgba(0,0,0,0.05)",
-						display: "flex",
-						alignItems: "flex-start",
-						gap: "12px",
+						padding: "4rem",
+						textAlign: "center",
+						background: "rgba(255,255,255,0.5)",
+						backdropFilter: "blur(16px)",
+						borderRadius: "16px",
+						border: "1px solid rgba(255, 255, 255, 0.3)",
+						boxShadow: "0 4px 20px -2px rgba(0, 0, 0, 0.03)",
 					}}
 				>
-					<div style={{ color: "#0058bc", marginTop: "2px" }}>
+					<div
+						style={{
+							width: "64px",
+							height: "64px",
+							background: "rgba(241, 245, 249, 0.8)",
+							borderRadius: "50%",
+							display: "flex",
+							alignItems: "center",
+							justifyContent: "center",
+							margin: "0 auto 1rem auto",
+							color: "#64748b",
+						}}
+					>
 						<svg
-							width="20"
-							height="20"
+							width="28"
+							height="28"
 							viewBox="0 0 24 24"
 							fill="none"
 							stroke="currentColor"
-							strokeWidth="2.5"
+							strokeWidth="2"
 							strokeLinecap="round"
 							strokeLinejoin="round"
 						>
-							<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-							<circle cx="12" cy="7" r="4"></circle>
+							<rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+							<path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
 						</svg>
 					</div>
-					<div>
-						<h2
-							style={{
-								margin: "0 0 2px 0",
-								fontSize: "16px",
-								color: "#0f172a",
-								fontWeight: 800,
-							}}
-						>
-							Profile & Search Preferences
-						</h2>
-						<p style={{ margin: 0, fontSize: "12px", color: "#64748b" }}>
-							Fine-tune how LabPro Connect identifies opportunities.
-						</p>
-					</div>
-				</div>
-
-				<div style={{ padding: "1.5rem" }}>
-					<div
-						className="mobile-grid"
+					<h2
 						style={{
-							display: "grid",
-							gridTemplateColumns: "1fr 1fr",
-							gap: "1.5rem",
-							marginBottom: "1.5rem",
+							margin: "0 0 8px 0",
+							fontSize: "18px",
+							color: "#0f172a",
+							fontWeight: 800,
 						}}
 					>
-						<div>
-							<label style={labelStyle}>FULL NAME</label>
-							<input
-								type="text"
-								value={userData.name}
-								onChange={(e) =>
-									setUserData({ ...userData, name: e.target.value })
-								}
-								disabled={!userData.email}
-								style={{
-									...inputStyle,
-									cursor: !userData.email ? "not-allowed" : "text",
-									marginBottom: 0,
-								}}
-							/>
-						</div>
-						<div>
-							<label style={labelStyle}>DEFAULT EMAIL</label>
-							<input
-								type="email"
-								value={userData.email}
-								readOnly
-								placeholder="Please log in"
-								style={{
-									...inputStyle,
-									cursor: "not-allowed",
-									opacity: 0.7,
-									marginBottom: 0,
-								}}
-							/>
-						</div>
-					</div>
-
-					<div style={{ marginBottom: "1.5rem" }}>
-						<label style={labelStyle}>ROLE KEYWORDS</label>
+						System Settings Locked
+					</h2>
+					<p
+						style={{
+							color: "#64748b",
+							fontSize: "14px",
+							maxWidth: "400px",
+							margin: "0 auto 24px auto",
+							lineHeight: "1.5",
+						}}
+					>
+						Log in to manage your API keys, documents, and search preferences.
+					</p>
+					<button
+						onClick={() => window.dispatchEvent(new Event("openProfileModal"))}
+						style={{
+							background: "#0058bc",
+							color: "white",
+							border: "none",
+							padding: "12px 24px",
+							borderRadius: "8px",
+							fontWeight: 700,
+							cursor: "pointer",
+							boxShadow: "0 4px 12px rgba(0, 88, 188, 0.2)",
+						}}
+					>
+						Log In to Access
+					</button>
+				</div>
+			) : isLoading ? (
+				<div style={{ padding: "3rem", color: "#64748b", fontWeight: 600 }}>
+					Loading settings...
+				</div>
+			) : (
+				<>
+					<div
+						style={{
+							background: "rgba(255, 255, 255, 0.4)",
+							backdropFilter: "blur(24px)",
+							WebkitBackdropFilter: "blur(24px)",
+							borderRadius: "20px",
+							border: "1px solid rgba(255, 255, 255, 0.3)",
+							boxShadow: "0 4px 20px -2px rgba(0,0,0,0.03)",
+							overflow: "hidden",
+							marginBottom: "2rem",
+						}}
+					>
 						<div
 							style={{
-								border: "1px solid rgba(0,0,0,0.1)",
-								background: "rgba(255,255,255,0.5)",
-								borderRadius: "10px",
-								padding: "6px",
-								minHeight: "42px",
+								padding: "1.25rem 1.5rem",
+								borderBottom: "1px solid rgba(0,0,0,0.05)",
 								display: "flex",
-								flexWrap: "wrap",
-								gap: "6px",
-								alignItems: "center",
+								alignItems: "flex-start",
+								gap: "12px",
 							}}
 						>
-							{userData.keywords.map((kw, idx) => (
+							<div style={{ color: "#0058bc", marginTop: "2px" }}>
+								<svg
+									width="20"
+									height="20"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									strokeWidth="2.5"
+									strokeLinecap="round"
+									strokeLinejoin="round"
+								>
+									<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+									<circle cx="12" cy="7" r="4"></circle>
+								</svg>
+							</div>
+							<div>
+								<h2
+									style={{
+										margin: "0 0 2px 0",
+										fontSize: "16px",
+										color: "#0f172a",
+										fontWeight: 800,
+									}}
+								>
+									Profile & Search Preferences
+								</h2>
+								<p style={{ margin: 0, fontSize: "12px", color: "#64748b" }}>
+									Fine-tune how LabPro Connect identifies opportunities.
+								</p>
+							</div>
+						</div>
+						<div style={{ padding: "1.5rem" }}>
+							<div
+								className="mobile-grid"
+								style={{
+									display: "grid",
+									gridTemplateColumns: "1fr 1fr",
+									gap: "1.5rem",
+									marginBottom: "1.5rem",
+								}}
+							>
+								<div>
+									<label style={labelStyle}>FULL NAME</label>
+									<input
+										type="text"
+										value={userData.name}
+										onChange={(e) =>
+											setUserData({ ...userData, name: e.target.value })
+										}
+										disabled={!userData.email}
+										style={{
+											...inputStyle,
+											cursor: !userData.email ? "not-allowed" : "text",
+											marginBottom: 0,
+										}}
+									/>
+								</div>
+								<div>
+									<label style={labelStyle}>DEFAULT EMAIL</label>
+									<input
+										type="email"
+										value={userData.email}
+										readOnly
+										placeholder="Please log in"
+										style={{
+											...inputStyle,
+											cursor: "not-allowed",
+											opacity: 0.7,
+											marginBottom: 0,
+										}}
+									/>
+								</div>
+							</div>
+							<div style={{ marginBottom: "1.5rem" }}>
+								<label style={labelStyle}>ROLE KEYWORDS</label>
 								<div
-									key={idx}
+									style={{
+										border: "1px solid rgba(0,0,0,0.1)",
+										background: "rgba(255,255,255,0.5)",
+										borderRadius: "10px",
+										padding: "6px",
+										minHeight: "42px",
+										display: "flex",
+										flexWrap: "wrap",
+										gap: "6px",
+										alignItems: "center",
+									}}
+								>
+									{userData.keywords.map((kw, idx) => (
+										<div
+											key={idx}
+											style={{
+												background: "#0058bc",
+												color: "white",
+												padding: "4px 10px",
+												borderRadius: "14px",
+												fontSize: "12px",
+												fontWeight: 600,
+												display: "flex",
+												alignItems: "center",
+												gap: "4px",
+											}}
+										>
+											{kw}{" "}
+											<span
+												onClick={() => removeKeyword(idx)}
+												style={{
+													cursor: "pointer",
+													fontSize: "14px",
+													lineHeight: "1",
+													opacity: 0.8,
+												}}
+											>
+												×
+											</span>
+										</div>
+									))}
+									<input
+										type="text"
+										placeholder={
+											userData.email ? "Add keyword (Press Enter)..." : ""
+										}
+										onKeyDown={handleAddKeyword}
+										disabled={!userData.email}
+										style={{
+											border: "none",
+											outline: "none",
+											flex: 1,
+											minWidth: "120px",
+											fontSize: "13px",
+											color: "#0f172a",
+											padding: "4px 6px",
+											background: "transparent",
+											cursor: !userData.email ? "not-allowed" : "text",
+										}}
+									/>
+								</div>
+							</div>
+							<div
+								className="mobile-grid"
+								style={{
+									display: "grid",
+									gridTemplateColumns: "1fr 1fr",
+									gap: "1.5rem",
+									alignItems: "center",
+								}}
+							>
+								<div>
+									<label style={labelStyle}>PRIMARY LOCATION</label>
+									<div style={{ position: "relative" }}>
+										<div
+											style={{
+												position: "absolute",
+												left: "12px",
+												top: "50%",
+												transform: "translateY(-50%)",
+												color: "#64748b",
+												pointerEvents: "none",
+											}}
+										>
+											<svg
+												width="14"
+												height="14"
+												viewBox="0 0 24 24"
+												fill="none"
+												stroke="currentColor"
+												strokeWidth="2.5"
+												strokeLinecap="round"
+												strokeLinejoin="round"
+											>
+												<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+												<circle cx="12" cy="10" r="3"></circle>
+											</svg>
+										</div>
+										<select
+											style={{
+												...inputStyle,
+												paddingLeft: "36px",
+												appearance: "none",
+												cursor: !userData.email ? "not-allowed" : "pointer",
+												marginBottom: 0,
+											}}
+											value={userData.location}
+											disabled={!userData.email}
+											onChange={(e) =>
+												setUserData({ ...userData, location: e.target.value })
+											}
+										>
+											{NIGERIA_STATES.map((state) => (
+												<option key={state} value={state}>
+													{state}
+												</option>
+											))}
+										</select>
+									</div>
+								</div>
+								<div>
+									<label style={labelStyle}>MINIMUM MATCH SCORE (%)</label>
+									<div
+										style={{
+											display: "flex",
+											alignItems: "center",
+											gap: "16px",
+										}}
+									>
+										<input
+											type="range"
+											min="0"
+											max="100"
+											value={userData.minScore}
+											disabled={!userData.email}
+											onChange={(e) =>
+												setUserData({
+													...userData,
+													minScore: parseInt(e.target.value),
+												})
+											}
+											style={{
+												flex: 1,
+												accentColor: "#0058bc",
+												cursor: !userData.email ? "not-allowed" : "pointer",
+											}}
+										/>
+										<span
+											style={{
+												fontSize: "20px",
+												fontWeight: 800,
+												color: "#0058bc",
+												width: "45px",
+												textAlign: "right",
+											}}
+										>
+											{userData.minScore}%
+										</span>
+									</div>
+								</div>
+							</div>
+							<div
+								style={{
+									display: "flex",
+									justifyContent: "flex-end",
+									gap: "12px",
+									marginTop: "24px",
+									paddingTop: "1rem",
+									borderTop: "1px solid rgba(0,0,0,0.05)",
+								}}
+							>
+								<button
+									disabled={!userData.email}
+									style={{
+										background: "rgba(255,255,255,0.8)",
+										border: "1px solid rgba(0,0,0,0.1)",
+										padding: "8px 24px",
+										borderRadius: "8px",
+										fontSize: "12px",
+										fontWeight: 700,
+										cursor: !userData.email ? "not-allowed" : "pointer",
+										opacity: !userData.email ? 0.5 : 1,
+									}}
+								>
+									Cancel
+								</button>
+								<button
+									onClick={handleUpdateProfile}
+									disabled={isSaving || !userData.email}
 									style={{
 										background: "#0058bc",
 										color: "white",
-										padding: "4px 10px",
-										borderRadius: "14px",
+										border: "none",
+										padding: "8px 24px",
+										borderRadius: "8px",
 										fontSize: "12px",
-										fontWeight: 600,
-										display: "flex",
-										alignItems: "center",
-										gap: "4px",
+										fontWeight: 700,
+										cursor:
+											isSaving || !userData.email ? "not-allowed" : "pointer",
+										boxShadow: "0 4px 12px rgba(0, 88, 188, 0.2)",
+										opacity: !userData.email ? 0.5 : 1,
 									}}
 								>
-									{kw}{" "}
-									<span
-										onClick={() => removeKeyword(idx)}
-										style={{
-											cursor: "pointer",
-											fontSize: "14px",
-											lineHeight: "1",
-											opacity: 0.8,
-										}}
-									>
-										×
-									</span>
-								</div>
-							))}
-							<input
-								type="text"
-								placeholder={
-									userData.email ? "Add keyword (Press Enter)..." : ""
-								}
-								onKeyDown={handleAddKeyword}
-								disabled={!userData.email}
-								style={{
-									border: "none",
-									outline: "none",
-									flex: 1,
-									minWidth: "120px",
-									fontSize: "13px",
-									color: "#0f172a",
-									padding: "4px 6px",
-									background: "transparent",
-									cursor: !userData.email ? "not-allowed" : "text",
-								}}
-							/>
+									{isSaving ? "Saving..." : "Update Profile"}
+								</button>
+							</div>
 						</div>
 					</div>
 
 					<div
-						className="mobile-grid"
+						className="mobile-stack"
 						style={{
-							display: "grid",
-							gridTemplateColumns: "1fr 1fr",
+							display: "flex",
 							gap: "1.5rem",
-							alignItems: "center",
+							alignItems: "flex-start",
+							paddingBottom: "3rem",
 						}}
 					>
-						<div>
-							<label style={labelStyle}>PRIMARY LOCATION</label>
-							<div style={{ position: "relative" }}>
-								<div
+						<div
+							style={{
+								flex: 1.5,
+								display: "flex",
+								flexDirection: "column",
+								gap: "1rem",
+								width: "100%",
+							}}
+						>
+							<div>
+								<h2
 									style={{
-										position: "absolute",
-										left: "12px",
-										top: "50%",
-										transform: "translateY(-50%)",
-										color: "#64748b",
-										pointerEvents: "none",
+										fontSize: "16px",
+										fontWeight: 800,
+										color: "#0f172a",
+										margin: "0 0 4px 0",
+										display: "flex",
+										alignItems: "center",
+										gap: "8px",
 									}}
 								>
 									<svg
-										width="14"
-										height="14"
+										width="16"
+										height="16"
 										viewBox="0 0 24 24"
 										fill="none"
-										stroke="currentColor"
+										stroke="#0058bc"
 										strokeWidth="2.5"
 										strokeLinecap="round"
 										strokeLinejoin="round"
 									>
-										<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-										<circle cx="12" cy="10" r="3"></circle>
-									</svg>
-								</div>
-								<select
-									style={{
-										...inputStyle,
-										paddingLeft: "36px",
-										appearance: "none",
-										cursor: !userData.email ? "not-allowed" : "pointer",
-										marginBottom: 0,
-									}}
-									value={userData.location}
-									disabled={!userData.email}
-									onChange={(e) =>
-										setUserData({ ...userData, location: e.target.value })
-									}
-								>
-									{NIGERIA_STATES.map((state) => (
-										<option key={state} value={state}>
-											{state}
-										</option>
-									))}
-								</select>
+										<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+									</svg>{" "}
+									Secure Document Vault
+								</h2>
+								<p style={{ fontSize: "11px", color: "#64748b", margin: 0 }}>
+									Keep your standard files ready for deployment.
+								</p>
 							</div>
-						</div>
-						<div>
-							<label style={labelStyle}>MINIMUM MATCH SCORE (%)</label>
 							<div
-								style={{ display: "flex", alignItems: "center", gap: "16px" }}
-							>
-								<input
-									type="range"
-									min="0"
-									max="100"
-									value={userData.minScore}
-									disabled={!userData.email}
-									onChange={(e) =>
-										setUserData({
-											...userData,
-											minScore: parseInt(e.target.value),
-										})
-									}
-									style={{
-										flex: 1,
-										accentColor: "#0058bc",
-										cursor: !userData.email ? "not-allowed" : "pointer",
-									}}
-								/>
-								<span
-									style={{
-										fontSize: "20px",
-										fontWeight: 800,
-										color: "#0058bc",
-										width: "45px",
-										textAlign: "right",
-									}}
-								>
-									{userData.minScore}%
-								</span>
-							</div>
-						</div>
-					</div>
-
-					<div
-						style={{
-							display: "flex",
-							justifyContent: "flex-end",
-							gap: "12px",
-							marginTop: "24px",
-							paddingTop: "1rem",
-							borderTop: "1px solid rgba(0,0,0,0.05)",
-						}}
-					>
-						<button
-							disabled={!userData.email}
-							style={{
-								background: "rgba(255,255,255,0.8)",
-								border: "1px solid rgba(0,0,0,0.1)",
-								padding: "8px 24px",
-								borderRadius: "8px",
-								fontSize: "12px",
-								fontWeight: 700,
-								cursor: !userData.email ? "not-allowed" : "pointer",
-								opacity: !userData.email ? 0.5 : 1,
-							}}
-						>
-							Cancel
-						</button>
-						<button
-							onClick={handleUpdateProfile}
-							disabled={isSaving || !userData.email}
-							style={{
-								background: "#0058bc",
-								color: "white",
-								border: "none",
-								padding: "8px 24px",
-								borderRadius: "8px",
-								fontSize: "12px",
-								fontWeight: 700,
-								cursor: isSaving || !userData.email ? "not-allowed" : "pointer",
-								boxShadow: "0 4px 12px rgba(0, 88, 188, 0.2)",
-								opacity: !userData.email ? 0.5 : 1,
-							}}
-						>
-							{isSaving ? "Saving..." : "Update Profile"}
-						</button>
-					</div>
-				</div>
-			</div>
-
-			<div
-				className="mobile-stack"
-				style={{
-					display: "flex",
-					gap: "1.5rem",
-					alignItems: "flex-start",
-					paddingBottom: "3rem",
-				}}
-			>
-				<div
-					style={{
-						flex: 1.5,
-						display: "flex",
-						flexDirection: "column",
-						gap: "1rem",
-						width: "100%",
-					}}
-				>
-					<div>
-						<h2
-							style={{
-								fontSize: "16px",
-								fontWeight: 800,
-								color: "#0f172a",
-								margin: "0 0 4px 0",
-								display: "flex",
-								alignItems: "center",
-								gap: "8px",
-							}}
-						>
-							<svg
-								width="16"
-								height="16"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="#0058bc"
-								strokeWidth="2.5"
-								strokeLinecap="round"
-								strokeLinejoin="round"
-							>
-								<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-							</svg>{" "}
-							Secure Document Vault
-						</h2>
-						<p style={{ fontSize: "11px", color: "#64748b", margin: 0 }}>
-							Keep your standard files ready for deployment.
-						</p>
-					</div>
-
-					<div
-						style={{ display: "flex", flexDirection: "column", gap: "10px" }}
-					>
-						{documents.map((doc) => (
-							<div
-								key={doc.id}
-								className="mobile-stack"
 								style={{
-									background: "rgba(255, 255, 255, 0.5)",
-									backdropFilter: "blur(16px)",
-									border: "1px solid rgba(255, 255, 255, 0.4)",
-									borderRadius: "12px",
-									padding: "1rem",
 									display: "flex",
-									alignItems: "center",
-									justifyContent: "space-between",
-									boxShadow: "0 4px 16px rgba(0,0,0,0.02)",
+									flexDirection: "column",
+									gap: "10px",
 								}}
 							>
-								<div
-									style={{
-										flex: 1,
-										display: "flex",
-										alignItems: "center",
-										gap: "12px",
-										minWidth: 0,
-									}}
-								>
+								{documents.map((doc) => (
 									<div
+										key={doc.id}
+										className="mobile-stack"
 										style={{
-											width: "32px",
-											height: "32px",
-											borderRadius: "8px",
-											background: doc.url
-												? "rgba(220, 252, 231, 0.6)"
-												: "rgba(241, 245, 249, 0.6)",
-											color: doc.url ? "#15803d" : "#94a3b8",
+											background: "rgba(255, 255, 255, 0.5)",
+											backdropFilter: "blur(16px)",
+											border: "1px solid rgba(255, 255, 255, 0.4)",
+											borderRadius: "12px",
+											padding: "1rem",
 											display: "flex",
 											alignItems: "center",
-											justifyContent: "center",
-											flexShrink: 0,
+											justifyContent: "space-between",
+											boxShadow: "0 4px 16px rgba(0,0,0,0.02)",
 										}}
 									>
-										<svg
-											width="16"
-											height="16"
-											viewBox="0 0 24 24"
-											fill="none"
-											stroke="currentColor"
-											strokeWidth="2.5"
-											strokeLinecap="round"
-											strokeLinejoin="round"
-										>
-											<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-											<polyline points="14 2 14 8 20 8"></polyline>
-										</svg>
-									</div>
-									<div style={{ flex: 1, minWidth: 0 }}>
-										<h3
-											style={{
-												margin: "0 0 2px 0",
-												fontSize: "12px",
-												fontWeight: 800,
-												color: "#0f172a",
-												whiteSpace: "nowrap",
-												overflow: "hidden",
-												textOverflow: "ellipsis",
-											}}
-										>
-											{doc.name}
-										</h3>
 										<div
 											style={{
+												flex: 1,
 												display: "flex",
 												alignItems: "center",
-												gap: "6px",
-												fontSize: "10px",
-												color: "#64748b",
-												fontWeight: 600,
-												flexWrap: "wrap",
+												gap: "12px",
+												minWidth: 0,
 											}}
 										>
-											<span>{doc.type}</span>
+											<div
+												style={{
+													width: "32px",
+													height: "32px",
+													borderRadius: "8px",
+													background: doc.url
+														? "rgba(220, 252, 231, 0.6)"
+														: "rgba(241, 245, 249, 0.6)",
+													color: doc.url ? "#15803d" : "#94a3b8",
+													display: "flex",
+													alignItems: "center",
+													justifyContent: "center",
+													flexShrink: 0,
+												}}
+											>
+												<svg
+													width="16"
+													height="16"
+													viewBox="0 0 24 24"
+													fill="none"
+													stroke="currentColor"
+													strokeWidth="2.5"
+													strokeLinecap="round"
+													strokeLinejoin="round"
+												>
+													<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+													<polyline points="14 2 14 8 20 8"></polyline>
+												</svg>
+											</div>
+											<div style={{ flex: 1, minWidth: 0 }}>
+												<h3
+													style={{
+														margin: "0 0 2px 0",
+														fontSize: "12px",
+														fontWeight: 800,
+														color: "#0f172a",
+														whiteSpace: "nowrap",
+														overflow: "hidden",
+														textOverflow: "ellipsis",
+													}}
+												>
+													{doc.name}
+												</h3>
+												<div
+													style={{
+														display: "flex",
+														alignItems: "center",
+														gap: "6px",
+														fontSize: "10px",
+														color: "#64748b",
+														fontWeight: 600,
+														flexWrap: "wrap",
+													}}
+												>
+													<span>{doc.type}</span>
+													{doc.url ? (
+														<>
+															<span
+																style={{
+																	width: "3px",
+																	height: "3px",
+																	borderRadius: "50%",
+																	background: "#cbd5e1",
+																}}
+															></span>
+															<span>{doc.size}</span>
+															<span
+																style={{
+																	width: "3px",
+																	height: "3px",
+																	borderRadius: "50%",
+																	background: "#cbd5e1",
+																}}
+															></span>
+															<span style={{ color: "#15803d" }}>
+																Uploaded {doc.uploadedAt}
+															</span>
+														</>
+													) : (
+														<>
+															<span
+																style={{
+																	width: "3px",
+																	height: "3px",
+																	borderRadius: "50%",
+																	background: "#cbd5e1",
+																}}
+															></span>
+															<span style={{ color: "#ef4444" }}>Missing</span>
+														</>
+													)}
+												</div>
+											</div>
+										</div>
+										<div style={{ display: "flex", gap: "6px", flexShrink: 0 }}>
 											{doc.url ? (
 												<>
-													<span
+													<button
+														onClick={() => setPreviewDoc(doc)}
 														style={{
-															width: "3px",
-															height: "3px",
-															borderRadius: "50%",
-															background: "#cbd5e1",
+															background: "rgba(255,255,255,0.8)",
+															border: "1px solid rgba(0,0,0,0.05)",
+															color: "#0f172a",
+															padding: "6px 12px",
+															borderRadius: "6px",
+															fontSize: "11px",
+															fontWeight: 700,
+															cursor: "pointer",
+															whiteSpace: "nowrap",
 														}}
-													></span>
-													<span>{doc.size}</span>
-													<span
+													>
+														View
+													</button>
+													<button
+														onClick={() => handleDeleteDoc(doc.id)}
 														style={{
-															width: "3px",
-															height: "3px",
-															borderRadius: "50%",
-															background: "#cbd5e1",
+															background: "rgba(254, 242, 242, 0.8)",
+															border: "1px solid rgba(254, 202, 202, 0.5)",
+															color: "#ef4444",
+															padding: "6px 12px",
+															borderRadius: "6px",
+															fontSize: "11px",
+															fontWeight: 700,
+															cursor: "pointer",
+															whiteSpace: "nowrap",
 														}}
-													></span>
-													<span style={{ color: "#15803d" }}>
-														Uploaded {doc.uploadedAt}
-													</span>
+													>
+														Delete
+													</button>
 												</>
 											) : (
-												<>
-													<span
-														style={{
-															width: "3px",
-															height: "3px",
-															borderRadius: "50%",
-															background: "#cbd5e1",
-														}}
-													></span>
-													<span style={{ color: "#ef4444" }}>Missing</span>
-												</>
+												<button
+													onClick={() => triggerUpload(doc.id)}
+													disabled={!userData.email || isUploading}
+													style={{
+														background:
+															!userData.email || isUploading
+																? "#94a3b8"
+																: "#0058bc",
+														border: "none",
+														color: "white",
+														padding: "6px 16px",
+														borderRadius: "6px",
+														fontSize: "11px",
+														fontWeight: 700,
+														cursor:
+															!userData.email || isUploading
+																? "not-allowed"
+																: "pointer",
+														whiteSpace: "nowrap",
+														boxShadow:
+															!userData.email || isUploading
+																? "none"
+																: "0 4px 10px rgba(0, 88, 188, 0.2)",
+													}}
+												>
+													{isUploading && activeUploadId === doc.id
+														? "Uploading..."
+														: "Upload File"}
+												</button>
 											)}
 										</div>
 									</div>
-								</div>
-
-								<div style={{ display: "flex", gap: "6px", flexShrink: 0 }}>
-									{doc.url ? (
-										<>
-											<button
-												onClick={() => setPreviewDoc(doc)}
-												style={{
-													background: "rgba(255,255,255,0.8)",
-													border: "1px solid rgba(0,0,0,0.05)",
-													color: "#0f172a",
-													padding: "6px 12px",
-													borderRadius: "6px",
-													fontSize: "11px",
-													fontWeight: 700,
-													cursor: "pointer",
-													whiteSpace: "nowrap",
-												}}
-											>
-												View
-											</button>
-											<button
-												onClick={() => handleDeleteDoc(doc.id)}
-												style={{
-													background: "rgba(254, 242, 242, 0.8)",
-													border: "1px solid rgba(254, 202, 202, 0.5)",
-													color: "#ef4444",
-													padding: "6px 12px",
-													borderRadius: "6px",
-													fontSize: "11px",
-													fontWeight: 700,
-													cursor: "pointer",
-													whiteSpace: "nowrap",
-												}}
-											>
-												Delete
-											</button>
-										</>
-									) : (
-										<button
-											onClick={() => triggerUpload(doc.id)}
-											disabled={!userData.email || isUploading}
-											style={{
-												background:
-													!userData.email || isUploading
-														? "#94a3b8"
-														: "#0058bc",
-												border: "none",
-												color: "white",
-												padding: "6px 16px",
-												borderRadius: "6px",
-												fontSize: "11px",
-												fontWeight: 700,
-												cursor:
-													!userData.email || isUploading
-														? "not-allowed"
-														: "pointer",
-												whiteSpace: "nowrap",
-												boxShadow:
-													!userData.email || isUploading
-														? "none"
-														: "0 4px 10px rgba(0, 88, 188, 0.2)",
-											}}
-										>
-											{isUploading && activeUploadId === doc.id
-												? "Uploading..."
-												: "Upload File"}
-										</button>
-									)}
-								</div>
+								))}
 							</div>
-						))}
-					</div>
-				</div>
-
-				<div
-					style={{
-						flex: 1,
-						display: "flex",
-						flexDirection: "column",
-						gap: "1rem",
-						width: "100%",
-					}}
-				>
-					<div>
-						<h2
-							style={{
-								fontSize: "16px",
-								fontWeight: 800,
-								color: "#0f172a",
-								margin: "0 0 4px 0",
-							}}
-						>
-							System Integrations
-						</h2>
-						<p style={{ fontSize: "11px", color: "#64748b", margin: 0 }}>
-							API keys for AI parsing and delivery.
-						</p>
-					</div>
-
-					<div
-						style={{
-							background: "rgba(255, 255, 255, 0.5)",
-							backdropFilter: "blur(24px)",
-							border: "1px solid rgba(255, 255, 255, 0.3)",
-							borderRadius: "12px",
-							padding: "1.25rem",
-							boxShadow: "0 4px 16px rgba(0,0,0,0.02)",
-							width: "100%",
-						}}
-					>
-						<div style={{ marginBottom: "1rem" }}>
-							<label style={labelStyle}>ANTHROPIC API KEY (CLAUDE)</label>
-							<input
-								type="password"
-								placeholder="sk-ant-api03-..."
-								defaultValue="sk-ant-api03-xxxx-xxxx-xxxx"
-								style={inputStyle}
-							/>
 						</div>
-						<div style={{ marginBottom: "1.25rem" }}>
-							<label style={labelStyle}>GMAIL APP PASSWORD</label>
-							<input
-								type="password"
-								placeholder="xxxx xxxx xxxx xxxx"
-								style={inputStyle}
-							/>
-						</div>
+
 						<div
 							style={{
+								flex: 1,
 								display: "flex",
-								justifyContent: "flex-end",
-								marginTop: "1rem",
+								flexDirection: "column",
+								gap: "1rem",
+								width: "100%",
 							}}
 						>
-							<button
-								onClick={() => showToast("API Configuration Saved!")}
+							<div>
+								<h2
+									style={{
+										fontSize: "16px",
+										fontWeight: 800,
+										color: "#0f172a",
+										margin: "0 0 4px 0",
+									}}
+								>
+									System Integrations
+								</h2>
+								<p style={{ fontSize: "11px", color: "#64748b", margin: 0 }}>
+									API keys for AI parsing and delivery.
+								</p>
+							</div>
+							<div
 								style={{
-									background: "#0f172a",
-									color: "white",
-									border: "none",
-									padding: "10px 24px",
-									borderRadius: "8px",
-									fontSize: "12px",
-									fontWeight: 700,
-									cursor: "pointer",
+									background: "rgba(255, 255, 255, 0.5)",
+									backdropFilter: "blur(24px)",
+									border: "1px solid rgba(255, 255, 255, 0.3)",
+									borderRadius: "12px",
+									padding: "1.25rem",
+									boxShadow: "0 4px 16px rgba(0,0,0,0.02)",
+									width: "100%",
 								}}
 							>
-								Save Integrations
-							</button>
+								<div style={{ marginBottom: "1rem" }}>
+									<label style={labelStyle}>ANTHROPIC API KEY (CLAUDE)</label>
+									<input
+										type="password"
+										placeholder="sk-ant-api03-..."
+										defaultValue="sk-ant-api03-xxxx-xxxx-xxxx"
+										style={inputStyle}
+									/>
+								</div>
+								<div style={{ marginBottom: "1.25rem" }}>
+									<label style={labelStyle}>GMAIL APP PASSWORD</label>
+									<input
+										type="password"
+										placeholder="xxxx xxxx xxxx xxxx"
+										style={inputStyle}
+									/>
+								</div>
+								<div
+									style={{
+										display: "flex",
+										justifyContent: "flex-end",
+										marginTop: "1rem",
+									}}
+								>
+									<button
+										onClick={() => showToast("API Configuration Saved!")}
+										style={{
+											background: "#0f172a",
+											color: "white",
+											border: "none",
+											padding: "10px 24px",
+											borderRadius: "8px",
+											fontSize: "12px",
+											fontWeight: 700,
+											cursor: "pointer",
+										}}
+									>
+										Save Integrations
+									</button>
+								</div>
+							</div>
 						</div>
 					</div>
-				</div>
-			</div>
+				</>
+			)}
 		</div>
 	);
 }

@@ -2,7 +2,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-// 🚀 Reprogrammed Icons to accept dynamic size and stroke width
 const AutonomousIcon = ({ size = 24, stroke = 2.5 }) => (
 	<svg
 		width={size}
@@ -121,6 +120,21 @@ const NewsIcon = ({ size = 24, stroke = 2.5 }) => (
 		<path d="M10 13h4" />
 	</svg>
 );
+const SalaryIcon = ({ size = 24, stroke = 2.5 }) => (
+	<svg
+		width={size}
+		height={size}
+		viewBox="0 0 24 24"
+		fill="none"
+		stroke="currentColor"
+		strokeWidth={stroke}
+		strokeLinecap="round"
+		strokeLinejoin="round"
+	>
+		<line x1="12" y1="1" x2="12" y2="23" />
+		<path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+	</svg>
+);
 const SchedulerIcon = ({ size = 24, stroke = 2.5 }) => (
 	<svg
 		width={size}
@@ -185,7 +199,6 @@ const PlatformUtilsIcon = ({ size = 24, stroke = 2.5 }) => (
 	</svg>
 );
 
-// 🚀 NEW ICONS ADDED HERE FOR THE INJECTED SCOPES
 const FilterIcon = ({ size = 24, stroke = 2.5 }) => (
 	<svg
 		width={size}
@@ -218,7 +231,6 @@ const PipelineIcon = ({ size = 24, stroke = 2.5 }) => (
 	</svg>
 );
 
-// 🚀 NEW UNIQUE ICONS FOR THE WALKTHROUGH DUPLICATES
 const WelcomeIcon = ({ size = 24, stroke = 2.5 }) => (
 	<svg
 		width={size}
@@ -258,7 +270,7 @@ export default function HomePage() {
 		{
 			title: "Welcome to BenchScout",
 			text: "You have arrived at the final version of our platform, a 100% autonomous career engine built exclusively for Medical Laboratory Scientists in Nigeria. This tour will explain how the entire ecosystem works to build your future.",
-			icon: WelcomeIcon, // 🚀 Changed from AutonomousIcon to WelcomeIcon
+			icon: WelcomeIcon,
 		},
 		{
 			title: "The Autonomous Engine",
@@ -278,7 +290,7 @@ export default function HomePage() {
 		{
 			title: "Daily Email Digest",
 			text: "Immediately after filtering, the engine compiles a beautifully designed Daily Digest email containing only your new, high-scoring matches. This email is dispatched directly to your inbox before you've likely even woken up, giving you a massive head start.",
-			icon: EmailIcon, // 🚀 Changed from AppliedIcon to EmailIcon
+			icon: EmailIcon,
 		},
 		{
 			title: "Dashboard",
@@ -299,6 +311,11 @@ export default function HomePage() {
 			title: "News & Insights",
 			text: "We scan more than just jobs. This feed aggregates critical MLSCN updates, regulatory changes, laboratory training news, and career advice tailored specifically for Nigerian scientists.",
 			icon: NewsIcon,
+		},
+		{
+			title: "Salary Intelligence",
+			text: "Anonymous, verified monthly salary data from peers and live job market analysis. View industry averages, monitor Tier 1 base salaries, and contribute securely to improve market transparency for all MLS professionals.",
+			icon: SalaryIcon,
 		},
 		{
 			title: "The Scheduler",
@@ -346,7 +363,6 @@ export default function HomePage() {
 		boxShadow: "0 8px 32px rgba(31, 38, 135, 0.07)",
 	};
 
-	// Base state is completely transparent, position relative for the animated pseudoelements
 	const featureCardStyle = {
 		position: "relative" as const,
 		background: "transparent",
@@ -367,11 +383,9 @@ export default function HomePage() {
 				overflowX: "hidden",
 			}}
 		>
-			{/* 🚀 CSS CLASSES FOR CYCLING ANIMATED GLOW & INTERACTION */}
 			<style
 				dangerouslySetInnerHTML={{
 					__html: `
-            /* Keyframes for the cycling border animation */
             @keyframes cycleGradient {
                0% { background-position: 0% 50%; }
                50% { background-position: 100% 50%; }
@@ -382,16 +396,14 @@ export default function HomePage() {
                transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s;
             }
 
-            /* The Animated Cycling Border */
             .premium-feature-card::before {
                content: "";
                position: absolute;
                inset: 0;
                border-radius: 16px;
-               padding: 2px; /* Thickness of the glowing border */
+               padding: 2px;
                background: linear-gradient(60deg, #0058bc, #0ea5e9, #bae6fd, #0ea5e9, #0058bc);
                background-size: 300% 300%;
-               /* CSS Masking carves out the center so it only shows on the border */
                -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
                -webkit-mask-composite: xor;
                mask-composite: exclude;
@@ -401,7 +413,6 @@ export default function HomePage() {
                animation: cycleGradient 3s linear infinite;
             }
 
-            /* The soft inner glass background on hover */
             .premium-feature-card::after {
                content: "";
                position: absolute;
@@ -414,7 +425,6 @@ export default function HomePage() {
                transition: opacity 0.4s ease;
             }
 
-            /* Trigger the animations when hovering over the card */
             .premium-feature-card:hover {
                transform: translateY(-8px);
                box-shadow: 0 15px 45px rgba(0, 88, 188, 0.1);
@@ -433,7 +443,6 @@ export default function HomePage() {
                transition: transform 0.4s ease, color 0.4s ease;
             }
             
-            /* Enhanced, Attractive CTA Button with active blue background and stronger glow */
             .explore-cta-button {
                 transition: all 0.3s ease;
                 background: #0058bc !important; 
@@ -692,7 +701,6 @@ export default function HomePage() {
 							✕
 						</button>
 
-						{/* 🚀 PERFECT BALANCE RESTORED: `alignItems: flex-start` */}
 						<div
 							style={{
 								display: "flex",
@@ -701,7 +709,6 @@ export default function HomePage() {
 								marginTop: "1rem",
 							}}
 						>
-							{/* 🚀 Restored the perfectly balanced 90px icons */}
 							<div
 								style={{
 									color: "#0f172a",
