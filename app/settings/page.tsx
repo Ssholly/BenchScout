@@ -88,7 +88,6 @@ export default function SettingsPage() {
 		minScore: 85,
 	});
 
-	// 🚀 FIX 1: Add a dedicated state to track the initial auth check
 	const [checkingAuth, setCheckingAuth] = useState(true);
 	const [isSaving, setIsSaving] = useState(false);
 	const [isUploading, setIsUploading] = useState(false);
@@ -120,7 +119,7 @@ export default function SettingsPage() {
 	};
 
 	const loadSettings = async () => {
-		setCheckingAuth(true); // Start the checking phase
+		setCheckingAuth(true);
 		const activeEmail = localStorage.getItem("labpro_active_user");
 
 		if (!activeEmail) {
@@ -133,7 +132,7 @@ export default function SettingsPage() {
 				minScore: 85,
 			});
 			setDocuments(DEFAULT_DOCS);
-			setCheckingAuth(false); // Done checking
+			setCheckingAuth(false);
 			return;
 		}
 
@@ -150,7 +149,8 @@ export default function SettingsPage() {
 						? data.user.keywords.split(",").map((k: string) => k.trim())
 						: [],
 					location: data.user.location || "All Nigeria",
-					minScore: data.user.minScore || 85,
+					// 🚀 THE FIX: Used Nullish Coalescing (??) so 0 is safely accepted
+					minScore: data.user.minScore ?? 85,
 				});
 
 				const updatedDocs = [...DEFAULT_DOCS];
@@ -193,7 +193,7 @@ export default function SettingsPage() {
 		} catch (error) {
 			console.error("Failed to load settings:", error);
 		}
-		setCheckingAuth(false); // Complete the checking phase
+		setCheckingAuth(false);
 	};
 
 	useEffect(() => {
@@ -353,12 +353,10 @@ export default function SettingsPage() {
 		}
 	};
 
-	// 🚀 FIX 2: Fully wired DELETE functionality to wipe from server & DB
 	const handleDeleteDoc = async (id: string) => {
 		const docToDelete = documents.find((d) => d.id === id);
 		if (!docToDelete || !docToDelete.url || !userData.email) return;
 
-		// 1. Optimistic UI update (hides it instantly so the app feels fast)
 		const updatedDocs = documents.map((doc) =>
 			doc.id === id ? { ...doc, size: "-", uploadedAt: null, url: null } : doc,
 		);
@@ -369,14 +367,12 @@ export default function SettingsPage() {
 		);
 		showToast("Document unlinked from profile.");
 
-		// 2. Map the ID to the correct backend documentType
 		const docTypeMap: Record<string, string> = {
 			cv: "resume",
 			license: "license",
 			degree: "degree",
 		};
 
-		// 3. Fire the request to your new DELETE handler
 		try {
 			const res = await fetch("/api/upload", {
 				method: "DELETE",
@@ -413,7 +409,7 @@ export default function SettingsPage() {
 			if (data.success) {
 				showToast("Compliance tracking activated!");
 				setShowVerificationModal(false);
-				window.dispatchEvent(new Event("userSateChanged"));
+				window.dispatchEvent(new Event("userStateChanged"));
 			} else {
 				showToast("Failed to save compliance data.", "error");
 			}
@@ -900,7 +896,6 @@ export default function SettingsPage() {
 				</p>
 			</div>
 
-			{/* 🚀 FIX 1 IMPLEMENTATION: Seamless Loading & Auth Handling */}
 			{checkingAuth ? (
 				<div
 					style={{
@@ -908,7 +903,11 @@ export default function SettingsPage() {
 						flexDirection: "column",
 						alignItems: "center",
 						justifyContent: "center",
-						minHeight: "60vh",
+						minHeight: "40vh",
+						background: "rgba(255, 255, 255, 0.4)",
+						backdropFilter: "blur(24px)",
+						borderRadius: "20px",
+						border: "1px solid rgba(255, 255, 255, 0.3)",
 						gap: "12px",
 						color: "#64748b",
 					}}
@@ -931,7 +930,7 @@ export default function SettingsPage() {
 							letterSpacing: "-0.2px",
 						}}
 					>
-						Authenticating secure session...
+						Awakening database connection...
 					</span>
 				</div>
 			) : !isUserLoggedIn ? (

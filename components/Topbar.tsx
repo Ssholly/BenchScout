@@ -22,7 +22,6 @@ export default function Topbar() {
 	const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
 
 	const fetchSearchData = async () => {
-		// 🚀 DATA ISOLATION: Check for active user before loading search data
 		const activeEmail = localStorage.getItem("labpro_active_user");
 		if (!activeEmail) {
 			setIsUserLoggedIn(false);
@@ -64,7 +63,6 @@ export default function Topbar() {
 		setMounted(true);
 		fetchSearchData();
 
-		// Sync with auth state changes
 		window.addEventListener("userStateChanged", fetchSearchData);
 		window.addEventListener("jobsUpdated", fetchSearchData);
 
@@ -110,7 +108,6 @@ export default function Topbar() {
 		if (val.trim().length > 0) {
 			setIsSearchActive(true);
 
-			// If user is NOT logged in, we skip the array filter and let the UI handle the "locked" message
 			if (isUserLoggedIn) {
 				const lowerVal = val.toLowerCase();
 				const filtered = allJobs
@@ -141,27 +138,16 @@ export default function Topbar() {
 		clearSearch();
 		router.push("/matches");
 	};
-
 	return (
 		<header
 			className="global-topbar"
 			style={{
 				width: "100%",
-				height: "80px",
-				padding: "0 2.5rem",
-				display: "flex",
-				alignItems: "center",
-				justifyContent: "space-between",
-				background: "rgba(255, 255, 255, 0.25)",
-				backdropFilter: "blur(24px)",
-				WebkitBackdropFilter: "blur(24px)",
-				borderBottom: "none",
-				boxShadow: "0 4px 30px rgba(0,0,0,0.02)",
+				position: "sticky",
+				top: 0,
 				zIndex: 40,
-				position: "relative",
 			}}
 		>
-			{/* 🚀 GLOBAL MOBILE CSS INJECTION WITH MAGIC CLASSES 🚀 */}
 			<style
 				dangerouslySetInnerHTML={{
 					__html: `
@@ -173,19 +159,11 @@ export default function Topbar() {
           .hide-desktop { display: flex !important; }
           .hide-mobile { display: none !important; }
           
-          /* Force the Topbar to fit mobile */
-          .global-topbar { padding: 0 1rem !important; height: 70px !important; }
-          
-          /* Shrink the search bar on phones */
+          .topbar-content { padding: 0 1rem !important; height: 70px !important; }
           .search-wrapper { max-width: 180px !important; }
-          
-          /* Fix the main content padding system-wide so it doesn't squish */
           .pane { padding: 1.25rem !important; }
-          
-          /* Scale down headers on mobile */
           .page-title { font-size: 24px !important; }
           
-          /* 🚀 INNER CONTENT MAGIC CLASSES 🚀 */
           .mobile-stack { flex-direction: column !important; gap: 1.5rem !important; }
           .mobile-stack > div { width: 100% !important; min-width: 100% !important; max-width: 100% !important; flex: none !important; }
           .mobile-grid { grid-template-columns: 1fr !important; gap: 1.5rem !important; }
@@ -194,327 +172,531 @@ export default function Topbar() {
 				}}
 			/>
 
+			{/* 🚀 THE MAGIC SEAMLESS GLASS FADE 🚀 */}
 			<div
 				style={{
+					position: "absolute",
+					top: 0,
+					left: 0,
+					right: 0,
+					height:
+						"120px" /* Drops lower than the 80px nav to create a smooth fade zone */,
+					background:
+						"linear-gradient(to bottom, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0) 100%)",
+					backdropFilter: "blur(24px)",
+					WebkitBackdropFilter: "blur(24px)",
+					maskImage: "linear-gradient(to bottom, black 55%, transparent 100%)",
+					WebkitMaskImage:
+						"linear-gradient(to bottom, black 55%, transparent 100%)",
+					zIndex: -1,
+					pointerEvents: "none",
+				}}
+			/>
+
+			{/* 🚀 CONTENT WRAPPER 🚀 */}
+			<div
+				className="topbar-content"
+				style={{
+					height: "80px",
+					padding: "0 2.5rem",
 					display: "flex",
 					alignItems: "center",
+					justifyContent: "space-between",
 					width: "100%",
-					maxWidth: "420px",
 				}}
 			>
-				{/* The Hamburger Mobile Menu Button */}
-				<button
-					className="hamburger-btn"
-					onClick={() => window.dispatchEvent(new Event("toggleMobileMenu"))}
+				<div
 					style={{
-						background: "none",
-						border: "none",
-						cursor: "pointer",
-						color: "#0f172a",
-						padding: "0",
+						display: "flex",
+						alignItems: "center",
+						width: "100%",
+						maxWidth: "420px",
 					}}
 				>
-					<svg
-						width="28"
-						height="28"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						strokeWidth="2.5"
-					>
-						<line x1="3" y1="12" x2="21" y2="12" />
-						<line x1="3" y1="6" x2="21" y2="6" />
-						<line x1="3" y1="18" x2="21" y2="18" />
-					</svg>
-				</button>
-
-				<div
-					className="search-wrapper"
-					style={{ position: "relative", width: "100%" }}
-				>
-					<svg
-						width="18"
-						height="18"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="#64748b"
-						strokeWidth="2"
+					<button
+						className="hamburger-btn"
+						onClick={() => window.dispatchEvent(new Event("toggleMobileMenu"))}
 						style={{
-							position: "absolute",
-							left: "16px",
-							top: "50%",
-							transform: "translateY(-50%)",
-							zIndex: 2,
-						}}
-					>
-						<circle cx="11" cy="11" r="8"></circle>
-						<line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-					</svg>
-					<input
-						type="text"
-						placeholder="Search matches or logs..."
-						value={searchQuery}
-						onChange={handleSearchChange}
-						style={{
-							width: "100%",
-							background: "rgba(255,255,255,0.7)",
-							border: "1px solid rgba(255,255,255,0.9)",
-							borderRadius: "30px",
-							padding: "10px 40px 10px 44px",
-							fontSize: "14px",
+							background: "none",
+							border: "none",
+							cursor: "pointer",
 							color: "#0f172a",
-							outline: "none",
-							transition: "all 0.2s",
-							position: "relative",
-							zIndex: 1,
-							boxShadow: "inset 0 2px 4px rgba(0,0,0,0.02)",
+							padding: "0",
 						}}
-						onFocus={(e) => {
-							e.target.style.background = "rgba(255,255,255,0.9)";
-							e.target.style.borderColor = "#bae6fd";
-							if (searchQuery.trim().length > 0) setIsSearchActive(true);
-						}}
-						onBlur={(e) => {
-							e.target.style.background = "rgba(255,255,255,0.7)";
-							e.target.style.borderColor = "rgba(255,255,255,0.9)";
-							setTimeout(() => setIsSearchActive(false), 200);
-						}}
-					/>
-					{searchQuery && (
-						<button
-							onClick={clearSearch}
+					>
+						<svg
+							width="28"
+							height="28"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							strokeWidth="2.5"
+						>
+							<line x1="3" y1="12" x2="21" y2="12" />
+							<line x1="3" y1="6" x2="21" y2="6" />
+							<line x1="3" y1="18" x2="21" y2="18" />
+						</svg>
+					</button>
+
+					<div
+						className="search-wrapper"
+						style={{ position: "relative", width: "100%" }}
+					>
+						<svg
+							width="18"
+							height="18"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="#64748b"
+							strokeWidth="2"
 							style={{
 								position: "absolute",
-								right: "12px",
+								left: "16px",
 								top: "50%",
 								transform: "translateY(-50%)",
+								zIndex: 2,
+							}}
+						>
+							<circle cx="11" cy="11" r="8"></circle>
+							<line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+						</svg>
+						<input
+							type="text"
+							placeholder="Search matches or logs..."
+							value={searchQuery}
+							onChange={handleSearchChange}
+							style={{
+								width: "100%",
+								background: "rgba(255,255,255,0.6)",
+								border: "1px solid rgba(255,255,255,0.8)",
+								borderRadius: "30px",
+								padding: "10px 40px 10px 44px",
+								fontSize: "14px",
+								color: "#0f172a",
+								outline: "none",
+								transition: "all 0.2s",
+								position: "relative",
+								zIndex: 1,
+								boxShadow: "0 8px 20px rgba(0,0,0,0.03)",
+							}}
+							onFocus={(e) => {
+								e.target.style.background = "rgba(255,255,255,0.9)";
+								e.target.style.borderColor = "rgba(255,255,255,1)";
+								if (searchQuery.trim().length > 0) setIsSearchActive(true);
+							}}
+							onBlur={(e) => {
+								e.target.style.background = "rgba(255,255,255,0.6)";
+								e.target.style.borderColor = "rgba(255,255,255,0.8)";
+								setTimeout(() => setIsSearchActive(false), 200);
+							}}
+						/>
+						{searchQuery && (
+							<button
+								onClick={clearSearch}
+								style={{
+									position: "absolute",
+									right: "12px",
+									top: "50%",
+									transform: "translateY(-50%)",
+									background: "none",
+									border: "none",
+									color: "#94a3b8",
+									cursor: "pointer",
+									zIndex: 2,
+									padding: "4px",
+								}}
+							>
+								<svg
+									width="14"
+									height="14"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									strokeWidth="2.5"
+								>
+									<line x1="18" y1="6" x2="6" y2="18" />
+									<line x1="6" y1="6" x2="18" y2="18" />
+								</svg>
+							</button>
+						)}
+
+						{isSearchActive && (
+							<div
+								style={{
+									position: "absolute",
+									top: "50px",
+									left: 0,
+									width: "100%",
+									background: "white",
+									borderRadius: "12px",
+									border: "1px solid #e2e8f0",
+									overflow: "hidden",
+									boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)",
+									zIndex: 50,
+								}}
+							>
+								<div
+									style={{
+										padding: "8px 16px",
+										background: "#f8fafc",
+										fontSize: "11px",
+										fontWeight: 800,
+										color: "#94a3b8",
+										textTransform: "uppercase",
+										letterSpacing: "0.5px",
+									}}
+								>
+									Quick Results for "{searchQuery}"
+								</div>
+
+								{!isUserLoggedIn ? (
+									<div
+										style={{
+											padding: "24px 16px",
+											textAlign: "center",
+											color: "#64748b",
+											fontSize: "13px",
+										}}
+									>
+										<div style={{ marginBottom: "8px" }}>
+											<svg
+												width="24"
+												height="24"
+												viewBox="0 0 24 24"
+												fill="none"
+												stroke="currentColor"
+												strokeWidth="2"
+												strokeLinecap="round"
+												strokeLinejoin="round"
+												style={{ margin: "0 auto", opacity: 0.5 }}
+											>
+												<rect
+													x="3"
+													y="11"
+													width="18"
+													height="11"
+													rx="2"
+													ry="2"
+												></rect>
+												<path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+											</svg>
+										</div>
+										Please log in to search your matches.
+									</div>
+								) : searchResults.length > 0 ? (
+									searchResults.map((job) => (
+										<div
+											key={job.id}
+											onClick={handleResultClick}
+											onMouseEnter={(e) =>
+												(e.currentTarget.style.background = "#f8fafc")
+											}
+											onMouseLeave={(e) =>
+												(e.currentTarget.style.background = "white")
+											}
+											style={{
+												padding: "12px 16px",
+												borderBottom: "1px solid #f1f5f9",
+												cursor: "pointer",
+												transition: "background 0.2s",
+											}}
+										>
+											<div
+												style={{
+													display: "flex",
+													alignItems: "flex-start",
+													gap: "12px",
+												}}
+											>
+												<span
+													style={{
+														background:
+															job.tier === 1
+																? "#dcfce7"
+																: job.tier === 2
+																	? "#e0f2fe"
+																	: "#f1f5f9",
+														color:
+															job.tier === 1
+																? "#15803d"
+																: job.tier === 2
+																	? "#0369a1"
+																	: "#64748b",
+														fontSize: "9px",
+														padding: "3px 6px",
+														borderRadius: "4px",
+														fontWeight: 800,
+														marginTop: "2px",
+														flexShrink: 0,
+													}}
+												>
+													TIER {job.tier}
+												</span>
+												<div>
+													<div
+														style={{
+															fontSize: "13px",
+															fontWeight: 800,
+															color: "#0f172a",
+															marginBottom: "2px",
+														}}
+													>
+														{job.role}
+													</div>
+													<div style={{ fontSize: "11px", color: "#64748b" }}>
+														{job.company} • {job.loc}
+													</div>
+												</div>
+											</div>
+										</div>
+									))
+								) : (
+									<div
+										style={{
+											padding: "24px 16px",
+											textAlign: "center",
+											color: "#64748b",
+											fontSize: "13px",
+										}}
+									>
+										No jobs found matching "{searchQuery}"
+									</div>
+								)}
+
+								{isUserLoggedIn && (
+									<div
+										style={{
+											padding: "8px",
+											background: "#f8fafc",
+											textAlign: "center",
+											borderTop: "1px solid #e2e8f0",
+										}}
+									>
+										<button
+											onClick={handleViewAll}
+											style={{
+												background: "none",
+												border: "none",
+												color: "#0058bc",
+												fontSize: "12px",
+												fontWeight: 700,
+												cursor: "pointer",
+											}}
+										>
+											View all results →
+										</button>
+									</div>
+								)}
+							</div>
+						)}
+					</div>
+				</div>
+
+				<div style={{ display: "flex", alignItems: "center", gap: "1.5rem" }}>
+					<div
+						className="hide-mobile"
+						style={{
+							background: isOnline
+								? "rgba(236, 253, 245, 0.8)"
+								: "rgba(254, 242, 242, 0.8)",
+							color: isOnline ? "#15803d" : "#991b1b",
+							padding: "8px 16px",
+							borderRadius: "30px",
+							fontSize: "12px",
+							fontWeight: 800,
+							display: "flex",
+							alignItems: "center",
+							gap: "8px",
+							border: `1px solid ${isOnline ? "#a7f3d0" : "#fca5a5"}`,
+						}}
+					>
+						<span
+							style={{
+								width: "8px",
+								height: "8px",
+								borderRadius: "50%",
+								background: isOnline ? "#22c55e" : "#ef4444",
+							}}
+						></span>
+						{isOnline ? "SYSTEM READY" : "OFFLINE"}
+					</div>
+
+					<div style={{ position: "relative" }} ref={notifRef}>
+						<button
+							onClick={handleNotificationClick}
+							style={{
 								background: "none",
 								border: "none",
-								color: "#94a3b8",
 								cursor: "pointer",
-								zIndex: 2,
+								display: "flex",
+								alignItems: "center",
 								padding: "4px",
 							}}
 						>
 							<svg
-								width="14"
-								height="14"
+								width="22"
+								height="22"
 								viewBox="0 0 24 24"
 								fill="none"
-								stroke="currentColor"
-								strokeWidth="2.5"
+								stroke="#475569"
+								strokeWidth="2"
+								strokeLinecap="round"
+								strokeLinejoin="round"
 							>
-								<line x1="18" y1="6" x2="6" y2="18" />
-								<line x1="6" y1="6" x2="18" y2="18" />
+								<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+								<path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
 							</svg>
+							{hasNotifications && (
+								<span
+									style={{
+										position: "absolute",
+										top: "2px",
+										right: "4px",
+										width: "10px",
+										height: "10px",
+										background: "#ef4444",
+										borderRadius: "50%",
+										border: "2px solid white",
+									}}
+								></span>
+							)}
 						</button>
-					)}
 
-					{isSearchActive && (
-						<div
-							style={{
-								position: "absolute",
-								top: "50px",
-								left: 0,
-								width: "100%",
-								background: "white",
-								borderRadius: "12px",
-								border: "1px solid #e2e8f0",
-								overflow: "hidden",
-								boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)",
-								zIndex: 50,
-							}}
-						>
+						{showNotifs && (
 							<div
 								style={{
-									padding: "8px 16px",
-									background: "#f8fafc",
-									fontSize: "11px",
-									fontWeight: 800,
-									color: "#94a3b8",
-									textTransform: "uppercase",
-									letterSpacing: "0.5px",
+									position: "absolute",
+									top: "45px",
+									right: "-10px",
+									width: "340px",
+									maxWidth: "85vw",
+									background: "white",
+									borderRadius: "12px",
+									border: "1px solid #e2e8f0",
+									boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)",
+									zIndex: 100,
+									overflow: "hidden",
+									maxHeight: "400px",
+									display: "flex",
+									flexDirection: "column",
 								}}
 							>
-								Quick Results for "{searchQuery}"
-							</div>
-
-							{/* 🚀 UI CHANGE: Block search results if guest */}
-							{!isUserLoggedIn ? (
 								<div
 									style={{
-										padding: "24px 16px",
-										textAlign: "center",
-										color: "#64748b",
-										fontSize: "13px",
+										padding: "12px 16px",
+										background: "#f8fafc",
+										borderBottom: "1px solid #e2e8f0",
+										display: "flex",
+										justifyContent: "space-between",
+										alignItems: "center",
 									}}
 								>
-									<div style={{ marginBottom: "8px" }}>
-										<svg
-											width="24"
-											height="24"
-											viewBox="0 0 24 24"
-											fill="none"
-											stroke="currentColor"
-											strokeWidth="2"
-											strokeLinecap="round"
-											strokeLinejoin="round"
-											style={{ margin: "0 auto", opacity: 0.5 }}
-										>
-											<rect
-												x="3"
-												y="11"
-												width="18"
-												height="11"
-												rx="2"
-												ry="2"
-											></rect>
-											<path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-										</svg>
-									</div>
-									Please log in to search your matches.
-								</div>
-							) : searchResults.length > 0 ? (
-								searchResults.map((job) => (
-									<div
-										key={job.id}
-										onClick={handleResultClick}
-										onMouseEnter={(e) =>
-											(e.currentTarget.style.background = "#f8fafc")
-										}
-										onMouseLeave={(e) =>
-											(e.currentTarget.style.background = "white")
-										}
+									<span
 										style={{
-											padding: "12px 16px",
-											borderBottom: "1px solid #f1f5f9",
-											cursor: "pointer",
-											transition: "background 0.2s",
+											fontSize: "13px",
+											fontWeight: 800,
+											color: "#0f172a",
 										}}
 									>
-										<div
+										Notifications
+									</span>
+									{hasNotifications && (
+										<button
+											onClick={handleMarkAsRead}
 											style={{
-												display: "flex",
-												alignItems: "flex-start",
-												gap: "12px",
+												background: "none",
+												border: "none",
+												color: "#0058bc",
+												fontSize: "11px",
+												fontWeight: 700,
+												cursor: "pointer",
 											}}
 										>
-											<span
+											Mark as read
+										</button>
+									)}
+								</div>
+								<div style={{ overflowY: "auto" }}>
+									{hasNotifications && notifications.length > 0 ? (
+										notifications.map((notif) => (
+											<div
+												key={notif.id}
+												onClick={handleResultClick}
 												style={{
-													background:
-														job.tier === 1
-															? "#dcfce7"
-															: job.tier === 2
-																? "#e0f2fe"
-																: "#f1f5f9",
-													color:
-														job.tier === 1
-															? "#15803d"
-															: job.tier === 2
-																? "#0369a1"
-																: "#64748b",
-													fontSize: "9px",
-													padding: "3px 6px",
-													borderRadius: "4px",
-													fontWeight: 800,
-													marginTop: "2px",
-													flexShrink: 0,
+													padding: "16px",
+													display: "flex",
+													gap: "12px",
+													background: "#eff6ff",
+													borderLeft: "4px solid #0058bc",
+													borderBottom: "1px solid #e2e8f0",
+													cursor: "pointer",
 												}}
 											>
-												TIER {job.tier}
-											</span>
-											<div>
 												<div
 													style={{
-														fontSize: "13px",
-														fontWeight: 800,
-														color: "#0f172a",
-														marginBottom: "2px",
+														width: "8px",
+														height: "8px",
+														borderRadius: "50%",
+														background: "#0058bc",
+														marginTop: "6px",
+														flexShrink: 0,
 													}}
-												>
-													{job.role}
-												</div>
-												<div style={{ fontSize: "11px", color: "#64748b" }}>
-													{job.company} • {job.loc}
+												></div>
+												<div>
+													<p
+														style={{
+															margin: 0,
+															fontSize: "13px",
+															fontWeight: 800,
+															color: "#0f172a",
+														}}
+													>
+														{notif.title}
+													</p>
+													<p
+														style={{
+															margin: "4px 0 0 0",
+															fontSize: "13px",
+															color: "#475569",
+															lineHeight: "1.4",
+														}}
+													>
+														{notif.body}
+													</p>
+													<p
+														style={{
+															margin: "8px 0 0 0",
+															fontSize: "11px",
+															color: "#94a3b8",
+															fontWeight: 600,
+														}}
+													>
+														{notif.time}
+													</p>
 												</div>
 											</div>
+										))
+									) : (
+										<div style={{ padding: "32px 16px", textAlign: "center" }}>
+											<p
+												style={{
+													margin: 0,
+													fontSize: "13px",
+													color: "#64748b",
+													fontWeight: 600,
+												}}
+											>
+												You're all caught up!
+											</p>
 										</div>
-									</div>
-								))
-							) : (
-								<div
-									style={{
-										padding: "24px 16px",
-										textAlign: "center",
-										color: "#64748b",
-										fontSize: "13px",
-									}}
-								>
-									No jobs found matching "{searchQuery}"
+									)}
 								</div>
-							)}
+							</div>
+						)}
+					</div>
 
-							{isUserLoggedIn && (
-								<div
-									style={{
-										padding: "8px",
-										background: "#f8fafc",
-										textAlign: "center",
-										borderTop: "1px solid #e2e8f0",
-									}}
-								>
-									<button
-										onClick={handleViewAll}
-										style={{
-											background: "none",
-											border: "none",
-											color: "#0058bc",
-											fontSize: "12px",
-											fontWeight: 700,
-											cursor: "pointer",
-										}}
-									>
-										View all results →
-									</button>
-								</div>
-							)}
-						</div>
-					)}
-				</div>
-			</div>
-
-			<div style={{ display: "flex", alignItems: "center", gap: "1.5rem" }}>
-				<div
-					className="hide-mobile"
-					style={{
-						background: isOnline
-							? "rgba(236, 253, 245, 0.8)"
-							: "rgba(254, 242, 242, 0.8)",
-						color: isOnline ? "#15803d" : "#991b1b",
-						padding: "8px 16px",
-						borderRadius: "30px",
-						fontSize: "12px",
-						fontWeight: 800,
-						display: "flex",
-						alignItems: "center",
-						gap: "8px",
-						border: `1px solid ${isOnline ? "#a7f3d0" : "#fca5a5"}`,
-					}}
-				>
-					<span
-						style={{
-							width: "8px",
-							height: "8px",
-							borderRadius: "50%",
-							background: isOnline ? "#22c55e" : "#ef4444",
-						}}
-					></span>
-					{isOnline ? "SYSTEM READY" : "OFFLINE"}
-				</div>
-
-				<div style={{ position: "relative" }} ref={notifRef}>
 					<button
-						onClick={handleNotificationClick}
+						onClick={handleHelpClick}
 						style={{
 							background: "none",
 							border: "none",
@@ -534,197 +716,19 @@ export default function Topbar() {
 							strokeLinecap="round"
 							strokeLinejoin="round"
 						>
-							<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-							<path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+							<circle cx="12" cy="12" r="10"></circle>
+							<path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+							<line x1="12" y1="17" x2="12.01" y2="17"></line>
 						</svg>
-						{hasNotifications && (
-							<span
-								style={{
-									position: "absolute",
-									top: "2px",
-									right: "4px",
-									width: "10px",
-									height: "10px",
-									background: "#ef4444",
-									borderRadius: "50%",
-									border: "2px solid white",
-								}}
-							></span>
-						)}
 					</button>
-
-					{showNotifs && (
-						<div
-							style={{
-								position: "absolute",
-								top: "45px",
-								right: "-10px",
-								width: "340px",
-								maxWidth: "85vw" /* Keep notifs from overflowing screen */,
-								background: "white",
-								borderRadius: "12px",
-								border: "1px solid #e2e8f0",
-								boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)",
-								zIndex: 100,
-								overflow: "hidden",
-								maxHeight: "400px",
-								display: "flex",
-								flexDirection: "column",
-							}}
-						>
-							<div
-								style={{
-									padding: "12px 16px",
-									background: "#f8fafc",
-									borderBottom: "1px solid #e2e8f0",
-									display: "flex",
-									justifyContent: "space-between",
-									alignItems: "center",
-								}}
-							>
-								<span
-									style={{
-										fontSize: "13px",
-										fontWeight: 800,
-										color: "#0f172a",
-									}}
-								>
-									Notifications
-								</span>
-								{hasNotifications && (
-									<button
-										onClick={handleMarkAsRead}
-										style={{
-											background: "none",
-											border: "none",
-											color: "#0058bc",
-											fontSize: "11px",
-											fontWeight: 700,
-											cursor: "pointer",
-										}}
-									>
-										Mark as read
-									</button>
-								)}
-							</div>
-							<div style={{ overflowY: "auto" }}>
-								{hasNotifications && notifications.length > 0 ? (
-									notifications.map((notif) => (
-										<div
-											key={notif.id}
-											onClick={handleResultClick}
-											style={{
-												padding: "16px",
-												display: "flex",
-												gap: "12px",
-												background: "#eff6ff",
-												borderLeft: "4px solid #0058bc",
-												borderBottom: "1px solid #e2e8f0",
-												cursor: "pointer",
-											}}
-										>
-											<div
-												style={{
-													width: "8px",
-													height: "8px",
-													borderRadius: "50%",
-													background: "#0058bc",
-													marginTop: "6px",
-													flexShrink: 0,
-												}}
-											></div>
-											<div>
-												<p
-													style={{
-														margin: 0,
-														fontSize: "13px",
-														fontWeight: 800,
-														color: "#0f172a",
-													}}
-												>
-													{notif.title}
-												</p>
-												<p
-													style={{
-														margin: "4px 0 0 0",
-														fontSize: "13px",
-														color: "#475569",
-														lineHeight: "1.4",
-													}}
-												>
-													{notif.body}
-												</p>
-												<p
-													style={{
-														margin: "8px 0 0 0",
-														fontSize: "11px",
-														color: "#94a3b8",
-														fontWeight: 600,
-													}}
-												>
-													{notif.time}
-												</p>
-											</div>
-										</div>
-									))
-								) : (
-									<div style={{ padding: "32px 16px", textAlign: "center" }}>
-										<p
-											style={{
-												margin: 0,
-												fontSize: "13px",
-												color: "#64748b",
-												fontWeight: 600,
-											}}
-										>
-											You're all caught up!
-										</p>
-									</div>
-								)}
-							</div>
-						</div>
-					)}
 				</div>
-
-				<button
-					onClick={handleHelpClick}
-					style={{
-						background: "none",
-						border: "none",
-						cursor: "pointer",
-						display: "flex",
-						alignItems: "center",
-						padding: "4px",
-					}}
-				>
-					<svg
-						width="22"
-						height="22"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="#475569"
-						strokeWidth="2"
-						strokeLinecap="round"
-						strokeLinejoin="round"
-					>
-						<circle cx="12" cy="12" r="10"></circle>
-						<path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
-						<line x1="12" y1="17" x2="12.01" y2="17"></line>
-					</svg>
-				</button>
 			</div>
 
 			<style
 				dangerouslySetInnerHTML={{
 					__html: `
-        @keyframes fadeInOverlay {
-          0% { opacity: 0; }
-          100% { opacity: 1; }
-        }
-        @keyframes popIn {
-          0% { opacity: 0; transform: scale(0.95) translateY(-10px); }
-          100% { opacity: 1; transform: scale(1) translateY(0); }
-        }
+        @keyframes fadeInOverlay { 0% { opacity: 0; } 100% { opacity: 1; } }
+        @keyframes popIn { 0% { opacity: 0; transform: scale(0.95) translateY(-10px); } 100% { opacity: 1; transform: scale(1) translateY(0); } }
       `,
 				}}
 			/>
@@ -755,7 +759,7 @@ export default function Topbar() {
 								right: "2.5rem",
 								background: "rgba(255, 255, 255, 0.98)",
 								width: "400px",
-								maxWidth: "90vw" /* Keep modal on screen for mobile */,
+								maxWidth: "90vw",
 								borderRadius: "20px",
 								overflow: "hidden",
 								boxShadow: "0 30px 60px -15px rgba(0, 0, 0, 0.3)",

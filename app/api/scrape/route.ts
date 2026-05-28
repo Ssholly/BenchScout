@@ -166,15 +166,15 @@ export async function POST(request: Request) {
 		if (apifyKey) {
 			// 🚀 THE FIX: Added &timeout=120 to force the connection to stay open until the 40s run finishes
 			const indeedPromise = fetch(
-				`https://api.apify.com/v2/acts/misceres~indeed-scraper/run-sync-get-dataset-items?token=${apifyKey}&timeout=120`,
+				`https://api.apify.com/v2/acts/misceres~indeed-scraper/run-sync-get-dataset-items?token=${apifyKey}&timeout=60`,
 				{
 					method: "POST",
 					headers: { "Content-Type": "application/json" },
 					body: JSON.stringify({
-						position: "Medical Laboratory",
+						position: "Medical Laboratory Scientist",
 						country: "NG",
 						location: safeLocation,
-						maxItems: 40,
+						maxItems: 60,
 						saveOnlyUniqueItems: true,
 					}),
 				},
@@ -186,14 +186,14 @@ export async function POST(request: Request) {
 			);
 
 			const linkedinPromise = fetch(
-				`https://api.apify.com/v2/acts/hKByXkMQaC5Qt9UMN/run-sync-get-dataset-items?token=${apifyKey}&timeout=120`,
+				`https://api.apify.com/v2/acts/hKByXkMQaC5Qt9UMN/run-sync-get-dataset-items?token=${apifyKey}&timeout=60`,
 				{
 					method: "POST",
 					headers: { "Content-Type": "application/json" },
 					body: JSON.stringify({
 						urls: linkedinSearchUrls,
 						scrapeCompany: false,
-						count: 40,
+						count: 10,
 						splitByLocation: false,
 					}),
 				},

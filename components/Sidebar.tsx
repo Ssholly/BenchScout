@@ -363,7 +363,6 @@ export default function Sidebar() {
           @keyframes spin { 100% { transform: rotate(360deg); } } 
           @media (max-width: 768px) { .mobile-close-btn { display: flex !important; margin-left: auto; } .sidebar-wrapper { position: fixed; top: 0; left: 0; transform: translateX(-100%); background: rgba(255, 255, 255, 0.95) !important; boxShadow: 20px 0 50px rgba(0,0,0,0.1); } .sidebar-wrapper.mobile-open { transform: translateX(0); } }
           
-          /* 🚀 NEW BRIGHT ANIMATED BUTTON CSS */
           .premium-btn {
             position: relative;
             overflow: hidden;
@@ -421,18 +420,37 @@ export default function Sidebar() {
 			<div
 				className={`sidebar-wrapper ${isMobileOpen ? "mobile-open" : ""}`}
 				style={{
-					background: "rgba(255, 255, 255, 0.4)",
-					backdropFilter: "blur(24px)",
-					WebkitBackdropFilter: "blur(24px)",
-					borderRight: "1px solid rgba(255, 255, 255, 0.2)",
+					background: "transparent",
+					borderRight: "none",
 					display: "flex",
 					flexDirection: "column",
-					boxShadow: "1px 0 20px rgba(0,0,0,0.03)",
+					boxShadow: "none",
 				}}
 			>
 				<div
 					style={{
-						padding: "2rem 1.5rem",
+						position: "absolute",
+						top: 0,
+						left: 0,
+						right: 0,
+						height: "120px",
+						background:
+							"linear-gradient(to bottom, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0) 100%)",
+						backdropFilter: "blur(24px)",
+						WebkitBackdropFilter: "blur(24px)",
+						maskImage:
+							"linear-gradient(to bottom, black 55%, transparent 100%)",
+						WebkitMaskImage:
+							"linear-gradient(to bottom, black 55%, transparent 100%)",
+						zIndex: -1,
+						pointerEvents: "none",
+					}}
+				/>
+
+				<div
+					style={{
+						height: "80px",
+						padding: "0 1.5rem",
 						display: "flex",
 						justifyContent: "space-between",
 						alignItems: "center",
@@ -572,8 +590,14 @@ export default function Sidebar() {
 										marginBottom: "8px",
 										borderRadius: "12px",
 										background: isActive
-											? "rgba(0, 88, 188, 0.08)"
+											? "rgba(255, 255, 255, 0.6)"
 											: "transparent",
+										border: isActive
+											? "1px solid rgba(255,255,255,0.8)"
+											: "1px solid transparent",
+										boxShadow: isActive
+											? "0 4px 12px rgba(0,0,0,0.03)"
+											: "none",
 										color: isActive ? "#0058bc" : "#64748b",
 										fontWeight: isActive ? 800 : 600,
 										transition: "all 0.2s",
@@ -587,7 +611,7 @@ export default function Sidebar() {
 										<span
 											style={{
 												background: isActive
-													? "rgba(255,255,255,0.8)"
+													? "rgba(255,255,255,0.9)"
 													: item.badge === "NEW"
 														? "rgba(220, 252, 231, 0.8)"
 														: "rgba(241, 245, 249, 0.8)",
@@ -613,7 +637,6 @@ export default function Sidebar() {
 				<div
 					style={{
 						padding: "1.5rem",
-						borderTop: "1px solid rgba(255,255,255,0.2)",
 						display: "flex",
 						flexDirection: "column",
 						gap: "1rem",

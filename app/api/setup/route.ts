@@ -14,6 +14,7 @@ export async function GET() {
 				name: "Success O. Ishola",
 				location: "Abuja, Nigeria",
 				keywords: "Medical Laboratory Scientist, Haematology, Blood Bank",
+				password: "hashed_password_placeholder", // Dummy password for setup
 			},
 		});
 

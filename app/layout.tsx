@@ -95,6 +95,7 @@ export default function RootLayout({
 				>
 					<Sidebar />
 
+					{/* 🚀 THE LAYOUT FIX: Moved the scroll zone to this parent wrapper */}
 					<div
 						style={{
 							flex: 1,
@@ -102,16 +103,21 @@ export default function RootLayout({
 							flexDirection: "column",
 							height: "100vh",
 							minWidth: 0,
+							overflowY:
+								"auto" /* Now the entire right side scrolls together */,
+							position:
+								"relative" /* Required to allow the Topbar to "stick" to the top of this container */,
 						}}
 					>
+						{/* The Topbar now floats naturally over the scrolling content */}
 						<Topbar />
 
 						<main
-							className="main-wrapper" /* 🚀 Dynamic padding applied here */
+							className="main-wrapper"
 							style={{
 								flex: 1,
-								overflowY: "auto",
 								width: "100%",
+								/* overflowY: "auto" has been permanently removed from here */
 							}}
 						>
 							<div style={{ width: "100%", maxWidth: "100%" }}>{children}</div>
