@@ -7,7 +7,7 @@ const prisma = new PrismaClient();
 export async function POST(request: Request) {
 	try {
 		const body = await request.json();
-		const { email, licenseNumber, expiryDate } = body;
+		let { email, licenseNumber, expiryDate } = body;
 
 		if (!email || !licenseNumber || !expiryDate) {
 			return NextResponse.json(
@@ -45,8 +45,6 @@ export async function POST(request: Request) {
 			},
 			{ status: 500 },
 		);
-	} finally {
-		await prisma.$disconnect();
 	}
 }
 
@@ -110,7 +108,5 @@ export async function GET(request: Request) {
 		});
 	} catch (error: any) {
 		return NextResponse.json({ error: error.message }, { status: 500 });
-	} finally {
-		await prisma.$disconnect();
 	}
 }

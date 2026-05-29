@@ -262,6 +262,39 @@ const EmailIcon = ({ size = 24, stroke = 2.5 }) => (
 	</svg>
 );
 
+// 🚀 NEW ICONS FOR EXTENDED PRODUCTION FEATURES
+const ShieldComplianceIcon = ({ size = 24, stroke = 2.5 }) => (
+	<svg
+		width={size}
+		height={size}
+		viewBox="0 0 24 24"
+		fill="none"
+		stroke="currentColor"
+		strokeWidth={stroke}
+		strokeLinecap="round"
+		strokeLinejoin="round"
+	>
+		<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+		<path d="m9 12 2 2 4-4" />
+	</svg>
+);
+
+const DigestMailIcon = ({ size = 24, stroke = 2.5 }) => (
+	<svg
+		width={size}
+		height={size}
+		viewBox="0 0 24 24"
+		fill="none"
+		stroke="currentColor"
+		strokeWidth={stroke}
+		strokeLinecap="round"
+		strokeLinejoin="round"
+	>
+		<path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+		<polyline points="22,6 12,13 2,6" />
+	</svg>
+);
+
 export default function HomePage() {
 	const router = useRouter();
 	const [tourStep, setTourStep] = useState(0);
@@ -579,6 +612,18 @@ export default function HomePage() {
 							desc: "A tailored feed aggregating MLSCN regulatory changes, career advice, and clinical practice insights.",
 							icon: NewsIcon,
 						},
+						// 🚀 NEW BALANCING CARD 1: MLSCN COMPLIANCE VAULT
+						{
+							title: "Licensure Compliance Tracker",
+							desc: "Securely upload your MLSCN practicing license. Our automated parser extracts registration meta-parameters and accurately visualizes dynamic expiry metrics.",
+							icon: ShieldComplianceIcon,
+						},
+						// 🚀 NEW BALANCING CARD 2: RECRUITMENT DIGEST PIPELINE
+						{
+							title: "Automated Digest Engine",
+							desc: "Synchronizes background tasks to bundle top high-scoring job parameter metrics, natively routing clean HTML digests straight to your inbox.",
+							icon: DigestMailIcon,
+						},
 					].map((feat, i) => {
 						const Icon = feat.icon;
 						return (
@@ -691,12 +736,6 @@ export default function HomePage() {
 								justifyContent: "center",
 								transition: "0.2s",
 							}}
-							onMouseEnter={(e) =>
-								(e.currentTarget.style.borderColor = "#94a3b8")
-							}
-							onMouseLeave={(e) =>
-								(e.currentTarget.style.borderColor = "#e2e8f0")
-							}
 						>
 							✕
 						</button>
@@ -790,12 +829,6 @@ export default function HomePage() {
 													cursor: "pointer",
 													transition: "all 0.2s",
 												}}
-												onMouseEnter={(e) =>
-													(e.currentTarget.style.background = "#e2e8f0")
-												}
-												onMouseLeave={(e) =>
-													(e.currentTarget.style.background = "#f1f5f9")
-												}
 											>
 												Prev
 											</button>
