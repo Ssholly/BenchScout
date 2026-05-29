@@ -8,7 +8,7 @@ export default function ProfileModal() {
 		"login" | "signup" | "profile" | "forgot" | "verify-sent"
 	>("signup");
 
-	// 🚀 THE FIX: Independent loading states
+	// 🚀 Independent loading states
 	const [isAuthLoading, setIsAuthLoading] = useState(false);
 	const [isUploadingResume, setIsUploadingResume] = useState(false);
 	const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
@@ -502,34 +502,81 @@ export default function ProfileModal() {
 							}}
 						>
 							<div>
+								{/* 🚀 FIXED LOGO BLOCK */}
 								<div
 									style={{
-										width: "48px",
-										height: "48px",
-										background:
-											"linear-gradient(135deg, #0058bc 0%, #0ea5e9 100%)",
-										borderRadius: "14px",
+										width: "56px",
+										height: "56px",
 										display: "flex",
 										alignItems: "center",
 										justifyContent: "center",
 										marginBottom: "1rem",
-										boxShadow: "0 4px 14px rgba(0, 88, 188, 0.2)",
 									}}
 								>
 									<svg
-										width="24"
-										height="24"
-										viewBox="0 0 24 24"
+										width="100%"
+										height="100%"
+										viewBox="0 0 56 56"
 										fill="none"
 										xmlns="http://www.w3.org/2000/svg"
 									>
-										<path
-											d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"
-											stroke="white"
+										<circle
+											cx="26"
+											cy="22"
+											r="13.5"
+											stroke="#0B2444"
 											strokeWidth="2.5"
-											strokeLinejoin="round"
 										/>
-										<circle cx="12" cy="12" r="3.5" fill="#22c55e" />
+										<path
+											d="M34.5 13.5 A13.5 13.5 0 0 1 39 22"
+											stroke="#1A8C7A"
+											strokeWidth="2.5"
+											strokeLinecap="round"
+										/>
+										<circle cx="26" cy="22" r="3.5" fill="#1A8C7A" />
+										<circle
+											cx="21.5"
+											cy="17.5"
+											r="1.5"
+											fill="#22B89F"
+											opacity="0.5"
+										/>
+										<line
+											x1="26"
+											y1="35.5"
+											x2="26"
+											y2="43"
+											stroke="#0B2444"
+											strokeWidth="2.5"
+											strokeLinecap="round"
+										/>
+										<line
+											x1="17"
+											y1="43"
+											x2="35"
+											y2="43"
+											stroke="#0B2444"
+											strokeWidth="2.5"
+											strokeLinecap="round"
+										/>
+										<line
+											x1="18.5"
+											y1="43"
+											x2="18.5"
+											y2="47"
+											stroke="#0B2444"
+											strokeWidth="2"
+											strokeLinecap="round"
+										/>
+										<line
+											x1="33.5"
+											y1="43"
+											x2="33.5"
+											y2="47"
+											stroke="#0B2444"
+											strokeWidth="2"
+											strokeLinecap="round"
+										/>
 									</svg>
 								</div>
 								<h3
@@ -667,7 +714,7 @@ export default function ProfileModal() {
 												style={{
 													background: "none",
 													border: "none",
-													color: "#0058bc",
+													color: "#0B2444",
 													fontSize: "12px",
 													fontWeight: 700,
 													cursor: isAuthLoading ? "wait" : "pointer",
@@ -683,7 +730,7 @@ export default function ProfileModal() {
 												style={{
 													background: "none",
 													border: "none",
-													color: "#0058bc",
+													color: "#0B2444",
 													fontSize: "12px",
 													fontWeight: 700,
 													cursor: "pointer",
@@ -707,7 +754,7 @@ export default function ProfileModal() {
 												transition: "0.2s",
 											}}
 											onMouseEnter={(e) =>
-												(e.currentTarget.style.borderColor = "#93c5fd")
+												(e.currentTarget.style.borderColor = "#1A8C7A")
 											}
 											onMouseLeave={(e) =>
 												(e.currentTarget.style.borderColor = "#cbd5e1")
@@ -736,7 +783,7 @@ export default function ProfileModal() {
 												htmlFor="resume"
 												style={{
 													cursor: isAuthLoading ? "wait" : "pointer",
-													color: "#0058bc",
+													color: "#0B2444",
 													fontWeight: 800,
 													fontSize: "14px",
 													display: "flex",
@@ -769,7 +816,7 @@ export default function ProfileModal() {
 										disabled={isAuthLoading}
 										style={{
 											width: "100%",
-											background: isAuthLoading ? "#94a3b8" : "#0058bc",
+											background: isAuthLoading ? "#94a3b8" : "#0B2444",
 											color: "white",
 											border: "none",
 											padding: "16px",
@@ -778,7 +825,7 @@ export default function ProfileModal() {
 											fontWeight: 800,
 											cursor: isAuthLoading ? "wait" : "pointer",
 											marginTop: "1.5rem",
-											boxShadow: "0 4px 12px rgba(0, 88, 188, 0.2)",
+											boxShadow: "0 4px 12px rgba(11, 36, 68, 0.2)",
 											transition: "0.2s",
 										}}
 										onMouseEnter={(e) =>
@@ -814,7 +861,7 @@ export default function ProfileModal() {
 												setView(view === "signup" ? "login" : "signup")
 											}
 											style={{
-												color: "#0058bc",
+												color: "#1A8C7A",
 												fontWeight: 800,
 												cursor: "pointer",
 											}}
@@ -839,7 +886,7 @@ export default function ProfileModal() {
 										disabled={isAuthLoading}
 										style={{
 											width: "100%",
-											background: isAuthLoading ? "#94a3b8" : "#0058bc",
+											background: isAuthLoading ? "#94a3b8" : "#0B2444",
 											color: "white",
 											border: "none",
 											padding: "16px",
@@ -847,7 +894,7 @@ export default function ProfileModal() {
 											fontSize: "15px",
 											fontWeight: 800,
 											cursor: isAuthLoading ? "wait" : "pointer",
-											boxShadow: "0 4px 12px rgba(0, 88, 188, 0.2)",
+											boxShadow: "0 4px 12px rgba(11, 36, 68, 0.2)",
 											transition: "0.2s",
 										}}
 									>
@@ -911,7 +958,7 @@ export default function ProfileModal() {
 													width: "64px",
 													height: "64px",
 													borderRadius: "50%",
-													background: "#0058bc",
+													background: "#0B2444",
 													color: "white",
 													display: "flex",
 													alignItems: "center",
@@ -919,7 +966,7 @@ export default function ProfileModal() {
 													fontWeight: 900,
 													fontSize: "24px",
 													overflow: "hidden",
-													boxShadow: "0 4px 12px rgba(0, 88, 188, 0.2)",
+													boxShadow: "0 4px 12px rgba(11, 36, 68, 0.2)",
 													cursor: "pointer",
 													opacity: isUploadingAvatar ? 0.6 : 1,
 												}}
@@ -961,7 +1008,7 @@ export default function ProfileModal() {
 													height="12"
 													viewBox="0 0 24 24"
 													fill="none"
-													stroke="#0058bc"
+													stroke="#1A8C7A"
 													strokeWidth="2.5"
 												>
 													<path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
@@ -1091,9 +1138,9 @@ export default function ProfileModal() {
 												onClick={() => updateCvRef.current?.click()}
 												disabled={isUploadingResume}
 												style={{
-													background: "#eff6ff",
-													color: "#0058bc",
-													border: "1px solid #bfdbfe",
+													background: "#e6fcf5",
+													color: "#1A8C7A",
+													border: "1px solid #a7f3d0",
 													padding: "8px 14px",
 													borderRadius: "8px",
 													fontSize: "12px",
@@ -1140,7 +1187,7 @@ export default function ProfileModal() {
 															key={idx}
 															style={{
 																background: "white",
-																color: "#0058bc",
+																color: "#0B2444",
 																border: "1px solid #e2e8f0",
 																padding: "6px 12px",
 																borderRadius: "8px",

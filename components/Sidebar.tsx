@@ -358,25 +358,44 @@ export default function Sidebar() {
 					__html: `
           .sidebar-wrapper { width: 260px; height: 100vh; flex-shrink: 0; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 9999; position: relative; } 
           .mobile-close-btn { display: none !important; } 
-          @keyframes radarPulse { 0% { transform: scale(1); opacity: 0.8; } 100% { transform: scale(2.5); opacity: 0; } } 
-          .radar-ring { transform-origin: 12px 12px; animation: radarPulse 2s infinite ease-out; } 
+          
+          /* 🚀 REFINED DYNAMIC LOGO BRAND ANIMATIONS */
+          @keyframes radarPulse { 
+            0%, 100% { opacity: 1; transform: scale(1); } 
+            50% { opacity: 0.5; transform: scale(1.45); } 
+          } 
+          @keyframes shinePulse { 
+            0%, 100% { opacity: 0.3; transform: scale(0.8); } 
+            50% { opacity: 1; transform: scale(1.2); } 
+          } 
+          @keyframes taglineRipple {
+            0% { transform: scale(1); opacity: 0.8; }
+            100% { transform: scale(2.8); opacity: 0; }
+          }
+
+          .animated-specimen { transform-origin: 26px 22px; animation: radarPulse 2s ease-in-out infinite; }
+          .animated-lens-shine { transform-origin: 21.5px 17.5px; animation: shinePulse 2s ease-in-out infinite; }
+          
+          .tagline-status-dot { position: relative; width: 5px; height: 5px; border-radius: 50%; background: #22B89F; box-shadow: 0 0 6px #22B89F; display: block; flex-shrink: 0; }
+          .tagline-status-dot::after { content: ''; position: absolute; inset: 0; border-radius: 50%; background: transparent; border: 1.5px solid #22B89F; animation: taglineRipple 2s ease-out infinite; }
+
           @keyframes spin { 100% { transform: rotate(360deg); } } 
           @media (max-width: 768px) { .mobile-close-btn { display: flex !important; margin-left: auto; } .sidebar-wrapper { position: fixed; top: 0; left: 0; transform: translateX(-100%); background: rgba(255, 255, 255, 0.95) !important; boxShadow: 20px 0 50px rgba(0,0,0,0.1); } .sidebar-wrapper.mobile-open { transform: translateX(0); } }
           
           .premium-btn {
             position: relative;
             overflow: hidden;
-            background: linear-gradient(270deg, #0058bc, #0ea5e9, #38bdf8, #0058bc);
+            background: linear-gradient(270deg, #0B2444, #1A8C7A, #22B89F, #0B2444);
             background-size: 300% 300%;
             animation: gradientShift 6s ease infinite;
             border: none;
             color: white;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);
+            box-shadow: 0 4px 15px rgba(26, 140, 122, 0.3);
           }
           .premium-btn:hover {
             transform: translateY(-3px) scale(1.02);
-            box-shadow: 0 8px 25px rgba(14, 165, 233, 0.5);
+            box-shadow: 0 8px 25px rgba(26, 140, 122, 0.5);
           }
           .premium-btn::after {
             content: "";
@@ -449,101 +468,155 @@ export default function Sidebar() {
 
 				<div
 					style={{
-						height: "80px",
-						padding: "0 1.5rem",
+						height: "110px",
+						padding: "0 1rem",
 						display: "flex",
-						justifyContent: "space-between",
-						alignItems: "center",
+						alignItems: "flex-start",
+						paddingTop: "24px",
 					}}
 				>
 					<div
 						style={{
 							display: "flex",
-							alignItems: "center",
-							gap: "12px",
+							alignItems: "flex-start",
+							gap: "6px",
 							width: "100%",
 						}}
 					>
+						{/* 🔬 UP-SCALED MICROSCOPE MARK */}
 						<div
 							style={{
-								background: "linear-gradient(135deg, #0058bc 0%, #0ea5e9 100%)",
-								minWidth: "36px",
-								height: "36px",
-								borderRadius: "10px",
+								width: "48px",
+								height: "48px",
+								flexShrink: 0,
 								display: "flex",
 								alignItems: "center",
 								justifyContent: "center",
-								boxShadow: "0 4px 14px rgba(0, 88, 188, 0.3)",
+								marginLeft: "-4px",
+								marginTop: "2px",
 							}}
 						>
 							<svg
-								width="24"
-								height="24"
-								viewBox="0 0 24 24"
+								width="100%"
+								height="100%"
+								viewBox="0 0 56 56"
 								fill="none"
 								xmlns="http://www.w3.org/2000/svg"
 							>
-								<path
-									d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"
-									stroke="white"
-									strokeWidth="2"
-									strokeLinejoin="round"
-								/>
-								<circle cx="12" cy="12" r="2.5" fill="#22c55e" />
 								<circle
-									className="radar-ring"
-									cx="12"
-									cy="12"
-									r="2.5"
-									fill="#22c55e"
+									cx="26"
+									cy="22"
+									r="13.5"
+									stroke="#0B2444"
+									strokeWidth="2.5"
+								/>
+								<path
+									d="M34.5 13.5 A13.5 13.5 0 0 1 39 22"
+									stroke="#1A8C7A"
+									strokeWidth="2.5"
+									strokeLinecap="round"
+								/>
+								<circle
+									cx="26"
+									cy="22"
+									r="3.5"
+									fill="#1A8C7A"
+									className="animated-specimen"
+								/>
+								<circle
+									cx="21.5"
+									cy="17.5"
+									r="1.5"
+									fill="#22B89F"
+									opacity="0.5"
+									className="animated-lens-shine"
+								/>
+								<line
+									x1="26"
+									y1="35.5"
+									x2="26"
+									y2="43"
+									stroke="#0B2444"
+									strokeWidth="2.5"
+									strokeLinecap="round"
+								/>
+								<line
+									x1="17"
+									y1="43"
+									x2="35"
+									y2="43"
+									stroke="#0B2444"
+									strokeWidth="2.5"
+									strokeLinecap="round"
+								/>
+								<line
+									x1="18.5"
+									y1="43"
+									x2="18.5"
+									y2="47"
+									stroke="#0B2444"
+									strokeWidth="2"
+									strokeLinecap="round"
+								/>
+								<line
+									x1="33.5"
+									y1="43"
+									x2="33.5"
+									y2="47"
+									stroke="#0B2444"
+									strokeWidth="2"
+									strokeLinecap="round"
 								/>
 							</svg>
 						</div>
-						<div style={{ flex: 1 }}>
-							<h1
+
+						{/* 🏷️ MASTER BRAND TYPOGRAPHY BLOCK */}
+						<div
+							style={{
+								display: "flex",
+								flexDirection: "column",
+								alignItems: "flex-start",
+								lineHeight: 1,
+							}}
+						>
+							<div
 								style={{
-									margin: 0,
-									fontSize: "20px",
-									fontWeight: 900,
-									letterSpacing: "-0.5px",
+									fontFamily: "'Fraunces', serif",
+									fontSize: "32px",
+									fontWeight: 600,
+									letterSpacing: "-0.03em",
+									color: "#0B2444",
+									lineHeight: "1",
 								}}
 							>
-								<span style={{ color: "#0f172a" }}>Bench</span>
-								<span style={{ color: "#0058bc" }}>Scout</span>
-							</h1>
+								Bench<span style={{ color: "#1A8C7A" }}>Scout</span>
+							</div>
 							<div
 								style={{
 									display: "flex",
 									alignItems: "center",
-									justifyContent: "space-between",
-									marginTop: "2px",
+									gap: "6px",
+									marginTop: "6px",
+									whiteSpace: "nowrap",
 								}}
 							>
 								<span
 									style={{
-										fontSize: "10px",
-										color: "#64748b",
-										fontWeight: 800,
-										letterSpacing: "1.5px",
-										lineHeight: "1",
-										display: "block",
+										fontFamily: "'DM Sans', sans-serif",
+										fontSize: "9px",
+										fontWeight: 600,
+										letterSpacing: "0.22em",
+										textTransform: "uppercase",
+										color: "#4A6080",
+										whiteSpace: "nowrap",
 									}}
 								>
-									YOUR MLS CAREER HUB
+									Your MLS Career Hub
 								</span>
-								<span
-									style={{
-										width: "6px",
-										height: "6px",
-										borderRadius: "50%",
-										background: "#22c55e",
-										boxShadow: "0 0 8px #22c55e",
-										display: "block",
-										flexShrink: 0,
-									}}
-								></span>
+								<span className="tagline-status-dot"></span>
 							</div>
 						</div>
+
 						<button
 							onClick={() => setIsMobileOpen(false)}
 							className="mobile-close-btn"
@@ -557,6 +630,7 @@ export default function Sidebar() {
 								justifyContent: "center",
 								color: "#64748b",
 								padding: 0,
+								marginTop: "4px",
 							}}
 						>
 							<svg
@@ -573,6 +647,7 @@ export default function Sidebar() {
 						</button>
 					</div>
 				</div>
+
 				<nav style={{ flex: 1, padding: "0 1rem", overflowY: "auto" }}>
 					{menuItems.map((item) => {
 						const isActive = pathname === item.path;
@@ -598,12 +673,18 @@ export default function Sidebar() {
 										boxShadow: isActive
 											? "0 4px 12px rgba(0,0,0,0.03)"
 											: "none",
-										color: isActive ? "#0058bc" : "#64748b",
+										color: isActive ? "#0B2444" : "#4A6080",
 										fontWeight: isActive ? 800 : 600,
 										transition: "all 0.2s",
 									}}
 								>
-									<span style={{ marginRight: "12px", display: "flex" }}>
+									<span
+										style={{
+											marginRight: "12px",
+											display: "flex",
+											color: isActive ? "#1A8C7A" : "inherit",
+										}}
+									>
 										{item.icon}
 									</span>
 									<span style={{ flex: 1 }}>{item.name}</span>
@@ -613,16 +694,16 @@ export default function Sidebar() {
 												background: isActive
 													? "rgba(255,255,255,0.9)"
 													: item.badge === "NEW"
-														? "rgba(220, 252, 231, 0.8)"
+														? "rgba(34, 184, 159, 0.15)"
 														: "rgba(241, 245, 249, 0.8)",
 												padding: "2px 8px",
 												borderRadius: "12px",
 												fontSize: "11px",
 												fontWeight: 800,
 												color: isActive
-													? "#0058bc"
+													? "#1A8C7A"
 													: item.badge === "NEW"
-														? "#15803d"
+														? "#1A8C7A"
 														: "#94a3b8",
 											}}
 										>
@@ -634,42 +715,47 @@ export default function Sidebar() {
 						);
 					})}
 				</nav>
+
 				<div
 					style={{
 						padding: "1.5rem",
 						display: "flex",
 						flexDirection: "column",
-						gap: "1rem",
+						gap: "0.75rem",
 					}}
 				>
+					{/* 🚀 QUICK SCAN BUTTON: Slimmed width down to 80%, centered, and pushed upwards */}
 					<button
 						onClick={handleQuickScan}
 						disabled={isScanning || !user}
 						style={{
-							width: "100%",
+							width: "80%",
+							alignSelf: "center",
 							background: isScanning
-								? "rgba(0, 88, 188, 0.1)"
-								: "rgba(0, 88, 188, 0.05)",
-							color: "#0058bc",
-							border: "1px solid rgba(0, 88, 188, 0.2)",
-							padding: "10px",
-							borderRadius: "10px",
-							fontWeight: 800,
-							fontSize: "13px",
+								? "rgba(26, 140, 122, 0.1)"
+								: "rgba(26, 140, 122, 0.05)",
+							color: "#1A8C7A",
+							border: "1px solid rgba(26, 140, 122, 0.15)",
+							padding: "7px 10px",
+							borderRadius: "8px",
+							fontWeight: 700,
+							fontSize: "12px",
 							cursor: isScanning || !user ? "not-allowed" : "pointer",
 							display: "flex",
 							alignItems: "center",
 							justifyContent: "center",
-							gap: "8px",
+							gap: "6px",
 							transition: "all 0.2s",
 							opacity: user ? 1 : 0.5,
+							marginBottom:
+								"16px" /* Increased padding shield to clear click triggers */,
 						}}
 					>
 						{isScanning ? (
 							<>
 								<svg
-									width="14"
-									height="14"
+									width="12"
+									height="12"
 									viewBox="0 0 24 24"
 									fill="none"
 									stroke="currentColor"
@@ -683,8 +769,8 @@ export default function Sidebar() {
 						) : (
 							<>
 								<svg
-									width="14"
-									height="14"
+									width="12"
+									height="12"
 									viewBox="0 0 24 24"
 									fill="none"
 									stroke="currentColor"
@@ -713,6 +799,7 @@ export default function Sidebar() {
 							alignItems: "center",
 							cursor: "pointer",
 							transition: "transform 0.2s",
+							marginTop: "4px",
 						}}
 						onMouseEnter={(e) =>
 							(e.currentTarget.style.transform = "translateX(4px)")
@@ -726,7 +813,7 @@ export default function Sidebar() {
 								width: "40px",
 								height: "40px",
 								borderRadius: "50%",
-								background: "#0058bc",
+								background: "#0B2444",
 								color: "white",
 								display: "flex",
 								alignItems: "center",
@@ -736,7 +823,7 @@ export default function Sidebar() {
 								marginRight: "12px",
 								overflow: "hidden",
 								flexShrink: 0,
-								boxShadow: "0 4px 10px rgba(0, 88, 188, 0.2)",
+								boxShadow: "0 4px 10px rgba(11, 36, 68, 0.2)",
 							}}
 						>
 							{avatar ? (

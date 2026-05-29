@@ -262,7 +262,6 @@ const EmailIcon = ({ size = 24, stroke = 2.5 }) => (
 	</svg>
 );
 
-// 🚀 NEW ICONS FOR EXTENDED PRODUCTION FEATURES
 const ShieldComplianceIcon = ({ size = 24, stroke = 2.5 }) => (
 	<svg
 		width={size}
@@ -435,7 +434,7 @@ export default function HomePage() {
                inset: 0;
                border-radius: 16px;
                padding: 2px;
-               background: linear-gradient(60deg, #0058bc, #0ea5e9, #bae6fd, #0ea5e9, #0058bc);
+               background: linear-gradient(60deg, #0B2444, #1A8C7A, #22B89F, #1A8C7A, #0B2444);
                background-size: 300% 300%;
                -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
                -webkit-mask-composite: xor;
@@ -460,32 +459,27 @@ export default function HomePage() {
 
             .premium-feature-card:hover {
                transform: translateY(-8px);
-               box-shadow: 0 15px 45px rgba(0, 88, 188, 0.1);
+               box-shadow: 0 15px 45px rgba(11, 36, 68, 0.1);
             }
-            .premium-feature-card:hover::before,
-            .premium-feature-card:hover::after {
-               opacity: 1;
-            }
-
             .premium-feature-card:hover h3 {
-               color: #0058bc !important;
+               color: #1A8C7A !important;
             }
             .premium-feature-card:hover svg {
                transform: scale(1.1);
-               color: #0058bc !important;
+               color: #1A8C7A !important;
                transition: transform 0.4s ease, color 0.4s ease;
             }
             
             .explore-cta-button {
                 transition: all 0.3s ease;
-                background: #0058bc !important; 
-                box-shadow: 0 10px 25px rgba(0, 88, 188, 0.3) !important; 
+                background: #0B2444 !important; 
+                box-shadow: 0 10px 25px rgba(11, 36, 68, 0.3) !important; 
                 font-weight: 900 !important;
             }
             .explore-cta-button:hover {
                 transform: translateY(-3px) scale(1.02);
-                background: #0ea5e9 !important; 
-                box-shadow: 0 12px 30px rgba(14, 165, 233, 0.45) !important; 
+                background: #1A8C7A !important; 
+                box-shadow: 0 12px 30px rgba(26, 140, 122, 0.45) !important; 
             }
           `,
 				}}
@@ -503,12 +497,122 @@ export default function HomePage() {
 					style={{
 						textAlign: "center",
 						marginBottom: "5rem",
-						marginTop: "3rem",
+						marginTop: "1rem",
 					}}
 				>
+					{/* 🚀 RESTORED EXACT BRAND LOGO LOCKUP FOR HERO SECTION */}
+					<div
+						style={{
+							display: "flex",
+							alignItems: "center",
+							justifyContent: "center",
+							gap: "12px",
+							marginBottom: "1.5rem",
+						}}
+					>
+						<div style={{ width: "80px", height: "80px" }}>
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 56 56"
+								fill="none"
+								width="100%"
+								height="100%"
+							>
+								<defs>
+									<style
+										dangerouslySetInnerHTML={{
+											__html: `
+                    .lens-dot { animation: lensPulse 2s ease-in-out infinite; transform-origin: 26px 22px; }
+                    .lens-shine { animation: shinePulse 2s ease-in-out infinite; }
+                    @keyframes lensPulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.45); } }
+                    @keyframes shinePulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+                  `,
+										}}
+									/>
+								</defs>
+								<circle
+									cx="26"
+									cy="22"
+									r="13.5"
+									stroke="#0B2444"
+									strokeWidth="2.5"
+								/>
+								<path
+									d="M34.5 13.5 A13.5 13.5 0 0 1 39 22"
+									stroke="#1A8C7A"
+									strokeWidth="2.5"
+									strokeLinecap="round"
+								/>
+								<circle
+									className="lens-dot"
+									cx="26"
+									cy="22"
+									r="3.5"
+									fill="#1A8C7A"
+								/>
+								<circle
+									className="lens-shine"
+									cx="21.5"
+									cy="17.5"
+									r="1.5"
+									fill="#22B89F"
+									opacity="0.5"
+								/>
+								<line
+									x1="26"
+									y1="35.5"
+									x2="26"
+									y2="43"
+									stroke="#0B2444"
+									strokeWidth="2.5"
+									strokeLinecap="round"
+								/>
+								<line
+									x1="17"
+									y1="43"
+									x2="35"
+									y2="43"
+									stroke="#0B2444"
+									strokeWidth="2.5"
+									strokeLinecap="round"
+								/>
+								<line
+									x1="18.5"
+									y1="43"
+									x2="18.5"
+									y2="47"
+									stroke="#0B2444"
+									strokeWidth="2"
+									strokeLinecap="round"
+								/>
+								<line
+									x1="33.5"
+									y1="43"
+									x2="33.5"
+									y2="47"
+									stroke="#0B2444"
+									strokeWidth="2"
+									strokeLinecap="round"
+								/>
+							</svg>
+						</div>
+						<div
+							style={{
+								fontFamily: "'Fraunces', serif",
+								fontSize: "76px" /* 🚀 INCREASED SIZE */,
+								fontWeight: 600,
+								letterSpacing: "-0.04em",
+								color: "#0B2444",
+								lineHeight: "1",
+							}}
+						>
+							Bench<span style={{ color: "#1A8C7A" }}>Scout</span>
+						</div>
+					</div>
+
 					<h1
 						style={{
-							fontSize: "4rem",
+							fontSize: "3.5rem",
 							fontWeight: 900,
 							color: "#0f172a",
 							letterSpacing: "-1.5px",
@@ -520,7 +624,7 @@ export default function HomePage() {
 						<br />
 						<span
 							style={{
-								background: "linear-gradient(90deg, #0058bc 0%, #0ea5e9 100%)",
+								background: "linear-gradient(90deg, #0B2444 0%, #1A8C7A 100%)",
 								WebkitBackgroundClip: "text",
 								WebkitTextFillColor: "transparent",
 							}}
@@ -612,13 +716,11 @@ export default function HomePage() {
 							desc: "A tailored feed aggregating MLSCN regulatory changes, career advice, and clinical practice insights.",
 							icon: NewsIcon,
 						},
-						// 🚀 NEW BALANCING CARD 1: MLSCN COMPLIANCE VAULT
 						{
 							title: "Licensure Compliance Tracker",
 							desc: "Securely upload your MLSCN practicing license. Our automated parser extracts registration meta-parameters and accurately visualizes dynamic expiry metrics.",
 							icon: ShieldComplianceIcon,
 						},
-						// 🚀 NEW BALANCING CARD 2: RECRUITMENT DIGEST PIPELINE
 						{
 							title: "Automated Digest Engine",
 							desc: "Synchronizes background tasks to bundle top high-scoring job parameter metrics, natively routing clean HTML digests straight to your inbox.",
@@ -712,7 +814,7 @@ export default function HomePage() {
 								PLATFORM WALKTHROUGH
 							</span>
 							<span
-								style={{ fontSize: "13px", fontWeight: 900, color: "#0058bc" }}
+								style={{ fontSize: "13px", fontWeight: 900, color: "#1A8C7A" }}
 							>
 								Step {tourStep} of {tourContent.length}
 							</span>
@@ -750,7 +852,7 @@ export default function HomePage() {
 						>
 							<div
 								style={{
-									color: "#0f172a",
+									color: "#0B2444",
 									minWidth: "120px",
 									display: "flex",
 									justifyContent: "center",
@@ -806,7 +908,7 @@ export default function HomePage() {
 													height: "6px",
 													borderRadius: "3px",
 													background:
-														tourStep === idx + 1 ? "#0058bc" : "#e2e8f0",
+														tourStep === idx + 1 ? "#0B2444" : "#e2e8f0",
 													transition:
 														"0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
 												}}
@@ -837,7 +939,7 @@ export default function HomePage() {
 										<button
 											onClick={handleNext}
 											style={{
-												background: "#0058bc",
+												background: "#0B2444",
 												color: "white",
 												border: "none",
 												padding: "12px 24px",

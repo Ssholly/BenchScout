@@ -494,7 +494,7 @@ export default function MatchesPage() {
 						disabled={isApplied}
 						style={{
 							background: "transparent",
-							color: isApplied ? "#94a3b8" : "#0058bc",
+							color: isApplied ? "#94a3b8" : "#0B2444",
 							border: "none",
 							fontWeight: 800,
 							fontSize: "14px",
@@ -832,7 +832,7 @@ export default function MatchesPage() {
 					style={{
 						background: "rgba(255,255,255,0.7)",
 						border: "1px solid rgba(255,255,255,0.5)",
-						color: "#0369a1",
+						color: "#0B2444",
 						padding: "10px 20px",
 						borderRadius: "8px",
 						fontSize: "14px",
@@ -929,14 +929,14 @@ export default function MatchesPage() {
 					<button
 						onClick={() => window.dispatchEvent(new Event("openProfileModal"))}
 						style={{
-							background: "#0058bc",
+							background: "#0B2444",
 							color: "white",
 							border: "none",
 							padding: "12px 24px",
 							borderRadius: "8px",
 							fontWeight: 700,
 							cursor: "pointer",
-							boxShadow: "0 4px 12px rgba(0, 88, 188, 0.2)",
+							boxShadow: "0 4px 12px rgba(11, 36, 68, 0.2)",
 						}}
 					>
 						Log In to Access
@@ -1213,7 +1213,7 @@ export default function MatchesPage() {
 									style={{
 										fontSize: "14px",
 										fontWeight: 800,
-										color: "#0058bc",
+										color: "#0B2444",
 										margin: "0 0 16px 0",
 									}}
 								>
@@ -1238,7 +1238,7 @@ export default function MatchesPage() {
 									style={{
 										fontSize: "12px",
 										fontWeight: 800,
-										color: "#0058bc",
+										color: "#1A8C7A",
 										textDecoration: "none",
 										display: "flex",
 										alignItems: "center",
@@ -1380,7 +1380,7 @@ export default function MatchesPage() {
 										style={{
 											fontSize: "40px",
 											fontWeight: 900,
-											color: "#0058bc",
+											color: "#1A8C7A",
 											lineHeight: "1",
 										}}
 									>
@@ -1408,7 +1408,7 @@ export default function MatchesPage() {
 										padding: 0,
 										fontSize: "12px",
 										fontWeight: 800,
-										color: "#0058bc",
+										color: "#0B2444",
 										textDecoration: "none",
 										display: "flex",
 										alignItems: "center",
@@ -1480,7 +1480,7 @@ export default function MatchesPage() {
 													height="20"
 													viewBox="0 0 24 24"
 													fill="none"
-													stroke="#0058bc"
+													stroke="#1A8C7A"
 													strokeWidth="2.5"
 												>
 													<path d="M22 2L11 13"></path>
@@ -1626,9 +1626,9 @@ export default function MatchesPage() {
 															download={`${doc.id}_labpro.pdf`}
 															title="Download to attach"
 															style={{
-																color: "#0058bc",
+																color: "#1A8C7A",
 																padding: "6px",
-																background: "#eff6ff",
+																background: "#e6fcf5",
 																borderRadius: "8px",
 															}}
 														>
@@ -1688,7 +1688,7 @@ export default function MatchesPage() {
 														style={{
 															background: "none",
 															border: "none",
-															color: "#0058bc",
+															color: "#0B2444",
 															fontSize: "12px",
 															fontWeight: 700,
 															cursor: isGeneratingLetter ? "wait" : "pointer",
@@ -1719,7 +1719,7 @@ export default function MatchesPage() {
 														style={{
 															background: "none",
 															border: "none",
-															color: "#0058bc",
+															color: "#0B2444",
 															fontSize: "12px",
 															fontWeight: 700,
 															cursor: "pointer",
@@ -1757,8 +1757,8 @@ export default function MatchesPage() {
 														height: "100%",
 														minHeight: "180px",
 														borderRadius: "12px",
-														border: "1px dashed #0058bc",
-														background: "rgba(0, 88, 188, 0.05)",
+														border: "1px dashed #1A8C7A",
+														background: "rgba(26, 140, 122, 0.05)",
 														display: "flex",
 														flexDirection: "column",
 														alignItems: "center",
@@ -1775,7 +1775,7 @@ export default function MatchesPage() {
 														style={{
 															animation: "spin 1s linear infinite",
 															border: "3px solid #e2e8f0",
-															borderTop: "3px solid #0058bc",
+															borderTop: "3px solid #1A8C7A",
 															borderRadius: "50%",
 															width: "24px",
 															height: "24px",
@@ -1784,7 +1784,7 @@ export default function MatchesPage() {
 													<span
 														style={{
 															fontSize: "13px",
-															color: "#0058bc",
+															color: "#1A8C7A",
 															fontWeight: 700,
 														}}
 													>
@@ -1837,7 +1837,7 @@ export default function MatchesPage() {
 										<button
 											onClick={executeFinalApply}
 											style={{
-												background: "#0058bc",
+												background: "#0B2444",
 												color: "white",
 												border: "none",
 												padding: "12px 24px",
@@ -1848,7 +1848,7 @@ export default function MatchesPage() {
 												display: "flex",
 												alignItems: "center",
 												gap: "8px",
-												boxShadow: "0 4px 12px rgba(0, 88, 188, 0.2)",
+												boxShadow: "0 4px 12px rgba(11, 36, 68, 0.2)",
 											}}
 										>
 											Proceed to Job Board{" "}
@@ -1987,33 +1987,112 @@ export default function MatchesPage() {
 												boxShadow: "0 4px 10px -2px rgba(0, 0, 0, 0.02)",
 											}}
 										>
+											{/* 🚀 FIXED BRAND LOGO FOR PREVIEW EMAIL */}
 											<div
 												style={{
 													textAlign: "center",
 													marginBottom: "2rem",
 													borderBottom: "2px solid #f1f5f9",
 													paddingBottom: "1.5rem",
+													display: "flex",
+													flexDirection: "column",
+													alignItems: "center",
 												}}
 											>
+												<div
+													style={{
+														width: "48px",
+														height: "48px",
+														marginBottom: "8px",
+													}}
+												>
+													<svg
+														width="100%"
+														height="100%"
+														viewBox="0 0 56 56"
+														fill="none"
+														xmlns="http://www.w3.org/2000/svg"
+													>
+														<circle
+															cx="26"
+															cy="22"
+															r="13.5"
+															stroke="#0B2444"
+															strokeWidth="2.5"
+														/>
+														<path
+															d="M34.5 13.5 A13.5 13.5 0 0 1 39 22"
+															stroke="#1A8C7A"
+															strokeWidth="2.5"
+															strokeLinecap="round"
+														/>
+														<circle cx="26" cy="22" r="3.5" fill="#1A8C7A" />
+														<circle
+															cx="21.5"
+															cy="17.5"
+															r="1.5"
+															fill="#22B89F"
+															opacity="0.5"
+														/>
+														<line
+															x1="26"
+															y1="35.5"
+															x2="26"
+															y2="43"
+															stroke="#0B2444"
+															strokeWidth="2.5"
+															strokeLinecap="round"
+														/>
+														<line
+															x1="17"
+															y1="43"
+															x2="35"
+															y2="43"
+															stroke="#0B2444"
+															strokeWidth="2.5"
+															strokeLinecap="round"
+														/>
+														<line
+															x1="18.5"
+															y1="43"
+															x2="18.5"
+															y2="47"
+															stroke="#0B2444"
+															strokeWidth="2"
+															strokeLinecap="round"
+														/>
+														<line
+															x1="33.5"
+															y1="43"
+															x2="33.5"
+															y2="47"
+															stroke="#0B2444"
+															strokeWidth="2"
+															strokeLinecap="round"
+														/>
+													</svg>
+												</div>
 												<h1
 													style={{
 														margin: 0,
-														fontSize: "24px",
-														fontWeight: 900,
-														letterSpacing: "-0.5px",
+														fontFamily: "'Fraunces', serif",
+														fontSize: "26px",
+														fontWeight: 600,
+														letterSpacing: "-0.03em",
+														color: "#0B2444",
 													}}
 												>
-													<span style={{ color: "#0f172a" }}>Bench</span>
-													<span style={{ color: "#0058bc" }}>Scout</span>
+													Bench<span style={{ color: "#1A8C7A" }}>Scout</span>
 												</h1>
 												<p
 													style={{
 														margin: "4px 0 0 0",
-														color: "#64748b",
-														fontSize: "13px",
+														color: "#4A6080",
+														fontSize: "11px",
 														textTransform: "uppercase",
 														letterSpacing: "2px",
-														fontWeight: 800,
+														fontWeight: 600,
+														fontFamily: "'DM Sans', sans-serif",
 													}}
 												>
 													Job Digest
