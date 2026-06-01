@@ -17,7 +17,6 @@ export default function SalaryIntelligencePage() {
 	const [mounted, setMounted] = useState(false);
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-	// 🚀 Initializing with the fallback
 	const [liveTier1Salary, setLiveTier1Salary] = useState("₦350k");
 
 	const [salaryData, setSalaryData] = useState<SalaryData>({
@@ -106,7 +105,6 @@ export default function SalaryIntelligencePage() {
 					}
 				});
 
-				// 🚀 THE FIX: Properly applying the fallback if salCount is 0
 				if (salCount > 0) {
 					setLiveTier1Salary(`₦${Math.round(totalSal / salCount / 1000)}k`);
 				} else {
@@ -300,14 +298,14 @@ export default function SalaryIntelligencePage() {
 					<button
 						onClick={() => window.dispatchEvent(new Event("openProfileModal"))}
 						style={{
-							background: "#0058bc",
+							background: "#0B2444", // 🚀 BRANDED BUTTON
 							color: "white",
 							border: "none",
 							padding: "12px 24px",
 							borderRadius: "8px",
 							fontWeight: 700,
 							cursor: "pointer",
-							boxShadow: "0 4px 12px rgba(0, 88, 188, 0.2)",
+							boxShadow: "0 4px 12px rgba(11, 36, 68, 0.2)",
 						}}
 					>
 						Log In to Access
@@ -319,7 +317,6 @@ export default function SalaryIntelligencePage() {
 						className="mobile-stack"
 						style={{ display: "flex", gap: "1.5rem", marginBottom: "2rem" }}
 					>
-						{/* 🚀 Tier 1 Dynamic Salary Card */}
 						<div
 							style={{
 								flex: 1,
@@ -328,7 +325,7 @@ export default function SalaryIntelligencePage() {
 								borderRadius: "20px",
 								border: "1px solid rgba(255,255,255,0.9)",
 								padding: "2.5rem 2rem",
-								boxShadow: "0 10px 30px -10px rgba(0,88,188,0.1)",
+								boxShadow: "0 10px 30px -10px rgba(11, 36, 68, 0.1)", // 🚀 BRANDED SHADOW
 								display: "flex",
 								flexDirection: "column",
 								justifyContent: "center",
@@ -375,11 +372,11 @@ export default function SalaryIntelligencePage() {
 									style={{
 										fontSize: "13px",
 										fontWeight: 800,
-										color: "#15803d",
+										color: "#1A8C7A", // 🚀 BRANDED TEAL
 										display: "flex",
 										alignItems: "center",
 										gap: "4px",
-										background: "#dcfce7",
+										background: "#e6fcf5", // 🚀 BRANDED TEAL BG
 										padding: "4px 10px",
 										borderRadius: "20px",
 									}}
@@ -412,7 +409,6 @@ export default function SalaryIntelligencePage() {
 							</p>
 						</div>
 
-						{/* General Industry Mixed Card */}
 						<div
 							style={{
 								flex: 1,
@@ -458,7 +454,7 @@ export default function SalaryIntelligencePage() {
 								}}
 							>
 								Aggregated from{" "}
-								<strong style={{ color: "#0058bc" }}>
+								<strong style={{ color: "#1A8C7A" }}>
 									{salaryData.count || 0}
 								</strong>{" "}
 								verified market sources and anonymous submissions.
@@ -490,13 +486,13 @@ export default function SalaryIntelligencePage() {
 									style={{
 										width: "48px",
 										height: "48px",
-										background: "#dcfce7",
+										background: "#e6fcf5", // 🚀 BRANDED TEAL BG
 										borderRadius: "50%",
 										display: "flex",
 										alignItems: "center",
 										justifyContent: "center",
 										margin: "0 auto 16px auto",
-										color: "#15803d",
+										color: "#1A8C7A", // 🚀 BRANDED TEAL
 									}}
 								>
 									<svg
@@ -691,14 +687,14 @@ export default function SalaryIntelligencePage() {
 									style={{
 										marginTop: "1.25rem",
 										padding: "12px 32px",
-										background: "#0058bc",
+										background: "#0B2444", // 🚀 BRANDED BUTTON
 										border: "none",
 										borderRadius: "10px",
 										color: "white",
 										fontWeight: 800,
 										fontSize: "14px",
 										cursor: isSubmitting ? "wait" : "pointer",
-										boxShadow: "0 4px 12px rgba(0, 88, 188, 0.2)",
+										boxShadow: "0 4px 12px rgba(11, 36, 68, 0.2)",
 									}}
 								>
 									{isSubmitting
@@ -828,7 +824,7 @@ export default function SalaryIntelligencePage() {
 													style={{
 														padding: "16px 10px",
 														fontWeight: 900,
-														color: "#15803d",
+														color: "#1A8C7A", // 🚀 BRANDED TABLE TEXT
 														fontSize: "15px",
 														textAlign: "right",
 													}}

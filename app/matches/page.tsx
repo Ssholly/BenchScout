@@ -5,14 +5,14 @@ import { createPortal } from "react-dom";
 const getAvatarStyle = (companyName: string) => {
 	const char = companyName.charAt(0).toUpperCase();
 	const colors: Record<string, { bg: string; text: string }> = {
-		A: { bg: "#e0f2fe", text: "#0284c7" },
+		A: { bg: "#e6fcf5", text: "#1A8C7A" },
 		E: { bg: "#f3e8ff", text: "#7e22ce" },
 		H: { bg: "#dcfce7", text: "#15803d" },
 		M: { bg: "#ffedd5", text: "#c2410c" },
 		P: { bg: "#e0e7ff", text: "#4338ca" },
 		S: { bg: "#fee2e2", text: "#b91c1c" },
 	};
-	return colors[char] || { bg: "#f1f5f9", text: "#475569" };
+	return colors[char] || { bg: "#f1f5f9", text: "#4A6080" };
 };
 
 type VaultDoc = {
@@ -23,33 +23,6 @@ type VaultDoc = {
 	uploadedAt: string | null;
 	base64: string | null;
 };
-
-const DEFAULT_DOCS: VaultDoc[] = [
-	{
-		id: "cv",
-		name: "Master Curriculum Vitae",
-		type: "PDF",
-		size: "-",
-		uploadedAt: null,
-		base64: null,
-	},
-	{
-		id: "license",
-		name: "MLSCN Practicing License",
-		type: "PDF / Image",
-		size: "-",
-		uploadedAt: null,
-		base64: null,
-	},
-	{
-		id: "degree",
-		name: "B.MLS Degree Certificate",
-		type: "PDF / Image",
-		size: "-",
-		uploadedAt: null,
-		base64: null,
-	},
-];
 
 export default function MatchesPage() {
 	const [mounted, setMounted] = useState(false);
@@ -62,7 +35,7 @@ export default function MatchesPage() {
 	const [activeFilter, setActiveFilter] = useState<string | null>(null);
 	const [showLinkModal, setShowLinkModal] = useState(false);
 	const [toolkitJob, setToolkitJob] = useState<any | null>(null);
-	const [vaultDocs, setVaultDocs] = useState<VaultDoc[]>(DEFAULT_DOCS);
+	const [vaultDocs, setVaultDocs] = useState<VaultDoc[]>([]);
 
 	const [coverLetter, setCoverLetter] = useState("");
 	const [isGeneratingLetter, setIsGeneratingLetter] = useState(false);
@@ -81,11 +54,70 @@ export default function MatchesPage() {
 
 	const loadData = () => {
 		const activeEmail = localStorage.getItem("labpro_active_user");
+		const careerPhase =
+			localStorage.getItem("labpro_career_phase") || "licensed";
+
+		// 🚀 DYNAMIC INTERNSHIP VAULT TOGGLE
+		const initialDocs: VaultDoc[] =
+			careerPhase === "internship"
+				? [
+						{
+							id: "cv",
+							name: "Master Curriculum Vitae",
+							type: "PDF",
+							size: "-",
+							uploadedAt: null,
+							base64: null,
+						},
+						{
+							id: "provisional",
+							name: "MLSCN Provisional License",
+							type: "PDF / Image",
+							size: "-",
+							uploadedAt: null,
+							base64: null,
+						},
+						{
+							id: "result",
+							name: "B.MLS Statement of Result",
+							type: "PDF / Image",
+							size: "-",
+							uploadedAt: null,
+							base64: null,
+						},
+					]
+				: [
+						{
+							id: "cv",
+							name: "Master Curriculum Vitae",
+							type: "PDF",
+							size: "-",
+							uploadedAt: null,
+							base64: null,
+						},
+						{
+							id: "license",
+							name: "MLSCN Practicing License",
+							type: "PDF / Image",
+							size: "-",
+							uploadedAt: null,
+							base64: null,
+						},
+						{
+							id: "degree",
+							name: "B.MLS Degree Certificate",
+							type: "PDF / Image",
+							size: "-",
+							uploadedAt: null,
+							base64: null,
+						},
+					];
+
 		if (!activeEmail) {
 			setIsUserLoggedIn(false);
 			setJobs([]);
 			setAppliedJobs([]);
-			setVaultDocs(DEFAULT_DOCS);
+			setVaultDocs(initialDocs);
 			setIsLoading(false);
 			return;
 		}
@@ -131,7 +163,7 @@ export default function MatchesPage() {
 			.then((res) => res.json())
 			.then((data) => {
 				if (data.success && data.user) {
-					const updatedDocs = [...DEFAULT_DOCS];
+					const updatedDocs = [...initialDocs];
 					if (data.user.resumeUrl)
 						updatedDocs[0] = {
 							...updatedDocs[0],
@@ -139,20 +171,38 @@ export default function MatchesPage() {
 							size: "Secure",
 							uploadedAt: "Cloud",
 						};
-					if (data.user.licenseUrl)
-						updatedDocs[1] = {
-							...updatedDocs[1],
-							base64: data.user.licenseUrl,
-							size: "Secure",
-							uploadedAt: "Cloud",
-						};
-					if (data.user.degreeUrl)
-						updatedDocs[2] = {
-							...updatedDocs[2],
-							base64: data.user.degreeUrl,
-							size: "Secure",
-							uploadedAt: "Cloud",
-						};
+
+					if (careerPhase === "internship") {
+						if (data.user.provisionalUrl)
+							updatedDocs[1] = {
+								...updatedDocs[1],
+								base64: data.user.provisionalUrl,
+								size: "Secure",
+								uploadedAt: "Cloud",
+							};
+						if (data.user.statementOfResultUrl)
+							updatedDocs[2] = {
+								...updatedDocs[2],
+								base64: data.user.statementOfResultUrl,
+								size: "Secure",
+								uploadedAt: "Cloud",
+							};
+					} else {
+						if (data.user.licenseUrl)
+							updatedDocs[1] = {
+								...updatedDocs[1],
+								base64: data.user.licenseUrl,
+								size: "Secure",
+								uploadedAt: "Cloud",
+							};
+						if (data.user.degreeUrl)
+							updatedDocs[2] = {
+								...updatedDocs[2],
+								base64: data.user.degreeUrl,
+								size: "Secure",
+								uploadedAt: "Cloud",
+							};
+					}
 					setVaultDocs(updatedDocs);
 				}
 			})
@@ -451,8 +501,8 @@ export default function MatchesPage() {
 								<span
 									key={i}
 									style={{
-										background: "rgba(240, 249, 255, 0.8)",
-										color: "#0284c7",
+										background: "rgba(26, 140, 122, 0.1)",
+										color: "#1A8C7A",
 										padding: "4px 10px",
 										borderRadius: "6px",
 										fontSize: "10.5px",
@@ -469,7 +519,7 @@ export default function MatchesPage() {
 				<td data-label="Match Score" style={{ padding: "1.25rem 1rem" }}>
 					<span
 						style={{
-							border: `2px solid ${j.tier === 1 ? "#22c55e" : j.tier === 2 ? "#0284c7" : "#94a3b8"}`,
+							border: `2px solid ${j.tier === 1 ? "#1A8C7A" : j.tier === 2 ? "#0B2444" : "#94a3b8"}`,
 							borderRadius: "50%",
 							width: "40px",
 							height: "40px",
@@ -479,7 +529,7 @@ export default function MatchesPage() {
 							fontWeight: 800,
 							fontSize: "15px",
 							color:
-								j.tier === 1 ? "#22c55e" : j.tier === 2 ? "#0284c7" : "#94a3b8",
+								j.tier === 1 ? "#1A8C7A" : j.tier === 2 ? "#0B2444" : "#94a3b8",
 						}}
 					>
 						{j.score}
@@ -798,24 +848,18 @@ export default function MatchesPage() {
 									display: "flex",
 									alignItems: "center",
 									gap: "6px",
-									background: "#e0f2fe",
-									color: "#0284c7",
+									background: "#e6fcf5",
+									color: "#1A8C7A",
 									padding: "4px 10px",
 									borderRadius: "20px",
 									fontSize: "11px",
 									fontWeight: 800,
 									letterSpacing: "0.5px",
 									cursor: "pointer",
-									border: "1px solid #bae6fd",
+									border: "1px solid #a7f3d0",
 									transition: "0.2s",
 								}}
 								onClick={clearFilter}
-								onMouseEnter={(e) =>
-									(e.currentTarget.style.background = "#bae6fd")
-								}
-								onMouseLeave={(e) =>
-									(e.currentTarget.style.background = "#e0f2fe")
-								}
 								title="Clear Filter"
 							>
 								{activeFilter} ✕
@@ -968,7 +1012,6 @@ export default function MatchesPage() {
 									style={{
 										background: "rgba(255, 255, 255, 0.5)",
 										backdropFilter: "blur(24px)",
-										WebkitBackdropFilter: "blur(24px)",
 										borderRadius: "16px",
 										border: "1px solid rgba(255, 255, 255, 0.3)",
 										overflow: "hidden",
@@ -1052,7 +1095,7 @@ export default function MatchesPage() {
 									>
 										<span
 											style={{
-												background: "#15803d",
+												background: "#1A8C7A",
 												color: "white",
 												padding: "4px 12px",
 												borderRadius: "20px",
@@ -1070,7 +1113,6 @@ export default function MatchesPage() {
 										style={{
 											background: "rgba(255, 255, 255, 0.5)",
 											backdropFilter: "blur(24px)",
-											WebkitBackdropFilter: "blur(24px)",
 											borderRadius: "16px",
 											border: "1px solid rgba(255, 255, 255, 0.3)",
 											overflow: "hidden",
@@ -1101,7 +1143,7 @@ export default function MatchesPage() {
 									>
 										<span
 											style={{
-												background: "#0284c7",
+												background: "#0B2444",
 												color: "white",
 												padding: "4px 12px",
 												borderRadius: "20px",
@@ -1119,7 +1161,6 @@ export default function MatchesPage() {
 										style={{
 											background: "rgba(255, 255, 255, 0.5)",
 											backdropFilter: "blur(24px)",
-											WebkitBackdropFilter: "blur(24px)",
 											borderRadius: "16px",
 											border: "1px solid rgba(255, 255, 255, 0.3)",
 											overflow: "hidden",
@@ -1168,7 +1209,6 @@ export default function MatchesPage() {
 										style={{
 											background: "rgba(255, 255, 255, 0.5)",
 											backdropFilter: "blur(24px)",
-											WebkitBackdropFilter: "blur(24px)",
 											borderRadius: "16px",
 											border: "1px solid rgba(255, 255, 255, 0.3)",
 											overflow: "hidden",
@@ -1200,7 +1240,6 @@ export default function MatchesPage() {
 								style={{
 									background: "rgba(255, 255, 255, 0.5)",
 									backdropFilter: "blur(24px)",
-									WebkitBackdropFilter: "blur(24px)",
 									borderRadius: "16px",
 									border: "1px solid rgba(255, 255, 255, 0.3)",
 									padding: "1.75rem",
@@ -1264,7 +1303,6 @@ export default function MatchesPage() {
 								style={{
 									background: "rgba(255, 255, 255, 0.5)",
 									backdropFilter: "blur(24px)",
-									WebkitBackdropFilter: "blur(24px)",
 									borderRadius: "16px",
 									border: "1px solid rgba(255, 255, 255, 0.3)",
 									padding: "1.75rem",
@@ -1277,7 +1315,7 @@ export default function MatchesPage() {
 									style={{
 										fontSize: "14px",
 										fontWeight: 800,
-										color: "#15803d",
+										color: "#1A8C7A",
 										margin: "0 0 16px 0",
 									}}
 								>
@@ -1291,7 +1329,7 @@ export default function MatchesPage() {
 											style={{
 												fontSize: "32px",
 												fontWeight: 900,
-												color: "#15803d",
+												color: "#1A8C7A",
 												lineHeight: "1",
 											}}
 										>
@@ -1322,7 +1360,7 @@ export default function MatchesPage() {
 											style={{
 												fontSize: "32px",
 												fontWeight: 900,
-												color: "#15803d",
+												color: "#1A8C7A",
 												lineHeight: "1",
 											}}
 										>
@@ -1348,7 +1386,6 @@ export default function MatchesPage() {
 								style={{
 									background: "rgba(255, 255, 255, 0.5)",
 									backdropFilter: "blur(24px)",
-									WebkitBackdropFilter: "blur(24px)",
 									borderRadius: "16px",
 									border: "1px solid rgba(255, 255, 255, 0.3)",
 									padding: "1.75rem",
@@ -1434,7 +1471,6 @@ export default function MatchesPage() {
 									height: "100vh",
 									background: "rgba(248, 250, 252, 0.7)",
 									backdropFilter: "blur(8px)",
-									WebkitBackdropFilter: "blur(8px)",
 									zIndex: 10000,
 									display: "flex",
 									alignItems: "center",
@@ -1580,8 +1616,8 @@ export default function MatchesPage() {
 																width: "32px",
 																height: "32px",
 																borderRadius: "8px",
-																background: doc.base64 ? "#dcfce7" : "#f1f5f9",
-																color: doc.base64 ? "#15803d" : "#94a3b8",
+																background: doc.base64 ? "#e6fcf5" : "#f1f5f9",
+																color: doc.base64 ? "#1A8C7A" : "#94a3b8",
 																display: "flex",
 																alignItems: "center",
 																justifyContent: "center",
@@ -1612,7 +1648,7 @@ export default function MatchesPage() {
 															<div
 																style={{
 																	fontSize: "11px",
-																	color: doc.base64 ? "#15803d" : "#ef4444",
+																	color: doc.base64 ? "#1A8C7A" : "#ef4444",
 																	fontWeight: 600,
 																}}
 															>
@@ -1620,32 +1656,6 @@ export default function MatchesPage() {
 															</div>
 														</div>
 													</div>
-													{doc.base64 && (
-														<a
-															href={doc.base64}
-															download={`${doc.id}_labpro.pdf`}
-															title="Download to attach"
-															style={{
-																color: "#1A8C7A",
-																padding: "6px",
-																background: "#e6fcf5",
-																borderRadius: "8px",
-															}}
-														>
-															<svg
-																width="16"
-																height="16"
-																viewBox="0 0 24 24"
-																fill="none"
-																stroke="currentColor"
-																strokeWidth="2.5"
-															>
-																<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-																<polyline points="7 10 12 15 17 10"></polyline>
-																<line x1="12" y1="15" x2="12" y2="3"></line>
-															</svg>
-														</a>
-													)}
 												</div>
 											))}
 										</div>
@@ -1697,7 +1707,6 @@ export default function MatchesPage() {
 															gap: "4px",
 															opacity: isGeneratingLetter ? 0.5 : 1,
 														}}
-														title="Regenerate Draft"
 													>
 														<svg
 															width="12"
@@ -1882,7 +1891,6 @@ export default function MatchesPage() {
 									height: "100vh",
 									background: "rgba(248, 250, 252, 0.7)",
 									backdropFilter: "blur(8px)",
-									WebkitBackdropFilter: "blur(8px)",
 									zIndex: 10000,
 									display: "flex",
 									alignItems: "center",
@@ -1950,12 +1958,6 @@ export default function MatchesPage() {
 												color: "#64748b",
 												transition: "background 0.2s",
 											}}
-											onMouseEnter={(e) =>
-												(e.currentTarget.style.background = "#e2e8f0")
-											}
-											onMouseLeave={(e) =>
-												(e.currentTarget.style.background = "#f1f5f9")
-											}
 										>
 											<svg
 												width="16"
@@ -1987,7 +1989,6 @@ export default function MatchesPage() {
 												boxShadow: "0 4px 10px -2px rgba(0, 0, 0, 0.02)",
 											}}
 										>
-											{/* 🚀 FIXED BRAND LOGO FOR PREVIEW EMAIL */}
 											<div
 												style={{
 													textAlign: "center",
@@ -2118,7 +2119,7 @@ export default function MatchesPage() {
 												<div style={{ marginBottom: "2rem" }}>
 													<div
 														style={{
-															background: "#15803d",
+															background: "#1A8C7A",
 															color: "white",
 															padding: "6px 12px",
 															borderRadius: "6px",
@@ -2139,7 +2140,7 @@ export default function MatchesPage() {
 																borderRadius: "12px",
 																padding: "1.25rem",
 																marginBottom: "1rem",
-																borderLeft: "4px solid #15803d",
+																borderLeft: "4px solid #1A8C7A",
 															}}
 														>
 															<div
@@ -2153,7 +2154,7 @@ export default function MatchesPage() {
 															</div>
 															<div
 																style={{
-																	color: "#0369a1",
+																	color: "#0B2444",
 																	fontSize: "13px",
 																	fontWeight: 700,
 																	margin: "6px 0",
@@ -2179,7 +2180,7 @@ export default function MatchesPage() {
 																	Match Score:{" "}
 																	<strong
 																		style={{
-																			color: "#15803d",
+																			color: "#1A8C7A",
 																			fontSize: "14px",
 																		}}
 																	>
@@ -2188,7 +2189,7 @@ export default function MatchesPage() {
 																</span>
 																<span
 																	style={{
-																		color: "#0058bc",
+																		color: "#0B2444",
 																		fontSize: "12px",
 																		fontWeight: 700,
 																	}}
@@ -2204,7 +2205,7 @@ export default function MatchesPage() {
 												<div style={{ marginBottom: "2rem" }}>
 													<div
 														style={{
-															background: "#0284c7",
+															background: "#0B2444",
 															color: "white",
 															padding: "6px 12px",
 															borderRadius: "6px",
@@ -2225,7 +2226,7 @@ export default function MatchesPage() {
 																borderRadius: "12px",
 																padding: "1.25rem",
 																marginBottom: "1rem",
-																borderLeft: "4px solid #0284c7",
+																borderLeft: "4px solid #0B2444",
 															}}
 														>
 															<div
@@ -2239,7 +2240,7 @@ export default function MatchesPage() {
 															</div>
 															<div
 																style={{
-																	color: "#0369a1",
+																	color: "#0B2444",
 																	fontSize: "13px",
 																	fontWeight: 700,
 																	margin: "6px 0",
@@ -2265,7 +2266,7 @@ export default function MatchesPage() {
 																	Match Score:{" "}
 																	<strong
 																		style={{
-																			color: "#0284c7",
+																			color: "#0B2444",
 																			fontSize: "14px",
 																		}}
 																	>
@@ -2274,7 +2275,7 @@ export default function MatchesPage() {
 																</span>
 																<span
 																	style={{
-																		color: "#0058bc",
+																		color: "#0B2444",
 																		fontSize: "12px",
 																		fontWeight: 700,
 																	}}
@@ -2325,7 +2326,7 @@ export default function MatchesPage() {
 															</div>
 															<div
 																style={{
-																	color: "#0369a1",
+																	color: "#0B2444",
 																	fontSize: "13px",
 																	fontWeight: 700,
 																	margin: "6px 0",
@@ -2360,7 +2361,7 @@ export default function MatchesPage() {
 																</span>
 																<span
 																	style={{
-																		color: "#0058bc",
+																		color: "#0B2444",
 																		fontSize: "12px",
 																		fontWeight: 700,
 																	}}

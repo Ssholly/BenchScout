@@ -40,7 +40,6 @@ const TIMEZONES = [
 	{ id: "EAT", label: "East Africa Time (EAT)" },
 ];
 
-// 🚀 EXPANDED: All 36 States + FCT + Options
 const LOCATIONS = [
 	"All Nigeria",
 	"Abia",
@@ -94,7 +93,6 @@ type ScheduledEvent = {
 	location: string;
 };
 
-// Default dynamic examples if local storage is empty
 const DEFAULT_EVENTS: ScheduledEvent[] = [
 	{
 		id: "e1",
@@ -151,7 +149,7 @@ export default function SchedulerPage() {
 		interview: { color: "#eab308", bg: "#fef9c3", icon: "video" },
 		deadline: { color: "#ef4444", bg: "#fee2e2", icon: "alert" },
 		followup: { color: "#7e22ce", bg: "#f3e8ff", icon: "mail" },
-		action: { color: "#0ea5e9", bg: "#e0f2fe", icon: "map-pin" },
+		action: { color: "#1A8C7A", bg: "#e6fcf5", icon: "map-pin" }, // 🚀 BRANDED ACTION EVENT
 	};
 
 	const selectedDayEvents = events
@@ -196,7 +194,6 @@ export default function SchedulerPage() {
 	const loadScheduleData = () => {
 		const activeEmail = localStorage.getItem("labpro_active_user");
 
-		// DATA ISOLATION: Wipe everything for guests
 		if (!activeEmail) {
 			setIsUserLoggedIn(false);
 			setIsActive(false);
@@ -285,8 +282,6 @@ export default function SchedulerPage() {
 		return null;
 	};
 
-	// AUTOMATION EXECUTION LOGIC
-	// Prevent duplicate runs within the same minute
 	let lastRunTime = "";
 
 	useEffect(() => {
@@ -305,11 +300,10 @@ export default function SchedulerPage() {
 				const now = new Date();
 				const diff = Math.max(0, next.getTime() - now.getTime());
 
-				// THE TRIGGER: If diff is 0 or less, update the UI (Backend handles the actual scraping)
 				if (diff <= 1000) {
 					const currentMinuteString = `${now.getHours()}:${now.getMinutes()}`;
 					if (lastRunTime !== currentMinuteString) {
-						lastRunTime = currentMinuteString; // Lock it
+						lastRunTime = currentMinuteString;
 
 						triggerToast(
 							"Cloud Scanner is running in the background...",
@@ -321,7 +315,7 @@ export default function SchedulerPage() {
 							minute: "2-digit",
 						});
 						localStorage.setItem("labpro_last_run", timeNow);
-						window.dispatchEvent(new Event("jobsUpdated")); // Update UI everywhere
+						window.dispatchEvent(new Event("jobsUpdated"));
 					}
 				}
 
@@ -392,14 +386,12 @@ export default function SchedulerPage() {
 			return;
 		}
 
-		// Keep local storage so the UI updates instantly
 		localStorage.setItem("labpro_scheduler_time", time);
 		localStorage.setItem("labpro_scheduler_tz", timezone);
 		localStorage.setItem("labpro_scheduler_location", targetLocation);
 		localStorage.setItem("labpro_scheduler_days", JSON.stringify(selectedDays));
 		localStorage.setItem("labpro_scheduler_active", String(isActive));
 
-		// Send the master switch AND Location to your Prisma Database
 		try {
 			const activeEmail = localStorage.getItem("labpro_active_user");
 			await fetch("/api/user/preferences", {
@@ -442,7 +434,6 @@ export default function SchedulerPage() {
 		}
 	};
 
-	// --- 5. EVENT CRUD LOGIC ---
 	const openNewEventModal = () => {
 		if (!isUserLoggedIn)
 			return triggerToast("Please log in to add events.", "error");
@@ -489,7 +480,6 @@ export default function SchedulerPage() {
 		triggerToast("Event deleted.");
 	};
 
-	// --- 6. RENDER HELPERS ---
 	const renderCalendarGrid = () => {
 		const year = currentMonthDate.getFullYear();
 		const month = currentMonthDate.getMonth();
@@ -524,12 +514,12 @@ export default function SchedulerPage() {
 						borderRadius: "10px",
 						cursor: "pointer",
 						transition: "all 0.2s ease",
-						background: isSelected ? "#0058bc" : "transparent",
-						color: isSelected ? "white" : isToday ? "#0058bc" : "#475569",
+						background: isSelected ? "#0B2444" : "transparent", // 🚀 BRANDED CALENDAR SELECT
+						color: isSelected ? "white" : isToday ? "#0B2444" : "#475569", // 🚀 BRANDED CURRENT DAY
 						fontWeight: isSelected || isToday ? 800 : 600,
 						border:
 							isToday && !isSelected
-								? "1px solid rgba(186, 230, 253, 0.5)"
+								? "1px solid rgba(26, 140, 122, 0.5)"
 								: "1px solid transparent",
 					}}
 					onMouseEnter={(e) => {
@@ -620,7 +610,8 @@ export default function SchedulerPage() {
           border: none !important;
           box-shadow: none !important;
         }
-        .sw input:checked + .sw-track { background: #0058bc !important; }
+        /* 🚀 BRANDED SWITCH TRACK */
+        .sw input:checked + .sw-track { background: #1A8C7A !important; }
       `,
 				}}
 			/>
@@ -686,7 +677,6 @@ export default function SchedulerPage() {
 					</div>
 				</div>
 
-				{/* 🚀 THE LOCKED OUT OVERLAY 🚀 */}
 				{!isUserLoggedIn ? (
 					<div
 						style={{
@@ -753,14 +743,14 @@ export default function SchedulerPage() {
 								window.dispatchEvent(new Event("openProfileModal"))
 							}
 							style={{
-								background: "#0058bc",
+								background: "#0B2444", // 🚀 BRANDED BUTTON
 								color: "white",
 								border: "none",
 								padding: "12px 24px",
 								borderRadius: "8px",
 								fontWeight: 700,
 								cursor: "pointer",
-								boxShadow: "0 4px 12px rgba(0, 88, 188, 0.2)",
+								boxShadow: "0 4px 12px rgba(11, 36, 68, 0.2)",
 							}}
 						>
 							Log In to Access
@@ -768,9 +758,6 @@ export default function SchedulerPage() {
 					</div>
 				) : (
 					<>
-						{/* ========================================================= */}
-						{/* LOGGED IN VIEW: CALENDAR & AGENDA                           */}
-						{/* ========================================================= */}
 						<div
 							className="mobile-stack"
 							style={{
@@ -1019,7 +1006,7 @@ export default function SchedulerPage() {
 									<button
 										onClick={openNewEventModal}
 										style={{
-											background: "#0f172a",
+											background: "#0B2444", // 🚀 BRANDED NAVY BUTTON
 											color: "white",
 											border: "none",
 											padding: "8px 16px",
@@ -1244,9 +1231,6 @@ export default function SchedulerPage() {
 							}}
 						></div>
 
-						{/* ========================================================= */}
-						{/* LOGGED IN VIEW: AUTOMATION CONFIGURATION                    */}
-						{/* ========================================================= */}
 						<div style={{ marginBottom: "1.25rem" }}>
 							<h2
 								style={{
@@ -1368,7 +1352,6 @@ export default function SchedulerPage() {
 										>
 											SCHEDULE & LOCATION
 										</div>
-										{/* 🚀 NEW: Consolidated Flex Row for Time, Timezone, and Location */}
 										<div
 											className="mobile-stack"
 											style={{
@@ -1378,18 +1361,19 @@ export default function SchedulerPage() {
 												flexWrap: "wrap",
 											}}
 										>
+											{/* 🚀 BRANDED TIME SELECTOR BORDER/TEXT */}
 											<input
 												type="time"
 												value={time}
 												onChange={(e) => setTime(e.target.value)}
 												style={{
 													background: "rgba(255,255,255,0.7)",
-													border: "2px solid rgba(224, 242, 254, 0.8)",
+													border: "2px solid rgba(26, 140, 122, 0.3)",
 													borderRadius: "12px",
 													padding: "10px 14px",
 													fontSize: "16px",
 													fontWeight: 800,
-													color: "#0284c7",
+													color: "#1A8C7A",
 													outline: "none",
 													cursor: "pointer",
 													fontFamily: "inherit",
@@ -1410,7 +1394,6 @@ export default function SchedulerPage() {
 												<polyline points="12 6 12 12 16 14" />
 											</svg>
 
-											{/* Timezone Selector */}
 											<div
 												style={{
 													background: "rgba(255,255,255,0.7)",
@@ -1430,7 +1413,7 @@ export default function SchedulerPage() {
 													style={{
 														fontSize: "9px",
 														fontWeight: 800,
-														color: "#0284c7",
+														color: "#1A8C7A", // 🚀 BRANDED LABEL
 														textTransform: "uppercase",
 														letterSpacing: "1px",
 														marginBottom: "2px",
@@ -1487,7 +1470,6 @@ export default function SchedulerPage() {
 												</div>
 											</div>
 
-											{/* 🚀 Location Selector (Moved beside Timezone) */}
 											<div
 												style={{
 													background: "rgba(255,255,255,0.7)",
@@ -1507,7 +1489,7 @@ export default function SchedulerPage() {
 													style={{
 														fontSize: "9px",
 														fontWeight: 800,
-														color: "#0284c7",
+														color: "#1A8C7A", // 🚀 BRANDED LABEL
 														textTransform: "uppercase",
 														letterSpacing: "1px",
 														marginBottom: "2px",
@@ -1589,11 +1571,11 @@ export default function SchedulerPage() {
 														onClick={() => toggleDay(day)}
 														style={{
 															background: isSel
-																? "#0058bc"
+																? "#0B2444" // 🚀 BRANDED PILLS
 																: "rgba(255,255,255,0.7)",
 															color: isSel ? "white" : "#64748b",
 															border: isSel
-																? "1px solid #0058bc"
+																? "1px solid #0B2444"
 																: "1px solid rgba(226, 232, 240, 0.8)",
 															padding: "6px 12px",
 															borderRadius: "16px",
@@ -1613,16 +1595,16 @@ export default function SchedulerPage() {
 
 								<div
 									style={{
-										background: "rgba(240, 249, 255, 0.5)",
+										background: "rgba(230, 252, 245, 0.5)", // 🚀 BRANDED TEAL BACKDROP
 										backdropFilter: "blur(16px)",
-										border: "1px solid rgba(186, 230, 253, 0.6)",
+										border: "1px solid rgba(26, 140, 122, 0.2)",
 										borderRadius: "20px",
 										padding: "1.25rem",
 										display: "flex",
 										gap: "1rem",
 									}}
 								>
-									<div style={{ color: "#0284c7", marginTop: "2px" }}>
+									<div style={{ color: "#1A8C7A", marginTop: "2px" }}>
 										<svg
 											width="18"
 											height="18"
@@ -1641,7 +1623,7 @@ export default function SchedulerPage() {
 											style={{
 												fontSize: "13px",
 												fontWeight: 700,
-												color: "#0369a1",
+												color: "#0B2444", // 🚀 BRANDED TEXT
 												margin: "0 0 8px 0",
 											}}
 										>
@@ -1678,7 +1660,7 @@ export default function SchedulerPage() {
 									<button
 										onClick={handleSaveScheduler}
 										style={{
-											background: "#0058bc",
+											background: "#0B2444", // 🚀 BRANDED NAVY BUTTON
 											color: "white",
 											border: "none",
 											padding: "12px 32px",
@@ -1686,7 +1668,7 @@ export default function SchedulerPage() {
 											fontSize: "14px",
 											fontWeight: 700,
 											cursor: "pointer",
-											boxShadow: "0 4px 12px rgba(0, 88, 188, 0.2)",
+											boxShadow: "0 4px 12px rgba(11, 36, 68, 0.2)",
 											transition: "transform 0.1s",
 										}}
 										onMouseDown={(e) =>
@@ -1726,7 +1708,7 @@ export default function SchedulerPage() {
 									<div
 										style={{
 											background: isActive
-												? "rgba(0, 88, 188, 0.8)"
+												? "rgba(11, 36, 68, 0.8)" // 🚀 BRANDED NAVY ON STATE
 												: "rgba(100, 116, 139, 0.8)",
 											backdropFilter: "blur(12px)",
 											color: "white",
@@ -1861,7 +1843,7 @@ export default function SchedulerPage() {
 												title={data.label}
 												style={{
 													width: "100%",
-													background: i === activeIndex ? "#0058bc" : "#e2e8f0",
+													background: i === activeIndex ? "#1A8C7A" : "#e2e8f0", // 🚀 BRANDED ACTIVE BAR
 													height: data.height,
 													borderRadius: "4px",
 													transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
@@ -1887,7 +1869,7 @@ export default function SchedulerPage() {
 								{/* Alerts */}
 								<div
 									style={{
-										background: "rgba(15, 23, 42, 0.85)",
+										background: "rgba(11, 36, 68, 0.85)", // 🚀 BRANDED NAVY BACKDROP
 										backdropFilter: "blur(24px)",
 										borderRadius: "20px",
 										padding: "1.25rem",
@@ -1950,7 +1932,7 @@ export default function SchedulerPage() {
 									<button
 										onClick={() => setIsAlertModalOpen(true)}
 										style={{
-											background: isAlertsActive ? "#334155" : "transparent",
+											background: isAlertsActive ? "#1A8C7A" : "transparent", // 🚀 BRANDED ACTIVE BUTTON
 											color: "white",
 											border: isAlertsActive
 												? "none"
@@ -2282,7 +2264,7 @@ export default function SchedulerPage() {
 												padding: "8px 16px",
 												borderRadius: "8px",
 												border: "none",
-												background: "#0058bc",
+												background: "#0B2444", // 🚀 BRANDED SAVE
 												color: "white",
 												fontSize: "12px",
 												fontWeight: 700,
@@ -2511,7 +2493,7 @@ export default function SchedulerPage() {
 										padding: "8px 16px",
 										borderRadius: "8px",
 										border: "none",
-										background: "#0058bc",
+										background: "#0B2444", // 🚀 BRANDED BUTTON
 										color: "white",
 										fontSize: "12px",
 										fontWeight: 700,

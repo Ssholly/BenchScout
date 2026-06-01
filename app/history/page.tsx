@@ -8,7 +8,7 @@ export default function HistoryPage() {
 	const [isLoading, setIsLoading] = useState(true);
 	const [userEmail, setUserEmail] = useState("...");
 	const [showClearModal, setShowClearModal] = useState(false);
-	const [isUserLoggedIn, setIsUserLoggedIn] = useState(false); // 🚀 Added state
+	const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
 
 	const loadHistory = () => {
 		const activeEmail = localStorage.getItem("labpro_active_user");
@@ -24,7 +24,6 @@ export default function HistoryPage() {
 		setUserEmail(activeEmail);
 		setIsLoading(true);
 
-		// Fetch specifically for this user
 		fetch(`/api/history?email=${activeEmail}`)
 			.then((res) => res.json())
 			.then((data) => {
@@ -34,7 +33,7 @@ export default function HistoryPage() {
 						(h: any) =>
 							h.userEmail === activeEmail ||
 							h.email === activeEmail ||
-							(!h.userEmail && !h.email), // Fallback just in case
+							(!h.userEmail && !h.email),
 					);
 				}
 				setHistory(myHistory);
@@ -61,7 +60,7 @@ export default function HistoryPage() {
 				body: JSON.stringify({ email: userEmail }),
 			});
 			setHistory([]);
-			window.dispatchEvent(new Event("jobsUpdated")); // Update Matches Page Sidebar!
+			window.dispatchEvent(new Event("jobsUpdated"));
 		} catch (e) {
 			console.error("Failed to clear history", e);
 		}
@@ -326,14 +325,14 @@ export default function HistoryPage() {
 					<button
 						onClick={() => window.dispatchEvent(new Event("openProfileModal"))}
 						style={{
-							background: "#0058bc",
+							background: "#0B2444", // 🚀 BRANDED BUTTON
 							color: "white",
 							border: "none",
 							padding: "12px 24px",
 							borderRadius: "8px",
 							fontWeight: 700,
 							cursor: "pointer",
-							boxShadow: "0 4px 12px rgba(0, 88, 188, 0.2)",
+							boxShadow: "0 4px 12px rgba(11, 36, 68, 0.2)",
 						}}
 					>
 						Log In to Access
@@ -453,7 +452,6 @@ export default function HistoryPage() {
 											fontWeight: 600,
 										}}
 									>
-										{/* 🚀 THE FIX: Always show userEmail or explicitly say Auto-Send Disabled */}
 										{run.status === "run only"
 											? "Auto-Send Disabled"
 											: userEmail}
@@ -462,6 +460,7 @@ export default function HistoryPage() {
 										data-label="Task Status"
 										style={{ padding: "1.25rem 1.5rem" }}
 									>
+										{/* 🚀 BRANDED TABLE STATUS TAGS */}
 										<span
 											style={{
 												background:
@@ -469,13 +468,13 @@ export default function HistoryPage() {
 														? "rgba(254, 242, 242, 0.8)"
 														: run.status === "run only"
 															? "rgba(241, 245, 249, 0.8)"
-															: "rgba(240, 249, 255, 0.8)",
+															: "rgba(230, 252, 245, 0.8)", // 🚀 BRANDED TEAL/GREEN BG
 												color:
 													run.status === "failed"
 														? "#ef4444"
 														: run.status === "run only"
 															? "#64748b"
-															: "#0058bc",
+															: "#1A8C7A", // 🚀 BRANDED TEAL TEXT
 												padding: "4px 8px",
 												borderRadius: "6px",
 												fontSize: "11px",

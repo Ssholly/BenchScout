@@ -1,7 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
 
-// Defining the shape of our data
 type Column = { id: string; title: string; color: string; bgColor: string };
 type JobCard = {
 	id: string;
@@ -20,7 +19,7 @@ export default function AppliedPipeline() {
 	const [isLoading, setIsLoading] = useState(true);
 	const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
 
-	// Our Kanban stages
+	// 🚀 BRAND UPDATED COLUMNS
 	const columns: Column[] = [
 		{
 			id: "saved",
@@ -31,8 +30,8 @@ export default function AppliedPipeline() {
 		{
 			id: "applied",
 			title: "Application Sent",
-			color: "#0ea5e9",
-			bgColor: "rgba(224, 242, 254, 0.5)",
+			color: "#0B2444",
+			bgColor: "rgba(11, 36, 68, 0.05)",
 		},
 		{
 			id: "interviewing",
@@ -43,8 +42,8 @@ export default function AppliedPipeline() {
 		{
 			id: "offer",
 			title: "Offer / Hired",
-			color: "#22c55e",
-			bgColor: "rgba(220, 252, 231, 0.5)",
+			color: "#1A8C7A",
+			bgColor: "rgba(26, 140, 122, 0.05)",
 		},
 	];
 
@@ -59,7 +58,6 @@ export default function AppliedPipeline() {
 
 		setIsUserLoggedIn(true);
 		setIsLoading(true);
-		// DATA ISOLATION: Fetch only jobs for this specific user
 		fetch(`/api/jobs?email=${activeEmail}`)
 			.then((res) => res.json())
 			.then((data) => {
@@ -77,8 +75,6 @@ export default function AppliedPipeline() {
 				const onlyApplied = myJobs.filter((j: any) => j.applied === true);
 
 				const formattedCards: JobCard[] = onlyApplied.map((j: any) => {
-					// 🚀 THE FIX: If the job's stage is present, use it.
-					// If the status is "active" (from the scraper) or missing, force it into the "applied" column.
 					let assignedColumn = "applied";
 					if (j.stage) {
 						assignedColumn = j.stage;
@@ -136,30 +132,24 @@ export default function AppliedPipeline() {
 		}
 	};
 
-	// REMOVE APPLICATION LOGIC
 	const handleRemoveApplication = async (
 		e: React.MouseEvent,
 		jobId: string,
 	) => {
-		e.stopPropagation(); // Prevent the URL click from firing
-
-		// Optimistic UI Update: Instantly remove from the pipeline
+		e.stopPropagation();
 		setCards((prev) => prev.filter((card) => card.id !== jobId));
-
 		try {
 			await fetch("/api/apply", {
 				method: "DELETE",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({ jobId, revert: true }),
 			});
-			// Fire the global event so the Matches sidebar number updates
 			window.dispatchEvent(new Event("jobsUpdated"));
 		} catch (error) {
 			console.error("Failed to remove application", error);
 		}
 	};
 
-	// Drag and Drop State
 	const [draggedCardId, setDraggedCardId] = useState<string | null>(null);
 	const [dragOverColumn, setDragOverColumn] = useState<string | null>(null);
 
@@ -196,7 +186,6 @@ export default function AppliedPipeline() {
 		);
 
 		try {
-			// Assuming your PUT endpoint updates BOTH status and stage to keep things synced
 			await fetch("/api/jobs/status", {
 				method: "PUT",
 				headers: { "Content-Type": "application/json" },
@@ -302,14 +291,14 @@ export default function AppliedPipeline() {
 					<button
 						onClick={() => window.dispatchEvent(new Event("openProfileModal"))}
 						style={{
-							background: "#0058bc",
+							background: "#0B2444",
 							color: "white",
 							border: "none",
 							padding: "12px 24px",
 							borderRadius: "8px",
 							fontWeight: 700,
 							cursor: "pointer",
-							boxShadow: "0 4px 12px rgba(0, 88, 188, 0.2)",
+							boxShadow: "0 4px 12px rgba(11, 36, 68, 0.2)",
 						}}
 					>
 						Log In to Access
@@ -442,7 +431,7 @@ export default function AppliedPipeline() {
 												border: "1px solid rgba(255,255,255,0.8)",
 												boxShadow: "0 4px 12px -2px rgba(0,0,0,0.05)",
 												transition: "box-shadow 0.2s ease, transform 0.2s ease",
-												position: "relative", // Needed for absolute positioning of the cancel button
+												position: "relative",
 											}}
 											onMouseEnter={(e) => {
 												e.currentTarget.style.transform = "translateY(-2px)";
@@ -455,7 +444,6 @@ export default function AppliedPipeline() {
 													"0 4px 12px -2px rgba(0,0,0,0.05)";
 											}}
 										>
-											{/* THE CANCEL/REMOVE BUTTON */}
 											<button
 												onClick={(e) => handleRemoveApplication(e, card.id)}
 												title="Remove from pipeline"
@@ -509,19 +497,20 @@ export default function AppliedPipeline() {
 													marginBottom: "8px",
 												}}
 											>
+												{/* 🚀 FIXED PIPELINE BRAND TAG COLORS */}
 												<span
 													style={{
 														background:
 															card.tier === 1
-																? "#dcfce7"
+																? "#e6fcf5"
 																: card.tier === 2
-																	? "#e0f2fe"
+																	? "#e0e7ff"
 																	: "#f1f5f9",
 														color:
 															card.tier === 1
-																? "#15803d"
+																? "#1A8C7A"
 																: card.tier === 2
-																	? "#0369a1"
+																	? "#0B2444"
 																	: "#64748b",
 														fontSize: "9px",
 														padding: "3px 6px",
@@ -540,7 +529,7 @@ export default function AppliedPipeline() {
 													fontWeight: 800,
 													color: "#0f172a",
 													lineHeight: "1.3",
-													paddingRight: "20px", // Keep text away from the X button
+													paddingRight: "20px",
 												}}
 											>
 												{card.role}
@@ -619,7 +608,7 @@ export default function AppliedPipeline() {
 														height="14"
 														viewBox="0 0 24 24"
 														fill="none"
-														stroke="#0ea5e9"
+														stroke="#1A8C7A"
 														strokeWidth="2.5"
 														strokeLinecap="round"
 														strokeLinejoin="round"

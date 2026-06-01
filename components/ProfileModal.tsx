@@ -8,7 +8,6 @@ export default function ProfileModal() {
 		"login" | "signup" | "profile" | "forgot" | "verify-sent"
 	>("signup");
 
-	// 🚀 Independent loading states
 	const [isAuthLoading, setIsAuthLoading] = useState(false);
 	const [isUploadingResume, setIsUploadingResume] = useState(false);
 	const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
@@ -18,6 +17,14 @@ export default function ProfileModal() {
 	const [password, setPassword] = useState("");
 	const [showPassword, setShowPassword] = useState(false);
 	const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+	// 🚀 PHASE 2: CAREER PHASE STATES
+	const [careerPhase, setCareerPhase] = useState<"licensed" | "internship">(
+		"licensed",
+	);
+	const [signupPhase, setSignupPhase] = useState<"licensed" | "internship">(
+		"licensed",
+	); // Used specifically for the signup form
 
 	const [activeUser, setActiveUser] = useState<{
 		name: string;
@@ -47,6 +54,11 @@ export default function ProfileModal() {
 		setMounted(true);
 		const handleOpen = async () => {
 			const activeEmail = localStorage.getItem("labpro_active_user");
+			const savedPhase = localStorage.getItem("labpro_career_phase") as
+				| "licensed"
+				| "internship"
+				| null;
+			if (savedPhase) setCareerPhase(savedPhase);
 
 			if (activeEmail) {
 				const savedAvatar = localStorage.getItem(
@@ -73,6 +85,15 @@ export default function ProfileModal() {
 						if (data.user.avatarUrl) {
 							setAvatar(data.user.avatarUrl);
 						}
+						// If the backend returns a stored career phase, we can sync it here
+						if (data.user.careerPhase) {
+							setCareerPhase(data.user.careerPhase);
+							localStorage.setItem(
+								"labpro_career_phase",
+								data.user.careerPhase,
+							);
+						}
+
 						if (data.user.resumeUrl) {
 							if (!savedResume) {
 								try {
@@ -102,6 +123,15 @@ export default function ProfileModal() {
 	}, []);
 
 	if (!isOpen || !mounted) return null;
+
+	const handlePhaseChange = (phase: "licensed" | "internship") => {
+		setCareerPhase(phase);
+		localStorage.setItem("labpro_career_phase", phase);
+		window.dispatchEvent(new Event("userStateChanged"));
+		showToast(
+			`Platform switched to ${phase === "internship" ? "Internship" : "Licensed"} mode.`,
+		);
+	};
 
 	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		if (e.target.files && e.target.files.length > 0)
@@ -188,6 +218,7 @@ export default function ProfileModal() {
 		formData.append("email", email);
 		formData.append("password", password);
 		formData.append("resume", selectedFile);
+		formData.append("careerPhase", signupPhase); // 🚀 Append the selected phase to the backend payload
 
 		try {
 			const res = await fetch("/api/auth/register", {
@@ -197,6 +228,11 @@ export default function ProfileModal() {
 			const data = await res.json();
 			if (data.success) {
 				localStorage.setItem(`labpro_resume_name_${email}`, selectedFile.name);
+
+				// 🚀 INSTANTLY WIRE THE DASHBOARD UPON REGISTRATION
+				localStorage.setItem("labpro_career_phase", signupPhase);
+				setCareerPhase(signupPhase);
+
 				setView("verify-sent");
 				if (data.warning) {
 					showToast(data.warning, "error");
@@ -249,6 +285,13 @@ export default function ProfileModal() {
 			const data = await res.json();
 			if (data.success) {
 				localStorage.setItem("labpro_active_user", data.user.email);
+
+				// 🚀 SYNC PHASE IF RETURNED FROM BACKEND DURING LOGIN
+				if (data.user.careerPhase) {
+					localStorage.setItem("labpro_career_phase", data.user.careerPhase);
+					setCareerPhase(data.user.careerPhase);
+				}
+
 				setActiveUser({
 					name: data.user.name,
 					email: data.user.email,
@@ -365,6 +408,9 @@ export default function ProfileModal() {
 					background: "white",
 					width: "100%",
 					maxWidth: "480px",
+					maxHeight: "90vh",
+					display: "flex",
+					flexDirection: "column",
 					borderRadius: "24px",
 					overflow: "hidden",
 					boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.15)",
@@ -374,18 +420,24 @@ export default function ProfileModal() {
 				}}
 			>
 				{view === "verify-sent" ? (
-					<div style={{ padding: "3rem 2.5rem", textAlign: "center" }}>
+					<div
+						style={{
+							padding: "3rem 2.5rem",
+							textAlign: "center",
+							overflowY: "auto",
+						}}
+					>
 						<div
 							style={{
 								width: "64px",
 								height: "64px",
-								background: "#f0f9ff",
+								background: "#e6fcf5",
 								borderRadius: "50%",
 								display: "flex",
 								alignItems: "center",
 								justifyContent: "center",
 								margin: "0 auto 24px auto",
-								color: "#0ea5e9",
+								color: "#1A8C7A",
 							}}
 						>
 							<svg
@@ -402,7 +454,6 @@ export default function ProfileModal() {
 								<polyline points="3 7 12 13 21 7"></polyline>
 							</svg>
 						</div>
-
 						<h2
 							style={{
 								fontSize: "24px",
@@ -426,7 +477,6 @@ export default function ProfileModal() {
 							<span style={{ color: "#0f172a", fontWeight: 700 }}>{email}</span>
 							.
 						</p>
-
 						<div
 							style={{ display: "flex", flexDirection: "column", gap: "12px" }}
 						>
@@ -470,7 +520,6 @@ export default function ProfileModal() {
 								</svg>
 								Back to Login
 							</button>
-
 							<button
 								onClick={handleResendLink}
 								disabled={isAuthLoading}
@@ -499,10 +548,10 @@ export default function ProfileModal() {
 								display: "flex",
 								justifyContent: "space-between",
 								alignItems: "flex-start",
+								flexShrink: 0,
 							}}
 						>
 							<div>
-								{/* 🚀 FIXED LOGO BLOCK */}
 								<div
 									style={{
 										width: "56px",
@@ -646,7 +695,7 @@ export default function ProfileModal() {
 							</button>
 						</div>
 
-						<div style={{ padding: "2rem 2.5rem" }}>
+						<div style={{ padding: "2rem 2.5rem", overflowY: "auto", flex: 1 }}>
 							{(view === "signup" || view === "login") && (
 								<div>
 									{view === "signup" && (
@@ -743,72 +792,158 @@ export default function ProfileModal() {
 									)}
 
 									{view === "signup" && (
-										<div
-											style={{
-												background: "#f8fafc",
-												padding: "1.5rem",
-												borderRadius: "12px",
-												border: "2px dashed #cbd5e1",
-												textAlign: "center",
-												marginTop: "1rem",
-												transition: "0.2s",
-											}}
-											onMouseEnter={(e) =>
-												(e.currentTarget.style.borderColor = "#1A8C7A")
-											}
-											onMouseLeave={(e) =>
-												(e.currentTarget.style.borderColor = "#cbd5e1")
-											}
-										>
-											<p
-												style={{
-													margin: "0 0 10px 0",
-													fontSize: "11px",
-													color: "#475569",
-													fontWeight: 800,
-													letterSpacing: "0.5px",
-												}}
-											>
-												UPLOAD RESUME (AI SCAN)
-											</p>
-											<input
-												type="file"
-												id="resume"
-												accept=".pdf,.doc,.docx"
-												hidden
-												onChange={handleFileChange}
-												disabled={isAuthLoading}
-											/>
-											<label
-												htmlFor="resume"
-												style={{
-													cursor: isAuthLoading ? "wait" : "pointer",
-													color: "#0B2444",
-													fontWeight: 800,
-													fontSize: "14px",
-													display: "flex",
-													alignItems: "center",
-													justifyContent: "center",
-													gap: "8px",
-												}}
-											>
-												<svg
-													width="18"
-													height="18"
-													viewBox="0 0 24 24"
-													fill="none"
-													stroke="currentColor"
-													strokeWidth="2.5"
+										<>
+											{/* 🚀 NEW: REGISTRATION PHASE SELECTION */}
+											<div style={{ marginBottom: "12px", marginTop: "16px" }}>
+												<div
+													style={{
+														fontSize: "11px",
+														color: "#94a3b8",
+														fontWeight: 800,
+														letterSpacing: "0.5px",
+														textTransform: "uppercase",
+														marginBottom: "8px",
+														paddingLeft: "4px",
+													}}
 												>
-													<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-													<polyline points="17 8 12 3 7 8"></polyline>
-													<line x1="12" y1="3" x2="12" y2="15"></line>
-												</svg>
-												{selectedFile
-													? selectedFile.name
-													: "Select PDF or Word Doc"}
-											</label>
-										</div>
+													I am registering as a:
+												</div>
+												<div
+													style={{
+														display: "flex",
+														gap: "8px",
+														background: "#f8fafc",
+														padding: "4px",
+														borderRadius: "12px",
+														border: "1px solid #e2e8f0",
+													}}
+												>
+													<button
+														type="button"
+														onClick={() => setSignupPhase("licensed")}
+														style={{
+															flex: 1,
+															padding: "10px",
+															borderRadius: "8px",
+															border: "none",
+															fontSize: "13px",
+															fontWeight: 700,
+															cursor: "pointer",
+															transition: "0.2s",
+															background:
+																signupPhase === "licensed"
+																	? "white"
+																	: "transparent",
+															color:
+																signupPhase === "licensed"
+																	? "#0B2444"
+																	: "#64748b",
+															boxShadow:
+																signupPhase === "licensed"
+																	? "0 2px 8px rgba(0,0,0,0.05)"
+																	: "none",
+														}}
+													>
+														Licensed Pro
+													</button>
+													<button
+														type="button"
+														onClick={() => setSignupPhase("internship")}
+														style={{
+															flex: 1,
+															padding: "10px",
+															borderRadius: "8px",
+															border: "none",
+															fontSize: "13px",
+															fontWeight: 700,
+															cursor: "pointer",
+															transition: "0.2s",
+															background:
+																signupPhase === "internship"
+																	? "white"
+																	: "transparent",
+															color:
+																signupPhase === "internship"
+																	? "#1A8C7A"
+																	: "#64748b",
+															boxShadow:
+																signupPhase === "internship"
+																	? "0 2px 8px rgba(0,0,0,0.05)"
+																	: "none",
+														}}
+													>
+														Intern / Fresh Grad
+													</button>
+												</div>
+											</div>
+
+											<div
+												style={{
+													background: "#f8fafc",
+													padding: "1.5rem",
+													borderRadius: "12px",
+													border: "2px dashed #cbd5e1",
+													textAlign: "center",
+													marginTop: "1rem",
+													transition: "0.2s",
+												}}
+												onMouseEnter={(e) =>
+													(e.currentTarget.style.borderColor = "#1A8C7A")
+												}
+												onMouseLeave={(e) =>
+													(e.currentTarget.style.borderColor = "#cbd5e1")
+												}
+											>
+												<p
+													style={{
+														margin: "0 0 10px 0",
+														fontSize: "11px",
+														color: "#475569",
+														fontWeight: 800,
+														letterSpacing: "0.5px",
+													}}
+												>
+													UPLOAD RESUME (AI SCAN)
+												</p>
+												<input
+													type="file"
+													id="resume"
+													accept=".pdf,.doc,.docx"
+													hidden
+													onChange={handleFileChange}
+													disabled={isAuthLoading}
+												/>
+												<label
+													htmlFor="resume"
+													style={{
+														cursor: isAuthLoading ? "wait" : "pointer",
+														color: "#0B2444",
+														fontWeight: 800,
+														fontSize: "14px",
+														display: "flex",
+														alignItems: "center",
+														justifyContent: "center",
+														gap: "8px",
+													}}
+												>
+													<svg
+														width="18"
+														height="18"
+														viewBox="0 0 24 24"
+														fill="none"
+														stroke="currentColor"
+														strokeWidth="2.5"
+													>
+														<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+														<polyline points="17 8 12 3 7 8"></polyline>
+														<line x1="12" y1="3" x2="12" y2="15"></line>
+													</svg>
+													{selectedFile
+														? selectedFile.name
+														: "Select PDF or Word Doc"}
+												</label>
+											</div>
+										</>
 									)}
 
 									<button
@@ -927,7 +1062,7 @@ export default function ProfileModal() {
 											>
 												<line x1="19" y1="12" x2="5" y2="12"></line>
 												<polyline points="12 19 5 12 12 5"></polyline>
-											</svg>
+											</svg>{" "}
 											Back to Login
 										</button>
 									</div>
@@ -1040,7 +1175,6 @@ export default function ProfileModal() {
 												</div>
 											)}
 										</div>
-
 										<div style={{ flex: 1, minWidth: 0 }}>
 											<h2
 												style={{
@@ -1067,6 +1201,93 @@ export default function ProfileModal() {
 											>
 												{email}
 											</p>
+										</div>
+									</div>
+
+									<div
+										style={{
+											background: "#f8fafc",
+											border: "1px solid #e2e8f0",
+											borderRadius: "16px",
+											padding: "16px",
+											marginBottom: "1rem",
+											display: "flex",
+											flexDirection: "column",
+											gap: "12px",
+										}}
+									>
+										<div
+											style={{
+												fontSize: "11px",
+												color: "#94a3b8",
+												fontWeight: 800,
+												letterSpacing: "0.5px",
+												textTransform: "uppercase",
+											}}
+										>
+											CAREER PHASE (PLATFORM MODE)
+										</div>
+										<div
+											style={{
+												display: "flex",
+												gap: "8px",
+												background: "#e2e8f0",
+												padding: "4px",
+												borderRadius: "12px",
+											}}
+										>
+											<button
+												onClick={() => handlePhaseChange("licensed")}
+												style={{
+													flex: 1,
+													padding: "8px",
+													borderRadius: "8px",
+													border: "none",
+													fontSize: "13px",
+													fontWeight: 700,
+													cursor: "pointer",
+													background:
+														careerPhase === "licensed"
+															? "white"
+															: "transparent",
+													color:
+														careerPhase === "licensed" ? "#0B2444" : "#64748b",
+													boxShadow:
+														careerPhase === "licensed"
+															? "0 2px 8px rgba(0,0,0,0.1)"
+															: "none",
+													transition: "0.2s",
+												}}
+											>
+												Licensed Pro
+											</button>
+											<button
+												onClick={() => handlePhaseChange("internship")}
+												style={{
+													flex: 1,
+													padding: "8px",
+													borderRadius: "8px",
+													border: "none",
+													fontSize: "13px",
+													fontWeight: 700,
+													cursor: "pointer",
+													background:
+														careerPhase === "internship"
+															? "white"
+															: "transparent",
+													color:
+														careerPhase === "internship"
+															? "#1A8C7A"
+															: "#64748b",
+													boxShadow:
+														careerPhase === "internship"
+															? "0 2px 8px rgba(0,0,0,0.1)"
+															: "none",
+													transition: "0.2s",
+												}}
+											>
+												Intern / Fresh Grad
+											</button>
 										</div>
 									</div>
 

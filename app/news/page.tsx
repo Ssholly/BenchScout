@@ -11,10 +11,10 @@ export default function NewsInsightsPage() {
 
 	const [stats, setStats] = useState({
 		topLocations: [
-			{ name: "FCT - Abuja", count: 0, color: "#0058bc" },
-			{ name: "Lagos", count: 0, color: "#0ea5e9" },
+			{ name: "FCT - Abuja", count: 0, color: "#0B2444" },
+			{ name: "Lagos", count: 0, color: "#1A8C7A" },
 		],
-		topSkills: [{ name: "MLS", percent: 0, color: "#15803d" }],
+		topSkills: [{ name: "MLS", percent: 0, color: "#1A8C7A" }],
 		topEmployers: [
 			{ name: "EHA Clinics", count: 0 },
 			{ name: "Synlab Nigeria", count: 0 },
@@ -113,7 +113,9 @@ export default function NewsInsightsPage() {
 					const sortedLocs = Object.entries(locCounts)
 						.sort((a, b) => b[1] - a[1])
 						.slice(0, 4);
-					const locColors = ["#0058bc", "#0ea5e9", "#8b5cf6", "#14b8a6"];
+
+					// 🚀 BRANDED CHART COLORS
+					const locColors = ["#0B2444", "#1A8C7A", "#22B89F", "#4A6080"];
 					const liveLocations = sortedLocs.map((loc, i) => ({
 						name: loc[0],
 						count: loc[1],
@@ -134,7 +136,9 @@ export default function NewsInsightsPage() {
 					const sortedSkills = Object.entries(skillCounts)
 						.sort((a, b) => b[1] - a[1])
 						.slice(0, 4);
-					const skillColors = ["#15803d", "#0284c7", "#8b5cf6", "#f59e0b"];
+
+					// 🚀 BRANDED CHART COLORS
+					const skillColors = ["#1A8C7A", "#0B2444", "#22B89F", "#f59e0b"];
 					const liveSkills = sortedSkills.map((sk, i) => ({
 						name: sk[0],
 						percent: Math.round((sk[1] / totalJobs) * 100),
@@ -231,7 +235,12 @@ export default function NewsInsightsPage() {
 			case "Clinical Research":
 				return { bg: "#f3e8ff", text: "#7e22ce", solid: "#7e22ce" };
 			default:
-				return { bg: "rgba(0,88,188,0.1)", text: "#0058bc", solid: "#0058bc" };
+				// 🚀 BRANDED DEFAULT CATEGORY
+				return {
+					bg: "rgba(11, 36, 68, 0.1)",
+					text: "#0B2444",
+					solid: "#0B2444",
+				};
 		}
 	};
 
@@ -361,14 +370,14 @@ export default function NewsInsightsPage() {
 					<button
 						onClick={() => window.dispatchEvent(new Event("openProfileModal"))}
 						style={{
-							background: "#0058bc",
+							background: "#0B2444",
 							color: "white",
 							border: "none",
 							padding: "12px 24px",
 							borderRadius: "8px",
 							fontWeight: 700,
 							cursor: "pointer",
-							boxShadow: "0 4px 12px rgba(0, 88, 188, 0.2)",
+							boxShadow: "0 4px 12px rgba(11, 36, 68, 0.2)",
 						}}
 					>
 						Log In to Access
@@ -384,6 +393,7 @@ export default function NewsInsightsPage() {
 							marginBottom: "2rem",
 						}}
 					>
+						{/* HUB CARD */}
 						<div
 							style={{
 								background: "rgba(255,255,255,0.5)",
@@ -391,7 +401,7 @@ export default function NewsInsightsPage() {
 								borderRadius: "20px",
 								border: "1px solid rgba(255,255,255,0.4)",
 								padding: "1.75rem",
-								boxShadow: "0 10px 30px -10px rgba(14,165,233,0.05)",
+								boxShadow: "0 10px 30px -10px rgba(11, 36, 68, 0.05)",
 							}}
 						>
 							<h3
@@ -482,6 +492,7 @@ export default function NewsInsightsPage() {
 							</div>
 						</div>
 
+						{/* KEYWORDS CARD */}
 						<div
 							style={{
 								background: "rgba(255,255,255,0.5)",
@@ -489,7 +500,7 @@ export default function NewsInsightsPage() {
 								borderRadius: "20px",
 								border: "1px solid rgba(255,255,255,0.4)",
 								padding: "1.75rem",
-								boxShadow: "0 10px 30px -10px rgba(139,92,246,0.05)",
+								boxShadow: "0 10px 30px -10px rgba(26, 140, 122, 0.05)",
 							}}
 						>
 							<h3
@@ -580,6 +591,7 @@ export default function NewsInsightsPage() {
 							</div>
 						</div>
 
+						{/* EMPLOYERS CARD */}
 						<div
 							style={{
 								background: "rgba(255,255,255,0.5)",
@@ -587,14 +599,14 @@ export default function NewsInsightsPage() {
 								borderRadius: "20px",
 								border: "1px solid rgba(255,255,255,0.4)",
 								padding: "1.75rem",
-								boxShadow: "0 10px 30px -10px rgba(0,88,188,0.05)",
+								boxShadow: "0 10px 30px -10px rgba(11, 36, 68, 0.05)",
 							}}
 						>
 							<h3
 								style={{
 									fontSize: "12px",
 									fontWeight: 800,
-									color: "#0058bc",
+									color: "#0B2444",
 									textTransform: "uppercase",
 									letterSpacing: "1px",
 									margin: "0 0 16px 0",
@@ -646,7 +658,8 @@ export default function NewsInsightsPage() {
 											transition: "0.2s",
 										}}
 										onMouseEnter={(e) =>
-											(e.currentTarget.style.borderColor = "#bfdbfe")
+											(e.currentTarget.style.borderColor =
+												"rgba(26, 140, 122, 0.3)")
 										}
 										onMouseLeave={(e) =>
 											(e.currentTarget.style.borderColor = "rgba(0,0,0,0.05)")
@@ -667,8 +680,8 @@ export default function NewsInsightsPage() {
 										</div>
 										<span
 											style={{
-												background: "#eff6ff",
-												color: "#1d4ed8",
+												background: "#e6fcf5",
+												color: "#1A8C7A",
 												padding: "4px 8px",
 												borderRadius: "6px",
 												fontSize: "11px",
@@ -683,6 +696,7 @@ export default function NewsInsightsPage() {
 							</div>
 						</div>
 
+						{/* VELOCITY CARD */}
 						<div
 							style={{
 								background: "rgba(255,255,255,0.5)",
@@ -690,7 +704,7 @@ export default function NewsInsightsPage() {
 								borderRadius: "20px",
 								border: "1px solid rgba(255,255,255,0.4)",
 								padding: "1.75rem",
-								boxShadow: "0 10px 30px -10px rgba(14,165,233,0.05)",
+								boxShadow: "0 10px 30px -10px rgba(26, 140, 122, 0.05)",
 							}}
 						>
 							<h3
@@ -777,7 +791,7 @@ export default function NewsInsightsPage() {
 								}}
 							>
 								Clinical Diagnostics roles in{" "}
-								<strong style={{ color: "#0058bc" }}>
+								<strong style={{ color: "#0B2444" }}>
 									{stats.hotLocation}
 								</strong>{" "}
 								are driving current market momentum.
@@ -848,7 +862,7 @@ export default function NewsInsightsPage() {
 
 					<style
 						dangerouslySetInnerHTML={{
-							__html: `@keyframes pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.2); } 100% { opacity: 1; transform: scale(1); } } @keyframes shimmer { 0% { background-position: -1000px 0; } 100% { background-position: 1000px 0; } } .skeleton { background: rgba(255,255,255,0.5); background-image: linear-gradient(90deg, rgba(255,255,255,0) 0px, rgba(255,255,255,0.8) 40px, rgba(255,255,255,0) 80px); background-size: 1000px 100%; animation: shimmer 2s infinite linear; border-radius: 6px; } .article-card:hover .read-more { color: #0ea5e9 !important; padding-right: 4px; } ::-webkit-scrollbar { display: none; }`,
+							__html: `@keyframes pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.2); } 100% { opacity: 1; transform: scale(1); } } @keyframes shimmer { 0% { background-position: -1000px 0; } 100% { background-position: 1000px 0; } } .skeleton { background: rgba(255,255,255,0.5); background-image: linear-gradient(90deg, rgba(255,255,255,0) 0px, rgba(255,255,255,0.8) 40px, rgba(255,255,255,0) 80px); background-size: 1000px 100%; animation: shimmer 2s infinite linear; border-radius: 6px; } .article-card:hover .read-more { color: #1A8C7A !important; padding-right: 4px; } ::-webkit-scrollbar { display: none; }`,
 						}}
 					/>
 
@@ -979,7 +993,7 @@ export default function NewsInsightsPage() {
 										onMouseEnter={(e) => {
 											e.currentTarget.style.transform = "translateY(-6px)";
 											e.currentTarget.style.boxShadow =
-												"0 20px 40px -8px rgba(0, 88, 188, 0.08)";
+												"0 20px 40px -8px rgba(11, 36, 68, 0.08)";
 										}}
 										onMouseLeave={(e) => {
 											e.currentTarget.style.transform = "translateY(0)";
@@ -1072,7 +1086,7 @@ export default function NewsInsightsPage() {
 											<span
 												className="read-more"
 												style={{
-													color: "#0058bc",
+													color: "#0B2444",
 													fontSize: "13px",
 													fontWeight: 800,
 													display: "flex",
@@ -1091,7 +1105,7 @@ export default function NewsInsightsPage() {
 													strokeWidth="3"
 												>
 													<line x1="5" y1="12" x2="19" y2="12"></line>
-													<polyline points="12 5 19 12 12 19"></polyline>
+													<polyline points="12 5 19 12 12 5"></polyline>
 												</svg>
 											</span>
 										</div>

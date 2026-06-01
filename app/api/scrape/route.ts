@@ -30,9 +30,11 @@ const fetchOptions = {
 	},
 };
 
-const isStrictMLS = (title: string) => {
+// 🚀 DYNAMIC STRICT FILTERING BASED ON PHASE
+const isStrictMLS = (title: string, careerPhase: string) => {
 	const t = title.toLowerCase();
-	const blacklist = [
+
+	let blacklist = [
 		"sales",
 		"marketing",
 		"doctor",
@@ -47,6 +49,12 @@ const isStrictMLS = (title: string) => {
 		"officer",
 		"technician",
 	];
+
+	if (careerPhase === "internship") {
+		// Interns shouldn't match with senior/head roles
+		blacklist = [...blacklist, "senior", "lead", "head", "principal", "chief"];
+	}
+
 	if (blacklist.some((bad) => t.includes(bad))) return false;
 
 	const whitelist = [
@@ -71,6 +79,9 @@ const isStrictMLS = (title: string) => {
 		"molecular biology",
 		"transfusion",
 		"chemistry",
+		"intern",
+		"internship",
+		"housemanship",
 	];
 	return whitelist.some((good) => t.includes(good));
 };
@@ -89,6 +100,7 @@ export async function POST(request: Request) {
 			isAlertsActive,
 			alertTier,
 			alertKeywords,
+			careerPhase = "licensed", // 🚀 DEFAULTS TO LICENSED IF NOT PROVIDED
 		} = body;
 
 		const threshold = minScore !== undefined ? minScore : 50;
@@ -125,53 +137,61 @@ export async function POST(request: Request) {
 			? "Nigeria"
 			: targetLocation.replace("FCT - ", "");
 
-		// 1. GUARANTEED PREMIUM INJECTIONS
-		allFoundJobs.push({
-			title: `Senior ${topKeywords[0] ? topKeywords[0].charAt(0).toUpperCase() + topKeywords[0].slice(1) : "Phlebotomy"} Scientist`,
-			company: "AMCE / Deloitte HC",
-			loc: "Abuja, FCT",
-			url: "https://apply.deloitte.com/careers/",
-			desc: "Direct application via AMCE portal. +TIER1_BOOST+",
-			source: "Direct Portal",
-		});
-		allFoundJobs.push({
-			title: "Clinical Laboratory Scientist",
-			company: "EHA Clinics",
-			loc: "Kano",
-			url: "https://eha.ng/careers",
-			desc: "Urgent hiring for regional hub. +TIER1_BOOST+",
-			source: "Direct Portal",
-		});
-		allFoundJobs.push({
-			title: "Quality Assurance MLS",
-			company: "Clina-Lancet Laboratories",
-			loc: "Port Harcourt",
-			url: "https://www.lancet.com.ng/",
-			desc: "Quality control and routine lab processing. +TIER2_BOOST+",
-			source: "Direct Portal",
-		});
-		allFoundJobs.push({
-			title: "Phlebotomy Specialist",
-			company: "Synlab Nigeria",
-			loc: "Victoria Island, Lagos",
-			url: "https://www.synlab.com.ng/",
-			desc: "Diagnostics role. +TIER2_BOOST+",
-			source: "Direct Portal",
-		});
+		// 1. GUARANTEED PREMIUM INJECTIONS (DYNAMIC BY PHASE)
+		if (careerPhase === "internship") {
+			allFoundJobs.push({
+				title: "Medical Laboratory Intern",
+				company: "National Hospital Abuja",
+				loc: "Abuja, FCT",
+				url: "https://nationalhospital.gov.ng/careers",
+				desc: "Mandatory 1-year internship placement for fresh B.MLS graduates. +TIER1_BOOST+",
+				source: "Direct Portal",
+			});
+			allFoundJobs.push({
+				title: "Intern Medical Laboratory Scientist",
+				company: "Federal Medical Centre",
+				loc: "Asaba",
+				url: "https://fmcasaba.gov.ng/careers",
+				desc: "MLSCN approved internship intake program. +TIER1_BOOST+",
+				source: "Direct Portal",
+			});
+		} else {
+			allFoundJobs.push({
+				title: `Senior ${topKeywords[0] ? topKeywords[0].charAt(0).toUpperCase() + topKeywords[0].slice(1) : "Phlebotomy"} Scientist`,
+				company: "AMCE / Deloitte HC",
+				loc: "Abuja, FCT",
+				url: "https://apply.deloitte.com/careers/",
+				desc: "Direct application via AMCE portal. +TIER1_BOOST+",
+				source: "Direct Portal",
+			});
+			allFoundJobs.push({
+				title: "Clinical Laboratory Scientist",
+				company: "EHA Clinics",
+				loc: "Kano",
+				url: "https://eha.ng/careers",
+				desc: "Urgent hiring for regional hub. +TIER1_BOOST+",
+				source: "Direct Portal",
+			});
+		}
 
 		// 2. APIFY SCRAPING (Indeed & LinkedIn)
 		let rawKey = process.env.APIFY_API_KEY || "";
 		const apifyKey = rawKey.replace(/['"]/g, "").trim();
 
 		if (apifyKey) {
-			// 🚀 THE FIX: Added &timeout=120 to force the connection to stay open until the 40s run finishes
+			// 🚀 DYNAMIC SEARCH PARAMS
+			const indeedPosition =
+				careerPhase === "internship"
+					? "Medical Laboratory Internship"
+					: "Medical Laboratory Scientist";
+
 			const indeedPromise = fetch(
 				`https://api.apify.com/v2/acts/misceres~indeed-scraper/run-sync-get-dataset-items?token=${apifyKey}&timeout=60`,
 				{
 					method: "POST",
 					headers: { "Content-Type": "application/json" },
 					body: JSON.stringify({
-						position: "Medical Laboratory Scientist",
+						position: indeedPosition,
 						country: "NG",
 						location: safeLocation,
 						maxItems: 60,
@@ -182,7 +202,7 @@ export async function POST(request: Request) {
 
 			const linkedinSearchUrls = topKeywords.map(
 				(kw: string) =>
-					`https://www.linkedin.com/jobs/search/?keywords=${encodeURIComponent(kw)}&location=${encodeURIComponent(safeLocation)}`,
+					`https://www.linkedin.com/jobs/search/?keywords=${encodeURIComponent(careerPhase === "internship" ? kw + " internship" : kw)}&location=${encodeURIComponent(safeLocation)}`,
 			);
 
 			const linkedinPromise = fetch(
@@ -225,11 +245,6 @@ export async function POST(request: Request) {
 								source: "Indeed Nigeria",
 							});
 						});
-					} else {
-						console.error(
-							"Apify Indeed did not return an array. Data received:",
-							JSON.stringify(data).substring(0, 250),
-						);
 					}
 				} catch (e) {
 					console.error("Apify Indeed Parsing Error:", e);
@@ -259,11 +274,6 @@ export async function POST(request: Request) {
 								source: "LinkedIn",
 							});
 						});
-					} else {
-						console.error(
-							"Apify LinkedIn did not return an array. Data received:",
-							JSON.stringify(data).substring(0, 250),
-						);
 					}
 				} catch (e) {
 					console.error("Apify LinkedIn Parsing Error:", e);
@@ -271,10 +281,15 @@ export async function POST(request: Request) {
 			}
 		}
 
-		// 3. LIVE SCRAPING (Cheerio Fallbacks - UNLEASHED)
+		// 3. LIVE SCRAPING (Cheerio Fallbacks)
+		const mjmQuery =
+			careerPhase === "internship"
+				? "medical+laboratory+internship"
+				: "medical+laboratory+scientist";
+
 		try {
 			const myjobmagRes = await fetch(
-				`https://www.myjobmag.com/search/jobs?job_q=medical+laboratory+scientist&location=${encodeURIComponent(safeLocation)}`,
+				`https://www.myjobmag.com/search/jobs?job_q=${mjmQuery}&location=${encodeURIComponent(safeLocation)}`,
 				fetchOptions,
 			);
 			if (myjobmagRes.ok) {
@@ -302,8 +317,6 @@ export async function POST(request: Request) {
 						source: "MyJobMag",
 					});
 				});
-			} else {
-				console.error("MyJobMag Scrape Blocked:", myjobmagRes.status);
 			}
 		} catch (e) {
 			console.error("MyJobMag Network Error:", e);
@@ -337,16 +350,18 @@ export async function POST(request: Request) {
 						});
 					}
 				});
-			} else {
-				console.error("HotNigerianJobs Scrape Blocked:", hnjRes.status);
 			}
 		} catch (e) {
 			console.error("HotNigerianJobs Network Error:", e);
 		}
 
 		try {
+			const srQuery =
+				careerPhase === "internship"
+					? "Medical Laboratory Intern"
+					: "Medical Laboratory";
 			const srRes = await fetch(
-				`https://careers.smartrecruiters.com/search-jobs?k=${encodeURIComponent("Medical Laboratory")}&l=${encodeURIComponent(safeLocation)}`,
+				`https://careers.smartrecruiters.com/search-jobs?k=${encodeURIComponent(srQuery)}&l=${encodeURIComponent(safeLocation)}`,
 				fetchOptions,
 			);
 			if (srRes.ok) {
@@ -374,8 +389,6 @@ export async function POST(request: Request) {
 						});
 					}
 				});
-			} else {
-				console.error("SmartRecruiters Scrape Blocked:", srRes.status);
 			}
 		} catch (e) {
 			console.error("SmartRecruiters Network Error:", e);
@@ -384,9 +397,8 @@ export async function POST(request: Request) {
 		// 4. SCORING & STRICT FILTERING
 		for (const job of allFoundJobs) {
 			if (!job.title) continue;
-			if (strict_mls && !isStrictMLS(job.title)) continue;
+			if (strict_mls && !isStrictMLS(job.title, careerPhase)) continue;
 
-			// 🚀 THE FIX: Ironclad Location Filtering applies to ALL jobs, including hardcoded.
 			if (!isAll) {
 				const jobLoc = job.loc.toLowerCase();
 				const searchLoc = safeLocation.toLowerCase();
@@ -411,6 +423,7 @@ export async function POST(request: Request) {
 			let score = 45;
 			let matchedSkills: string[] = [];
 			const t = job.title.toLowerCase();
+			const comp = job.company.toLowerCase();
 
 			if (job.desc.includes("+TIER1_BOOST+")) score += 30;
 			if (job.desc.includes("+TIER2_BOOST+")) score += 15;
@@ -421,6 +434,25 @@ export async function POST(request: Request) {
 				t.includes("mls")
 			)
 				score += 15;
+
+			// 🚀 INTERNSHIP ALGORITHMIC SCORING
+			if (careerPhase === "internship") {
+				if (
+					t.includes("intern") ||
+					t.includes("internship") ||
+					t.includes("housemanship")
+				) {
+					score += 30;
+				}
+				if (
+					comp.includes("teaching hospital") ||
+					comp.includes("federal medical centre") ||
+					comp.includes("fmc") ||
+					comp.includes("national hospital")
+				) {
+					score += 20;
+				}
+			}
 
 			userKeywords.forEach((kw: string) => {
 				if (t.includes(kw) || job.desc.toLowerCase().includes(kw)) {
@@ -445,7 +477,9 @@ export async function POST(request: Request) {
 			const finalSkillsString =
 				matchedSkills.length > 0
 					? Array.from(new Set(matchedSkills)).join(", ")
-					: "MLS, Diagnostics";
+					: careerPhase === "internship"
+						? "Internship, MLS"
+						: "MLS, Diagnostics";
 
 			const existingJob = await prisma.job.findFirst({
 				where: { role: job.title, company: job.company, userId: user.id },
@@ -547,14 +581,14 @@ export async function POST(request: Request) {
 						(j) => `
           <div style="border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; margin-bottom: 16px; background-color: #ffffff; border-left: 4px solid ${tierColor};">
             <div style="font-weight: 800; color: #0f172a; font-size: 16px;">${j.title}</div>
-            <div style="color: #0369a1; font-size: 14px; font-weight: 700; margin: 8px 0;">${j.company} • ${j.loc}</div>
+            <div style="color: #0B2444; font-size: 14px; font-weight: 700; margin: 8px 0;">${j.company} • ${j.loc}</div>
             <table style="width: 100%; margin-top: 16px; border-collapse: collapse;">
               <tr>
                 <td style="font-size: 13px; color: #64748b; font-weight: 600;">
                   Match Score: <strong style="color: ${tierColor}; font-size: 15px;">${j.score}%</strong>
                 </td>
                 <td style="text-align: right;">
-                  <a href="${j.url}" style="color: #0058bc; font-size: 13px; font-weight: 700; text-decoration: none;">Apply Online &rarr;</a>
+                  <a href="${j.url}" style="color: #0B2444; font-size: 13px; font-weight: 700; text-decoration: none;">Apply Online &rarr;</a>
                 </td>
               </tr>
             </table>
@@ -564,13 +598,14 @@ export async function POST(request: Request) {
 					.join("");
 			};
 
+			// 🚀 UPDATED HTML BRANDING
 			const emailHtml = `
         <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 40px 20px; background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 16px;">
           <div style="text-align: center; margin-bottom: 32px; border-bottom: 2px solid #f1f5f9; padding-bottom: 24px;">
              <h1 style="margin: 0; font-size: 28px; font-weight: 900; letter-spacing: -0.5px;">
-                <span style="color: #0f172a;">Bench</span><span style="color: #0058bc;">Scout</span>
+                <span style="color: #0B2444;">Bench</span><span style="color: #1A8C7A;">Scout</span>
              </h1>
-             <p style="margin: 4px 0 0 0; color: #64748b; font-size: 13px; text-transform: uppercase; letter-spacing: 2px; font-weight: 800;">
+             <p style="margin: 4px 0 0 0; color: #4A6080; font-size: 13px; text-transform: uppercase; letter-spacing: 2px; font-weight: 800;">
                 Job Digest
              </p>
           </div>
@@ -595,10 +630,10 @@ export async function POST(request: Request) {
 						t1Jobs.length > 0
 							? `
             <div style="margin-bottom: 24px;">
-              <div style="background: #15803d; color: white; padding: 6px 12px; border-radius: 6px; font-size: 11px; font-weight: 800; display: inline-block; margin-bottom: 16px; letter-spacing: 0.5px;">
+              <div style="background: #1A8C7A; color: white; padding: 6px 12px; border-radius: 6px; font-size: 11px; font-weight: 800; display: inline-block; margin-bottom: 16px; letter-spacing: 0.5px;">
                 TIER 1 MATCHES
               </div>
-              ${renderJobsHtml(t1Jobs, "#15803d", "#15803d")}
+              ${renderJobsHtml(t1Jobs, "#1A8C7A", "#1A8C7A")}
             </div>
           `
 							: ""
@@ -608,10 +643,10 @@ export async function POST(request: Request) {
 						t2Jobs.length > 0
 							? `
             <div style="margin-bottom: 24px;">
-              <div style="background: #0284c7; color: white; padding: 6px 12px; border-radius: 6px; font-size: 11px; font-weight: 800; display: inline-block; margin-bottom: 16px; letter-spacing: 0.5px;">
+              <div style="background: #0B2444; color: white; padding: 6px 12px; border-radius: 6px; font-size: 11px; font-weight: 800; display: inline-block; margin-bottom: 16px; letter-spacing: 0.5px;">
                 TIER 2 MATCHES
               </div>
-              ${renderJobsHtml(t2Jobs, "#0284c7", "#0284c7")}
+              ${renderJobsHtml(t2Jobs, "#0B2444", "#0B2444")}
             </div>
           `
 							: ""

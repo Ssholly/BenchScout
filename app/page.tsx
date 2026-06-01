@@ -287,7 +287,7 @@ export default function Dashboard() {
 	const iosSwitchStyle = (active: boolean) => ({
 		width: "32px",
 		height: "18px",
-		background: active ? "#0058bc" : "#cbd5e1",
+		background: active ? "#1A8C7A" : "#cbd5e1", // 🚀 BRANDED TEAL TOGGLE
 		borderRadius: "20px",
 		position: "relative" as "relative",
 		cursor: "pointer",
@@ -408,14 +408,14 @@ export default function Dashboard() {
 					<button
 						onClick={() => window.dispatchEvent(new Event("openProfileModal"))}
 						style={{
-							background: "#0058bc",
+							background: "#0B2444", // 🚀 BRANDED BUTTON
 							color: "white",
 							border: "none",
 							padding: "12px 24px",
 							borderRadius: "8px",
 							fontWeight: 700,
 							cursor: "pointer",
-							boxShadow: "0 4px 12px rgba(0, 88, 188, 0.2)",
+							boxShadow: "0 4px 12px rgba(11, 36, 68, 0.2)",
 						}}
 					>
 						Log In to Access
@@ -467,7 +467,7 @@ export default function Dashboard() {
 										style={{
 											fontSize: "11px",
 											fontWeight: 700,
-											color: "#22c55e",
+											color: "#1A8C7A", // 🚀 BRANDED UP-TICK
 										}}
 									>
 										+12% ↗
@@ -517,8 +517,8 @@ export default function Dashboard() {
 										position: "absolute",
 										right: "1rem",
 										bottom: "1rem",
-										background: "#dcfce7",
-										color: "#15803d",
+										background: "#e6fcf5", // 🚀 BRANDED TIER 1 PILL
+										color: "#1A8C7A",
 										padding: "2px 8px",
 										borderRadius: "4px",
 										fontSize: "9px",
@@ -572,8 +572,8 @@ export default function Dashboard() {
 										position: "absolute",
 										right: "1rem",
 										bottom: "1rem",
-										background: "#eff6ff",
-										color: "#1d4ed8",
+										background: "rgba(11, 36, 68, 0.05)", // 🚀 BRANDED TIER 2 PILL
+										color: "#0B2444",
 										padding: "2px 8px",
 										borderRadius: "4px",
 										fontSize: "9px",
@@ -616,7 +616,7 @@ export default function Dashboard() {
 										fontSize: "24px",
 										fontWeight: 800,
 										color: isScraping
-											? "#0284c7"
+											? "#1A8C7A" // 🚀 BRANDED ACTIVE
 											: email
 												? "#0f172a"
 												: "#94a3b8",
@@ -849,7 +849,7 @@ export default function Dashboard() {
 									}}
 								>
 									<span>SCAN PROGRESS</span>
-									<span style={{ color: progress > 0 ? "#0058bc" : "#94a3b8" }}>
+									<span style={{ color: progress > 0 ? "#1A8C7A" : "#94a3b8" }}>
 										{progress}%
 									</span>
 								</div>
@@ -866,7 +866,7 @@ export default function Dashboard() {
 										style={{
 											width: `${progress}%`,
 											height: "100%",
-											background: "#0058bc",
+											background: "#1A8C7A", // 🚀 BRANDED PROGRESS FILL
 											transition: "width 0.3s ease",
 										}}
 									></div>
@@ -881,7 +881,7 @@ export default function Dashboard() {
 										? "#94a3b8"
 										: !email
 											? "#e2e8f0"
-											: "#0058bc",
+											: "#0B2444", // 🚀 BRANDED RUN BUTTON
 									color: !email ? "#94a3b8" : "white",
 									border: "none",
 									padding: "12px",
@@ -935,7 +935,7 @@ export default function Dashboard() {
 															? "#ef4444"
 															: l.level === "AUTH"
 																? "#facc15"
-																: "#22c55e",
+																: "#1A8C7A", // 🚀 BRANDED DONE/INFO
 													fontWeight: 700,
 												}}
 											>
@@ -948,8 +948,8 @@ export default function Dashboard() {
 							</div>
 							<div
 								style={{
-									background: "#f4f9ff",
-									border: "1px solid #dbeafe",
+									background: "rgba(26, 140, 122, 0.05)", // 🚀 BRANDED RECOMMENDATION BG
+									border: "1px solid rgba(26, 140, 122, 0.2)",
 									borderRadius: "16px",
 									padding: "1.25rem",
 									position: "relative",

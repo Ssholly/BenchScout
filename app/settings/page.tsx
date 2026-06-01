@@ -149,7 +149,6 @@ export default function SettingsPage() {
 						? data.user.keywords.split(",").map((k: string) => k.trim())
 						: [],
 					location: data.user.location || "All Nigeria",
-					// 🚀 THE FIX: Used Nullish Coalescing (??) so 0 is safely accepted
 					minScore: data.user.minScore ?? 85,
 				});
 
@@ -516,17 +515,18 @@ export default function SettingsPage() {
 									textAlign: "center",
 								}}
 							>
+								{/* 🚀 BRANDED MODAL ICON */}
 								<div
 									style={{
 										width: "64px",
 										height: "64px",
-										background: "#eff6ff",
+										background: "#e6fcf5",
 										borderRadius: "50%",
 										display: "flex",
 										alignItems: "center",
 										justifyContent: "center",
 										margin: "0 auto 16px auto",
-										color: "#0058bc",
+										color: "#1A8C7A",
 									}}
 								>
 									<svg
@@ -629,13 +629,14 @@ export default function SettingsPage() {
 									>
 										Cancel
 									</button>
+									{/* 🚀 BRANDED CONFIRM BUTTON */}
 									<button
 										onClick={confirmAndSaveLicense}
 										disabled={isVerifying}
 										style={{
 											flex: 2,
 											padding: "12px",
-											background: "#0058bc",
+											background: "#0B2444",
 											border: "none",
 											borderRadius: "10px",
 											color: "white",
@@ -645,7 +646,7 @@ export default function SettingsPage() {
 											alignItems: "center",
 											justifyContent: "center",
 											gap: "8px",
-											boxShadow: "0 4px 12px rgba(0,88,188,0.2)",
+											boxShadow: "0 4px 12px rgba(11, 36, 68, 0.2)",
 										}}
 									>
 										{isVerifying ? "Saving..." : "Confirm & Activate"}
@@ -701,13 +702,14 @@ export default function SettingsPage() {
 								<div
 									style={{ display: "flex", alignItems: "center", gap: "12px" }}
 								>
+									{/* 🚀 BRANDED PREVIEW ICON */}
 									<div
 										style={{
 											width: "32px",
 											height: "32px",
 											borderRadius: "8px",
-											background: "rgba(220, 252, 231, 0.6)",
-											color: "#15803d",
+											background: "#e6fcf5",
+											color: "#1A8C7A",
 											display: "flex",
 											alignItems: "center",
 											justifyContent: "center",
@@ -839,6 +841,7 @@ export default function SettingsPage() {
 								>
 									Close
 								</button>
+								{/* 🚀 BRANDED ACTION BUTTON */}
 								<a
 									href={previewDoc.url || "#"}
 									target="_blank"
@@ -847,7 +850,7 @@ export default function SettingsPage() {
 										padding: "10px 20px",
 										borderRadius: "8px",
 										border: "none",
-										background: "#0058bc",
+										background: "#0B2444",
 										color: "white",
 										fontSize: "13px",
 										fontWeight: 700,
@@ -996,14 +999,14 @@ export default function SettingsPage() {
 					<button
 						onClick={() => window.dispatchEvent(new Event("openProfileModal"))}
 						style={{
-							background: "#0058bc",
+							background: "#0B2444", // 🚀 BRANDED BUTTON
 							color: "white",
 							border: "none",
 							padding: "12px 24px",
 							borderRadius: "8px",
 							fontWeight: 700,
 							cursor: "pointer",
-							boxShadow: "0 4px 12px rgba(0, 88, 188, 0.2)",
+							boxShadow: "0 4px 12px rgba(11, 36, 68, 0.2)",
 						}}
 					>
 						Log In to Access
@@ -1032,7 +1035,8 @@ export default function SettingsPage() {
 								gap: "12px",
 							}}
 						>
-							<div style={{ color: "#0058bc", marginTop: "2px" }}>
+							{/* 🚀 BRANDED PREFERENCES ICON */}
+							<div style={{ color: "#0B2444", marginTop: "2px" }}>
 								<svg
 									width="20"
 									height="20"
@@ -1124,7 +1128,7 @@ export default function SettingsPage() {
 										<div
 											key={idx}
 											style={{
-												background: "#0058bc",
+												background: "#0B2444", // 🚀 BRANDED KEYWORD TAGS
 												color: "white",
 												padding: "4px 10px",
 												borderRadius: "14px",
@@ -1251,7 +1255,7 @@ export default function SettingsPage() {
 											}
 											style={{
 												flex: 1,
-												accentColor: "#0058bc",
+												accentColor: "#1A8C7A", // 🚀 BRANDED SLIDER
 												cursor: !userData.email ? "not-allowed" : "pointer",
 											}}
 										/>
@@ -1259,7 +1263,7 @@ export default function SettingsPage() {
 											style={{
 												fontSize: "20px",
 												fontWeight: 800,
-												color: "#0058bc",
+												color: "#0B2444", // 🚀 BRANDED PERCENTAGE
 												width: "45px",
 												textAlign: "right",
 											}}
@@ -1298,7 +1302,7 @@ export default function SettingsPage() {
 									onClick={handleUpdateProfile}
 									disabled={isSaving || !userData.email}
 									style={{
-										background: "#0058bc",
+										background: "#0B2444", // 🚀 BRANDED SUBMIT
 										color: "white",
 										border: "none",
 										padding: "8px 24px",
@@ -1307,7 +1311,7 @@ export default function SettingsPage() {
 										fontWeight: 700,
 										cursor:
 											isSaving || !userData.email ? "not-allowed" : "pointer",
-										boxShadow: "0 4px 12px rgba(0, 88, 188, 0.2)",
+										boxShadow: "0 4px 12px rgba(11, 36, 68, 0.2)",
 										opacity: !userData.email ? 0.5 : 1,
 									}}
 								>
@@ -1347,12 +1351,13 @@ export default function SettingsPage() {
 										gap: "8px",
 									}}
 								>
+									{/* 🚀 BRANDED VAULT ICON */}
 									<svg
 										width="16"
 										height="16"
 										viewBox="0 0 24 24"
 										fill="none"
-										stroke="#0058bc"
+										stroke="#0B2444"
 										strokeWidth="2.5"
 										strokeLinecap="round"
 										strokeLinejoin="round"
@@ -1403,9 +1408,9 @@ export default function SettingsPage() {
 													height: "32px",
 													borderRadius: "8px",
 													background: doc.url
-														? "rgba(220, 252, 231, 0.6)"
+														? "#e6fcf5" // 🚀 BRANDED DOCUMENT READY BG
 														: "rgba(241, 245, 249, 0.6)",
-													color: doc.url ? "#15803d" : "#94a3b8",
+													color: doc.url ? "#1A8C7A" : "#94a3b8", // 🚀 BRANDED DOCUMENT READY TEXT
 													display: "flex",
 													alignItems: "center",
 													justifyContent: "center",
@@ -1471,7 +1476,7 @@ export default function SettingsPage() {
 																	background: "#cbd5e1",
 																}}
 															></span>
-															<span style={{ color: "#15803d" }}>
+															<span style={{ color: "#1A8C7A" }}>
 																Uploaded {doc.uploadedAt}
 															</span>
 														</>
@@ -1535,7 +1540,7 @@ export default function SettingsPage() {
 														background:
 															!userData.email || isUploading
 																? "#94a3b8"
-																: "#0058bc",
+																: "#0B2444", // 🚀 BRANDED BUTTON
 														border: "none",
 														color: "white",
 														padding: "6px 16px",
@@ -1550,7 +1555,7 @@ export default function SettingsPage() {
 														boxShadow:
 															!userData.email || isUploading
 																? "none"
-																: "0 4px 10px rgba(0, 88, 188, 0.2)",
+																: "0 4px 10px rgba(11, 36, 68, 0.2)",
 													}}
 												>
 													{isUploading && activeUploadId === doc.id
@@ -1626,7 +1631,7 @@ export default function SettingsPage() {
 									<button
 										onClick={() => showToast("API Configuration Saved!")}
 										style={{
-											background: "#0f172a",
+											background: "#0B2444", // 🚀 BRANDED BUTTON
 											color: "white",
 											border: "none",
 											padding: "10px 24px",
