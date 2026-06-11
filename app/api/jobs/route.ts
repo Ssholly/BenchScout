@@ -9,13 +9,13 @@ export async function GET(request: Request) {
 		const email = searchParams.get("email");
 		const employerId = searchParams.get("employerId");
 
-		// 🚀 EMPLOYER FETCH: Include a raw count of all ATS applications
+		// 🚀 EMPLOYER FETCH: Include a raw count of all ATS applications!
 		if (employerId) {
 			const employerJobs = await prisma.job.findMany({
 				where: { employerId: employerId },
 				include: {
 					_count: {
-						select: { applications: true },
+						select: { applications: true }, // Asks DB to count applicants
 					},
 				},
 				orderBy: { createdAt: "desc" },
@@ -32,7 +32,7 @@ export async function GET(request: Request) {
 			return NextResponse.json(globalJobs);
 		}
 
-		// 🚀 CANDIDATE FETCH: Check if the user has applied to B2B jobs
+		// 🚀 CANDIDATE FETCH: Verify User
 		const user = await prisma.user.findUnique({ where: { email } });
 		if (!user)
 			return NextResponse.json({ error: "User not found" }, { status: 404 });
@@ -45,13 +45,14 @@ export async function GET(request: Request) {
 			},
 		});
 
+		// Fetch the jobs array
 		const jobs = await prisma.job.findMany({
 			where: {
 				OR: [{ userId: user.id }, { isDirectPost: true }],
 				NOT: { status: "cleared" },
 			},
 			include: {
-				applications: { where: { userId: user.id } },
+				applications: { where: { userId: user.id } }, // Check their inbox records
 			},
 			orderBy: { score: "desc" },
 		});
