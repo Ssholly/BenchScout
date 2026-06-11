@@ -13,29 +13,26 @@ model User {
   avatarUrl         String?
   email             String       @unique
   
-  // 🚀 Licensure & Compliance Fields
+  // 🚀 Licensure & Compliance Fields (De-duplicated & Merged)
   licenseUrl        String?      // Link to MLSCN practicing license
+  provisionalUrl    String?      // Provisional license specifically for interns
+  degreeUrl         String?      // Link to B.MLS degree
   licenseNumber     String?
+  mlscnNumber       String?      // Extracted RA/Intern Number
   licenseExpiry     DateTime?
   cpdPoints         Int          @default(0)
   isLicenseVerified Boolean      @default(false)
+  isVerified        Boolean      @default(false) // Blocks login until email is confirmed. ALSO acts as the general verification flag.
   
-  careerPhase     String   @default("licensed") // e.g., "internship" or "licensed"
-  provisionalUrl  String?  // Provisional license specifically for interns
+  careerPhase       String       @default("licensed") // "internship" or "licensed"
 
   password          String       // We will hash this in the backend
   location          String       @default("All Nigeria")
   keywords          String?      // The AI will populate this from the resume
   resumeUrl         String?      // Link to their uploaded PDF
-  minScore          Int          @default(70)
-  isVerified        Boolean      @default(false) // Blocks login until email is confirmed
-  createdAt         DateTime     @default(now())
-  
-  // ==========================================
-  // 🚀 PILLAR 1: THE VAULT (Extended)
-  // ==========================================
   cvParsedText      String?      // Hidden text extracted for the AI Cover Letter Engine
-  degreeUrl         String?      // Link to B.MLS degree
+  minScore          Int          @default(70)
+  createdAt         DateTime     @default(now())
   
   // ==========================================
   // 🚀 PILLAR 3: AUTONOMOUS PREFERENCES
@@ -48,28 +45,39 @@ model User {
 
   jobs              Job[]
   history           RunHistory[]
+  applications Application[]
+  notifications Notification[]
 }
 
 model Job {
-  id        String   @id @default(cuid())
+  id              String   @id @default(cuid())
   
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId          String?
+  user            User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
   
-  role      String
-  company   String
-  loc       String
-  salary    String
-  skills    String
-  url       String
-  score     Int
-  tier      Int
-  applied   Boolean  @default(false)
-  status    String?  @default("applied") 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt // CRITICAL FIX: Allows the Match Graph to map resurrected jobs correctly
+  role            String
+  company         String
+  loc             String
+  salary          String
+  skills          String
+  url             String
+  score           Int
+  tier            Int
+  applied         Boolean  @default(false)
+  status          String?  @default("applied") 
+  applications Application[]
+  
+  // Job Meta
   jobType         String   @default("full-time") // "full-time", "internship", "locum"
   isMlscnApproved Boolean  @default(false)       // Critical for internships
+  
+  // Employer / B2B Relations
+  isDirectPost    Boolean   @default(false)      // True if an employer posted it directly
+  employerId      String?   
+  employer        Employer? @relation(fields: [employerId], references: [id])
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @default(now()) @updatedAt
 }
 
 model RunHistory {
@@ -86,7 +94,7 @@ model RunHistory {
 }
 
 // ==========================================
-// NEW: EMAIL VERIFICATION & OUTBOX QUEUE
+// EMAIL VERIFICATION & OUTBOX QUEUE
 // ==========================================
 
 model VerificationToken {
@@ -98,13 +106,13 @@ model VerificationToken {
 }
 
 model EmailQueue {
-  id          String   @id @default(cuid())
-  emailTo     String
-  subject     String
-  htmlBody    String
-  status      String   @default("PENDING") // PENDING, FAILED, SENT
-  retryCount  Int      @default(0)
-  createdAt   DateTime @default(now())
+  id         String   @id @default(cuid())
+  emailTo    String
+  subject    String
+  htmlBody   String
+  status     String   @default("PENDING") // PENDING, FAILED, SENT
+  retryCount Int      @default(0)
+  createdAt  DateTime @default(now())
 }
 
 model PasswordResetToken {
@@ -126,22 +134,67 @@ model SalaryReport {
 }
 
 model CpdEvent {
-  id          String   @id @default(cuid())
-  title       String
-  location    String?
-  date        String?  // Storing as string to handle formats like "TBD" or "Ongoing"
-  cpdUnits    Int?
-  url         String?  @unique // Ensures we don't scrape the same link twice
-  isManual    Boolean  @default(false) // Distinguishes scraped vs admin entry
-  createdAt   DateTime @default(now())
+  id        String   @id @default(cuid())
+  title     String
+  location  String?
+  date      String?  
+  cpdUnits  Int?
+  url       String?  @unique // Ensures we don't scrape the same link twice
+  isManual  Boolean  @default(false) // Distinguishes scraped vs admin entry
+  createdAt DateTime @default(now())
 }
 
 model MlscnNews {
-  id          String   @id @default(cuid())
-  title       String
-  date        String?
-  excerpt     String?
-  url         String?  @unique
-  source      String   @default("MLSCN")
-  createdAt   DateTime @default(now())
+  id        String   @id @default(cuid())
+  title     String
+  date      String?
+  excerpt   String?
+  url       String?  @unique
+  source    String   @default("MLSCN")
+  createdAt DateTime @default(now())
+}
+
+// ==========================================
+// 🚀 NEW EMPLOYER MODEL (Phase 3 B2B)
+// ==========================================
+model Employer {
+  id            String   @id @default(cuid())
+  companyName   String   @unique
+  email         String   @unique
+  passwordHash  String
+  contactName   String?
+  isVerified    Boolean  @default(false) // You manually verify hospitals to prevent spam
+  jobs          Job[]    // A hospital can have many direct job postings
+  createdAt     DateTime @default(now())
+}
+
+// 🚀 NEW: The ATS Junction Table (The Employer's Inbox)
+model Application {
+  id        String   @id @default(cuid())
+  jobId     String
+  userId    String
+  // 🚀 ADD THIS LINE TO TRACK THE ATS STATUS
+  status    String   @default("pending")
+  job       Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime @default(now())
+
+  // Prevents a scientist from applying to the same job twice
+  @@unique([jobId, userId]) 
+  // Interview details
+  interviewDate String?   // e.g., "2026-06-12"
+  interviewTime String?   // e.g., "14:00"
+  interviewLoc  String?   // e.g., "Zoom" or "Abuja HQ"
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String   // The scientist receiving the notification
+  title     String
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

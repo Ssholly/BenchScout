@@ -137,16 +137,23 @@ export default function AppliedPipeline() {
 		jobId: string,
 	) => {
 		e.stopPropagation();
+
+		// 1. Optimistic UI update
 		setCards((prev) => prev.filter((card) => card.id !== jobId));
+
 		try {
-			await fetch("/api/apply", {
+			// 2. 🚀 CRITICAL: This now deletes the application bridge record
+			// which instantly removes the candidate from the employer's ATS drawer.
+			await fetch("/api/jobs/applicants", {
 				method: "DELETE",
 				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ jobId, revert: true }),
+				body: JSON.stringify({ jobId }),
 			});
+
 			window.dispatchEvent(new Event("jobsUpdated"));
 		} catch (error) {
 			console.error("Failed to remove application", error);
+			loadPipeline(); // Revert on failure
 		}
 	};
 

@@ -21,7 +21,8 @@ export default function Topbar() {
 	const [notifications, setNotifications] = useState<any[]>([]);
 	const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
 
-	const fetchSearchData = async () => {
+	// 🚀 Fetch real notifications from the database
+	const fetchSearchAndNotifData = async () => {
 		const activeEmail = localStorage.getItem("labpro_active_user");
 		if (!activeEmail) {
 			setIsUserLoggedIn(false);
@@ -32,39 +33,63 @@ export default function Topbar() {
 		}
 
 		setIsUserLoggedIn(true);
+
+		// 1. Fetch Search Bar Jobs
 		try {
 			const res = await fetch("/api/jobs");
 			const data = await res.json();
 			if (Array.isArray(data)) {
-				const unappliedJobs = data.filter((j: any) => j.applied !== true);
-				setAllJobs(unappliedJobs);
+				setAllJobs(data.filter((j: any) => j.applied !== true));
+			}
+		} catch (e) {
+			console.error("Failed to fetch jobs for search bar");
+		}
 
-				const tier1Jobs = unappliedJobs.filter((j: any) => j.tier === 1);
-				if (tier1Jobs.length > 0) {
-					const newNotifs = tier1Jobs.slice(0, 3).map((job) => ({
-						id: job.id,
-						title: "High-Priority Match",
-						body: `A new Tier 1 position for ${job.role} at ${job.company} (${job.loc}) was just found.`,
-						time: "Recently added",
-					}));
-					setNotifications(newNotifs);
-					setHasNotifications(true);
+		// 2. Fetch LIVE Employer Notifications
+		try {
+			const notifRes = await fetch(`/api/notifications?email=${activeEmail}`);
+			if (notifRes.ok) {
+				const notifData = await notifRes.json();
+				if (notifData.success && notifData.notifications.length > 0) {
+					// Map database notifications to UI format
+					const mappedNotifs = notifData.notifications.map((n: any) => {
+						const dateObj = new Date(n.createdAt);
+						const timeString = dateObj.toLocaleTimeString([], {
+							hour: "2-digit",
+							minute: "2-digit",
+						});
+
+						return {
+							id: n.id,
+							title: n.title,
+							body: n.message,
+							time: `${dateObj.toLocaleDateString()} @ ${timeString}`,
+							isRead: n.isRead,
+						};
+					});
+
+					setNotifications(mappedNotifs);
+
+					// Check if any are unread to trigger the red badge
+					const hasUnread = mappedNotifs.some((n: any) => !n.isRead);
+					setHasNotifications(hasUnread);
 				} else {
 					setNotifications([]);
 					setHasNotifications(false);
 				}
 			}
 		} catch (e) {
-			console.error("Failed to fetch jobs for search bar");
+			console.error("Failed to fetch notifications");
 		}
 	};
 
 	useEffect(() => {
 		setMounted(true);
-		fetchSearchData();
+		fetchSearchAndNotifData();
 
-		window.addEventListener("userStateChanged", fetchSearchData);
-		window.addEventListener("jobsUpdated", fetchSearchData);
+		window.addEventListener("userStateChanged", fetchSearchAndNotifData);
+		window.addEventListener("jobsUpdated", fetchSearchAndNotifData);
+		window.addEventListener("refreshNotifications", fetchSearchAndNotifData);
 
 		setIsOnline(navigator.onLine);
 		const handleStatus = () => setIsOnline(navigator.onLine);
@@ -82,8 +107,12 @@ export default function Topbar() {
 		document.addEventListener("mousedown", handleClickOutside);
 
 		return () => {
-			window.removeEventListener("userStateChanged", fetchSearchData);
-			window.removeEventListener("jobsUpdated", fetchSearchData);
+			window.removeEventListener("userStateChanged", fetchSearchAndNotifData);
+			window.removeEventListener("jobsUpdated", fetchSearchAndNotifData);
+			window.removeEventListener(
+				"refreshNotifications",
+				fetchSearchAndNotifData,
+			);
 			window.removeEventListener("online", handleStatus);
 			window.removeEventListener("offline", handleStatus);
 			document.removeEventListener("mousedown", handleClickOutside);
@@ -91,11 +120,26 @@ export default function Topbar() {
 	}, []);
 
 	const handleNotificationClick = () => setShowNotifs(!showNotifs);
-	const handleMarkAsRead = (e: React.MouseEvent) => {
+
+	const handleMarkAsRead = async (e: React.MouseEvent) => {
 		e.stopPropagation();
 		setHasNotifications(false);
-		setNotifications([]);
+
+		// Optimistically update UI
+		setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
+
+		try {
+			const activeEmail = localStorage.getItem("labpro_active_user");
+			await fetch("/api/notifications/mark-read", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ email: activeEmail }),
+			});
+		} catch (err) {
+			console.error("Failed to mark notifications as read");
+		}
 	};
+
 	const handleHelpClick = () => {
 		setHelpView("menu");
 		setShowHelp(true);
@@ -130,14 +174,19 @@ export default function Topbar() {
 		setIsSearchActive(false);
 		setSearchResults([]);
 	};
+
 	const handleViewAll = () => {
 		clearSearch();
+		setShowNotifs(false);
 		router.push("/matches");
 	};
+
 	const handleResultClick = () => {
 		clearSearch();
+		setShowNotifs(false); // 🚀 Ensure dropdown closes when clicking a notification
 		router.push("/matches");
 	};
+
 	return (
 		<header
 			className="global-topbar"
@@ -477,9 +526,9 @@ export default function Topbar() {
 											style={{
 												background: "none",
 												border: "none",
-												color: "#0058bc",
+												color: "#1A8C7A", // 🚀 BRANDED LINK
 												fontSize: "12px",
-												fontWeight: 700,
+												fontWeight: 800,
 												cursor: "pointer",
 											}}
 										>
@@ -571,19 +620,20 @@ export default function Topbar() {
 									width: "340px",
 									maxWidth: "85vw",
 									background: "white",
-									borderRadius: "12px",
-									border: "1px solid #e2e8f0",
-									boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)",
+									borderRadius: "16px",
+									border: "1px solid rgba(0,0,0,0.1)",
+									boxShadow: "0 20px 40px -10px rgba(0, 0, 0, 0.15)",
 									zIndex: 100,
 									overflow: "hidden",
 									maxHeight: "400px",
 									display: "flex",
 									flexDirection: "column",
+									animation: "popIn 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
 								}}
 							>
 								<div
 									style={{
-										padding: "12px 16px",
+										padding: "16px 20px",
 										background: "#f8fafc",
 										borderBottom: "1px solid #e2e8f0",
 										display: "flex",
@@ -593,7 +643,7 @@ export default function Topbar() {
 								>
 									<span
 										style={{
-											fontSize: "13px",
+											fontSize: "14px",
 											fontWeight: 800,
 											color: "#0f172a",
 										}}
@@ -606,78 +656,95 @@ export default function Topbar() {
 											style={{
 												background: "none",
 												border: "none",
-												color: "#0058bc",
+												color: "#1A8C7A",
 												fontSize: "11px",
-												fontWeight: 700,
+												fontWeight: 800,
 												cursor: "pointer",
+												textDecoration: "underline",
 											}}
 										>
-											Mark as read
+											Mark all as read
 										</button>
 									)}
 								</div>
 								<div style={{ overflowY: "auto" }}>
-									{hasNotifications && notifications.length > 0 ? (
-										notifications.map((notif) => (
-											<div
-												key={notif.id}
-												onClick={handleResultClick}
-												style={{
-													padding: "16px",
-													display: "flex",
-													gap: "12px",
-													background: "#eff6ff",
-													borderLeft: "4px solid #0058bc",
-													borderBottom: "1px solid #e2e8f0",
-													cursor: "pointer",
-												}}
-											>
+									{/* 🚀 FIXED: Only map out UNREAD notifications dynamically */}
+									{notifications.filter((n) => !n.isRead).length > 0 ? (
+										notifications
+											.filter((n) => !n.isRead)
+											.map((notif) => (
 												<div
+													key={notif.id}
+													onClick={handleResultClick}
 													style={{
-														width: "8px",
-														height: "8px",
-														borderRadius: "50%",
-														background: "#0058bc",
-														marginTop: "6px",
-														flexShrink: 0,
+														padding: "16px 20px",
+														display: "flex",
+														gap: "12px",
+														background: "#f0fdf4",
+														borderLeft: "4px solid #1A8C7A",
+														borderBottom: "1px solid #e2e8f0",
+														cursor: "pointer",
+														transition: "background 0.2s",
 													}}
-												></div>
-												<div>
-													<p
+												>
+													<div
 														style={{
-															margin: 0,
-															fontSize: "13px",
-															fontWeight: 800,
-															color: "#0f172a",
+															width: "8px",
+															height: "8px",
+															borderRadius: "50%",
+															background: "#1A8C7A",
+															marginTop: "6px",
+															flexShrink: 0,
 														}}
-													>
-														{notif.title}
-													</p>
-													<p
-														style={{
-															margin: "4px 0 0 0",
-															fontSize: "13px",
-															color: "#475569",
-															lineHeight: "1.4",
-														}}
-													>
-														{notif.body}
-													</p>
-													<p
-														style={{
-															margin: "8px 0 0 0",
-															fontSize: "11px",
-															color: "#94a3b8",
-															fontWeight: 600,
-														}}
-													>
-														{notif.time}
-													</p>
+													></div>
+													<div>
+														<p
+															style={{
+																margin: 0,
+																fontSize: "13px",
+																fontWeight: 800,
+																color: "#0f172a",
+															}}
+														>
+															{notif.title}
+														</p>
+														<p
+															style={{
+																margin: "4px 0 0 0",
+																fontSize: "13px",
+																color: "#475569",
+																lineHeight: "1.4",
+															}}
+														>
+															{notif.body}
+														</p>
+														<p
+															style={{
+																margin: "8px 0 0 0",
+																fontSize: "11px",
+																color: "#94a3b8",
+																fontWeight: 600,
+															}}
+														>
+															{notif.time}
+														</p>
+													</div>
 												</div>
-											</div>
-										))
+											))
 									) : (
-										<div style={{ padding: "32px 16px", textAlign: "center" }}>
+										<div style={{ padding: "40px 20px", textAlign: "center" }}>
+											<svg
+												width="32"
+												height="32"
+												viewBox="0 0 24 24"
+												fill="none"
+												stroke="#cbd5e1"
+												strokeWidth="1.5"
+												style={{ margin: "0 auto 12px auto" }}
+											>
+												<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+												<path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+											</svg>
 											<p
 												style={{
 													margin: 0,
@@ -905,9 +972,9 @@ export default function Topbar() {
 												boxShadow: "0 2px 4px rgba(0,0,0,0.02)",
 											}}
 											onMouseEnter={(e) => {
-												e.currentTarget.style.borderColor = "#bae6fd";
+												e.currentTarget.style.borderColor = "#1A8C7A";
 												e.currentTarget.style.boxShadow =
-													"0 4px 12px rgba(0,0,0,0.05)";
+													"0 4px 12px rgba(26,140,122,0.05)";
 											}}
 											onMouseLeave={(e) => {
 												e.currentTarget.style.borderColor = "#e2e8f0";
@@ -924,14 +991,14 @@ export default function Topbar() {
 											>
 												<div
 													style={{
-														background: "#f0f9ff",
+														background: "#e6fcf5",
 														width: "40px",
 														height: "40px",
 														borderRadius: "10px",
 														display: "flex",
 														alignItems: "center",
 														justifyContent: "center",
-														color: "#0ea5e9",
+														color: "#1A8C7A",
 													}}
 												>
 													<svg
@@ -994,9 +1061,9 @@ export default function Topbar() {
 												boxShadow: "0 2px 4px rgba(0,0,0,0.02)",
 											}}
 											onMouseEnter={(e) => {
-												e.currentTarget.style.borderColor = "#bae6fd";
+												e.currentTarget.style.borderColor = "#1A8C7A";
 												e.currentTarget.style.boxShadow =
-													"0 4px 12px rgba(0,0,0,0.05)";
+													"0 4px 12px rgba(26,140,122,0.05)";
 											}}
 											onMouseLeave={(e) => {
 												e.currentTarget.style.borderColor = "#e2e8f0";
@@ -1181,9 +1248,9 @@ export default function Topbar() {
 												target="_blank"
 												rel="noopener noreferrer"
 												style={{
-													color: "#0058bc",
+													color: "#1A8C7A",
 													textDecoration: "none",
-													fontWeight: 600,
+													fontWeight: 800,
 												}}
 											>
 												Anthropic Developer Console
@@ -1241,7 +1308,7 @@ export default function Topbar() {
 											justifyContent: "center",
 											gap: "8px",
 											width: "100%",
-											background: "#0058bc",
+											background: "#0B2444",
 											color: "white",
 											padding: "14px",
 											borderRadius: "12px",
@@ -1249,13 +1316,13 @@ export default function Topbar() {
 											fontWeight: 800,
 											textDecoration: "none",
 											transition: "background 0.2s",
-											boxShadow: "0 4px 14px 0 rgba(0, 88, 188, 0.39)",
+											boxShadow: "0 4px 14px 0 rgba(11, 36, 68, 0.3)",
 										}}
 										onMouseEnter={(e) =>
-											(e.currentTarget.style.background = "#004a9f")
+											(e.currentTarget.style.background = "#05162a")
 										}
 										onMouseLeave={(e) =>
-											(e.currentTarget.style.background = "#0058bc")
+											(e.currentTarget.style.background = "#0B2444")
 										}
 									>
 										<svg

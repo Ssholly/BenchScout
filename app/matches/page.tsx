@@ -57,7 +57,6 @@ export default function MatchesPage() {
 		const careerPhase =
 			localStorage.getItem("labpro_career_phase") || "licensed";
 
-		// 🚀 DYNAMIC INTERNSHIP VAULT TOGGLE
 		const initialDocs: VaultDoc[] =
 			careerPhase === "internship"
 				? [
@@ -132,22 +131,29 @@ export default function MatchesPage() {
 		fetch(`/api/jobs?email=${activeEmail}`)
 			.then((res) => res.json())
 			.then((data) => {
-				let myJobs = data || [];
-				if (Array.isArray(myJobs)) {
-					myJobs = myJobs.filter(
-						(j: any) =>
-							(j.targetEmail === activeEmail ||
-								j.userEmail === activeEmail ||
-								j.email === activeEmail ||
-								(!j.targetEmail && !j.userEmail && !j.email)) &&
-							j.status !== "cleared",
-					);
+				if (!Array.isArray(data)) {
+					console.error("API returned a non-array response:", data);
+					setJobs([]);
+					setAppliedJobs([]);
+					setIsLoading(false);
+					return;
+				}
 
-					if (employerParam) {
-						myJobs = myJobs.filter(
-							(j: any) => j.company.trim() === employerParam,
-						);
-					}
+				let myJobs = data;
+
+				myJobs = myJobs.filter(
+					(j: any) =>
+						(j.targetEmail === activeEmail ||
+							j.userEmail === activeEmail ||
+							j.email === activeEmail ||
+							(!j.targetEmail && !j.userEmail && !j.email)) &&
+						j.status !== "cleared",
+				);
+
+				if (employerParam) {
+					myJobs = myJobs.filter(
+						(j: any) => j.company.trim() === employerParam,
+					);
 				}
 
 				setJobs(myJobs);
@@ -157,7 +163,10 @@ export default function MatchesPage() {
 				setAppliedJobs(alreadyApplied);
 				setIsLoading(false);
 			})
-			.catch(() => setIsLoading(false));
+			.catch(() => {
+				setJobs([]);
+				setIsLoading(false);
+			});
 
 		fetch(`/api/user?email=${activeEmail}`)
 			.then((res) => res.json())
@@ -226,10 +235,16 @@ export default function MatchesPage() {
 		loadData();
 	};
 
+	// 🚀 VIP SOURCING LOGIC INTERCEPT
 	const unappliedJobs = jobs.filter((j) => !appliedJobs.includes(j.id));
-	const t1Jobs = unappliedJobs.filter((j) => j.tier === 1);
-	const t2Jobs = unappliedJobs.filter((j) => j.tier === 2);
-	const t3Jobs = unappliedJobs.filter((j) => j.tier === 3);
+
+	// Separate scouted VIP jobs from standard queue
+	const scoutedJobs = unappliedJobs.filter((j) => j.isScoutedInvite);
+	const regularJobs = unappliedJobs.filter((j) => !j.isScoutedInvite);
+
+	const t1Jobs = regularJobs.filter((j) => j.tier === 1);
+	const t2Jobs = regularJobs.filter((j) => j.tier === 2);
+	const t3Jobs = regularJobs.filter((j) => j.tier === 3);
 
 	const calculateDynamicStats = () => {
 		const totalScore = unappliedJobs.reduce(
@@ -269,10 +284,11 @@ export default function MatchesPage() {
 
 	const handleInitiateApply = async (job: any) => {
 		if (
-			!job.url ||
-			job.url === "#" ||
-			job.url === "https://www.myjobmag.comundefined" ||
-			job.url.trim() === ""
+			!job.isDirectPost &&
+			(!job.url ||
+				job.url === "#" ||
+				job.url === "https://www.myjobmag.comundefined" ||
+				job.url.trim() === "")
 		) {
 			setShowLinkModal(true);
 			return;
@@ -305,7 +321,33 @@ export default function MatchesPage() {
 
 	const executeFinalApply = async () => {
 		if (!toolkitJob) return;
-		let finalUrl = toolkitJob.url.trim();
+
+		const activeEmail = localStorage.getItem("labpro_active_user");
+
+		if (!appliedJobs.includes(toolkitJob.id)) {
+			setAppliedJobs((prev) => [...prev, toolkitJob.id]);
+			try {
+				await fetch("/api/apply", {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({ jobId: toolkitJob.id, email: activeEmail }),
+				});
+				window.dispatchEvent(new Event("jobsUpdated"));
+			} catch (e) {
+				console.error("Apply logging failed.");
+			}
+		}
+
+		if (toolkitJob.isDirectPost) {
+			showToast(
+				"Application securely delivered to Employer's B2B Inbox!",
+				"success",
+			);
+			setToolkitJob(null);
+			return;
+		}
+
+		let finalUrl = toolkitJob.url?.trim() || "";
 		if (finalUrl.includes("myjobmag.comhttps://"))
 			finalUrl = "https://" + finalUrl.split("https://")[1];
 		if (!finalUrl.startsWith("http://") && !finalUrl.startsWith("https://"))
@@ -314,21 +356,10 @@ export default function MatchesPage() {
 		try {
 			new URL(finalUrl);
 			window.open(finalUrl, "_blank", "noopener,noreferrer");
-
-			if (!appliedJobs.includes(toolkitJob.id)) {
-				setAppliedJobs((prev) => [...prev, toolkitJob.id]);
-				await fetch("/api/apply", {
-					method: "POST",
-					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify({ jobId: toolkitJob.id }),
-				});
-				window.dispatchEvent(new Event("jobsUpdated"));
-			}
-			setToolkitJob(null);
 		} catch (error) {
 			setShowLinkModal(true);
-			setToolkitJob(null);
 		}
+		setToolkitJob(null);
 	};
 
 	const copyCoverLetter = () => {
@@ -451,10 +482,44 @@ export default function MatchesPage() {
 									fontWeight: 800,
 									color: "#0f172a",
 									fontSize: "14.5px",
-									marginBottom: "2px",
+									marginBottom: "4px",
+									display: "flex",
+									alignItems: "center",
+									gap: "8px",
 								}}
 							>
 								{j.role}
+								{j.isDirectPost && (
+									<span
+										style={{
+											background: "#e6fcf5",
+											color: "#1A8C7A",
+											border: "1px solid rgba(26, 140, 122, 0.2)",
+											fontSize: "9px",
+											fontWeight: 800,
+											padding: "2px 6px",
+											borderRadius: "6px",
+											textTransform: "uppercase",
+											letterSpacing: "0.5px",
+											display: "inline-flex",
+											alignItems: "center",
+											gap: "4px",
+										}}
+									>
+										<svg
+											width="10"
+											height="10"
+											viewBox="0 0 24 24"
+											fill="none"
+											stroke="currentColor"
+											strokeWidth="3"
+										>
+											<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+											<polyline points="22 4 12 14.01 9 11.01"></polyline>
+										</svg>{" "}
+										B2B Direct
+									</span>
+								)}
 							</div>
 							<div style={{ fontSize: "13px", color: "#64748b" }}>
 								{j.company}
@@ -481,7 +546,7 @@ export default function MatchesPage() {
 						>
 							<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
 							<circle cx="12" cy="10" r="3" />
-						</svg>
+						</svg>{" "}
 						{j.loc}
 					</div>
 				</td>
@@ -1080,6 +1145,211 @@ export default function MatchesPage() {
 								gap: "2.5rem",
 							}}
 						>
+							{/* 🚀 NEW: VIP SCOUTED INVITATION SECTION */}
+							{scoutedJobs.length > 0 && (
+								<div style={{ marginBottom: "1rem" }}>
+									<h3
+										style={{
+											display: "flex",
+											alignItems: "center",
+											gap: "12px",
+											fontSize: "20px",
+											fontWeight: 800,
+											marginBottom: "1.25rem",
+											color: "#0f172a",
+										}}
+									>
+										<span
+											style={{
+												background: "#d97706",
+												color: "white",
+												padding: "4px 12px",
+												borderRadius: "20px",
+												fontSize: "11px",
+												fontWeight: 800,
+												letterSpacing: "0.5px",
+												display: "flex",
+												alignItems: "center",
+												gap: "4px",
+											}}
+										>
+											<svg
+												width="12"
+												height="12"
+												viewBox="0 0 24 24"
+												fill="none"
+												stroke="currentColor"
+												strokeWidth="3"
+											>
+												<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+											</svg>{" "}
+											VIP PRIORITY
+										</span>
+										Exclusive Scouted Invitations
+									</h3>
+									<div
+										style={{
+											display: "grid",
+											gridTemplateColumns: "1fr",
+											gap: "1.5rem",
+										}}
+									>
+										{scoutedJobs.map((j) => (
+											<div
+												key={j.id}
+												style={{
+													background:
+														"linear-gradient(135deg, #0B2444 0%, #05162a 100%)",
+													borderRadius: "20px",
+													padding: "2rem",
+													color: "white",
+													display: "flex",
+													justifyContent: "space-between",
+													alignItems: "center",
+													boxShadow: "0 20px 40px -10px rgba(11, 36, 68, 0.4)",
+													border: "1px solid rgba(255,255,255,0.1)",
+													position: "relative",
+													overflow: "hidden",
+													flexWrap: "wrap",
+													gap: "1.5rem",
+												}}
+											>
+												{/* Decorative background element */}
+												<div
+													style={{
+														position: "absolute",
+														right: "-5%",
+														top: "-20%",
+														width: "200px",
+														height: "200px",
+														background: "rgba(26, 140, 122, 0.2)",
+														filter: "blur(40px)",
+														borderRadius: "50%",
+														pointerEvents: "none",
+													}}
+												></div>
+
+												<div style={{ position: "relative", zIndex: 1 }}>
+													<div
+														style={{
+															display: "flex",
+															alignItems: "center",
+															gap: "12px",
+															marginBottom: "16px",
+														}}
+													>
+														<div
+															style={{
+																background: "rgba(26, 140, 122, 0.2)",
+																border: "1px solid rgba(26, 140, 122, 0.5)",
+																color: "#2dd4bf",
+																padding: "4px 10px",
+																borderRadius: "8px",
+																fontSize: "10px",
+																fontWeight: 800,
+																letterSpacing: "1px",
+																textTransform: "uppercase",
+															}}
+														>
+															Direct Invite
+														</div>
+														<span
+															style={{
+																color: "#94a3b8",
+																fontSize: "13px",
+																fontWeight: 600,
+															}}
+														>
+															{j.loc}
+														</span>
+													</div>
+													<h2
+														style={{
+															fontSize: "24px",
+															fontWeight: 900,
+															margin: "0 0 8px 0",
+															color: "white",
+														}}
+													>
+														{j.role}
+													</h2>
+													<p
+														style={{
+															fontSize: "16px",
+															color: "#94a3b8",
+															margin: 0,
+															fontWeight: 500,
+														}}
+													>
+														{j.company}
+													</p>
+												</div>
+
+												<div
+													style={{
+														position: "relative",
+														zIndex: 1,
+														display: "flex",
+														flexDirection: "column",
+														alignItems: "flex-end",
+														gap: "1rem",
+													}}
+												>
+													<div
+														style={{
+															fontSize: "20px",
+															fontWeight: 800,
+															color: "#2dd4bf",
+														}}
+													>
+														{j.salary === "Competitive"
+															? "Competitive"
+															: j.salary}
+													</div>
+													<button
+														onClick={() => handleInitiateApply(j)}
+														style={{
+															background: "#1A8C7A",
+															color: "white",
+															border: "none",
+															padding: "14px 28px",
+															borderRadius: "12px",
+															fontSize: "14px",
+															fontWeight: 800,
+															cursor: "pointer",
+															display: "flex",
+															alignItems: "center",
+															gap: "8px",
+															boxShadow: "0 8px 16px rgba(26, 140, 122, 0.3)",
+															transition: "transform 0.2s",
+														}}
+														onMouseEnter={(e) =>
+															(e.currentTarget.style.transform = "scale(1.02)")
+														}
+														onMouseLeave={(e) =>
+															(e.currentTarget.style.transform = "scale(1)")
+														}
+													>
+														Claim Placement{" "}
+														<svg
+															width="16"
+															height="16"
+															viewBox="0 0 24 24"
+															fill="none"
+															stroke="currentColor"
+															strokeWidth="3"
+														>
+															<line x1="5" y1="12" x2="19" y2="12" />
+															<polyline points="12 5 19 12 12 19" />
+														</svg>
+													</button>
+												</div>
+											</div>
+										))}
+									</div>
+								</div>
+							)}
+
 							{t1Jobs.length > 0 && (
 								<div>
 									<h3
@@ -1860,7 +2130,9 @@ export default function MatchesPage() {
 												boxShadow: "0 4px 12px rgba(11, 36, 68, 0.2)",
 											}}
 										>
-											Proceed to Job Board{" "}
+											{toolkitJob.isDirectPost
+												? "Submit Application Now"
+												: "Proceed to Job Board"}{" "}
 											<svg
 												width="16"
 												height="16"

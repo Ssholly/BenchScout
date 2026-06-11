@@ -138,7 +138,6 @@ export default function SchedulerPage() {
 	// --- 1. DYNAMIC CALENDAR STATE ---
 	const [currentMonthDate, setCurrentMonthDate] = useState(new Date());
 	const [selectedDay, setSelectedDay] = useState(new Date().getDate());
-	const [newEventTitle, setNewEventTitle] = useState("");
 	const [events, setEvents] = useState<ScheduledEvent[]>([]);
 
 	// Event Modal State
@@ -149,7 +148,7 @@ export default function SchedulerPage() {
 		interview: { color: "#eab308", bg: "#fef9c3", icon: "video" },
 		deadline: { color: "#ef4444", bg: "#fee2e2", icon: "alert" },
 		followup: { color: "#7e22ce", bg: "#f3e8ff", icon: "mail" },
-		action: { color: "#1A8C7A", bg: "#e6fcf5", icon: "map-pin" }, // 🚀 BRANDED ACTION EVENT
+		action: { color: "#1A8C7A", bg: "#e6fcf5", icon: "map-pin" },
 	};
 
 	const selectedDayEvents = events
@@ -184,14 +183,14 @@ export default function SchedulerPage() {
 		"Blood Bank, AMCE, Manager",
 	);
 
+	// 🚀 FIXED: Added "warning" to the Toast state type
 	const [toast, setToast] = useState<{
 		message: string;
-		type: "success" | "error";
+		type: "success" | "error" | "warning";
 	} | null>(null);
 
 	// --- 3. EFFECTS & LIFECYCLE ---
-
-	const loadScheduleData = () => {
+	const loadScheduleData = async () => {
 		const activeEmail = localStorage.getItem("labpro_active_user");
 
 		if (!activeEmail) {
@@ -208,11 +207,34 @@ export default function SchedulerPage() {
 
 		setIsUserLoggedIn(true);
 
+		// Load personal local events
+		let localEvents = [];
 		const savedEvents = localStorage.getItem("labpro_events");
 		if (savedEvents) {
-			setEvents(JSON.parse(savedEvents));
+			localEvents = JSON.parse(savedEvents);
 		} else {
-			setEvents(DEFAULT_EVENTS);
+			localEvents = DEFAULT_EVENTS;
+		}
+		
+		// Fetch LIVE B2B Shortlist events
+		try {
+			const res = await fetch(`/api/scheduler/sync?email=${activeEmail}`);
+
+			// 🚀 CRITICAL FIX: Only try to parse JSON if the response is actually OK (Not 404 HTML)
+			if (!res.ok) {
+				throw new Error("API Route not found or returned an error");
+			}
+
+			const data = await res.json();
+			if (data.success && data.employerEvents) {
+				setEvents([...localEvents, ...data.employerEvents]);
+			} else {
+				setEvents(localEvents);
+			}
+		} catch (error) {
+			console.error("Failed to sync B2B schedule data:", error);
+			// Fail silently and just load local events
+			setEvents(localEvents);
 		}
 
 		const savedActive = localStorage.getItem("labpro_scheduler_active");
@@ -238,7 +260,7 @@ export default function SchedulerPage() {
 
 		const savedAlertKeywords = localStorage.getItem("labpro_alerts_keywords");
 		if (savedAlertKeywords) setAlertKeywords(savedAlertKeywords);
-	};
+	};;
 
 	useEffect(() => {
 		setMounted(true);
@@ -250,7 +272,11 @@ export default function SchedulerPage() {
 
 	useEffect(() => {
 		if (mounted && isUserLoggedIn) {
-			localStorage.setItem("labpro_events", JSON.stringify(events));
+			// Only save events that were manually created (no 'b2b-' ID)
+			const personalEvents = events.filter(
+				(e) => !e.id.toString().startsWith("b2b-"),
+			);
+			localStorage.setItem("labpro_events", JSON.stringify(personalEvents));
 		}
 	}, [events, mounted, isUserLoggedIn]);
 
@@ -343,9 +369,10 @@ export default function SchedulerPage() {
 	}, [isActive, time, selectedDays, isUserLoggedIn]);
 
 	// --- 4. HANDLERS ---
+	// 🚀 FIXED: Allow "warning" type dynamically
 	const triggerToast = (
 		message: string,
-		type: "success" | "error" = "success",
+		type: "success" | "error" | "warning" = "success",
 	) => {
 		setToast({ message, type });
 		setTimeout(() => setToast(null), 3500);
@@ -459,6 +486,13 @@ export default function SchedulerPage() {
 		e.preventDefault();
 		if (!editingEvent?.title.trim()) return;
 
+		// Prevent editing synced B2B events directly
+		if (editingEvent.id.toString().startsWith("b2b-")) {
+			triggerToast("Action events are managed by the employer.", "warning");
+			setIsEventModalOpen(false);
+			return;
+		}
+
 		setEvents((prev) => {
 			const exists = prev.find((ev) => ev.id === editingEvent.id);
 			if (exists) {
@@ -475,6 +509,16 @@ export default function SchedulerPage() {
 
 	const handleDeleteEvent = () => {
 		if (!editingEvent) return;
+
+		if (editingEvent.id.toString().startsWith("b2b-")) {
+			triggerToast(
+				"Action events must be cancelled from the Applied pipeline.",
+				"error",
+			);
+			setIsEventModalOpen(false);
+			return;
+		}
+
 		setEvents((prev) => prev.filter((ev) => ev.id !== editingEvent.id));
 		setIsEventModalOpen(false);
 		triggerToast("Event deleted.");
@@ -514,8 +558,8 @@ export default function SchedulerPage() {
 						borderRadius: "10px",
 						cursor: "pointer",
 						transition: "all 0.2s ease",
-						background: isSelected ? "#0B2444" : "transparent", // 🚀 BRANDED CALENDAR SELECT
-						color: isSelected ? "white" : isToday ? "#0B2444" : "#475569", // 🚀 BRANDED CURRENT DAY
+						background: isSelected ? "#0B2444" : "transparent",
+						color: isSelected ? "white" : isToday ? "#0B2444" : "#475569",
 						fontWeight: isSelected || isToday ? 800 : 600,
 						border:
 							isToday && !isSelected
@@ -542,7 +586,7 @@ export default function SchedulerPage() {
 										borderRadius: "50%",
 										background: isSelected
 											? "white"
-											: eventConfig[ev.type].color,
+											: eventConfig[ev.type]?.color || "#1A8C7A",
 									}}
 								></div>
 							))}
@@ -605,12 +649,15 @@ export default function SchedulerPage() {
           0% { transform: translate(-50%, -20px) scale(0.95); opacity: 0; }
           100% { transform: translate(-50%, 0) scale(1); opacity: 1; }
         }
+        @keyframes modalFadeIn {
+          0% { opacity: 0; transform: scale(0.96); }
+          100% { opacity: 1; transform: scale(1); }
+        }
         .pane.active {
           border-radius: 24px !important;
           border: none !important;
           box-shadow: none !important;
         }
-        /* 🚀 BRANDED SWITCH TRACK */
         .sw input:checked + .sw-track { background: #1A8C7A !important; }
       `,
 				}}
@@ -626,7 +673,9 @@ export default function SchedulerPage() {
 							background:
 								toast.type === "success"
 									? "rgba(15, 23, 42, 0.9)"
-									: "rgba(153, 27, 27, 0.9)",
+									: toast.type === "warning"
+										? "rgba(217, 119, 6, 0.9)"
+										: "rgba(153, 27, 27, 0.9)",
 							backdropFilter: "blur(12px)",
 							color: "white",
 							padding: "12px 24px",
@@ -643,7 +692,12 @@ export default function SchedulerPage() {
 							transform: "translateX(-50%)",
 						}}
 					>
-						{toast.type === "success" ? "✓ " : "✕ "} {toast.message}
+						{toast.type === "success"
+							? "✓ "
+							: toast.type === "warning"
+								? "⚠️ "
+								: "✕ "}{" "}
+						{toast.message}
 					</div>,
 					document.body,
 				)}
@@ -743,7 +797,7 @@ export default function SchedulerPage() {
 								window.dispatchEvent(new Event("openProfileModal"))
 							}
 							style={{
-								background: "#0B2444", // 🚀 BRANDED BUTTON
+								background: "#0B2444",
 								color: "white",
 								border: "none",
 								padding: "12px 24px",
@@ -769,6 +823,7 @@ export default function SchedulerPage() {
 							<div
 								style={{
 									flex: 1,
+									width: "100%",
 									maxWidth: "300px",
 									background: "rgba(255, 255, 255, 0.4)",
 									backdropFilter: "blur(24px)",
@@ -871,7 +926,6 @@ export default function SchedulerPage() {
 									{renderCalendarGrid()}
 								</div>
 
-								{/* Legend */}
 								<div
 									style={{
 										marginTop: "1rem",
@@ -943,6 +997,23 @@ export default function SchedulerPage() {
 											></div>{" "}
 											Follow-up
 										</div>
+										<div
+											style={{
+												display: "flex",
+												alignItems: "center",
+												gap: "4px",
+											}}
+										>
+											<div
+												style={{
+													width: "5px",
+													height: "5px",
+													borderRadius: "50%",
+													background: eventConfig.action.color,
+												}}
+											></div>{" "}
+											Action
+										</div>
 									</div>
 								</div>
 							</div>
@@ -1006,7 +1077,7 @@ export default function SchedulerPage() {
 									<button
 										onClick={openNewEventModal}
 										style={{
-											background: "#0B2444", // 🚀 BRANDED NAVY BUTTON
+											background: "#0B2444",
 											color: "white",
 											border: "none",
 											padding: "8px 16px",
@@ -1075,146 +1146,151 @@ export default function SchedulerPage() {
 												gap: "12px",
 											}}
 										>
-											{selectedDayEvents.map((event) => (
-												<div
-													key={event.id}
-													style={{ display: "flex", gap: "12px" }}
-												>
+											{selectedDayEvents.map((event) => {
+												const config =
+													eventConfig[event.type] || eventConfig.action;
+												return (
 													<div
-														style={{
-															width: "60px",
-															textAlign: "right",
-															paddingTop: "12px",
-														}}
-													>
-														<span
-															style={{
-																fontSize: "11px",
-																fontWeight: 800,
-																color: "#64748b",
-															}}
-														>
-															{event.time.split(" ")[0]}
-														</span>
-														<span
-															style={{
-																fontSize: "9px",
-																fontWeight: 700,
-																color: "#94a3b8",
-																marginLeft: "2px",
-															}}
-														>
-															{event.time.split(" ")[1]}
-														</span>
-													</div>
-													<div
-														style={{
-															display: "flex",
-															flexDirection: "column",
-															alignItems: "center",
-															paddingTop: "14px",
-														}}
+														key={event.id}
+														style={{ display: "flex", gap: "12px" }}
 													>
 														<div
 															style={{
-																width: "10px",
-																height: "10px",
-																borderRadius: "50%",
-																background: "white",
-																border: `2px solid ${eventConfig[event.type].color}`,
-																zIndex: 2,
-															}}
-														></div>
-														<div
-															style={{
-																width: "2px",
-																flex: 1,
-																background: "rgba(0,0,0,0.05)",
-																marginTop: "4px",
-																minHeight: "30px",
-															}}
-														></div>
-													</div>
-
-													<div
-														onClick={() => openEditEventModal(event)}
-														style={{
-															flex: 1,
-															background: "rgba(255,255,255,0.7)",
-															border: "1px solid rgba(255,255,255,0.5)",
-															borderRadius: "16px",
-															padding: "1rem",
-															boxShadow: "0 2px 8px -2px rgba(0,0,0,0.02)",
-															transition: "transform 0.2s, box-shadow 0.2s",
-															cursor: "pointer",
-														}}
-														onMouseEnter={(e) => {
-															e.currentTarget.style.transform =
-																"translateX(4px)";
-															e.currentTarget.style.boxShadow =
-																"0 8px 16px -4px rgba(0,0,0,0.04)";
-														}}
-														onMouseLeave={(e) => {
-															e.currentTarget.style.transform = "translateX(0)";
-															e.currentTarget.style.boxShadow =
-																"0 2px 8px -2px rgba(0,0,0,0.02)";
-														}}
-													>
-														<div
-															style={{
-																display: "flex",
-																justifyContent: "space-between",
-																alignItems: "flex-start",
-																marginBottom: "6px",
+																width: "60px",
+																textAlign: "right",
+																paddingTop: "12px",
 															}}
 														>
+															<span
+																style={{
+																	fontSize: "11px",
+																	fontWeight: 800,
+																	color: "#64748b",
+																}}
+															>
+																{event.time.split(" ")[0]}
+															</span>
 															<span
 																style={{
 																	fontSize: "9px",
-																	fontWeight: 800,
-																	textTransform: "uppercase",
-																	letterSpacing: "0.5px",
-																	color: eventConfig[event.type].color,
-																	background: eventConfig[event.type].bg,
-																	padding: "3px 6px",
-																	borderRadius: "4px",
-																}}
-															>
-																{event.type}
-															</span>
-															<span
-																style={{
-																	fontSize: "10px",
 																	fontWeight: 700,
 																	color: "#94a3b8",
+																	marginLeft: "2px",
 																}}
 															>
-																Edit
+																{event.time.split(" ")[1]}
 															</span>
 														</div>
-														<h3
+														<div
 															style={{
-																margin: "0 0 2px 0",
-																fontSize: "13px",
-																fontWeight: 800,
-																color: "#0f172a",
+																display: "flex",
+																flexDirection: "column",
+																alignItems: "center",
+																paddingTop: "14px",
 															}}
 														>
-															{event.title}
-														</h3>
-														<p
+															<div
+																style={{
+																	width: "10px",
+																	height: "10px",
+																	borderRadius: "50%",
+																	background: "white",
+																	border: `2px solid ${config.color}`,
+																	zIndex: 2,
+																}}
+															></div>
+															<div
+																style={{
+																	width: "2px",
+																	flex: 1,
+																	background: "rgba(0,0,0,0.05)",
+																	marginTop: "4px",
+																	minHeight: "30px",
+																}}
+															></div>
+														</div>
+
+														<div
+															onClick={() => openEditEventModal(event)}
 															style={{
-																margin: "0 0 10px 0",
-																fontSize: "11px",
-																color: "#64748b",
-																fontWeight: 600,
+																flex: 1,
+																background: "rgba(255,255,255,0.7)",
+																border: "1px solid rgba(255,255,255,0.5)",
+																borderRadius: "16px",
+																padding: "1rem",
+																boxShadow: "0 2px 8px -2px rgba(0,0,0,0.02)",
+																transition: "transform 0.2s, box-shadow 0.2s",
+																cursor: "pointer",
+															}}
+															onMouseEnter={(e) => {
+																e.currentTarget.style.transform =
+																	"translateX(4px)";
+																e.currentTarget.style.boxShadow =
+																	"0 8px 16px -4px rgba(0,0,0,0.04)";
+															}}
+															onMouseLeave={(e) => {
+																e.currentTarget.style.transform =
+																	"translateX(0)";
+																e.currentTarget.style.boxShadow =
+																	"0 2px 8px -2px rgba(0,0,0,0.02)";
 															}}
 														>
-															{event.company}
-														</p>
+															<div
+																style={{
+																	display: "flex",
+																	justifyContent: "space-between",
+																	alignItems: "flex-start",
+																	marginBottom: "6px",
+																}}
+															>
+																<span
+																	style={{
+																		fontSize: "9px",
+																		fontWeight: 800,
+																		textTransform: "uppercase",
+																		letterSpacing: "0.5px",
+																		color: config.color,
+																		background: config.bg,
+																		padding: "3px 6px",
+																		borderRadius: "4px",
+																	}}
+																>
+																	{event.type}
+																</span>
+																<span
+																	style={{
+																		fontSize: "10px",
+																		fontWeight: 700,
+																		color: "#94a3b8",
+																	}}
+																>
+																	Edit
+																</span>
+															</div>
+															<h3
+																style={{
+																	margin: "0 0 2px 0",
+																	fontSize: "13px",
+																	fontWeight: 800,
+																	color: "#0f172a",
+																}}
+															>
+																{event.title}
+															</h3>
+															<p
+																style={{
+																	margin: "0 0 10px 0",
+																	fontSize: "11px",
+																	color: "#64748b",
+																	fontWeight: 600,
+																}}
+															>
+																{event.company}
+															</p>
+														</div>
 													</div>
-												</div>
-											))}
+												);
+											})}
 										</div>
 									)}
 								</div>
@@ -1255,10 +1331,10 @@ export default function SchedulerPage() {
 								alignItems: "flex-start",
 							}}
 						>
-							{/* LEFT COLUMN: Controls */}
 							<div
 								style={{
 									flex: 1,
+									width: "100%",
 									display: "flex",
 									flexDirection: "column",
 									gap: "1.25rem",
@@ -1361,7 +1437,6 @@ export default function SchedulerPage() {
 												flexWrap: "wrap",
 											}}
 										>
-											{/* 🚀 BRANDED TIME SELECTOR BORDER/TEXT */}
 											<input
 												type="time"
 												value={time}
@@ -1413,7 +1488,7 @@ export default function SchedulerPage() {
 													style={{
 														fontSize: "9px",
 														fontWeight: 800,
-														color: "#1A8C7A", // 🚀 BRANDED LABEL
+														color: "#1A8C7A",
 														textTransform: "uppercase",
 														letterSpacing: "1px",
 														marginBottom: "2px",
@@ -1441,7 +1516,6 @@ export default function SchedulerPage() {
 															cursor: "pointer",
 															padding: 0,
 															appearance: "none",
-															WebkitAppearance: "none",
 															width: "100%",
 														}}
 													>
@@ -1489,7 +1563,7 @@ export default function SchedulerPage() {
 													style={{
 														fontSize: "9px",
 														fontWeight: 800,
-														color: "#1A8C7A", // 🚀 BRANDED LABEL
+														color: "#1A8C7A",
 														textTransform: "uppercase",
 														letterSpacing: "1px",
 														marginBottom: "2px",
@@ -1517,7 +1591,6 @@ export default function SchedulerPage() {
 															cursor: "pointer",
 															padding: 0,
 															appearance: "none",
-															WebkitAppearance: "none",
 															width: "100%",
 														}}
 													>
@@ -1571,7 +1644,7 @@ export default function SchedulerPage() {
 														onClick={() => toggleDay(day)}
 														style={{
 															background: isSel
-																? "#0B2444" // 🚀 BRANDED PILLS
+																? "#0B2444"
 																: "rgba(255,255,255,0.7)",
 															color: isSel ? "white" : "#64748b",
 															border: isSel
@@ -1595,7 +1668,7 @@ export default function SchedulerPage() {
 
 								<div
 									style={{
-										background: "rgba(230, 252, 245, 0.5)", // 🚀 BRANDED TEAL BACKDROP
+										background: "rgba(230, 252, 245, 0.5)",
 										backdropFilter: "blur(16px)",
 										border: "1px solid rgba(26, 140, 122, 0.2)",
 										borderRadius: "20px",
@@ -1623,7 +1696,7 @@ export default function SchedulerPage() {
 											style={{
 												fontSize: "13px",
 												fontWeight: 700,
-												color: "#0B2444", // 🚀 BRANDED TEXT
+												color: "#0B2444",
 												margin: "0 0 8px 0",
 											}}
 										>
@@ -1642,7 +1715,8 @@ export default function SchedulerPage() {
 											}}
 										>
 											<li>
-												Keep this browser tab open — runs fire at your set time.
+												Configure your automated scheduler — runs fire at your
+												set time.
 											</li>
 											<li>
 												Results will be emailed to your registered address and
@@ -1660,7 +1734,7 @@ export default function SchedulerPage() {
 									<button
 										onClick={handleSaveScheduler}
 										style={{
-											background: "#0B2444", // 🚀 BRANDED NAVY BUTTON
+											background: "#0B2444",
 											color: "white",
 											border: "none",
 											padding: "12px 32px",
@@ -1683,7 +1757,6 @@ export default function SchedulerPage() {
 								</div>
 							</div>
 
-							{/* RIGHT COLUMN: Status & Insights */}
 							<div
 								style={{
 									width: "100%",
@@ -1694,7 +1767,6 @@ export default function SchedulerPage() {
 									flexShrink: 0,
 								}}
 							>
-								{/* Countdown Status */}
 								<div
 									style={{
 										background: "rgba(255, 255, 255, 0.4)",
@@ -1708,7 +1780,7 @@ export default function SchedulerPage() {
 									<div
 										style={{
 											background: isActive
-												? "rgba(11, 36, 68, 0.8)" // 🚀 BRANDED NAVY ON STATE
+												? "rgba(11, 36, 68, 0.8)"
 												: "rgba(100, 116, 139, 0.8)",
 											backdropFilter: "blur(12px)",
 											color: "white",
@@ -1803,7 +1875,6 @@ export default function SchedulerPage() {
 									</div>
 								</div>
 
-								{/* Performance Insights */}
 								<div
 									style={{
 										background: "rgba(255, 255, 255, 0.4)",
@@ -1843,7 +1914,7 @@ export default function SchedulerPage() {
 												title={data.label}
 												style={{
 													width: "100%",
-													background: i === activeIndex ? "#1A8C7A" : "#e2e8f0", // 🚀 BRANDED ACTIVE BAR
+													background: i === activeIndex ? "#1A8C7A" : "#e2e8f0",
 													height: data.height,
 													borderRadius: "4px",
 													transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
@@ -1866,10 +1937,9 @@ export default function SchedulerPage() {
 									</p>
 								</div>
 
-								{/* Alerts */}
 								<div
 									style={{
-										background: "rgba(11, 36, 68, 0.85)", // 🚀 BRANDED NAVY BACKDROP
+										background: "rgba(11, 36, 68, 0.85)",
 										backdropFilter: "blur(24px)",
 										borderRadius: "20px",
 										padding: "1.25rem",
@@ -1932,7 +2002,7 @@ export default function SchedulerPage() {
 									<button
 										onClick={() => setIsAlertModalOpen(true)}
 										style={{
-											background: isAlertsActive ? "#1A8C7A" : "transparent", // 🚀 BRANDED ACTIVE BUTTON
+											background: isAlertsActive ? "#1A8C7A" : "transparent",
 											color: "white",
 											border: isAlertsActive
 												? "none"
@@ -1953,7 +2023,7 @@ export default function SchedulerPage() {
 				)}
 			</section>
 
-			{/* --- EVENT EDIT/CREATE MODAL --- */}
+			{/* --- APPLE GLASS OVERLAY MODAL FOR EVENTS --- */}
 			{isEventModalOpen &&
 				editingEvent &&
 				createPortal(
@@ -1964,9 +2034,10 @@ export default function SchedulerPage() {
 							left: 0,
 							width: "100vw",
 							height: "100vh",
-							background: "rgba(15, 23, 42, 0.6)",
-							backdropFilter: "blur(8px)",
-							zIndex: 10000,
+							background: "rgba(15, 23, 42, 0.15)",
+							backdropFilter: "blur(18px)",
+							WebkitBackdropFilter: "blur(18px)",
+							zIndex: 100000,
 							display: "flex",
 							alignItems: "center",
 							justifyContent: "center",
@@ -1975,18 +2046,21 @@ export default function SchedulerPage() {
 					>
 						<div
 							style={{
-								background: "white",
+								background: "rgba(255, 255, 255, 0.95)",
+								border: "1px solid rgba(255, 255, 255, 0.5)",
 								width: "100%",
 								maxWidth: "400px",
-								borderRadius: "20px",
+								borderRadius: "24px",
 								overflow: "hidden",
-								boxShadow: "0 20px 40px -5px rgba(0, 0, 0, 0.2)",
+								boxShadow: "0 30px 60px -15px rgba(0,0,0,0.12)",
+								animation:
+									"modalFadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards",
 							}}
 						>
 							<div
 								style={{
 									padding: "1.25rem",
-									borderBottom: "1px solid #f1f5f9",
+									borderBottom: "1px solid rgba(0,0,0,0.05)",
 									display: "flex",
 									justifyContent: "space-between",
 									alignItems: "center",
@@ -1995,7 +2069,7 @@ export default function SchedulerPage() {
 								<h3
 									style={{
 										fontSize: "16px",
-										fontWeight: 800,
+										fontWeight: 850,
 										color: "#0f172a",
 										margin: 0,
 									}}
@@ -2007,7 +2081,7 @@ export default function SchedulerPage() {
 								<button
 									onClick={() => setIsEventModalOpen(false)}
 									style={{
-										background: "#f1f5f9",
+										background: "rgba(0,0,0,0.03)",
 										border: "none",
 										width: "28px",
 										height: "28px",
@@ -2025,7 +2099,7 @@ export default function SchedulerPage() {
 										viewBox="0 0 24 24"
 										fill="none"
 										stroke="currentColor"
-										strokeWidth="2"
+										strokeWidth="2.5"
 									>
 										<line x1="18" y1="6" x2="6" y2="18" />
 										<line x1="6" y1="6" x2="18" y2="18" />
@@ -2046,9 +2120,10 @@ export default function SchedulerPage() {
 									<label
 										style={{
 											display: "block",
-											fontSize: "11px",
+											fontSize: "10px",
 											fontWeight: 800,
-											color: "#475569",
+											color: "#64748b",
+											letterSpacing: "0.5px",
 											marginBottom: "4px",
 										}}
 									>
@@ -2067,11 +2142,13 @@ export default function SchedulerPage() {
 										placeholder="e.g. Technical Interview"
 										style={{
 											width: "100%",
-											padding: "8px 12px",
-											borderRadius: "8px",
+											padding: "10px 12px",
+											borderRadius: "10px",
 											border: "1px solid #cbd5e1",
 											fontSize: "13px",
 											outline: "none",
+											background: "white",
+											fontWeight: 600,
 										}}
 									/>
 								</div>
@@ -2080,9 +2157,10 @@ export default function SchedulerPage() {
 										<label
 											style={{
 												display: "block",
-												fontSize: "11px",
+												fontSize: "10px",
 												fontWeight: 800,
-												color: "#475569",
+												color: "#64748b",
+												letterSpacing: "0.5px",
 												marginBottom: "4px",
 											}}
 										>
@@ -2097,16 +2175,18 @@ export default function SchedulerPage() {
 											onChange={(e) =>
 												setEditingEvent({
 													...editingEvent,
-													date: parseInt(e.target.value),
+													date: parseInt(e.target.value) || 1,
 												})
 											}
 											style={{
 												width: "100%",
-												padding: "8px 12px",
-												borderRadius: "8px",
+												padding: "10px 12px",
+												borderRadius: "10px",
 												border: "1px solid #cbd5e1",
 												fontSize: "13px",
 												outline: "none",
+												background: "white",
+												fontWeight: 600,
 											}}
 										/>
 									</div>
@@ -2114,9 +2194,10 @@ export default function SchedulerPage() {
 										<label
 											style={{
 												display: "block",
-												fontSize: "11px",
+												fontSize: "10px",
 												fontWeight: 800,
-												color: "#475569",
+												color: "#64748b",
+												letterSpacing: "0.5px",
 												marginBottom: "4px",
 											}}
 										>
@@ -2134,11 +2215,13 @@ export default function SchedulerPage() {
 											}
 											style={{
 												width: "100%",
-												padding: "8px 12px",
-												borderRadius: "8px",
+												padding: "10px 12px",
+												borderRadius: "10px",
 												border: "1px solid #cbd5e1",
 												fontSize: "13px",
 												outline: "none",
+												background: "white",
+												fontWeight: 600,
 											}}
 										/>
 									</div>
@@ -2148,9 +2231,10 @@ export default function SchedulerPage() {
 										<label
 											style={{
 												display: "block",
-												fontSize: "11px",
+												fontSize: "10px",
 												fontWeight: 800,
-												color: "#475569",
+												color: "#64748b",
+												letterSpacing: "0.5px",
 												marginBottom: "4px",
 											}}
 										>
@@ -2168,11 +2252,13 @@ export default function SchedulerPage() {
 											}
 											style={{
 												width: "100%",
-												padding: "8px 12px",
-												borderRadius: "8px",
+												padding: "10px 12px",
+												borderRadius: "10px",
 												border: "1px solid #cbd5e1",
 												fontSize: "13px",
 												outline: "none",
+												background: "white",
+												fontWeight: 600,
 											}}
 										/>
 									</div>
@@ -2180,9 +2266,10 @@ export default function SchedulerPage() {
 										<label
 											style={{
 												display: "block",
-												fontSize: "11px",
+												fontSize: "10px",
 												fontWeight: 800,
-												color: "#475569",
+												color: "#64748b",
+												letterSpacing: "0.5px",
 												marginBottom: "4px",
 											}}
 										>
@@ -2198,12 +2285,14 @@ export default function SchedulerPage() {
 											}
 											style={{
 												width: "100%",
-												padding: "8px 12px",
-												borderRadius: "8px",
+												padding: "10px 12px",
+												borderRadius: "10px",
 												border: "1px solid #cbd5e1",
 												fontSize: "13px",
 												outline: "none",
 												background: "white",
+												fontWeight: 600,
+												appearance: "none",
 											}}
 										>
 											<option value="interview">Interview</option>
@@ -2220,7 +2309,7 @@ export default function SchedulerPage() {
 										alignItems: "center",
 										marginTop: "0.5rem",
 										paddingTop: "1rem",
-										borderTop: "1px solid #f1f5f9",
+										borderTop: "1px solid rgba(0,0,0,0.05)",
 									}}
 								>
 									{events.find((e) => e.id === editingEvent.id) ? (
@@ -2232,7 +2321,7 @@ export default function SchedulerPage() {
 												background: "transparent",
 												border: "none",
 												fontSize: "12px",
-												fontWeight: 700,
+												fontWeight: 800,
 												cursor: "pointer",
 											}}
 										>
@@ -2246,8 +2335,8 @@ export default function SchedulerPage() {
 											type="button"
 											onClick={() => setIsEventModalOpen(false)}
 											style={{
-												padding: "8px 16px",
-												borderRadius: "8px",
+												padding: "10px 16px",
+												borderRadius: "10px",
 												border: "1px solid #cbd5e1",
 												background: "white",
 												color: "#475569",
@@ -2261,10 +2350,10 @@ export default function SchedulerPage() {
 										<button
 											type="submit"
 											style={{
-												padding: "8px 16px",
-												borderRadius: "8px",
+												padding: "10px 16px",
+												borderRadius: "10px",
 												border: "none",
-												background: "#0B2444", // 🚀 BRANDED SAVE
+												background: "#0B2444",
 												color: "white",
 												fontSize: "12px",
 												fontWeight: 700,
@@ -2281,7 +2370,7 @@ export default function SchedulerPage() {
 					document.body,
 				)}
 
-			{/* --- ALERT MODAL OVERLAY --- */}
+			{/* --- APPLE GLASS OVERLAY MODAL FOR SEARCH ALERTS --- */}
 			{isAlertModalOpen &&
 				createPortal(
 					<div
@@ -2291,9 +2380,10 @@ export default function SchedulerPage() {
 							left: 0,
 							width: "100vw",
 							height: "100vh",
-							background: "rgba(15, 23, 42, 0.6)",
-							backdropFilter: "blur(8px)",
-							zIndex: 10000,
+							background: "rgba(15, 23, 42, 0.15)",
+							backdropFilter: "blur(18px)",
+							WebkitBackdropFilter: "blur(18px)",
+							zIndex: 100000,
 							display: "flex",
 							alignItems: "center",
 							justifyContent: "center",
@@ -2302,39 +2392,40 @@ export default function SchedulerPage() {
 					>
 						<div
 							style={{
-								background: "white",
+								background: "rgba(255, 255, 255, 0.95)",
+								border: "1px solid rgba(255, 255, 255, 0.5)",
 								width: "100%",
 								maxWidth: "450px",
-								borderRadius: "20px",
+								borderRadius: "24px",
 								overflow: "hidden",
-								boxShadow: "0 20px 40px -5px rgba(0, 0, 0, 0.2)",
+								boxShadow: "0 30px 60px -15px rgba(0,0,0,0.12)",
+								animation:
+									"modalFadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards",
 							}}
 						>
 							<div
 								style={{
 									padding: "1.25rem",
-									borderBottom: "1px solid #f1f5f9",
+									borderBottom: "1px solid rgba(0,0,0,0.05)",
 									display: "flex",
 									justifyContent: "space-between",
 									alignItems: "center",
 								}}
 							>
-								<div>
-									<h3
-										style={{
-											fontSize: "16px",
-											fontWeight: 800,
-											color: "#0f172a",
-											margin: "0 0 2px 0",
-										}}
-									>
-										Priority Search Alerts
-									</h3>
-								</div>
+								<h3
+									style={{
+										fontSize: "16px",
+										fontWeight: 850,
+										color: "#0f172a",
+										margin: 0,
+									}}
+								>
+									Priority Search Alerts
+								</h3>
 								<button
 									onClick={() => setIsAlertModalOpen(false)}
 									style={{
-										background: "#f1f5f9",
+										background: "rgba(0,0,0,0.03)",
 										border: "none",
 										width: "28px",
 										height: "28px",
@@ -2352,7 +2443,7 @@ export default function SchedulerPage() {
 										viewBox="0 0 24 24"
 										fill="none"
 										stroke="currentColor"
-										strokeWidth="2"
+										strokeWidth="2.5"
 									>
 										<line x1="18" y1="6" x2="6" y2="18" />
 										<line x1="6" y1="6" x2="18" y2="18" />
@@ -2373,15 +2464,15 @@ export default function SchedulerPage() {
 										display: "flex",
 										alignItems: "center",
 										justifyContent: "space-between",
-										background: "#f8fafc",
+										background: "rgba(26, 140, 122, 0.05)",
 										padding: "12px",
 										borderRadius: "12px",
-										border: "1px solid #f1f5f9",
+										border: "1px solid rgba(26, 140, 122, 0.15)",
 									}}
 								>
 									<div
 										style={{
-											fontWeight: 700,
+											fontWeight: 800,
 											color: "#0f172a",
 											fontSize: "13px",
 										}}
@@ -2404,9 +2495,10 @@ export default function SchedulerPage() {
 									<label
 										style={{
 											display: "block",
-											fontSize: "11px",
+											fontSize: "10px",
 											fontWeight: 800,
-											color: "#475569",
+											color: "#64748b",
+											letterSpacing: "0.5px",
 											marginBottom: "6px",
 										}}
 									>
@@ -2423,6 +2515,8 @@ export default function SchedulerPage() {
 											fontSize: "13px",
 											outline: "none",
 											background: "white",
+											fontWeight: 600,
+											appearance: "none",
 										}}
 									>
 										<option value="Tier 1 Only">
@@ -2438,9 +2532,10 @@ export default function SchedulerPage() {
 									<label
 										style={{
 											display: "block",
-											fontSize: "11px",
+											fontSize: "10px",
 											fontWeight: 800,
-											color: "#475569",
+											color: "#64748b",
+											letterSpacing: "0.5px",
 											marginBottom: "6px",
 										}}
 									>
@@ -2457,6 +2552,8 @@ export default function SchedulerPage() {
 											border: "1px solid #cbd5e1",
 											fontSize: "13px",
 											outline: "none",
+											fontWeight: 600,
+											background: "white",
 										}}
 									/>
 								</div>
@@ -2466,7 +2563,7 @@ export default function SchedulerPage() {
 								style={{
 									padding: "1.25rem",
 									background: "#f8fafc",
-									borderTop: "1px solid #f1f5f9",
+									borderTop: "1px solid rgba(0,0,0,0.05)",
 									display: "flex",
 									justifyContent: "flex-end",
 									gap: "8px",
@@ -2493,7 +2590,7 @@ export default function SchedulerPage() {
 										padding: "8px 16px",
 										borderRadius: "8px",
 										border: "none",
-										background: "#0B2444", // 🚀 BRANDED BUTTON
+										background: "#0B2444",
 										color: "white",
 										fontSize: "12px",
 										fontWeight: 700,

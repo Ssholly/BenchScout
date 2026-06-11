@@ -13,19 +13,12 @@ export async function POST(request: Request) {
 
 		if (!file)
 			return NextResponse.json({ error: "No file provided" }, { status: 400 });
-		if (file.type === "application/pdf") {
-			return NextResponse.json(
-				{
-					success: false,
-					error: "Please upload an Image (JPG/PNG) instead of a PDF.",
-				},
-				{ status: 400 },
-			);
-		}
+
+		// 🚀 REMOVED THE PDF BLOCKER. Gemini 1.5 handles application/pdf perfectly!
 
 		const bytes = await file.arrayBuffer();
 		const buffer = Buffer.from(bytes);
-		const imagePart = {
+		const documentPart = {
 			inlineData: { data: buffer.toString("base64"), mimeType: file.type },
 		};
 
@@ -40,11 +33,11 @@ export async function POST(request: Request) {
       }
     `;
 
-		// Try models sequentially
+		// 🚀 Ensured 1.5 is at the top of the array since it handles PDFs natively
 		const modelsToTry = [
-			"gemini-2.5-flash",
 			"gemini-1.5-flash",
-			"gemini-1.0-pro-vision-latest",
+			"gemini-2.5-flash",
+			"gemini-1.5-pro",
 		];
 
 		let text = "";
@@ -53,7 +46,7 @@ export async function POST(request: Request) {
 		for (const modelName of modelsToTry) {
 			try {
 				const model = genAI.getGenerativeModel({ model: modelName });
-				const result = await model.generateContent([prompt, imagePart]);
+				const result = await model.generateContent([prompt, documentPart]);
 				text = result.response.text();
 				break; // Stop loop on success
 			} catch (e: any) {

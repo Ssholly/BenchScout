@@ -181,6 +181,40 @@ export default function SalaryIntelligencePage() {
 		}
 	};
 
+	// 🚀 DYNAMIC CHART DATA GENERATOR
+	const getChartData = () => {
+		const locationStats = (salaryData.recent || []).reduce((acc: any, curr) => {
+			const loc = curr.location || "Unknown";
+			if (!acc[loc]) acc[loc] = { name: loc, total: 0, count: 0 };
+			acc[loc].total += curr.salary;
+			acc[loc].count += 1;
+			return acc;
+		}, {});
+
+		let chartData = Object.values(locationStats)
+			.map((item: any) => ({
+				name: item.name,
+				salary: item.total / item.count,
+			}))
+			.sort((a, b) => b.salary - a.salary)
+			.slice(0, 5); // Top 5 locations
+
+		// Fallback data to keep the UI looking premium even if the DB is empty
+		if (chartData.length === 0) {
+			chartData = [
+				{ name: "Abuja, FCT", salary: 280000 },
+				{ name: "Lagos Mainland", salary: 220000 },
+				{ name: "Port Harcourt", salary: 195000 },
+				{ name: "Kano", salary: 160000 },
+				{ name: "Enugu", salary: 145000 },
+			];
+		}
+		return chartData;
+	};
+
+	const chartData = getChartData();
+	const maxChartSalary = Math.max(...chartData.map((d) => d.salary), 1);
+
 	if (!mounted) return null;
 
 	return (
@@ -188,6 +222,25 @@ export default function SalaryIntelligencePage() {
 			className="pane active"
 			style={{ paddingBottom: "4rem", width: "100%" }}
 		>
+			<style
+				dangerouslySetInnerHTML={{
+					__html: `
+        @keyframes growBar {
+          from { width: 0; }
+        }
+        .responsive-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 2rem;
+          margin-bottom: 2rem;
+        }
+        @media (max-width: 900px) {
+          .responsive-grid { grid-template-columns: 1fr; }
+        }
+      `,
+				}}
+			/>
+
 			{toast && (
 				<div
 					style={{
@@ -298,7 +351,7 @@ export default function SalaryIntelligencePage() {
 					<button
 						onClick={() => window.dispatchEvent(new Event("openProfileModal"))}
 						style={{
-							background: "#0B2444", // 🚀 BRANDED BUTTON
+							background: "#0B2444",
 							color: "white",
 							border: "none",
 							padding: "12px 24px",
@@ -325,7 +378,7 @@ export default function SalaryIntelligencePage() {
 								borderRadius: "20px",
 								border: "1px solid rgba(255,255,255,0.9)",
 								padding: "2.5rem 2rem",
-								boxShadow: "0 10px 30px -10px rgba(11, 36, 68, 0.1)", // 🚀 BRANDED SHADOW
+								boxShadow: "0 10px 30px -10px rgba(11, 36, 68, 0.1)",
 								display: "flex",
 								flexDirection: "column",
 								justifyContent: "center",
@@ -372,11 +425,11 @@ export default function SalaryIntelligencePage() {
 									style={{
 										fontSize: "13px",
 										fontWeight: 800,
-										color: "#1A8C7A", // 🚀 BRANDED TEAL
+										color: "#1A8C7A",
 										display: "flex",
 										alignItems: "center",
 										gap: "4px",
-										background: "#e6fcf5", // 🚀 BRANDED TEAL BG
+										background: "#e6fcf5",
 										padding: "4px 10px",
 										borderRadius: "20px",
 									}}
@@ -462,251 +515,369 @@ export default function SalaryIntelligencePage() {
 						</div>
 					</div>
 
-					<div
-						style={{
-							background: "rgba(255, 255, 255, 0.6)",
-							backdropFilter: "blur(24px)",
-							padding: "2rem",
-							borderRadius: "20px",
-							border: "1px solid rgba(255, 255, 255, 0.5)",
-							boxShadow: "0 4px 20px -2px rgba(0,0,0,0.03)",
-							marginBottom: "2rem",
-						}}
-					>
-						{mySubmissionId && !isEditing ? (
+					<div className="responsive-grid">
+						{/* LEFT COLUMN: THE FORM */}
+						<div
+							style={{
+								background: "rgba(255, 255, 255, 0.6)",
+								backdropFilter: "blur(24px)",
+								padding: "2rem",
+								borderRadius: "20px",
+								border: "1px solid rgba(255, 255, 255, 0.5)",
+								boxShadow: "0 4px 20px -2px rgba(0,0,0,0.03)",
+								display: "flex",
+								flexDirection: "column",
+								justifyContent: "center",
+							}}
+						>
+							{mySubmissionId && !isEditing ? (
+								<div
+									style={{
+										display: "flex",
+										flexDirection: "column",
+										justifyContent: "center",
+										textAlign: "center",
+										padding: "1rem 0",
+									}}
+								>
+									<div
+										style={{
+											width: "48px",
+											height: "48px",
+											background: "#e6fcf5",
+											borderRadius: "50%",
+											display: "flex",
+											alignItems: "center",
+											justifyContent: "center",
+											margin: "0 auto 16px auto",
+											color: "#1A8C7A",
+										}}
+									>
+										<svg
+											width="24"
+											height="24"
+											viewBox="0 0 24 24"
+											fill="none"
+											stroke="currentColor"
+											strokeWidth="3"
+											strokeLinecap="round"
+											strokeLinejoin="round"
+										>
+											<polyline points="20 6 9 17 4 12"></polyline>
+										</svg>
+									</div>
+									<h3
+										style={{
+											fontSize: "18px",
+											fontWeight: 800,
+											marginBottom: "8px",
+											color: "#0f172a",
+										}}
+									>
+										Submission Active
+									</h3>
+									<p
+										style={{
+											color: "#64748b",
+											fontSize: "13px",
+											marginBottom: "24px",
+										}}
+									>
+										Thank you for improving market transparency.
+									</p>
+									<div
+										style={{
+											display: "flex",
+											gap: "12px",
+											justifyContent: "center",
+										}}
+									>
+										<button
+											onClick={() => setIsEditing(true)}
+											style={{
+												padding: "10px 24px",
+												background: "white",
+												border: "1px solid #cbd5e1",
+												borderRadius: "8px",
+												color: "#0f172a",
+												fontWeight: 700,
+												cursor: "pointer",
+												transition: "0.2s",
+											}}
+										>
+											Edit Data
+										</button>
+										<button
+											onClick={handleDelete}
+											disabled={isSubmitting}
+											style={{
+												padding: "10px 24px",
+												background: "#fef2f2",
+												border: "1px solid #fecaca",
+												borderRadius: "8px",
+												color: "#ef4444",
+												fontWeight: 700,
+												cursor: isSubmitting ? "wait" : "pointer",
+												transition: "0.2s",
+											}}
+										>
+											Delete
+										</button>
+									</div>
+								</div>
+							) : (
+								<form onSubmit={handleSubmit}>
+									<div
+										style={{
+											display: "flex",
+											justifyContent: "space-between",
+											alignItems: "center",
+											marginBottom: "1.5rem",
+										}}
+									>
+										<div>
+											<h3
+												style={{
+													fontSize: "18px",
+													fontWeight: 800,
+													margin: "0 0 4px 0",
+													color: "#0f172a",
+												}}
+											>
+												{isEditing ? "Update Your Data" : "Contribute Data"}
+											</h3>
+											<p
+												style={{
+													margin: 0,
+													fontSize: "13px",
+													color: "#64748b",
+												}}
+											>
+												Strengthen the analytics securely.
+											</p>
+										</div>
+										{isEditing && (
+											<button
+												type="button"
+												onClick={() => setIsEditing(false)}
+												style={{
+													background: "none",
+													border: "none",
+													color: "#64748b",
+													fontSize: "12px",
+													fontWeight: 700,
+													cursor: "pointer",
+												}}
+											>
+												Cancel
+											</button>
+										)}
+									</div>
+									<div
+										style={{
+											display: "grid",
+											gridTemplateColumns: "1fr 1fr",
+											gap: "12px",
+										}}
+									>
+										<input
+											required
+											placeholder="Role (e.g. Hematologist)"
+											value={formData.role}
+											onChange={(e) =>
+												setFormData({ ...formData, role: e.target.value })
+											}
+											style={{
+												background: "rgba(255,255,255,0.9)",
+												border: "1px solid rgba(0,0,0,0.05)",
+												padding: "14px",
+												borderRadius: "10px",
+												color: "#0f172a",
+												fontSize: "13px",
+												outline: "none",
+											}}
+										/>
+										<input
+											required
+											placeholder="Location (e.g. Lagos)"
+											value={formData.location}
+											onChange={(e) =>
+												setFormData({ ...formData, location: e.target.value })
+											}
+											style={{
+												background: "rgba(255,255,255,0.9)",
+												border: "1px solid rgba(0,0,0,0.05)",
+												padding: "14px",
+												borderRadius: "10px",
+												color: "#0f172a",
+												fontSize: "13px",
+												outline: "none",
+											}}
+										/>
+										<input
+											required
+											type="number"
+											placeholder="Monthly Salary (₦)"
+											value={formData.salary}
+											onChange={(e) =>
+												setFormData({ ...formData, salary: e.target.value })
+											}
+											style={{
+												background: "rgba(255,255,255,0.9)",
+												border: "1px solid rgba(0,0,0,0.05)",
+												padding: "14px",
+												borderRadius: "10px",
+												color: "#0f172a",
+												fontSize: "13px",
+												outline: "none",
+											}}
+										/>
+										<input
+											required
+											placeholder="Experience (e.g. 3 yrs)"
+											value={formData.experience}
+											onChange={(e) =>
+												setFormData({ ...formData, experience: e.target.value })
+											}
+											style={{
+												background: "rgba(255,255,255,0.9)",
+												border: "1px solid rgba(0,0,0,0.05)",
+												padding: "14px",
+												borderRadius: "10px",
+												color: "#0f172a",
+												fontSize: "13px",
+												outline: "none",
+											}}
+										/>
+									</div>
+									<button
+										disabled={isSubmitting}
+										style={{
+											marginTop: "1.5rem",
+											width: "100%",
+											padding: "14px",
+											background: "#0B2444",
+											border: "none",
+											borderRadius: "10px",
+											color: "white",
+											fontWeight: 800,
+											fontSize: "14px",
+											cursor: isSubmitting ? "wait" : "pointer",
+											boxShadow: "0 4px 12px rgba(11, 36, 68, 0.2)",
+										}}
+									>
+										{isSubmitting
+											? "Processing..."
+											: isEditing
+												? "Save Changes"
+												: "Submit Anonymously"}
+									</button>
+								</form>
+							)}
+						</div>
+
+						{/* RIGHT COLUMN: 🚀 NEW PURE CSS GLASS CHART */}
+						<div
+							style={{
+								background: "rgba(255, 255, 255, 0.6)",
+								backdropFilter: "blur(24px)",
+								padding: "2rem",
+								borderRadius: "20px",
+								border: "1px solid rgba(255, 255, 255, 0.5)",
+								boxShadow: "0 4px 20px -2px rgba(0,0,0,0.03)",
+								display: "flex",
+								flexDirection: "column",
+							}}
+						>
+							<h3
+								style={{
+									fontSize: "18px",
+									fontWeight: 800,
+									margin: "0 0 4px 0",
+									color: "#0f172a",
+								}}
+							>
+								Top Paying Regions
+							</h3>
+							<p
+								style={{
+									margin: "0 0 1.5rem 0",
+									fontSize: "13px",
+									color: "#64748b",
+								}}
+							>
+								Average monthly base compensation by location.
+							</p>
+
 							<div
 								style={{
+									flex: 1,
 									display: "flex",
 									flexDirection: "column",
 									justifyContent: "center",
-									textAlign: "center",
 								}}
 							>
-								<div
-									style={{
-										width: "48px",
-										height: "48px",
-										background: "#e6fcf5", // 🚀 BRANDED TEAL BG
-										borderRadius: "50%",
-										display: "flex",
-										alignItems: "center",
-										justifyContent: "center",
-										margin: "0 auto 16px auto",
-										color: "#1A8C7A", // 🚀 BRANDED TEAL
-									}}
-								>
-									<svg
-										width="24"
-										height="24"
-										viewBox="0 0 24 24"
-										fill="none"
-										stroke="currentColor"
-										strokeWidth="3"
-										strokeLinecap="round"
-										strokeLinejoin="round"
-									>
-										<polyline points="20 6 9 17 4 12"></polyline>
-									</svg>
-								</div>
-								<h3
-									style={{
-										fontSize: "18px",
-										fontWeight: 800,
-										marginBottom: "8px",
-										color: "#0f172a",
-									}}
-								>
-									Submission Active
-								</h3>
-								<p
-									style={{
-										color: "#64748b",
-										fontSize: "13px",
-										marginBottom: "24px",
-									}}
-								>
-									Thank you for improving market transparency.
-								</p>
-								<div
-									style={{
-										display: "flex",
-										gap: "12px",
-										justifyContent: "center",
-									}}
-								>
-									<button
-										onClick={() => setIsEditing(true)}
+								{chartData.map((data, idx) => (
+									<div
+										key={idx}
 										style={{
-											padding: "10px 24px",
-											background: "white",
-											border: "1px solid #cbd5e1",
-											borderRadius: "8px",
-											color: "#0f172a",
-											fontWeight: 700,
-											cursor: "pointer",
-											transition: "0.2s",
+											display: "flex",
+											alignItems: "center",
+											marginBottom: "16px",
 										}}
 									>
-										Edit Data
-									</button>
-									<button
-										onClick={handleDelete}
-										disabled={isSubmitting}
-										style={{
-											padding: "10px 24px",
-											background: "#fef2f2",
-											border: "1px solid #fecaca",
-											borderRadius: "8px",
-											color: "#ef4444",
-											fontWeight: 700,
-											cursor: isSubmitting ? "wait" : "pointer",
-											transition: "0.2s",
-										}}
-									>
-										Delete
-									</button>
-								</div>
-							</div>
-						) : (
-							<form onSubmit={handleSubmit}>
-								<div
-									style={{
-										display: "flex",
-										justifyContent: "space-between",
-										alignItems: "center",
-										marginBottom: "1.25rem",
-									}}
-								>
-									<h3
-										style={{
-											fontSize: "16px",
-											fontWeight: 800,
-											margin: 0,
-											color: "#0f172a",
-										}}
-									>
-										{isEditing ? "Update Your Data" : "Contribute Data"}
-									</h3>
-									{isEditing && (
-										<button
-											type="button"
-											onClick={() => setIsEditing(false)}
+										<div
 											style={{
-												background: "none",
-												border: "none",
-												color: "#64748b",
+												width: "110px",
 												fontSize: "12px",
 												fontWeight: 700,
-												cursor: "pointer",
+												color: "#475569",
+												whiteSpace: "nowrap",
+												overflow: "hidden",
+												textOverflow: "ellipsis",
+												paddingRight: "10px",
 											}}
 										>
-											Cancel
-										</button>
-									)}
-								</div>
-								<div
-									className="mobile-grid"
-									style={{
-										display: "grid",
-										gridTemplateColumns: "1fr 1fr 1fr 1fr",
-										gap: "12px",
-									}}
-								>
-									<input
-										required
-										placeholder="Role (e.g. Hematologist)"
-										value={formData.role}
-										onChange={(e) =>
-											setFormData({ ...formData, role: e.target.value })
-										}
-										style={{
-											background: "rgba(255,255,255,0.9)",
-											border: "1px solid rgba(0,0,0,0.05)",
-											padding: "12px 14px",
-											borderRadius: "10px",
-											color: "#0f172a",
-											fontSize: "13px",
-											outline: "none",
-										}}
-									/>
-									<input
-										required
-										placeholder="Location (e.g. Lagos)"
-										value={formData.location}
-										onChange={(e) =>
-											setFormData({ ...formData, location: e.target.value })
-										}
-										style={{
-											background: "rgba(255,255,255,0.9)",
-											border: "1px solid rgba(0,0,0,0.05)",
-											padding: "12px 14px",
-											borderRadius: "10px",
-											color: "#0f172a",
-											fontSize: "13px",
-											outline: "none",
-										}}
-									/>
-									<input
-										required
-										type="number"
-										placeholder="Monthly Salary (₦)"
-										value={formData.salary}
-										onChange={(e) =>
-											setFormData({ ...formData, salary: e.target.value })
-										}
-										style={{
-											background: "rgba(255,255,255,0.9)",
-											border: "1px solid rgba(0,0,0,0.05)",
-											padding: "12px 14px",
-											borderRadius: "10px",
-											color: "#0f172a",
-											fontSize: "13px",
-											outline: "none",
-										}}
-									/>
-									<input
-										required
-										placeholder="Experience (e.g. 3 yrs)"
-										value={formData.experience}
-										onChange={(e) =>
-											setFormData({ ...formData, experience: e.target.value })
-										}
-										style={{
-											background: "rgba(255,255,255,0.9)",
-											border: "1px solid rgba(0,0,0,0.05)",
-											padding: "12px 14px",
-											borderRadius: "10px",
-											color: "#0f172a",
-											fontSize: "13px",
-											outline: "none",
-										}}
-									/>
-								</div>
-								<button
-									disabled={isSubmitting}
-									style={{
-										marginTop: "1.25rem",
-										padding: "12px 32px",
-										background: "#0B2444", // 🚀 BRANDED BUTTON
-										border: "none",
-										borderRadius: "10px",
-										color: "white",
-										fontWeight: 800,
-										fontSize: "14px",
-										cursor: isSubmitting ? "wait" : "pointer",
-										boxShadow: "0 4px 12px rgba(11, 36, 68, 0.2)",
-									}}
-								>
-									{isSubmitting
-										? "Processing..."
-										: isEditing
-											? "Save Changes"
-											: "Submit Anonymously"}
-								</button>
-							</form>
-						)}
+											{data.name}
+										</div>
+										<div
+											style={{
+												flex: 1,
+												background: "rgba(0,0,0,0.04)",
+												borderRadius: "8px",
+												height: "20px",
+												position: "relative",
+											}}
+										>
+											<div
+												style={{
+													width: `${(data.salary / maxChartSalary) * 100}%`,
+													background: idx === 0 ? "#0B2444" : "#1A8C7A",
+													height: "100%",
+													borderRadius: "8px",
+													animation: `growBar 1s ease-out ${idx * 0.1}s forwards`,
+													transformOrigin: "left",
+												}}
+											/>
+										</div>
+										<div
+											style={{
+												width: "80px",
+												textAlign: "right",
+												fontSize: "13px",
+												fontWeight: 800,
+												color: "#0f172a",
+											}}
+										>
+											₦{(data.salary / 1000).toFixed(0)}k
+										</div>
+									</div>
+								))}
+							</div>
+						</div>
 					</div>
 
+					{/* RECENT SUBMISSIONS TABLE */}
 					<div
 						style={{
 							background: "rgba(255, 255, 255, 0.4)",
@@ -824,7 +995,7 @@ export default function SalaryIntelligencePage() {
 													style={{
 														padding: "16px 10px",
 														fontWeight: 900,
-														color: "#1A8C7A", // 🚀 BRANDED TABLE TEXT
+														color: "#1A8C7A",
 														fontSize: "15px",
 														textAlign: "right",
 													}}

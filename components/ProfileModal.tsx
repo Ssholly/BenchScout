@@ -12,19 +12,27 @@ export default function ProfileModal() {
 	const [isUploadingResume, setIsUploadingResume] = useState(false);
 	const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
 
+	// General & Scientist Fields
 	const [name, setName] = useState("");
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [showPassword, setShowPassword] = useState(false);
 	const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
-	// 🚀 PHASE 2: CAREER PHASE STATES
+	// 🚀 NEW: Employer Specific Fields
+	const [companyName, setCompanyName] = useState("");
+	const [contactName, setContactName] = useState("");
+
+	// 🚀 UNIFIED ROLES STATE
 	const [careerPhase, setCareerPhase] = useState<"licensed" | "internship">(
 		"licensed",
 	);
-	const [signupPhase, setSignupPhase] = useState<"licensed" | "internship">(
-		"licensed",
-	); // Used specifically for the signup form
+	const [signupPhase, setSignupPhase] = useState<
+		"licensed" | "internship" | "employer"
+	>("licensed");
+	const [loginPhase, setLoginPhase] = useState<"scientist" | "employer">(
+		"scientist",
+	);
 
 	const [activeUser, setActiveUser] = useState<{
 		name: string;
@@ -53,6 +61,12 @@ export default function ProfileModal() {
 	useEffect(() => {
 		setMounted(true);
 		const handleOpen = async () => {
+			// If Employer is logged in, route directly to B2B portal
+			if (localStorage.getItem("benchscout_active_employer")) {
+				window.location.href = "/employer";
+				return;
+			}
+
 			const activeEmail = localStorage.getItem("labpro_active_user");
 			const savedPhase = localStorage.getItem("labpro_career_phase") as
 				| "licensed"
@@ -81,11 +95,7 @@ export default function ProfileModal() {
 					const data = await res.json();
 					if (data.success && data.user) {
 						setActiveUser(data.user);
-
-						if (data.user.avatarUrl) {
-							setAvatar(data.user.avatarUrl);
-						}
-						// If the backend returns a stored career phase, we can sync it here
+						if (data.user.avatarUrl) setAvatar(data.user.avatarUrl);
 						if (data.user.careerPhase) {
 							setCareerPhase(data.user.careerPhase);
 							localStorage.setItem(
@@ -93,22 +103,8 @@ export default function ProfileModal() {
 								data.user.careerPhase,
 							);
 						}
-
-						if (data.user.resumeUrl) {
-							if (!savedResume) {
-								try {
-									const urlObj = new URL(data.user.resumeUrl);
-									const pathParts = urlObj.pathname.split("/");
-									let filePart = pathParts[pathParts.length - 1];
-									const dashIndex = filePart.indexOf("-");
-									if (dashIndex !== -1) {
-										filePart = filePart.substring(dashIndex + 1);
-									}
-									setResumeName(decodeURIComponent(filePart));
-								} catch (e) {
-									setResumeName("Resume Attached");
-								}
-							}
+						if (data.user.resumeUrl && !savedResume) {
+							setResumeName("Resume Attached");
 						}
 					}
 				} catch (error) {}
@@ -210,15 +206,56 @@ export default function ProfileModal() {
 	};
 
 	const handleRegister = async () => {
-		if (!name || !email || !password || !selectedFile)
-			return showToast("Please fill all fields and select a resume.", "error");
 		setIsAuthLoading(true);
+
+		// 🚀 B2B EMPLOYER REGISTRATION ROUTE
+		if (signupPhase === "employer") {
+			if (!companyName || !email || !password) {
+				setIsAuthLoading(false);
+				return showToast("Please fill all hospital/company fields.", "error");
+			}
+
+			try {
+				const res = await fetch("/api/auth/employer", {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({
+						action: "register",
+						companyName,
+						email,
+						password,
+						contactName,
+					}),
+				});
+				const data = await res.json();
+
+				if (data.success) {
+					setView("login");
+					setLoginPhase("employer");
+					showToast("B2B Node Registered! Please log in.");
+				} else {
+					showToast(data.error, "error");
+				}
+			} catch (err) {
+				showToast("Network error during registration.", "error");
+			} finally {
+				setIsAuthLoading(false);
+			}
+			return;
+		}
+
+		// 🔬 SCIENTIST REGISTRATION ROUTE
+		if (!name || !email || !password || !selectedFile) {
+			setIsAuthLoading(false);
+			return showToast("Please fill all fields and select a resume.", "error");
+		}
+
 		const formData = new FormData();
 		formData.append("name", name);
 		formData.append("email", email);
 		formData.append("password", password);
 		formData.append("resume", selectedFile);
-		formData.append("careerPhase", signupPhase); // 🚀 Append the selected phase to the backend payload
+		formData.append("careerPhase", signupPhase);
 
 		try {
 			const res = await fetch("/api/auth/register", {
@@ -228,15 +265,9 @@ export default function ProfileModal() {
 			const data = await res.json();
 			if (data.success) {
 				localStorage.setItem(`labpro_resume_name_${email}`, selectedFile.name);
-
-				// 🚀 INSTANTLY WIRE THE DASHBOARD UPON REGISTRATION
 				localStorage.setItem("labpro_career_phase", signupPhase);
-				setCareerPhase(signupPhase);
-
+				setCareerPhase(signupPhase as "licensed" | "internship");
 				setView("verify-sent");
-				if (data.warning) {
-					showToast(data.warning, "error");
-				}
 			} else {
 				showToast(data.error, "error");
 			}
@@ -247,11 +278,75 @@ export default function ProfileModal() {
 		}
 	};
 
-	const handleResendLink = async () => {
-		if (!email) {
-			return showToast("Please enter your email address first.", "error");
+	const handleLogin = async () => {
+		if (!email || !password)
+			return showToast("Please enter email and password.", "error");
+		setIsAuthLoading(true);
+
+		// 🚀 B2B EMPLOYER LOGIN ROUTE
+		if (loginPhase === "employer") {
+			try {
+				const res = await fetch("/api/auth/employer", {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({ action: "login", email, password }),
+				});
+				const data = await res.json();
+				if (data.success) {
+					localStorage.setItem(
+						"benchscout_active_employer",
+						JSON.stringify(data.employer),
+					);
+					window.dispatchEvent(new Event("employerStateChanged"));
+					showToast("Secure B2B Portal Accessed!");
+					setIsOpen(false);
+					window.location.href = "/employer";
+				} else {
+					showToast(data.error, "error");
+				}
+			} catch (err) {
+				showToast("Network error during login.", "error");
+			} finally {
+				setIsAuthLoading(false);
+			}
+			return;
 		}
 
+		// 🔬 SCIENTIST LOGIN ROUTE
+		try {
+			const res = await fetch("/api/auth/login", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ email, password }),
+			});
+			const data = await res.json();
+			if (data.success) {
+				localStorage.setItem("labpro_active_user", data.user.email);
+				if (data.user.careerPhase) {
+					localStorage.setItem("labpro_career_phase", data.user.careerPhase);
+					setCareerPhase(data.user.careerPhase);
+				}
+				setActiveUser({
+					name: data.user.name,
+					email: data.user.email,
+					keywords: data.user.keywords || "",
+				});
+				window.dispatchEvent(new Event("userStateChanged"));
+				showToast("Welcome back!");
+				setTimeout(() => setIsOpen(false), 1000);
+			} else {
+				showToast(data.error, "error");
+			}
+		} catch (err) {
+			showToast("Network error during login.", "error");
+		} finally {
+			setIsAuthLoading(false);
+		}
+	};
+
+	const handleResendLink = async () => {
+		if (!email)
+			return showToast("Please enter your email address first.", "error");
 		setIsAuthLoading(true);
 		try {
 			const res = await fetch("/api/auth/resend-verification", {
@@ -272,49 +367,10 @@ export default function ProfileModal() {
 		}
 	};
 
-	const handleLogin = async () => {
-		if (!email || !password)
-			return showToast("Please enter email and password.", "error");
-		setIsAuthLoading(true);
-		try {
-			const res = await fetch("/api/auth/login", {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ email, password }),
-			});
-			const data = await res.json();
-			if (data.success) {
-				localStorage.setItem("labpro_active_user", data.user.email);
-
-				// 🚀 SYNC PHASE IF RETURNED FROM BACKEND DURING LOGIN
-				if (data.user.careerPhase) {
-					localStorage.setItem("labpro_career_phase", data.user.careerPhase);
-					setCareerPhase(data.user.careerPhase);
-				}
-
-				setActiveUser({
-					name: data.user.name,
-					email: data.user.email,
-					keywords: data.user.keywords || "",
-				});
-				window.dispatchEvent(new Event("userStateChanged"));
-				showToast("Welcome back!");
-				setTimeout(() => setIsOpen(false), 1000);
-			} else {
-				showToast(data.error, "error");
-			}
-		} catch (err) {
-			showToast("Network error during login.", "error");
-		} finally {
-			setIsAuthLoading(false);
-		}
-	};
-
 	const handleForgotPassword = async () => {
 		if (!email)
 			return showToast("Please enter your email address first.", "error");
 		setIsAuthLoading(true);
-
 		try {
 			const res = await fetch("/api/auth/forgot", {
 				method: "POST",
@@ -322,7 +378,6 @@ export default function ProfileModal() {
 				body: JSON.stringify({ email }),
 			});
 			const data = await res.json();
-
 			showToast(data.message || "Request processed.");
 			if (res.ok) setView("login");
 		} catch (error) {
@@ -368,7 +423,6 @@ export default function ProfileModal() {
 				height: "100vh",
 				background: "rgba(15, 23, 42, 0.5)",
 				backdropFilter: "blur(12px)",
-				WebkitBackdropFilter: "blur(12px)",
 				zIndex: 999999,
 				display: "flex",
 				alignItems: "center",
@@ -393,7 +447,6 @@ export default function ProfileModal() {
 						fontSize: "14px",
 						fontWeight: 700,
 						zIndex: 1000001,
-						boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
 						display: "flex",
 						alignItems: "center",
 						gap: "8px",
@@ -517,7 +570,7 @@ export default function ProfileModal() {
 								>
 									<line x1="19" y1="12" x2="5" y2="12"></line>
 									<polyline points="12 19 5 12 12 5"></polyline>
-								</svg>
+								</svg>{" "}
 								Back to Login
 							</button>
 							<button
@@ -699,17 +752,240 @@ export default function ProfileModal() {
 							{(view === "signup" || view === "login") && (
 								<div>
 									{view === "signup" && (
-										<input
-											type="text"
-											placeholder="Full Name"
-											value={name}
-											onChange={(e) => setName(e.target.value)}
-											style={inputStyle}
-										/>
+										<>
+											{/* 🚀 EXPANDED: 3-WAY REGISTRATION TOGGLE */}
+											<div style={{ marginBottom: "16px", marginTop: "4px" }}>
+												<div
+													style={{
+														fontSize: "11px",
+														color: "#94a3b8",
+														fontWeight: 800,
+														letterSpacing: "0.5px",
+														textTransform: "uppercase",
+														marginBottom: "8px",
+														paddingLeft: "4px",
+													}}
+												>
+													I am registering as a:
+												</div>
+												<div
+													style={{
+														display: "flex",
+														gap: "6px",
+														background: "#f8fafc",
+														padding: "4px",
+														borderRadius: "12px",
+														border: "1px solid #e2e8f0",
+													}}
+												>
+													<button
+														type="button"
+														onClick={() => setSignupPhase("licensed")}
+														style={{
+															flex: 1,
+															padding: "10px 4px",
+															borderRadius: "8px",
+															border: "none",
+															fontSize: "11px",
+															fontWeight: 700,
+															cursor: "pointer",
+															transition: "0.2s",
+															background:
+																signupPhase === "licensed"
+																	? "white"
+																	: "transparent",
+															color:
+																signupPhase === "licensed"
+																	? "#0B2444"
+																	: "#64748b",
+															boxShadow:
+																signupPhase === "licensed"
+																	? "0 2px 8px rgba(0,0,0,0.05)"
+																	: "none",
+														}}
+													>
+														Licensed Pro
+													</button>
+													<button
+														type="button"
+														onClick={() => setSignupPhase("internship")}
+														style={{
+															flex: 1,
+															padding: "10px 4px",
+															borderRadius: "8px",
+															border: "none",
+															fontSize: "11px",
+															fontWeight: 700,
+															cursor: "pointer",
+															transition: "0.2s",
+															background:
+																signupPhase === "internship"
+																	? "white"
+																	: "transparent",
+															color:
+																signupPhase === "internship"
+																	? "#1A8C7A"
+																	: "#64748b",
+															boxShadow:
+																signupPhase === "internship"
+																	? "0 2px 8px rgba(0,0,0,0.05)"
+																	: "none",
+														}}
+													>
+														Intern / Grad
+													</button>
+													<button
+														type="button"
+														onClick={() => setSignupPhase("employer")}
+														style={{
+															flex: 1,
+															padding: "10px 4px",
+															borderRadius: "8px",
+															border: "none",
+															fontSize: "11px",
+															fontWeight: 800,
+															cursor: "pointer",
+															transition: "0.2s",
+															background:
+																signupPhase === "employer"
+																	? "#0B2444"
+																	: "transparent",
+															color:
+																signupPhase === "employer"
+																	? "white"
+																	: "#64748b",
+															boxShadow:
+																signupPhase === "employer"
+																	? "0 4px 10px rgba(11, 36, 68, 0.2)"
+																	: "none",
+														}}
+													>
+														Employer
+													</button>
+												</div>
+											</div>
+
+											{signupPhase === "employer" ? (
+												<>
+													<input
+														type="text"
+														placeholder="Hospital / Laboratory Name"
+														value={companyName}
+														onChange={(e) => setCompanyName(e.target.value)}
+														style={inputStyle}
+														required
+													/>
+													<input
+														type="text"
+														placeholder="Contact Personnel Name (Optional)"
+														value={contactName}
+														onChange={(e) => setContactName(e.target.value)}
+														style={inputStyle}
+													/>
+												</>
+											) : (
+												<input
+													type="text"
+													placeholder="Full Name"
+													value={name}
+													onChange={(e) => setName(e.target.value)}
+													style={inputStyle}
+													required
+												/>
+											)}
+										</>
 									)}
+
+									{view === "login" && (
+										<div style={{ marginBottom: "16px", marginTop: "4px" }}>
+											<div
+												style={{
+													fontSize: "11px",
+													color: "#94a3b8",
+													fontWeight: 800,
+													letterSpacing: "0.5px",
+													textTransform: "uppercase",
+													marginBottom: "8px",
+													paddingLeft: "4px",
+												}}
+											>
+												Account Type:
+											</div>
+											<div
+												style={{
+													display: "flex",
+													gap: "8px",
+													background: "#f8fafc",
+													padding: "4px",
+													borderRadius: "12px",
+													border: "1px solid #e2e8f0",
+												}}
+											>
+												<button
+													type="button"
+													onClick={() => setLoginPhase("scientist")}
+													style={{
+														flex: 1,
+														padding: "10px",
+														borderRadius: "8px",
+														border: "none",
+														fontSize: "12px",
+														fontWeight: 700,
+														cursor: "pointer",
+														transition: "0.2s",
+														background:
+															loginPhase === "scientist"
+																? "white"
+																: "transparent",
+														color:
+															loginPhase === "scientist"
+																? "#0B2444"
+																: "#64748b",
+														boxShadow:
+															loginPhase === "scientist"
+																? "0 2px 8px rgba(0,0,0,0.05)"
+																: "none",
+													}}
+												>
+													Scientist
+												</button>
+												<button
+													type="button"
+													onClick={() => setLoginPhase("employer")}
+													style={{
+														flex: 1,
+														padding: "10px",
+														borderRadius: "8px",
+														border: "none",
+														fontSize: "12px",
+														fontWeight: 700,
+														cursor: "pointer",
+														transition: "0.2s",
+														background:
+															loginPhase === "employer"
+																? "#0B2444"
+																: "transparent",
+														color:
+															loginPhase === "employer" ? "white" : "#64748b",
+														boxShadow:
+															loginPhase === "employer"
+																? "0 4px 10px rgba(11, 36, 68, 0.2)"
+																: "none",
+													}}
+												>
+													Employer (B2B)
+												</button>
+											</div>
+										</div>
+									)}
+
 									<input
 										type="email"
-										placeholder="Email Address"
+										placeholder={
+											signupPhase === "employer" || loginPhase === "employer"
+												? "Corporate Email Address"
+												: "Email Address"
+										}
 										value={email}
 										onChange={(e) => setEmail(e.target.value)}
 										style={inputStyle}
@@ -791,159 +1067,73 @@ export default function ProfileModal() {
 										</div>
 									)}
 
-									{view === "signup" && (
-										<>
-											{/* 🚀 NEW: REGISTRATION PHASE SELECTION */}
-											<div style={{ marginBottom: "12px", marginTop: "16px" }}>
-												<div
-													style={{
-														fontSize: "11px",
-														color: "#94a3b8",
-														fontWeight: 800,
-														letterSpacing: "0.5px",
-														textTransform: "uppercase",
-														marginBottom: "8px",
-														paddingLeft: "4px",
-													}}
-												>
-													I am registering as a:
-												</div>
-												<div
-													style={{
-														display: "flex",
-														gap: "8px",
-														background: "#f8fafc",
-														padding: "4px",
-														borderRadius: "12px",
-														border: "1px solid #e2e8f0",
-													}}
-												>
-													<button
-														type="button"
-														onClick={() => setSignupPhase("licensed")}
-														style={{
-															flex: 1,
-															padding: "10px",
-															borderRadius: "8px",
-															border: "none",
-															fontSize: "13px",
-															fontWeight: 700,
-															cursor: "pointer",
-															transition: "0.2s",
-															background:
-																signupPhase === "licensed"
-																	? "white"
-																	: "transparent",
-															color:
-																signupPhase === "licensed"
-																	? "#0B2444"
-																	: "#64748b",
-															boxShadow:
-																signupPhase === "licensed"
-																	? "0 2px 8px rgba(0,0,0,0.05)"
-																	: "none",
-														}}
-													>
-														Licensed Pro
-													</button>
-													<button
-														type="button"
-														onClick={() => setSignupPhase("internship")}
-														style={{
-															flex: 1,
-															padding: "10px",
-															borderRadius: "8px",
-															border: "none",
-															fontSize: "13px",
-															fontWeight: 700,
-															cursor: "pointer",
-															transition: "0.2s",
-															background:
-																signupPhase === "internship"
-																	? "white"
-																	: "transparent",
-															color:
-																signupPhase === "internship"
-																	? "#1A8C7A"
-																	: "#64748b",
-															boxShadow:
-																signupPhase === "internship"
-																	? "0 2px 8px rgba(0,0,0,0.05)"
-																	: "none",
-														}}
-													>
-														Intern / Fresh Grad
-													</button>
-												</div>
-											</div>
-
-											<div
+									{view === "signup" && signupPhase !== "employer" && (
+										<div
+											style={{
+												background: "#f8fafc",
+												padding: "1.5rem",
+												borderRadius: "12px",
+												border: "2px dashed #cbd5e1",
+												textAlign: "center",
+												marginTop: "1rem",
+												transition: "0.2s",
+											}}
+											onMouseEnter={(e) =>
+												(e.currentTarget.style.borderColor = "#1A8C7A")
+											}
+											onMouseLeave={(e) =>
+												(e.currentTarget.style.borderColor = "#cbd5e1")
+											}
+										>
+											<p
 												style={{
-													background: "#f8fafc",
-													padding: "1.5rem",
-													borderRadius: "12px",
-													border: "2px dashed #cbd5e1",
-													textAlign: "center",
-													marginTop: "1rem",
-													transition: "0.2s",
+													margin: "0 0 10px 0",
+													fontSize: "11px",
+													color: "#475569",
+													fontWeight: 800,
+													letterSpacing: "0.5px",
 												}}
-												onMouseEnter={(e) =>
-													(e.currentTarget.style.borderColor = "#1A8C7A")
-												}
-												onMouseLeave={(e) =>
-													(e.currentTarget.style.borderColor = "#cbd5e1")
-												}
 											>
-												<p
-													style={{
-														margin: "0 0 10px 0",
-														fontSize: "11px",
-														color: "#475569",
-														fontWeight: 800,
-														letterSpacing: "0.5px",
-													}}
+												UPLOAD RESUME (AI SCAN)
+											</p>
+											<input
+												type="file"
+												id="resume"
+												accept=".pdf,.doc,.docx"
+												hidden
+												onChange={handleFileChange}
+												disabled={isAuthLoading}
+											/>
+											<label
+												htmlFor="resume"
+												style={{
+													cursor: isAuthLoading ? "wait" : "pointer",
+													color: "#0B2444",
+													fontWeight: 800,
+													fontSize: "14px",
+													display: "flex",
+													alignItems: "center",
+													justifyContent: "center",
+													gap: "8px",
+												}}
+											>
+												<svg
+													width="18"
+													height="18"
+													viewBox="0 0 24 24"
+													fill="none"
+													stroke="currentColor"
+													strokeWidth="2.5"
 												>
-													UPLOAD RESUME (AI SCAN)
-												</p>
-												<input
-													type="file"
-													id="resume"
-													accept=".pdf,.doc,.docx"
-													hidden
-													onChange={handleFileChange}
-													disabled={isAuthLoading}
-												/>
-												<label
-													htmlFor="resume"
-													style={{
-														cursor: isAuthLoading ? "wait" : "pointer",
-														color: "#0B2444",
-														fontWeight: 800,
-														fontSize: "14px",
-														display: "flex",
-														alignItems: "center",
-														justifyContent: "center",
-														gap: "8px",
-													}}
-												>
-													<svg
-														width="18"
-														height="18"
-														viewBox="0 0 24 24"
-														fill="none"
-														stroke="currentColor"
-														strokeWidth="2.5"
-													>
-														<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-														<polyline points="17 8 12 3 7 8"></polyline>
-														<line x1="12" y1="3" x2="12" y2="15"></line>
-													</svg>
-													{selectedFile
-														? selectedFile.name
-														: "Select PDF or Word Doc"}
-												</label>
-											</div>
-										</>
+													<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+													<polyline points="17 8 12 3 7 8"></polyline>
+													<line x1="12" y1="3" x2="12" y2="15"></line>
+												</svg>
+												{selectedFile
+													? selectedFile.name
+													: "Select PDF or Word Doc"}
+											</label>
+										</div>
 									)}
 
 									<button
