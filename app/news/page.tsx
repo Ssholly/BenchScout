@@ -802,8 +802,8 @@ export default function NewsInsightsPage() {
 					<div
 						style={{
 							position: "sticky",
-							top: "16px",
-							zIndex: 100,
+							top: "90px", // 🚀 FIXED: Clears the 80px Topbar so it doesn't get hidden underneath it!
+							zIndex: 30, // 🚀 FIXED: Keeps it above cards but below Topbar dropdowns
 							display: "flex",
 							justifyContent: "center",
 							marginBottom: "2rem",

@@ -9,7 +9,7 @@ export default function EmployerGateway() {
 	const [view, setView] = useState<"login" | "register" | "dashboard">("login");
 	const [employer, setEmployer] = useState<any>(null);
 
-	// 🚀 ACTIVE PANEL SUB-TAB STATE
+	// ACTIVE PANEL SUB-TAB STATE
 	const [activeTab, setActiveTab] = useState<"broadcasts" | "crm">(
 		"broadcasts",
 	);
@@ -35,11 +35,17 @@ export default function EmployerGateway() {
 	const [postedJobs, setPostedJobs] = useState<any[]>([]);
 	const [loadingJobs, setLoadingJobs] = useState(false);
 
-	// 🚀 TALENT SOURCING CRM DIRECTORY STATE
+	// TALENT SOURCING CRM DIRECTORY STATE
 	const [talentPool, setTalentPool] = useState<any[]>([]);
 	const [crmLoading, setCrmLoading] = useState(false);
 	const [filterLocation, setFilterLocation] = useState("");
 	const [invitingId, setInvitingId] = useState<string | null>(null);
+
+	// MULTI-BROADCAST SELECTION PORTAL STATE
+	const [scoutTargetModal, setScoutTargetModal] = useState<{
+		isOpen: boolean;
+		user: any | null;
+	}>({ isOpen: false, user: null });
 
 	const [deleteModal, setDeleteModal] = useState<{
 		isOpen: boolean;
@@ -101,7 +107,6 @@ export default function EmployerGateway() {
 		}
 	};
 
-	// 🚀 FETCH TALENT FROM DIRECTORY REGISTRY
 	const fetchTalentDirectory = async () => {
 		setCrmLoading(true);
 		try {
@@ -119,35 +124,40 @@ export default function EmployerGateway() {
 		}
 	};
 
-	// 🚀 EXECUTE CRM SOURCING INVITATION EVENT
-	const handleInviteTalent = async (user: any) => {
+	const handleInitiateSourcingInvite = (user: any) => {
 		if (postedJobs.length === 0) {
 			return showToast(
 				"Deploy at least one active broadcast role to dispatch an invite.",
 				"warning",
 			);
 		}
+		setScoutTargetModal({ isOpen: true, user });
+	};
 
-		const targetRoleName =
-			postedJobs[0]?.role || "Medical Laboratory Scientist";
-		setInvitingId(user.id);
+	const executeTargetedInvite = async (selectedJob: any) => {
+		const targetUser = scoutTargetModal.user;
+		if (!targetUser) return;
+
+		setInvitingId(targetUser.id);
+		setScoutTargetModal({ isOpen: false, user: null });
 
 		try {
 			const res = await fetch("/api/employer/talent", {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({
-					candidateId: user.id,
-					candidateEmail: user.email,
-					candidateName: user.name,
+					candidateId: targetUser.id,
+					candidateEmail: targetUser.email,
+					candidateName: targetUser.name,
 					employerName: employer.companyName,
-					jobRole: targetRoleName,
+					jobId: selectedJob.id,
+					jobRole: selectedJob.role,
 				}),
 			});
 
 			if (res.ok) {
 				showToast(
-					`Headhunting invite sent to ${user.name || "candidate"} successfully!`,
+					`Headhunting invite sent for ${selectedJob.role} successfully!`,
 					"success",
 				);
 				window.dispatchEvent(new Event("refreshNotifications"));
@@ -458,24 +468,7 @@ export default function EmployerGateway() {
 		<div style={{ width: "100%", minHeight: "100vh" }}>
 			<style
 				dangerouslySetInnerHTML={{
-					__html: `
-        @keyframes slideDownToast { 
-          0% { transform: translate(-50%, -20px) scale(0.95); opacity: 0; } 
-          100% { transform: translate(-50%, 0) scale(1); opacity: 1; } 
-        }
-        @keyframes modalFadeIn {
-          0% { opacity: 0; transform: scale(0.98); }
-          100% { opacity: 1; transform: scale(1); }
-        }
-        @keyframes slideInDrawer {
-          0% { transform: translateX(120%); }
-          100% { transform: translateX(0); }
-        }
-        @keyframes fadeOverlay {
-          0% { opacity: 0; }
-          100% { opacity: 1; }
-        }
-      `,
+					__html: `@keyframes slideDownToast { 0% { transform: translate(-50%, -20px) scale(0.95); opacity: 0; } 100% { transform: translate(-50%, 0) scale(1); opacity: 1; } } @keyframes modalFadeIn { 0% { opacity: 0; transform: scale(0.98); } 100% { opacity: 1; transform: scale(1); } } @keyframes slideInDrawer { 0% { transform: translateX(120%); } 100% { transform: translateX(0); } } @keyframes fadeOverlay { 0% { opacity: 0; } 100% { opacity: 1; } }`,
 				}}
 			/>
 
@@ -514,6 +507,153 @@ export default function EmployerGateway() {
 								? "⚠️ "
 								: "✕ "}{" "}
 						{toast.message}
+					</div>,
+					document.body,
+				)}
+
+			{/* MULTI-BROADCAST SELECTION OVERLAY */}
+			{scoutTargetModal.isOpen &&
+				createPortal(
+					<div
+						style={{
+							position: "fixed",
+							top: 0,
+							left: 0,
+							width: "100vw",
+							height: "100vh",
+							background: "rgba(15, 23, 42, 0.15)",
+							backdropFilter: "blur(18px)",
+							WebkitBackdropFilter: "blur(18px)",
+							zIndex: 300002,
+							display: "flex",
+							justifyContent: "center",
+							alignItems: "center",
+							padding: "1.5rem",
+						}}
+					>
+						<div
+							style={{
+								background: "white",
+								width: "100%",
+								maxWidth: "420px",
+								borderRadius: "24px",
+								padding: "2rem",
+								boxShadow: "0 30px 60px -15px rgba(0,0,0,0.12)",
+								animation:
+									"modalFadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards",
+							}}
+						>
+							<div
+								style={{
+									display: "flex",
+									justifyContent: "space-between",
+									alignItems: "center",
+									marginBottom: "1.5rem",
+								}}
+							>
+								<div>
+									<h3
+										style={{
+											fontSize: "18px",
+											fontWeight: 850,
+											color: "#0f172a",
+											margin: 0,
+										}}
+									>
+										Select Assignment Node
+									</h3>
+									<p
+										style={{
+											margin: "4px 0 0 0",
+											fontSize: "12px",
+											color: "#64748b",
+										}}
+									>
+										Choose which layout to fast-track the clinician against.
+									</p>
+								</div>
+								<button
+									onClick={() =>
+										setScoutTargetModal({ isOpen: false, user: null })
+									}
+									style={{
+										background: "#f1f5f9",
+										border: "none",
+										width: "32px",
+										height: "32px",
+										borderRadius: "50%",
+										display: "flex",
+										alignItems: "center",
+										justifyContent: "center",
+										cursor: "pointer",
+										color: "#64748b",
+									}}
+								>
+									<svg
+										width="14"
+										height="14"
+										viewBox="0 0 24 24"
+										fill="none"
+										stroke="currentColor"
+										strokeWidth="2.5"
+									>
+										<line x1="18" y1="6" x2="6" y2="18" />
+										<line x1="6" y1="6" x2="18" y2="18" />
+									</svg>
+								</button>
+							</div>
+							<div
+								style={{
+									display: "flex",
+									flexDirection: "column",
+									gap: "10px",
+									maxHeight: "250px",
+									overflowY: "auto",
+								}}
+							>
+								{postedJobs.map((job) => (
+									<div
+										key={job.id}
+										onClick={() => executeTargetedInvite(job)}
+										style={{
+											padding: "14px 16px",
+											background: "#f8fafc",
+											border: "1px solid #e2e8f0",
+											borderRadius: "12px",
+											cursor: "pointer",
+											transition: "0.2s",
+										}}
+										onMouseEnter={(e) => {
+											e.currentTarget.style.borderColor = "#1A8C7A";
+											e.currentTarget.style.background = "#e6fcf5";
+										}}
+										onMouseLeave={(e) => {
+											e.currentTarget.style.borderColor = "#e2e8f0";
+											e.currentTarget.style.background = "#f8fafc";
+										}}
+									>
+										<div
+											style={{
+												fontWeight: 800,
+												color: "#0f172a",
+												fontSize: "13.5px",
+											}}
+										>
+											{job.role}
+										</div>
+										<div
+											style={{
+												fontSize: "11px",
+												color: "#64748b",
+												marginTop: "4px",
+											}}
+										>
+											{job.loc} • {job.salary}
+										</div>
+									</div>
+								))}
+							</div>
+						</div>
 					</div>,
 					document.body,
 				)}
@@ -610,7 +750,6 @@ export default function EmployerGateway() {
 									</svg>
 								</button>
 							</div>
-
 							<form onSubmit={submitInterviewSchedule}>
 								<div style={{ display: "flex", gap: "12px" }}>
 									<div style={{ flex: 1 }}>
@@ -664,7 +803,6 @@ export default function EmployerGateway() {
 										/>
 									</div>
 								</div>
-
 								<label
 									style={{
 										fontSize: "11px",
@@ -689,7 +827,6 @@ export default function EmployerGateway() {
 									}
 									style={inputStyle}
 								/>
-
 								<div
 									style={{
 										background: "#e6fcf5",
@@ -727,7 +864,6 @@ export default function EmployerGateway() {
 										Master Scheduler and dispatch a priority email.
 									</p>
 								</div>
-
 								<button
 									type="submit"
 									disabled={loading}
@@ -835,7 +971,6 @@ export default function EmployerGateway() {
 									</svg>
 								</button>
 							</div>
-
 							<form onSubmit={handleUpdateJob}>
 								<label
 									style={{
@@ -857,7 +992,6 @@ export default function EmployerGateway() {
 									style={inputStyle}
 									required
 								/>
-
 								<label
 									style={{
 										fontSize: "11px",
@@ -878,7 +1012,6 @@ export default function EmployerGateway() {
 									style={inputStyle}
 									required
 								/>
-
 								<label
 									style={{
 										fontSize: "11px",
@@ -898,7 +1031,6 @@ export default function EmployerGateway() {
 									}
 									style={inputStyle}
 								/>
-
 								<label
 									style={{
 										fontSize: "11px",
@@ -919,7 +1051,6 @@ export default function EmployerGateway() {
 									style={inputStyle}
 									required
 								/>
-
 								<button
 									type="submit"
 									disabled={loading}
@@ -1102,7 +1233,6 @@ export default function EmployerGateway() {
 								animation: "fadeOverlay 0.3s forwards",
 							}}
 						></div>
-
 						<div
 							style={{
 								position: "relative",
@@ -1121,7 +1251,6 @@ export default function EmployerGateway() {
 								overflow: "hidden",
 							}}
 						>
-							{/* Header Matching Compliance Panel */}
 							<div
 								style={{
 									padding: "2rem",
@@ -1157,7 +1286,6 @@ export default function EmployerGateway() {
 								<div
 									style={{ display: "flex", alignItems: "center", gap: "10px" }}
 								>
-									{/* 🚀 ONE-CLICK HR DATA EXTRACTION UTILITY */}
 									{drawer.applicants.length > 0 && (
 										<button
 											onClick={() => {
@@ -1177,14 +1305,12 @@ export default function EmployerGateway() {
 													`"${app.user.licenseUrl ? "Verified" : "Missing"}"`,
 													`"${app.user.degreeUrl ? "Verified" : "Missing"}"`,
 												]);
-
 												const csvContent =
 													"data:text/csv;charset=utf-8," +
 													[
 														headers.join(","),
 														...rows.map((e) => e.join(",")),
 													].join("\n");
-
 												const encodedUri = encodeURI(csvContent);
 												const link = document.createElement("a");
 												link.setAttribute("href", encodedUri);
@@ -1260,8 +1386,6 @@ export default function EmployerGateway() {
 									</button>
 								</div>
 							</div>
-
-							{/* Scrollable Container */}
 							<div
 								style={{
 									padding: "0 2rem 2rem 2rem",
@@ -1318,7 +1442,6 @@ export default function EmployerGateway() {
 												gap: "1.25rem",
 											}}
 										>
-											{/* Premium User Card Badge */}
 											<div
 												style={{
 													background: "white",
@@ -1371,8 +1494,6 @@ export default function EmployerGateway() {
 													</div>
 												</div>
 											</div>
-
-											{/* Documents Section styled like Compliance Blocks */}
 											<div
 												style={{
 													background: "white",
@@ -1397,7 +1518,6 @@ export default function EmployerGateway() {
 												>
 													Vault Documents
 												</h4>
-
 												{app.user.resumeUrl && (
 													<a
 														href={app.user.resumeUrl}
@@ -1448,7 +1568,6 @@ export default function EmployerGateway() {
 														</span>
 													</a>
 												)}
-
 												{app.user.licenseUrl && (
 													<div
 														style={{
@@ -1502,7 +1621,6 @@ export default function EmployerGateway() {
 														</span>
 													</div>
 												)}
-
 												{app.user.degreeUrl ? (
 													<div
 														style={{
@@ -1595,8 +1713,6 @@ export default function EmployerGateway() {
 													</div>
 												)}
 											</div>
-
-											{/* Sticky-Style Action Row Container */}
 											<div
 												style={{
 													background: "white",
@@ -1871,7 +1987,6 @@ export default function EmployerGateway() {
 											style={inputStyle}
 											required
 										/>
-
 										<label
 											style={{
 												fontSize: "11px",
@@ -1891,7 +2006,6 @@ export default function EmployerGateway() {
 											style={inputStyle}
 											required
 										/>
-
 										<label
 											style={{
 												fontSize: "11px",
@@ -1910,7 +2024,6 @@ export default function EmployerGateway() {
 											onChange={(e) => setSalary(e.target.value)}
 											style={inputStyle}
 										/>
-
 										<label
 											style={{
 												fontSize: "11px",
@@ -1930,7 +2043,6 @@ export default function EmployerGateway() {
 											style={inputStyle}
 											required
 										/>
-
 										<div
 											style={{
 												display: "flex",
@@ -1989,7 +2101,6 @@ export default function EmployerGateway() {
 												</label>
 											)}
 										</div>
-
 										<button
 											type="submit"
 											disabled={loading}
@@ -2012,7 +2123,6 @@ export default function EmployerGateway() {
 										</button>
 									</form>
 								</div>
-
 								<div
 									style={{
 										display: "flex",
@@ -2087,7 +2197,6 @@ export default function EmployerGateway() {
 									</div>
 								</div>
 							</div>
-
 							<div style={{ marginTop: "4rem" }}>
 								<h2
 									style={{
@@ -2113,7 +2222,6 @@ export default function EmployerGateway() {
 										{postedJobs.length}
 									</span>
 								</h2>
-
 								{loadingJobs ? (
 									<div
 										style={{
@@ -2284,8 +2392,8 @@ export default function EmployerGateway() {
 															<div
 																style={{
 																	display: "flex",
-																	flexDirection: "column",
 																	gap: "8px",
+																	flexDirection: "column",
 																	alignItems: "flex-start",
 																}}
 															>
@@ -2468,7 +2576,6 @@ export default function EmployerGateway() {
 										platform infrastructure.
 									</p>
 								</div>
-
 								<div style={{ position: "relative" }}>
 									<select
 										value={filterLocation}
@@ -2511,7 +2618,6 @@ export default function EmployerGateway() {
 									</svg>
 								</div>
 							</div>
-
 							{crmLoading ? (
 								<div
 									style={{
@@ -2563,7 +2669,6 @@ export default function EmployerGateway() {
 												justifyContent: "space-between",
 												padding: "1.25rem",
 												background: "#f8fafc",
-												borderRadius: "16px",
 												border: "1px solid #e2e8f0",
 												flexWrap: "wrap",
 												gap: "1rem",
@@ -2631,7 +2736,6 @@ export default function EmployerGateway() {
 													</div>
 												</div>
 											</div>
-
 											<div
 												style={{
 													display: "flex",
@@ -2659,8 +2763,9 @@ export default function EmployerGateway() {
 														View CV
 													</a>
 												)}
+												{/* 🚀 UPDATED: Routes through selection prompt modal setup */}
 												<button
-													onClick={() => handleInviteTalent(user)}
+													onClick={() => handleInitiateSourcingInvite(user)}
 													disabled={invitingId === user.id}
 													style={{
 														padding: "8px 16px",

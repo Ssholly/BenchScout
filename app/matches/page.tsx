@@ -223,10 +223,12 @@ export default function MatchesPage() {
 		loadData();
 		window.addEventListener("userStateChanged", loadData);
 		window.addEventListener("jobsUpdated", loadData);
+		window.addEventListener("refreshNotifications", loadData);
 
 		return () => {
 			window.removeEventListener("userStateChanged", loadData);
 			window.removeEventListener("jobsUpdated", loadData);
+			window.removeEventListener("refreshNotifications", loadData);
 		};
 	}, []);
 
@@ -235,12 +237,13 @@ export default function MatchesPage() {
 		loadData();
 	};
 
-	// 🚀 VIP SOURCING LOGIC INTERCEPT
 	const unappliedJobs = jobs.filter((j) => !appliedJobs.includes(j.id));
 
-	// Separate scouted VIP jobs from standard queue
+	// 🚀 STRICT VIP FILTER: Only show jobs explicitly flagged by an active CRM Headhunting Invitation
 	const scoutedJobs = unappliedJobs.filter((j) => j.isScoutedInvite);
-	const regularJobs = unappliedJobs.filter((j) => !j.isScoutedInvite);
+	const regularJobs = unappliedJobs.filter(
+		(j) => !scoutedJobs.some((sj) => sj.id === j.id),
+	);
 
 	const t1Jobs = regularJobs.filter((j) => j.tier === 1);
 	const t2Jobs = regularJobs.filter((j) => j.tier === 2);
@@ -1145,7 +1148,7 @@ export default function MatchesPage() {
 								gap: "2.5rem",
 							}}
 						>
-							{/* 🚀 NEW: VIP SCOUTED INVITATION SECTION */}
+							{/* VIP SCOUTED INVITATION SECTION */}
 							{scoutedJobs.length > 0 && (
 								<div style={{ marginBottom: "1rem" }}>
 									<h3

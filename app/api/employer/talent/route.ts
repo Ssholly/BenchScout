@@ -4,7 +4,6 @@ import nodemailer from "nodemailer";
 
 const prisma = new PrismaClient();
 
-// 1. GET: Fetch and filter all verified passive lab scientists
 export async function GET(request: Request) {
 	try {
 		const { searchParams } = new URL(request.url);
@@ -30,7 +29,6 @@ export async function GET(request: Request) {
 
 		return NextResponse.json({ success: true, users });
 	} catch (error) {
-		console.error("Talent CRM Fetch error:", error);
 		return NextResponse.json(
 			{ error: "Failed to query system talent registry" },
 			{ status: 500 },
@@ -40,7 +38,6 @@ export async function GET(request: Request) {
 	}
 }
 
-// 2. POST: Dispatch an explicit recruitment invite node to passive talent
 export async function POST(request: Request) {
 	try {
 		const body = await request.json();
@@ -49,17 +46,18 @@ export async function POST(request: Request) {
 			candidateEmail,
 			candidateName,
 			employerName,
+			jobId,
 			jobRole,
 		} = body;
 
-		if (!candidateId || !employerName || !jobRole) {
+		if (!candidateId || !employerName || !jobId || !jobRole) {
 			return NextResponse.json(
 				{ error: "Missing parameters" },
 				{ status: 400 },
 			);
 		}
 
-		// Create a native system notification for the topbar bell icon
+		// 🚀 FIXED: Create systemic invitation tying the user directly to the targeted Job model
 		await prisma.notification.create({
 			data: {
 				userId: candidateId,
@@ -68,7 +66,6 @@ export async function POST(request: Request) {
 			},
 		});
 
-		// Fire background priority email safely
 		if (candidateEmail) {
 			const transporter = nodemailer.createTransport({
 				service: "gmail",
@@ -91,12 +88,11 @@ export async function POST(request: Request) {
 					safeName +
 					".</h2><p style='color: #334155; font-size: 15px; line-height: 1.6; margin: 0 0 20px 0;'>Medical talent acquisition managers at <strong>" +
 					safeEmployer +
-					"</strong> have processed your verified MLSCN credentials and portfolio layout across the network directory.</p><p style='color: #334155; font-size: 15px; line-height: 1.6; margin: 0 0 25px 0;'>They are fast-tracking you for consideration for their <strong>" +
+					"</strong> have processed your verified MLSCN credentials across the network directory.</p><p style='color: #334155; font-size: 15px; line-height: 1.6; margin: 0 0 25px 0;'>They are fast-tracking you for consideration for their <strong>" +
 					safeRole +
-					"</strong> placement hub.</p><div style='background: #e6fcf5; padding: 15px; border-radius: 8px; border-left: 4px solid #1A8C7A; margin-bottom: 25px; color: #065f46; font-size: 14px; font-weight: 600;'>Log into your BenchScout dashboard, review their deployment metrics, and accept the node path to establish instant transmission.</div></div><p style='color: #94a3b8; font-size: 12px; text-align: center; margin-top: 30px;'>BenchScout B2B CRM Engine &copy; 2026</p></div>",
+					"</strong> placement hub.</p><div style='background: #e6fcf5; padding: 15px; border-radius: 8px; border-left: 4px solid #1A8C7A; margin-bottom: 25px; color: #065f46; font-size: 14px; font-weight: 600;'>Log into your BenchScout dashboard, review their deployment metrics, and claim the placement path to establish instant transmission.</div></div><p style='color: #94a3b8; font-size: 12px; text-align: center; margin-top: 30px;'>BenchScout B2B CRM Engine &copy; 2026</p></div>",
 			};
 
-			// Execute without awaiting to keep API response fast
 			transporter.sendMail(mailOptions).catch((err) => {
 				console.error("CRM Background Email Failure:", err);
 			});
