@@ -44,6 +44,9 @@ export default function MatchesPage() {
 		type: "success" | "error";
 	} | null>(null);
 
+	// 🚀 TRACK DECLINED INVITATIONS TO DISMISS CARDS INSTANTLY
+	const [declinedJobIds, setDeclinedJobIds] = useState<string[]>([]);
+
 	const showToast = (
 		message: string,
 		type: "success" | "error" = "success",
@@ -237,9 +240,35 @@ export default function MatchesPage() {
 		loadData();
 	};
 
-	const unappliedJobs = jobs.filter((j) => !appliedJobs.includes(j.id));
+	// 🚀 HANDLER TO DECLINE AN INVITATION AND CLEAR IT OPTIMISTICALLY
+	const handleDeclinePlacement = async (e: React.MouseEvent, job: any) => {
+		e.stopPropagation();
+		setDeclinedJobIds((prev) => [...prev, job.id]);
+		showToast("Recruitment invitation declined.", "error");
 
-	// 🚀 STRICT VIP FILTER: Only show jobs explicitly flagged by an active CRM Headhunting Invitation
+		try {
+			const activeEmail = localStorage.getItem("labpro_active_user");
+			await fetch("/api/notifications/decline", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					email: activeEmail,
+					company: job.company,
+					role: job.role,
+					jobId: job.id,
+				}),
+			});
+		} catch (err) {
+			console.error("Failed to log decline operation:", err);
+		}
+	};
+
+	// Filter out all applied AND declined items
+	const unappliedJobs = jobs.filter(
+		(j) => !appliedJobs.includes(j.id) && !declinedJobIds.includes(j.id),
+	);
+
+	// STRICT VIP FILTER: Only show jobs explicitly flagged by an active CRM Headhunting Invitation
 	const scoutedJobs = unappliedJobs.filter((j) => j.isScoutedInvite);
 	const regularJobs = unappliedJobs.filter(
 		(j) => !scoutedJobs.some((sj) => sj.id === j.id),
@@ -1295,7 +1324,7 @@ export default function MatchesPage() {
 														display: "flex",
 														flexDirection: "column",
 														alignItems: "flex-end",
-														gap: "1rem",
+														gap: "1.25rem",
 													}}
 												>
 													<div
@@ -1309,43 +1338,83 @@ export default function MatchesPage() {
 															? "Competitive"
 															: j.salary}
 													</div>
-													<button
-														onClick={() => handleInitiateApply(j)}
+													<div
 														style={{
-															background: "#1A8C7A",
-															color: "white",
-															border: "none",
-															padding: "14px 28px",
-															borderRadius: "12px",
-															fontSize: "14px",
-															fontWeight: 800,
-															cursor: "pointer",
 															display: "flex",
+															gap: "12px",
 															alignItems: "center",
-															gap: "8px",
-															boxShadow: "0 8px 16px rgba(26, 140, 122, 0.3)",
-															transition: "transform 0.2s",
 														}}
-														onMouseEnter={(e) =>
-															(e.currentTarget.style.transform = "scale(1.02)")
-														}
-														onMouseLeave={(e) =>
-															(e.currentTarget.style.transform = "scale(1)")
-														}
 													>
-														Claim Placement{" "}
-														<svg
-															width="16"
-															height="16"
-															viewBox="0 0 24 24"
-															fill="none"
-															stroke="currentColor"
-															strokeWidth="3"
+														{/* 🚀 DECLINE INTERACTION BUTTON */}
+														<button
+															onClick={(e) => handleDeclinePlacement(e, j)}
+															style={{
+																background: "rgba(255,255,255,0.08)",
+																border: "1px solid rgba(255,255,255,0.15)",
+																color: "#cbd5e1",
+																padding: "12px 20px",
+																borderRadius: "12px",
+																fontSize: "13.5px",
+																fontWeight: 700,
+																cursor: "pointer",
+																transition: "0.2s",
+															}}
+															onMouseEnter={(e) => {
+																e.currentTarget.style.background =
+																	"rgba(239, 68, 68, 0.15)";
+																e.currentTarget.style.color = "#fca5a5";
+																e.currentTarget.style.borderColor =
+																	"rgba(239, 68, 68, 0.3)";
+															}}
+															onMouseLeave={(e) => {
+																e.currentTarget.style.background =
+																	"rgba(255,255,255,0.08)";
+																e.currentTarget.style.color = "#cbd5e1";
+																e.currentTarget.style.borderColor =
+																	"rgba(255,255,255,0.15)";
+															}}
 														>
-															<line x1="5" y1="12" x2="19" y2="12" />
-															<polyline points="12 5 19 12 12 19" />
-														</svg>
-													</button>
+															Decline Invite
+														</button>
+														<button
+															onClick={() => handleInitiateApply(j)}
+															style={{
+																background: "#1A8C7A",
+																color: "white",
+																border: "none",
+																padding: "13px 26px",
+																borderRadius: "12px",
+																fontSize: "14px",
+																fontWeight: 800,
+																cursor: "pointer",
+																display: "flex",
+																alignItems: "center",
+																gap: "8px",
+																boxShadow: "0 8px 16px rgba(26, 140, 122, 0.3)",
+																transition: "transform 0.2s",
+															}}
+															onMouseEnter={(e) =>
+																(e.currentTarget.style.transform =
+																	"scale(1.02)")
+															}
+															onMouseLeave={(e) =>
+																(e.currentTarget.style.transform = "scale(1)")
+															}
+														>
+															Claim Placement{" "}
+															<svg
+																width="16"
+																height="16"
+																viewBox="0 0 24 24"
+																fill="none"
+																stroke="currentColor"
+																strokeWidth="3"
+															>
+																<line x1="5" y1="12" x2="19" y2="12" />
+																<polyline points="12 5 19 12 12 19" />
+															</svg>
+														</button>
+													</div>
 												</div>
 											</div>
 										))}

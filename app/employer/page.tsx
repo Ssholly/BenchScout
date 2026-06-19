@@ -3,6 +3,17 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createPortal } from "react-dom";
 
+type InvitedRecord = {
+	candidateId: string;
+	candidateName: string;
+	candidateEmail: string;
+	resumeUrl: string;
+	licenseUrl: string;
+	jobId: string;
+	jobRole: string;
+	timestamp: number;
+};
+
 export default function EmployerGateway() {
 	const router = useRouter();
 	const [mounted, setMounted] = useState(false);
@@ -10,7 +21,7 @@ export default function EmployerGateway() {
 	const [employer, setEmployer] = useState<any>(null);
 
 	// ACTIVE PANEL SUB-TAB STATE
-	const [activeTab, setActiveTab] = useState<"broadcasts" | "crm">(
+	const [activeTab, setActiveTab] = useState<"broadcasts" | "crm" | "invites">(
 		"broadcasts",
 	);
 
@@ -40,6 +51,9 @@ export default function EmployerGateway() {
 	const [crmLoading, setCrmLoading] = useState(false);
 	const [filterLocation, setFilterLocation] = useState("");
 	const [invitingId, setInvitingId] = useState<string | null>(null);
+
+	// 🚀 TRACK RICH INVITATION RECORDS
+	const [invitedRecords, setInvitedRecords] = useState<InvitedRecord[]>([]);
 
 	// MULTI-BROADCAST SELECTION PORTAL STATE
 	const [scoutTargetModal, setScoutTargetModal] = useState<{
@@ -160,6 +174,26 @@ export default function EmployerGateway() {
 					`Headhunting invite sent for ${selectedJob.role} successfully!`,
 					"success",
 				);
+
+				// 🚀 SAVE RICH RECORD TO STATE & STORAGE
+				const newRecord: InvitedRecord = {
+					candidateId: targetUser.id,
+					candidateName: targetUser.name || "Verified Scientist",
+					candidateEmail: targetUser.email,
+					resumeUrl: targetUser.resumeUrl || "",
+					licenseUrl: targetUser.licenseUrl || "",
+					jobId: selectedJob.id,
+					jobRole: selectedJob.role,
+					timestamp: Date.now(),
+				};
+
+				const updatedRecords = [...invitedRecords, newRecord];
+				setInvitedRecords(updatedRecords);
+				localStorage.setItem(
+					`benchscout_invited_v2_${employer.id}`,
+					JSON.stringify(updatedRecords),
+				);
+
 				window.dispatchEvent(new Event("refreshNotifications"));
 			} else {
 				showToast("Sourcing error during delivery.", "error");
@@ -172,7 +206,7 @@ export default function EmployerGateway() {
 	};
 
 	useEffect(() => {
-		if (activeTab === "crm" && employer) {
+		if ((activeTab === "crm" || activeTab === "invites") && employer) {
 			fetchTalentDirectory();
 		}
 	}, [activeTab, filterLocation]);
@@ -282,6 +316,12 @@ export default function EmployerGateway() {
 			setEmployer(parsed);
 			setView("dashboard");
 			fetchEmployerJobs(parsed.id);
+
+			// Load v2 Rich Records
+			const savedInvites = localStorage.getItem(
+				`benchscout_invited_v2_${parsed.id}`,
+			);
+			if (savedInvites) setInvitedRecords(JSON.parse(savedInvites));
 		}
 	}, []);
 
@@ -313,6 +353,12 @@ export default function EmployerGateway() {
 					setEmployer(data.employer);
 					setView("dashboard");
 					fetchEmployerJobs(data.employer.id);
+
+					const savedInvites = localStorage.getItem(
+						`benchscout_invited_v2_${data.employer.id}`,
+					);
+					if (savedInvites) setInvitedRecords(JSON.parse(savedInvites));
+
 					window.dispatchEvent(new Event("employerStateChanged"));
 				} else {
 					setView("login");
@@ -511,7 +557,7 @@ export default function EmployerGateway() {
 					document.body,
 				)}
 
-			{/* MULTI-BROADCAST SELECTION OVERLAY */}
+			{/* 🚀 UPGRADED: MULTI-BROADCAST SELECTION OVERLAY */}
 			{scoutTargetModal.isOpen &&
 				createPortal(
 					<div
@@ -607,51 +653,87 @@ export default function EmployerGateway() {
 									display: "flex",
 									flexDirection: "column",
 									gap: "10px",
-									maxHeight: "250px",
+									maxHeight: "300px",
 									overflowY: "auto",
 								}}
 							>
-								{postedJobs.map((job) => (
-									<div
-										key={job.id}
-										onClick={() => executeTargetedInvite(job)}
-										style={{
-											padding: "14px 16px",
-											background: "#f8fafc",
-											border: "1px solid #e2e8f0",
-											borderRadius: "12px",
-											cursor: "pointer",
-											transition: "0.2s",
-										}}
-										onMouseEnter={(e) => {
-											e.currentTarget.style.borderColor = "#1A8C7A";
-											e.currentTarget.style.background = "#e6fcf5";
-										}}
-										onMouseLeave={(e) => {
-											e.currentTarget.style.borderColor = "#e2e8f0";
-											e.currentTarget.style.background = "#f8fafc";
-										}}
-									>
+								{postedJobs.map((job) => {
+									const isAlreadySent = invitedRecords.some(
+										(r) =>
+											r.candidateId === scoutTargetModal.user?.id &&
+											r.jobId === job.id,
+									);
+									return (
 										<div
+											key={job.id}
+											onClick={() =>
+												!isAlreadySent && executeTargetedInvite(job)
+											}
 											style={{
-												fontWeight: 800,
-												color: "#0f172a",
-												fontSize: "13.5px",
+												padding: "14px 16px",
+												background: isAlreadySent
+													? "rgba(241, 245, 249, 0.5)"
+													: "#f8fafc",
+												border: "1px solid",
+												borderColor: isAlreadySent ? "transparent" : "#e2e8f0",
+												borderRadius: "12px",
+												cursor: isAlreadySent ? "not-allowed" : "pointer",
+												display: "flex",
+												justifyContent: "space-between",
+												alignItems: "center",
+												opacity: isAlreadySent ? 0.6 : 1,
+												transition: "0.2s",
+											}}
+											onMouseEnter={(e) => {
+												if (!isAlreadySent) {
+													e.currentTarget.style.borderColor = "#1A8C7A";
+													e.currentTarget.style.background = "#e6fcf5";
+												}
+											}}
+											onMouseLeave={(e) => {
+												if (!isAlreadySent) {
+													e.currentTarget.style.borderColor = "#e2e8f0";
+													e.currentTarget.style.background = "#f8fafc";
+												}
 											}}
 										>
-											{job.role}
+											<div>
+												<div
+													style={{
+														fontWeight: 800,
+														color: "#0f172a",
+														fontSize: "13.5px",
+													}}
+												>
+													{job.role}
+												</div>
+												<div
+													style={{
+														fontSize: "11px",
+														color: "#64748b",
+														marginTop: "4px",
+													}}
+												>
+													{job.loc} • {job.salary}
+												</div>
+											</div>
+											{isAlreadySent && (
+												<span
+													style={{
+														fontSize: "11px",
+														fontWeight: 800,
+														color: "#1A8C7A",
+														background: "#e6fcf5",
+														padding: "4px 8px",
+														borderRadius: "6px",
+													}}
+												>
+													Sent ✓
+												</span>
+											)}
 										</div>
-										<div
-											style={{
-												fontSize: "11px",
-												color: "#64748b",
-												marginTop: "4px",
-											}}
-										>
-											{job.loc} • {job.salary}
-										</div>
-									</div>
-								))}
+									);
+								})}
 							</div>
 						</div>
 					</div>,
@@ -1890,7 +1972,7 @@ export default function EmployerGateway() {
 							padding: "6px",
 							borderRadius: "14px",
 							width: "100%",
-							maxWidth: "360px",
+							maxWidth: "480px",
 							marginBottom: "2.5rem",
 							border: "1px solid rgba(0,0,0,0.02)",
 						}}
@@ -1934,7 +2016,28 @@ export default function EmployerGateway() {
 									activeTab === "crm" ? "0 4px 12px rgba(0,0,0,0.05)" : "none",
 							}}
 						>
-							Scout Directory (CRM)
+							Scout Directory
+						</button>
+						<button
+							onClick={() => setActiveTab("invites")}
+							style={{
+								flex: 1,
+								padding: "10px",
+								borderRadius: "10px",
+								border: "none",
+								fontSize: "13px",
+								fontWeight: 800,
+								cursor: "pointer",
+								transition: "0.2s cubic-bezier(0.16, 1, 0.3, 1)",
+								background: activeTab === "invites" ? "white" : "transparent",
+								color: activeTab === "invites" ? "#0B2444" : "#64748b",
+								boxShadow:
+									activeTab === "invites"
+										? "0 4px 12px rgba(0,0,0,0.05)"
+										: "none",
+							}}
+						>
+							Sent Invites
 						</button>
 					</div>
 
@@ -2533,7 +2636,7 @@ export default function EmployerGateway() {
 								)}
 							</div>
 						</>
-					) : (
+					) : activeTab === "crm" ? (
 						/* SCOUT CRM DIRECTORY VIEW PANEL */
 						<div
 							style={{
@@ -2660,9 +2763,229 @@ export default function EmployerGateway() {
 										gap: "12px",
 									}}
 								>
-									{talentPool.map((user) => (
+									{talentPool.map((user) => {
+										return (
+											<div
+												key={user.id}
+												style={{
+													display: "flex",
+													alignItems: "center",
+													justifyContent: "space-between",
+													padding: "1.25rem",
+													background: "#f8fafc",
+													border: "1px solid #e2e8f0",
+													flexWrap: "wrap",
+													gap: "1rem",
+													borderRadius: "16px",
+												}}
+											>
+												<div
+													style={{
+														display: "flex",
+														alignItems: "center",
+														gap: "1rem",
+													}}
+												>
+													<div
+														style={{
+															width: "44px",
+															height: "44px",
+															borderRadius: "50%",
+															background: "#0B2444",
+															color: "white",
+															display: "flex",
+															alignItems: "center",
+															justifyContent: "center",
+															fontWeight: 800,
+															fontSize: "15px",
+														}}
+													>
+														{user.name
+															? user.name.charAt(0).toUpperCase()
+															: "S"}
+													</div>
+													<div>
+														<div
+															style={{
+																fontSize: "15px",
+																fontWeight: 800,
+																color: "#0f172a",
+																display: "flex",
+																alignItems: "center",
+																gap: "8px",
+															}}
+														>
+															{user.name || "Verified Scientist"}
+															{user.licenseUrl && (
+																<span
+																	style={{
+																		fontSize: "10px",
+																		fontWeight: 800,
+																		color: "#1A8C7A",
+																		background: "#e6fcf5",
+																		padding: "2px 6px",
+																		borderRadius: "4px",
+																	}}
+																>
+																	MLSCN VERIFIED ✓
+																</span>
+															)}
+														</div>
+														<div
+															style={{
+																fontSize: "12px",
+																color: "#64748b",
+																marginTop: "2px",
+																fontWeight: 550,
+															}}
+														>
+															{user.email}
+														</div>
+													</div>
+												</div>
+												<div
+													style={{
+														display: "flex",
+														gap: "10px",
+														alignItems: "center",
+													}}
+												>
+													{user.resumeUrl && (
+														<a
+															href={user.resumeUrl}
+															target="_blank"
+															rel="noopener noreferrer"
+															style={{
+																textDecoration: "none",
+																fontSize: "12px",
+																fontWeight: 700,
+																color: "#475569",
+																background: "white",
+																border: "1px solid #cbd5e1",
+																padding: "8px 14px",
+																borderRadius: "8px",
+																transition: "0.2s",
+															}}
+														>
+															View CV
+														</a>
+													)}
+													<button
+														onClick={() => handleInitiateSourcingInvite(user)}
+														disabled={invitingId === user.id}
+														style={{
+															padding: "8px 16px",
+															borderRadius: "8px",
+															border: "none",
+															background: "#0B2444",
+															color: "white",
+															fontSize: "12px",
+															fontWeight: 800,
+															cursor:
+																invitingId === user.id ? "wait" : "pointer",
+															boxShadow: "0 4px 10px rgba(11, 36, 68, 0.15)",
+															transition: "0.2s",
+														}}
+													>
+														{invitingId === user.id
+															? "Inviting Transmit..."
+															: "Invite to Placement"}
+													</button>
+												</div>
+											</div>
+										);
+									})}
+								</div>
+							)}
+						</div>
+					) : activeTab === "invites" ? (
+						/* 🚀 NEW SENT INVITES TRACKER TAB */
+						<div
+							style={{
+								background: "white",
+								borderRadius: "24px",
+								padding: "2.5rem",
+								border: "1px solid #f1f5f9",
+								boxShadow: "0 4px 24px rgba(0,0,0,0.01)",
+							}}
+						>
+							<div
+								style={{
+									display: "flex",
+									justifyContent: "space-between",
+									alignItems: "center",
+									marginBottom: "2rem",
+									flexWrap: "wrap",
+									gap: "1rem",
+								}}
+							>
+								<div>
+									<h2
+										style={{
+											fontSize: "20px",
+											fontWeight: 850,
+											color: "#0B2444",
+											margin: 0,
+										}}
+									>
+										Sent Invitations
+									</h2>
+									<p
+										style={{
+											margin: "4px 0 0 0",
+											fontSize: "13px",
+											color: "#64748b",
+										}}
+									>
+										Track your direct recruitment outreaches.
+									</p>
+								</div>
+							</div>
+
+							{crmLoading ? (
+								<div
+									style={{
+										textAlign: "center",
+										padding: "4rem",
+										color: "#64748b",
+										fontWeight: 700,
+										fontSize: "14px",
+									}}
+								>
+									Synchronizing outgoing records...
+								</div>
+							) : invitedRecords.length === 0 ? (
+								<div
+									style={{
+										textAlign: "center",
+										padding: "4rem",
+										background: "#f8fafc",
+										borderRadius: "16px",
+										border: "1px dashed #e2e8f0",
+									}}
+								>
+									<p
+										style={{
+											margin: 0,
+											color: "#64748b",
+											fontSize: "14px",
+											fontWeight: 600,
+										}}
+									>
+										No VIP invitations have been dispatched yet.
+									</p>
+								</div>
+							) : (
+								<div
+									style={{
+										display: "flex",
+										flexDirection: "column",
+										gap: "12px",
+									}}
+								>
+									{[...invitedRecords].reverse().map((record, idx) => (
 										<div
-											key={user.id}
+											key={idx}
 											style={{
 												display: "flex",
 												alignItems: "center",
@@ -2672,6 +2995,7 @@ export default function EmployerGateway() {
 												border: "1px solid #e2e8f0",
 												flexWrap: "wrap",
 												gap: "1rem",
+												borderRadius: "16px",
 											}}
 										>
 											<div
@@ -2686,7 +3010,7 @@ export default function EmployerGateway() {
 														width: "44px",
 														height: "44px",
 														borderRadius: "50%",
-														background: "#0B2444",
+														background: "#1A8C7A",
 														color: "white",
 														display: "flex",
 														alignItems: "center",
@@ -2695,7 +3019,9 @@ export default function EmployerGateway() {
 														fontSize: "15px",
 													}}
 												>
-													{user.name ? user.name.charAt(0).toUpperCase() : "S"}
+													{record.candidateName
+														? record.candidateName.charAt(0).toUpperCase()
+														: "S"}
 												</div>
 												<div>
 													<div
@@ -2708,8 +3034,8 @@ export default function EmployerGateway() {
 															gap: "8px",
 														}}
 													>
-														{user.name || "Verified Scientist"}
-														{user.licenseUrl && (
+														{record.candidateName || "Verified Scientist"}
+														{record.licenseUrl && (
 															<span
 																style={{
 																	fontSize: "10px",
@@ -2732,7 +3058,10 @@ export default function EmployerGateway() {
 															fontWeight: 550,
 														}}
 													>
-														{user.email}
+														Invited for:{" "}
+														<strong style={{ color: "#0f172a" }}>
+															{record.jobRole}
+														</strong>
 													</div>
 												</div>
 											</div>
@@ -2743,9 +3072,9 @@ export default function EmployerGateway() {
 													alignItems: "center",
 												}}
 											>
-												{user.resumeUrl && (
+												{record.resumeUrl && (
 													<a
-														href={user.resumeUrl}
+														href={record.resumeUrl}
 														target="_blank"
 														rel="noopener noreferrer"
 														style={{
@@ -2763,34 +3092,26 @@ export default function EmployerGateway() {
 														View CV
 													</a>
 												)}
-												{/* 🚀 UPDATED: Routes through selection prompt modal setup */}
-												<button
-													onClick={() => handleInitiateSourcingInvite(user)}
-													disabled={invitingId === user.id}
+												<div
 													style={{
 														padding: "8px 16px",
 														borderRadius: "8px",
-														border: "none",
-														background: "#0B2444",
-														color: "white",
+														border: "1px solid #a7f3d0",
+														background: "#e6fcf5",
+														color: "#1A8C7A",
 														fontSize: "12px",
 														fontWeight: 800,
-														cursor: invitingId === user.id ? "wait" : "pointer",
-														boxShadow: "0 4px 10px rgba(11, 36, 68, 0.15)",
-														transition: "0.2s",
 													}}
 												>
-													{invitingId === user.id
-														? "Inviting Transmit..."
-														: "Invite to Placement"}
-												</button>
+													Invite Dispatched ✓
+												</div>
 											</div>
 										</div>
 									))}
 								</div>
 							)}
 						</div>
-					)}
+					) : null}
 				</div>
 			) : (
 				<div
