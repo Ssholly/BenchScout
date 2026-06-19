@@ -44,7 +44,7 @@ export default function MatchesPage() {
 		type: "success" | "error";
 	} | null>(null);
 
-	// 🚀 TRACK DECLINED INVITATIONS TO DISMISS CARDS INSTANTLY
+	// TRACK DECLINED INVITATIONS TO DISMISS CARDS INSTANTLY
 	const [declinedJobIds, setDeclinedJobIds] = useState<string[]>([]);
 
 	const showToast = (
@@ -59,6 +59,12 @@ export default function MatchesPage() {
 		const activeEmail = localStorage.getItem("labpro_active_user");
 		const careerPhase =
 			localStorage.getItem("labpro_career_phase") || "licensed";
+
+		// 🚀 RESTORE DECLINED JOBS FROM STORAGE ON LOAD
+		const savedDeclined = localStorage.getItem("labpro_declined_jobs");
+		if (savedDeclined) {
+			setDeclinedJobIds(JSON.parse(savedDeclined));
+		}
 
 		const initialDocs: VaultDoc[] =
 			careerPhase === "internship"
@@ -240,10 +246,17 @@ export default function MatchesPage() {
 		loadData();
 	};
 
-	// 🚀 HANDLER TO DECLINE AN INVITATION AND CLEAR IT OPTIMISTICALLY
+	// 🚀 HANDLER TO DECLINE AN INVITATION AND SAVE LOCALLY
 	const handleDeclinePlacement = async (e: React.MouseEvent, job: any) => {
 		e.stopPropagation();
-		setDeclinedJobIds((prev) => [...prev, job.id]);
+
+		const updatedDeclines = [...declinedJobIds, job.id];
+		setDeclinedJobIds(updatedDeclines);
+		localStorage.setItem(
+			"labpro_declined_jobs",
+			JSON.stringify(updatedDeclines),
+		);
+
 		showToast("Recruitment invitation declined.", "error");
 
 		try {
@@ -1345,7 +1358,6 @@ export default function MatchesPage() {
 															alignItems: "center",
 														}}
 													>
-														{/* 🚀 DECLINE INTERACTION BUTTON */}
 														<button
 															onClick={(e) => handleDeclinePlacement(e, j)}
 															style={{
