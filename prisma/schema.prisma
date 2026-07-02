@@ -60,6 +60,7 @@ model Job {
   loc             String
   salary          String
   skills          String
+  desc            String?
   url             String
   score           Int
   tier            Int

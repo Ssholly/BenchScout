@@ -137,7 +137,9 @@ export default function MatchesPage() {
 		const employerParam = searchParams.get("employer");
 		setActiveFilter(employerParam);
 
-		fetch(`/api/jobs?email=${activeEmail}`)
+		fetch(`/api/jobs?email=${activeEmail}&_t=${Date.now()}`, {
+			cache: "no-store",
+		})
 			.then((res) => res.json())
 			.then((data) => {
 				if (!Array.isArray(data)) {
@@ -393,6 +395,14 @@ export default function MatchesPage() {
 		}
 
 		let finalUrl = toolkitJob.url?.trim() || "";
+
+		// 🚀 NEW: Intercept email links and open mail app
+		if (finalUrl.toLowerCase().startsWith("mailto:")) {
+			window.location.href = finalUrl;
+			setToolkitJob(null);
+			return;
+		}
+
 		if (finalUrl.includes("myjobmag.comhttps://"))
 			finalUrl = "https://" + finalUrl.split("https://")[1];
 		if (!finalUrl.startsWith("http://") && !finalUrl.startsWith("https://"))
@@ -1917,6 +1927,50 @@ export default function MatchesPage() {
 											</svg>
 										</button>
 									</div>
+
+									{/* 🚀 RESTORED: DISPLAY JOB INSTRUCTIONS IF THEY EXIST */}
+									{toolkitJob.desc && (
+										<div
+											style={{
+												padding: "1.5rem 2rem 0 2rem",
+												background: "#f8fafc",
+											}}
+										>
+											<div
+												style={{
+													background: "rgba(26, 140, 122, 0.05)",
+													border: "1px solid rgba(26, 140, 122, 0.2)",
+													borderRadius: "12px",
+													padding: "1rem",
+												}}
+											>
+												<h4
+													style={{
+														margin: "0 0 6px 0",
+														fontSize: "11px",
+														fontWeight: 800,
+														color: "#1A8C7A",
+														textTransform: "uppercase",
+														letterSpacing: "0.5px",
+													}}
+												>
+													Placement Instructions
+												</h4>
+												<p
+													style={{
+														margin: 0,
+														fontSize: "13px",
+														color: "#334155",
+														lineHeight: "1.6",
+														whiteSpace: "pre-wrap",
+													}}
+												>
+													{toolkitJob.desc}
+												</p>
+											</div>
+										</div>
+									)}
+
 									<div
 										className="mobile-stack"
 										style={{
