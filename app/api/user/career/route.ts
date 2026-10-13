@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { withApi } from "@/lib/api";
 import { prisma } from "@/lib/prisma";
 import { ApiError } from "@/lib/security";
-import { candidateProfile, profileFields } from "@/lib/candidate-profile";
+import { candidateProfile, profileFields, lastScan } from "@/lib/candidate-profile";
 import { isPrivateBlob } from "@/lib/documents";
 
 export const POST = withApi("candidate", async (request, session) => {
@@ -27,8 +27,10 @@ export const POST = withApi("candidate", async (request, session) => {
   const changed = body.careerPhase !== current.careerPhase;
   if (changed && body.confirmStageChange !== true) throw new ApiError(400, "Confirm your professional-stage change. Your history and documents will be preserved.");
   if (changed && body.careerPhase === "licensed" && (!current.licenseUrl || !isPrivateBlob(current.licenseUrl) || !current.licenseNumber || !current.licenseExpiry || current.licenseExpiry <= new Date())) throw new ApiError(400, "Upload your practicing license privately and record its registration number and valid expiry before changing to licensed scientist.");
-  const saved = { ...profile };
   const previous = candidateProfile(current.candidateProfile);
+  const scan = lastScan(current.candidateProfile);
+  // Preserve server-owned scan metadata on ordinary edits; clients cannot forge it.
+  const saved = { ...profile, ...(!changed && previous.preferredLocations === profile.preferredLocations && scan ? {lastScan:scan} : {}) };
   const credentialChanged = current.careerPhase === "internship" && (previous.provisionalNumber !== profile.provisionalNumber || previous.provisionalExpiry !== profile.provisionalExpiry);
   const user = await prisma.user.update({ where: { id: current.id }, data: { careerPhase: body.careerPhase, candidateProfile: saved, ...(changed || credentialChanged ? { isLicenseVerified: false, licenseReviewedAt: null, licenseReviewReference: null } : {}) } });
   return NextResponse.json({ success: true, user });

@@ -5,7 +5,7 @@ import { legacyPortalUrls, scoreJob, type MatchPreferences } from "@/lib/job-mat
 import { listingUrl } from "@/lib/listing-url";
 import { buildJobDigest } from "@/lib/digest";
 import { sendEmail } from "@/lib/mailer";
-import { candidateProfile } from "@/lib/candidate-profile";
+import { candidateProfile, listingDetails, opportunityForPreferences } from "@/lib/candidate-profile";
 export async function runJobScan(userId: string, overrides: Partial<MatchPreferences> & { autoSend?: boolean } = {}, trigger = "Manual", appUrl = process.env.NEXT_PUBLIC_APP_URL) {
   const now = new Date();
   const claim = await prisma.user.updateMany({ where: { id: userId, OR: [{ scanLeaseUntil: null }, { scanLeaseUntil: { lt: now } }] }, data: { scanLeaseUntil: new Date(now.getTime() + 120000) } });
@@ -13,18 +13,22 @@ export async function runJobScan(userId: string, overrides: Partial<MatchPrefere
   try {
     const user = await prisma.user.findUniqueOrThrow({ where: { id: userId } });
     const profile = candidateProfile(user.candidateProfile);
-    const preferences: MatchPreferences = { careerPhase: user.careerPhase, location: profile.preferredLocations || user.location, keywords: user.keywords || profile.specialties || "", minScore: user.minScore, strictMls: user.strictMls, includeTier3: true, ...overrides };
+    const preferences: MatchPreferences = { careerPhase: user.careerPhase, location: profile.preferredLocations || user.location || "All Nigeria", keywords: user.keywords || profile.specialties || "", minScore: user.minScore, strictMls: user.strictMls, includeTier3: true, ...overrides };
     // Career stage is always server-owned, including manual scan requests.
     preferences.careerPhase = user.careerPhase;
     if (profile.preferredLocations && !overrides.location) preferences.location = profile.preferredLocations;
-    const result = await collectJobs(preferences.careerPhase, preferences.location === "All Nigeria" || preferences.location.includes(",") ? "Nigeria" : preferences.location);
+    const result = await collectJobs(preferences.careerPhase, /^(all nigeria|all|nigeria)$/i.test(preferences.location.trim()) || preferences.location.includes(",") ? "Nigeria" : preferences.location.replace(/^FCT\s*-\s*/i,""));
     if (!result.successful) throw new ApiError(502, "Job sources are temporarily unavailable. Your existing matches have been preserved.");
-    const matches = result.jobs.filter(job => !legacyPortalUrls.includes(job.url)).map(job => scoreJob(job, preferences)).filter(job => job !== null).sort((a,b) => b.score-a.score).slice(0,50);
-    const existing = await prisma.job.findMany({ where: { userId }, select: { id: true, url: true, applied: true, status: true } });
+    const matches = result.jobs.map(job=>({...job,jobType:job.jobType || (/\blocum\b/i.test(job.title) ? "locum" : /\bcontract\b/i.test(job.title) ? "contract" : /part[- ]time/i.test(job.title) ? "part-time" : "full-time")}))
+      .filter(job=>!legacyPortalUrls.includes(job.url) && opportunityForPreferences(job,preferences.careerPhase,{...profile,preferredLocations:preferences.location},preferences.location))
+      .map(job=>scoreJob(job,preferences)).filter(job=>job !== null).sort((a,b)=>b.score-a.score).slice(0,50);
+    const existing = await prisma.job.findMany({ where: { userId }, select: { id: true, url: true, applied: true, status: true, listingDetails:true } });
     const newMatches = matches.filter(job => !existing.some(previous => previous.url === job.url));
+    const current = await prisma.user.findUniqueOrThrow({where:{id:userId}});
+    if (current.careerPhase !== user.careerPhase) throw new ApiError(409,"Your professional stage changed during the scan. Run a new scan for your current stage.");
     await prisma.$transaction(matches.map(job => {
       const previous = existing.find(previous => previous.url === job.url);
-      const data = { role: job.title, company: job.company, loc: job.loc, desc: job.desc, url: job.url, score: job.score, tier: job.tier, skills: job.skills, source: job.source, lastSeenAt: now, jobType: preferences.careerPhase === "internship" ? "internship" : /\blocum\b/i.test(job.title) ? "locum" : /\bcontract\b/i.test(job.title) ? "contract" : /part[- ]time/i.test(job.title) ? "part-time" : "full-time" };
+      const data = { role: job.title, company: job.company, loc: job.loc, desc: job.desc, url: job.url, score: job.score, tier: job.tier, skills: job.skills, source: job.source, lastSeenAt: now, ...(job.deadline ? {listingDetails:{...listingDetails(previous?.listingDetails),deadline:job.deadline}} : {}), jobType: preferences.careerPhase === "internship" ? "internship" : /\blocum\b/i.test(job.title) ? "locum" : /\bcontract\b/i.test(job.title) ? "contract" : /part[- ]time/i.test(job.title) ? "part-time" : "full-time" };
       return previous ? prisma.job.update({ where: { id: previous.id }, data: { ...data, ...(!previous.applied && previous.status !== "declined" ? { status: "active" } : {}) } }) : prisma.job.create({ data: { ...data, userId, salary: "Not disclosed", status: "active" } });
     }));
     let emailStatus = "run only";
@@ -38,9 +42,15 @@ export async function runJobScan(userId: string, overrides: Partial<MatchPrefere
       } catch { emailStatus = "email failed"; result.warnings.push("Matches were saved, but the email could not be delivered."); }
     }
     await prisma.runHistory.create({ data: { userId, matches: newMatches.length, t1Count: newMatches.filter(job => job.tier === 1).length, trigger, status: emailStatus } });
-    return { success: true, message: `Scan complete. ${newMatches.length} new matches; ${matches.length} listings checked.`, warnings: result.warnings };
+    const report = {location:preferences.location,careerPhase:preferences.careerPhase,scannedAt:now.toISOString(),retrieved:result.jobs.length,matched:matches.length,added:newMatches.length,warnings:result.warnings};
+    await prisma.user.update({where:{id:userId},data:{candidateProfile:{...profileFrom(current.candidateProfile),lastScan:report}}});
+    const label = preferences.careerPhase === "internship" ? "placements" : "matches";
+    return { success:true, message:`Scan complete for ${preferences.location}: ${matches.length} ${label} matched (${newMatches.length} new) from ${result.jobs.length} retrieved listings.${!matches.length ? " No listings met your professional stage, location and minimum score." : ""}`, warnings:result.warnings, report };
   } catch (error) {
     await prisma.runHistory.create({ data: { userId, matches: 0, t1Count: 0, trigger, status: "failed" } }).catch(() => undefined);
     throw error;
   } finally { await prisma.user.update({ where: { id: userId }, data: { scanLeaseUntil: null } }); }
+}
+function profileFrom(value: unknown) {
+  return value && typeof value === "object" && !Array.isArray(value) ? value as Record<string,import("@prisma/client").Prisma.InputJsonValue> : {};
 }

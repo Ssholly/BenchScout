@@ -4,9 +4,10 @@ import ApplicationReadiness from "@/components/ApplicationReadiness";
 import { candidateProfile, opportunityForPhase, listingDetails, internshipApproval } from "@/lib/candidate-profile";
 import type { ClientJob } from "@/lib/types";
 import styles from "./CandidateCareer.module.css";
+import ScanSummary from "./ScanSummary";
 
 const dateLabel = (value: string) => value ? new Date(`${value.slice(0,10)}T12:00:00`).toLocaleDateString("en-GB", { day:"numeric",month:"short",year:"numeric" }) : "Not recorded";
-export default function InternDashboard({ initial, jobs, onScan, scanning, unavailable }: { initial: unknown; jobs: ClientJob[]; onScan: () => void; scanning: boolean; unavailable: boolean }) {
+export default function InternDashboard({ initial, jobs, onScan, scanning, unavailable, location, locations, onLocationChange, minScore, autoSend, onAutoSendChange }: { initial: unknown; jobs: ClientJob[]; onScan: () => void; scanning: boolean; unavailable: boolean; location:string; locations:string[]; onLocationChange:(value:string)=>void; minScore:number; autoSend:boolean; onAutoSendChange:()=>void }) {
   const profile = candidateProfile(initial);
   const training = profile.placementStage === "training";
   const pipeline = jobs.filter(job => job.applied);
@@ -41,7 +42,10 @@ export default function InternDashboard({ initial, jobs, onScan, scanning, unava
         {training ? <><div className={styles.listing}><h3>{profile.placementInstitution || "Add your placement institution"}</h3><p>Start: {dateLabel(profile.placementStart)}</p><p>Expected completion: {dateLabel(profile.placementEnd)}</p><p>Training details are self-reported. Completing these dates does not change your professional stage.</p></div><Link className={styles.link} href="/settings#career-profile">Update placement details →</Link><br/><Link className={styles.link} href="/applied">View previous applications →</Link></> : <>
           {placements.slice(0,4).map(job => { const details=listingDetails(job.listingDetails); return <article className={styles.listing} key={job.id}><h3>{job.role}</h3><p>{job.company} · {job.loc}</p><p>Allowance: {job.salary || "Not disclosed"}</p><p>{details.deadline ? `Deadline: ${dateLabel(details.deadline)}` : "Deadline not disclosed"}</p>{details.requiredDocuments && <p>Documents: {details.requiredDocuments}</p>}<p>{internshipApproval(job) ? "Internship approval evidence reviewed" : "Internship-site approval unconfirmed"} · {job.listingSource || job.source || "Source not recorded"}</p>{internshipApproval(job) && <a className={styles.link} href={details.approvalSource} target="_blank" rel="noopener noreferrer">Approval source ↗</a>}<br/><Link className={styles.link} href={`/matches?search=${encodeURIComponent(job.role)}`}>Review placement →</Link></article>; })}
           {!placements.length && <p className={styles.notice}>No saved placements yet. Review your location preferences and run a placement scan.</p>}
+          <label className={styles.field}>Scan location<select value={location} disabled={scanning} onChange={event=>onLocationChange(event.target.value)}>{!locations.includes(location) && <option value={location}>{location}</option>}{locations.map(value=><option key={value} value={value}>{value}</option>)}</select><small>Used for your next scan. Minimum score: {minScore}%. Change your score in Settings.</small></label>
+          <label className={styles.check}><input type="checkbox" checked={autoSend} disabled={scanning} onChange={onAutoSendChange}/>Email new placement matches</label>
           <div className={styles.footer}><Link className={styles.link} href="/matches">All placement matches →</Link><button className={styles.primary} disabled={scanning} onClick={onScan}>{scanning ? "Scanning…" : "Scan placements"}</button></div>
+          <ScanSummary profile={initial}/>
         </>}
       </section>
       <div>

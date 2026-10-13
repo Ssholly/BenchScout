@@ -48,6 +48,17 @@ test('intern feed separates direct vacancies while retaining historic applicatio
  prisma.job.findMany=async()=>jobs;
  const result=await feed(request('/api/jobs'));assert.equal(result.status,200);assert.deepEqual((await result.json()).map(job=>job.id),['placement','historic']);
 });
+test('a completed nationwide scan remains visible despite saved Abuja preferences',async()=>{
+ user.location='Abuja';user.candidateProfile={preferredLocations:'Abuja',lastScan:{location:'All Nigeria',careerPhase:'internship',scannedAt:'2026-10-13T09:00:00Z',retrieved:2,matched:2,added:2,warnings:[]}};
+ prisma.notification.findMany=async()=>[];prisma.job.findMany=async()=>['Abuja','Lagos'].map(loc=>({id:loc,loc,role:'Medical Laboratory Science Interns',jobType:'internship',status:'active',applications:[],url:`https://example.com/${loc}`}));
+ const response=await feed(request('/api/jobs'));assert.deepEqual((await response.json()).map(job=>job.loc),['Abuja','Lagos']);
+});
+test('career edits preserve server scan metadata and reject forged scan scope',async()=>{
+ const scan={location:'All Nigeria',careerPhase:'internship',scannedAt:'2026-10-13T09:00:00Z',retrieved:2,matched:2,added:2,warnings:[]};user.candidateProfile={lastScan:scan};
+ const body={careerPhase:'internship',profile:{...candidateProfile({}),lastScan:{...scan,location:'Fake location'}}};
+ assert.equal((await save(request('/api/user/career',body))).status,200);assert.equal(user.candidateProfile.lastScan.location,'All Nigeria');
+ body.profile.preferredLocations='Enugu';assert.equal((await save(request('/api/user/career',body))).status,200);assert.equal(user.candidateProfile.lastScan,undefined);
+});
 test('intern cannot apply to a licensed vacancy by bypassing the discovery UI',async()=>{
  const job={id:'licensed',userId:null,employerId:'lab',isDirectPost:true,status:'active',jobType:'full-time',role:'Scientist'};
  prisma.job.findUnique=prisma.job.findUniqueOrThrow=async()=>job;

@@ -35,3 +35,15 @@ test('a concurrent scan is refused before reading job sources', async () => {
   await assert.rejects(() => runJobScan('owner'), error => error.status === 409);
   assert.equal(writes, 0);
 });
+test('All Nigeria overrides an Abuja profile and persists the actual scan scope and counts',async()=>{
+ const user={id:'owner',email:'owner@example.com',careerPhase:'licensed',location:'Abuja',candidateProfile:{preferredLocations:'Abuja'},keywords:'',minScore:0,strictMls:true,autoSendEmail:false};
+ prisma.user.findUniqueOrThrow=async()=>user;let saved;
+ prisma.user.update=async({data})=>{if(data.candidateProfile)saved=data.candidateProfile;};
+ sources.collectJobs=async(phase,location)=>{assert.equal(phase,'licensed');assert.equal(location,'Nigeria');return {jobs:['Lagos','Abuja'].map(loc=>({title:'Medical Laboratory Scientist',company:'Test Lab',loc,url:`https://example.com/${loc}`,desc:'Laboratory work',source:'Test'})),successful:1,warnings:[]};};
+ const result=await runJobScan('owner',{location:'All Nigeria',autoSend:false});assert.equal(result.report.matched,2);assert.equal(result.report.retrieved,2);assert.equal(saved.lastScan.location,'All Nigeria');assert.equal(saved.preferredLocations,'Abuja');
+});
+test('intern scan rejects ordinary scientist posts and saves plural intern titles',async()=>{
+ prisma.user.findUniqueOrThrow=async()=>({id:'owner',email:'owner@example.com',careerPhase:'internship',location:'All Nigeria',candidateProfile:{},keywords:'',minScore:70,strictMls:true,autoSendEmail:false});
+ sources.collectJobs=async()=>({jobs:['Medical Laboratory Scientist','Medical Laboratory Science Interns'].map((title,index)=>({title,company:'Test Hospital',loc:'Enugu',url:`https://example.com/${index}`,desc:'Laboratory work',source:'Test'})),successful:1,warnings:[]});
+ let saved;prisma.job.create=async({data})=>{saved=data;};const result=await runJobScan('owner',{autoSend:false});assert.equal(result.report.matched,1);assert.equal(saved.role,'Medical Laboratory Science Interns');assert.equal(saved.jobType,'internship');
+});

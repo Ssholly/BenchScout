@@ -2,6 +2,7 @@ import { withApi } from "@/lib/api";
 import { ApiError, textField } from "@/lib/security";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { candidateProfile } from "@/lib/candidate-profile";
 
 
 
@@ -71,6 +72,7 @@ export const POST = withApi("candidate", async (request: Request) => {
 			data: {
 				name: name,
 				location: location,
+                ...(user.location !== location ? {candidateProfile:candidateProfile(user.candidateProfile)} : {}),
 				// Safely handle keywords whether they arrive as an array or a string
 				keywords: Array.isArray(keywords) ? keywords.join(", ") : keywords,
 				minScore: minScore,

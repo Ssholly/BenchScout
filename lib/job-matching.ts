@@ -6,13 +6,14 @@ export function scoreJob(job: ScrapedJob, preferences: MatchPreferences) {
   const text = `${job.title} ${job.desc}`.toLowerCase();
   const isLab = /laboratory|\blab\b|scientist|\bmls\b|phlebotom|blood bank|haematolog|hematolog|microbiolog/.test(title);
   if (preferences.strictMls && (!isLab || /nurse|receptionist|driver|sales|marketing/.test(title))) return null;
-  const internship = /\bintern(ship)?\b|housemanship/.test(title);
+  const internship = job.jobType === "internship" || /\bintern(?:s|ships?)?\b|housemanship/.test(title);
   if (preferences.careerPhase === "internship" && (!internship || /senior|principal|chief/.test(title))) return null;
   if (preferences.careerPhase !== "internship" && internship) return null;
   const targets = preferences.location.toLowerCase().split(",").map(value=>value.trim().replace("fct - ", ""));
   const anywhere = targets.some(target=>!target || ["all", "all nigeria", "nigeria"].includes(target));
   const locationMatch = anywhere || targets.some(target=>job.loc.toLowerCase().includes(target) || (/abuja|fct/.test(target) && /abuja|fct/i.test(job.loc))) || /remote/i.test(job.loc);
   if (!locationMatch) return null;
+  if (job.deadline && job.deadline < new Date().toISOString().slice(0,10)) return null;
   const keywords = [...new Set(preferences.keywords.toLowerCase().split(",").map(value => value.trim()).filter(Boolean))];
   const skills = keywords.filter(keyword => text.includes(keyword));
   const score = Math.min(99, 55 + (isLab ? 15 : 0) + (anywhere ? 0 : 10) + Math.min(20, skills.length * 5) + (internship ? 10 : 0));

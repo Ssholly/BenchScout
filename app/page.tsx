@@ -6,7 +6,8 @@ import { useState, useEffect, useRef } from "react";
 import ApplicationReadiness from "@/components/ApplicationReadiness";
 import LicensedCareerOverview from "@/components/LicensedCareerOverview";
 import InternDashboard from "@/components/InternDashboard";
-import { candidateProfile } from "@/lib/candidate-profile";
+import { candidateProfile, lastScan } from "@/lib/candidate-profile";
+import ScanSummary from "@/components/ScanSummary";
 import HubLoading from "@/components/HubLoading";
 import DashboardAnalytics from "@/components/DashboardAnalytics";
 
@@ -171,7 +172,7 @@ export default function Dashboard() {
 					const dashboardFilter = localStorage.getItem(
 						"labpro_dashboard_temp_location",
 					);
-					setLocation(dashboardFilter || candidateProfile(data.user.candidateProfile).preferredLocations || data.user.location || "All Nigeria");
+					setLocation(dashboardFilter || lastScan(data.user.candidateProfile)?.location || candidateProfile(data.user.candidateProfile).preferredLocations || data.user.location || "All Nigeria");
 				}
 			} catch { setProfileError(true); }
 		};
@@ -238,7 +239,7 @@ export default function Dashboard() {
 		setIsScraping(true);
 		setProgress(15);
 		setLogs([]);
-		addLog("INIT", `Clearing previous matches...`);
+		addLog("INIT", "Starting scan; saved applications and previous matches are preserved.");
 		addLog(
 			"INIT",
 			`Aggressive scan for ${location} targeting: ${userKeywords}`,
@@ -273,6 +274,7 @@ export default function Dashboard() {
 			const data = await response.json();
 			if (data.success) {
 				setProgress(100);
+                if (data.report) setCareerProfile((previous:unknown)=>({...candidateProfile(previous),lastScan:data.report}));
 				addLog("DONE", data.message);
                 if (Array.isArray(data.warnings)) data.warnings.forEach((warning: string) => addLog("INFO", warning));
 				showNotification(data.message);
@@ -326,7 +328,7 @@ export default function Dashboard() {
 	});
 
  if (isUserLoggedIn && !careerPhase) return profileError ? <div role="alert"><p>Your profile is temporarily unavailable.</p><button onClick={()=>window.location.reload()}>Try again</button></div> : <HubLoading />;
- if (isUserLoggedIn && careerPhase === "internship") return <><InternDashboard initial={careerProfile} jobs={careerJobs} onScan={runScraper} scanning={isScraping} unavailable={jobsUnavailable} />{toast && <Toast message={toast.message} type={toast.type} />}</>;
+ if (isUserLoggedIn && careerPhase === "internship") return <><InternDashboard initial={careerProfile} jobs={careerJobs} onScan={runScraper} scanning={isScraping} unavailable={jobsUnavailable} location={location} locations={NIGERIA_STATES} onLocationChange={value=>{setLocation(value);localStorage.setItem("labpro_dashboard_temp_location",value);}} minScore={dbMinScore} autoSend={autoSend} onAutoSendChange={toggleAutoSend} />{toast && <Toast message={toast.message} type={toast.type} />}</>;
 
 	return (
 		<div
@@ -419,6 +421,7 @@ export default function Dashboard() {
 				<>
 					<ApplicationReadiness />
                     <LicensedCareerOverview initial={careerProfile} expiry={licenseExpiry} asOf={profileAsOf} />
+                    <ScanSummary profile={careerProfile}/>
 					<div
 						className="dashboard-metrics"
 						style={{ display: "flex", gap: "1rem", marginBottom: "1.5rem" }}
@@ -750,12 +753,12 @@ export default function Dashboard() {
 											textTransform: "uppercase",
 										}}
 									>
-										Location Filter
+										Scan location
 									</label>
 									<select
 										value={location}
 										onChange={handleLocationChange}
-										disabled={!email}
+											disabled={!email || isScraping}
 										style={{
 											width: "100%",
 											background: "#f8fafc",

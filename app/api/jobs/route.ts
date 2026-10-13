@@ -1,5 +1,5 @@
 import { legacyPortalUrls } from "@/lib/job-matching";
-import { opportunityForPhase, opportunityForPreferences, internshipApproval } from "@/lib/candidate-profile";
+import { opportunityForPhase, opportunityForPreferences, internshipApproval, lastScan, candidateProfile } from "@/lib/candidate-profile";
 import { withApi } from "@/lib/api";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
@@ -61,8 +61,12 @@ export const GET = withApi("either", async (request: Request, session: import("@
 		});
 
         const [invites, jobs] = await Promise.all([invitesPromise, jobsPromise]);
+        const scan = lastScan(session!.candidateProfile);
+        const discoveryProfile = candidateProfile(session!.candidateProfile);
+        // A completed manual scan has its own scope; saved profile preferences must not hide it.
+        if (scan && scan.careerPhase === session!.careerPhase) discoveryProfile.preferredLocations = scan.location;
 		// Merge standard applied status with B2B ATS applied status + VIP Scout flag
-		const formattedJobs = jobs.filter(job => job.applied || job.applications.length > 0 || (!legacyPortalUrls.includes(job.url) && opportunityForPhase(job, session!.careerPhase || "licensed") && opportunityForPreferences(job, session!.careerPhase || "licensed", session!.candidateProfile, session!.location) && job.status === "active")).map((job) => {
+		const formattedJobs = jobs.filter(job => job.applied || job.applications.length > 0 || (!legacyPortalUrls.includes(job.url) && opportunityForPhase(job, session!.careerPhase || "licensed") && opportunityForPreferences(job, session!.careerPhase || "licensed", discoveryProfile, session!.location) && job.status === "active")).map((job) => {
 			// If the system finds a notification message containing this specific job's details, flag it as a VIP invite
 			const isScoutedInvite = invites.some(
 				(inv) =>

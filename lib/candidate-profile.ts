@@ -9,7 +9,7 @@ export function careerLabel(phase?: string, profile?: unknown) {
 }
 export function opportunityType(job: { jobType?: string; role?: string; title?: string }) {
   const title = job.role || job.title || "";
-  if (/\bintern(ship)?\b|housemanship/i.test(title) || job.jobType === "internship") return "internship";
+  if (/\bintern(?:s|ships?)?\b|housemanship/i.test(title) || job.jobType === "internship") return "internship";
   if (["full-time", "locum", "contract", "part-time"].includes(job.jobType || "")) return "licensed";
   return "unknown";
 }
@@ -33,6 +33,12 @@ export function opportunityForPreferences(job: { loc?: string; jobType?: string;
   return true;
 }
 export type ListingDetails = { deadline: string; requiredDocuments: string; approvalSource: string; approvalReviewedAt: string };
+export type ScanReport = { location: string; careerPhase: string; scannedAt: string; retrieved: number; matched: number; added: number; warnings: string[] };
+export function lastScan(value: unknown): ScanReport | null {
+  const record = value && typeof value === "object" && !Array.isArray(value) ? value as Record<string, unknown> : {};
+  const scan = record.lastScan as ScanReport | undefined;
+  return scan && typeof scan.location === "string" && typeof scan.scannedAt === "string" && Number.isFinite(scan.retrieved) && Number.isFinite(scan.matched) && Number.isFinite(scan.added) && Array.isArray(scan.warnings) ? scan : null;
+}
 export function listingDetails(value: unknown): ListingDetails {
   const record = value && typeof value === "object" && !Array.isArray(value) ? value as Record<string, unknown> : {};
   return Object.fromEntries(["deadline", "requiredDocuments", "approvalSource", "approvalReviewedAt"].map(key => [key, typeof record[key] === "string" ? record[key] : ""])) as ListingDetails;

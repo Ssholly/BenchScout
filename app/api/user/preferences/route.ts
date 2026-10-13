@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { withApi } from "@/lib/api";
 import { ApiError } from "@/lib/security";
+import { candidateProfile } from "@/lib/candidate-profile";
 const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 const zones: Record<string, string> = { WAT: "Africa/Lagos", GMT: "Etc/UTC", CAT: "Africa/Harare", SAST: "Africa/Johannesburg", EAT: "Africa/Nairobi" };
 export const POST = withApi("candidate", async (request, session) => {
@@ -18,6 +19,7 @@ export const POST = withApi("candidate", async (request, session) => {
     ...(typeof body.jobAlertsEnabled === "boolean" ? { alertsActive: body.jobAlertsEnabled } : {}),
     ...(typeof body.autoSendEmail === "boolean" ? { autoSendEmail: body.autoSendEmail } : {}),
     ...(typeof body.targetLocation === "string" ? { location: body.targetLocation.slice(0,250) } : {}),
+    ...(typeof body.targetLocation === "string" && body.targetLocation !== session!.location ? {candidateProfile:candidateProfile(session!.candidateProfile)} : {}),
     ...(typeof body.alertKeywords === "string" ? { alertKeywords: body.alertKeywords.slice(0,2000) } : {}),
     ...(typeof body.alertTier === "string" ? { alertTier: body.alertTier } : {}),
     ...(body.scanTime !== undefined ? { scanTime: body.scanTime } : {}),
