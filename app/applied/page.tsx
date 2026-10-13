@@ -1,8 +1,12 @@
 "use client";
-import { useState, useEffect } from "react";
+import { startTransition } from "react";
+import type { ClientJob } from "@/lib/types";
+import { useState, useEffect, useRef, useCallback } from "react";
+import PostingDialog from "@/components/PostingDialog";
 
 type Column = { id: string; title: string; color: string; bgColor: string };
 type JobCard = {
+	isDirectPost: boolean;
 	id: string;
 	columnId: string;
 	role: string;
@@ -12,15 +16,27 @@ type JobCard = {
 	salary: string;
 	tier: number;
 	url: string;
+	desc: string;
 };
 
 export default function AppliedPipeline() {
 	const [cards, setCards] = useState<JobCard[]>([]);
+	const [stageFilter, setStageFilter] = useState("all");
+	const [updatingId, setUpdatingId] = useState<string | null>(null);
+	const [pipelineError, setPipelineError] = useState("");
 	const [isLoading, setIsLoading] = useState(true);
 	const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
 
+	const [viewingPosting, setViewingPosting] = useState<JobCard | null>(null);
+	const [loadError, setLoadError] = useState("");
+	const [refreshing, setRefreshing] = useState(false);
+	const pipelineRequest = useRef<AbortController | null>(null);
+    const pipelineAccount = useRef<string | null>(null);
+	const closePosting = useCallback(() => setViewingPosting(null), []);
+
 	// 🚀 BRAND UPDATED COLUMNS
 	const columns: Column[] = [
+		{ id: "rejected", title: "Closed / Rejected", color: "#64748b", bgColor: "#f1f5f9" },
 		{
 			id: "saved",
 			title: "Saved / Shortlisted",
@@ -47,90 +63,44 @@ export default function AppliedPipeline() {
 		},
 	];
 
-	const loadPipeline = () => {
-		const activeEmail = localStorage.getItem("labpro_active_user");
-		if (!activeEmail) {
-			setIsUserLoggedIn(false);
-			setCards([]);
-			setIsLoading(false);
-			return;
-		}
+	const loadPipeline = async () => {
+        pipelineRequest.current?.abort();
+        const controller = new AbortController();
+        pipelineRequest.current = controller;
+        const activeEmail = localStorage.getItem("labpro_active_user");
+        if (!activeEmail) {
+            pipelineAccount.current = null; setIsUserLoggedIn(false); setCards([]); setIsLoading(false); setRefreshing(false); return;
+        }
+        if (pipelineAccount.current !== activeEmail) { setCards([]); setIsLoading(true); pipelineAccount.current = activeEmail; }
+        setIsUserLoggedIn(true); setRefreshing(true); setLoadError("");
+        try {
+            const response = await fetch("/api/jobs?view=pipeline", { signal: controller.signal });
+            const data = await response.json();
+            if (!response.ok || !Array.isArray(data)) throw new Error(data.error || "Could not load your applications. Please retry.");
+            setCards(data.filter((j: ClientJob) => j.applied).map((j: ClientJob) => ({
+                id: j.id,
+                columnId: j.isDirectPost ? ({ pending: "applied", shortlisted: "interviewing", hired: "offer", rejected: "rejected" }[j.applications?.[0]?.status || "pending"] || "applied") : (["saved", "applied", "interviewing", "offer", "rejected"].includes(j.status || "") ? j.status! : "applied"),
+                isDirectPost: j.isDirectPost, role: j.role, company: j.company, loc: j.loc,
+                date: "Recently", salary: j.salary || "Not disclosed", tier: j.tier || 2, url: j.url, desc: j.desc || "",
+            })));
+        } catch (error) {
+            if (!controller.signal.aborted) setLoadError(error instanceof Error ? error.message : "Could not load your applications. Please retry.");
+        } finally {
+            if (!controller.signal.aborted) { setIsLoading(false); setRefreshing(false); }
+        }
+    };
 
-		setIsUserLoggedIn(true);
-		setIsLoading(true);
-		fetch(`/api/jobs?email=${activeEmail}`)
-			.then((res) => res.json())
-			.then((data) => {
-				let myJobs = data || [];
-				if (Array.isArray(myJobs)) {
-					myJobs = myJobs.filter(
-						(j: any) =>
-							j.targetEmail === activeEmail ||
-							j.userEmail === activeEmail ||
-							j.email === activeEmail ||
-							(!j.targetEmail && !j.userEmail && !j.email),
-					);
-				}
-
-				const onlyApplied = myJobs.filter((j: any) => j.applied === true);
-
-				const formattedCards: JobCard[] = onlyApplied.map((j: any) => {
-					let assignedColumn = "applied";
-					if (j.stage) {
-						assignedColumn = j.stage;
-					} else if (
-						j.status &&
-						["saved", "applied", "interviewing", "offer"].includes(j.status)
-					) {
-						assignedColumn = j.status;
-					}
-
-					return {
-						id: j.id,
-						columnId: assignedColumn,
-						role: j.role,
-						company: j.company,
-						loc: j.loc,
-						date: "Recently",
-						salary: j.salary || "Competitive",
-						tier: j.tier || 2,
-						url: j.url,
-					};
-				});
-
-				setCards(formattedCards);
-				setIsLoading(false);
-			})
-			.catch(() => setIsLoading(false));
-	};
-
-	useEffect(() => {
-		loadPipeline();
-		window.addEventListener("userStateChanged", loadPipeline);
-		window.addEventListener("jobsUpdated", loadPipeline);
-		return () => {
-			window.removeEventListener("userStateChanged", loadPipeline);
-			window.removeEventListener("jobsUpdated", loadPipeline);
-		};
-	}, []);
-
-	const handleCardClick = (url: string) => {
-		if (!url || url === "#" || url.trim() === "") return;
-
-		let finalUrl = url.trim();
-		if (finalUrl.includes("myjobmag.comhttps://")) {
-			finalUrl = "https://" + finalUrl.split("https://")[1];
-		}
-		if (!finalUrl.startsWith("http://") && !finalUrl.startsWith("https://")) {
-			finalUrl = "https://" + finalUrl;
-		}
-
-		try {
-			window.open(finalUrl, "_blank", "noopener,noreferrer");
-		} catch (error) {
-			console.error("Invalid URL", error);
-		}
-	};
+    useEffect(() => {
+        const reload = () => { void loadPipeline(); };
+        startTransition(reload);
+        window.addEventListener("userStateChanged", reload);
+        window.addEventListener("jobsUpdated", reload);
+        return () => {
+            pipelineRequest.current?.abort();
+            window.removeEventListener("userStateChanged", reload);
+            window.removeEventListener("jobsUpdated", reload);
+        };
+    }, []);
 
 	const handleRemoveApplication = async (
 		e: React.MouseEvent,
@@ -144,12 +114,13 @@ export default function AppliedPipeline() {
 		try {
 			// 2. 🚀 CRITICAL: This now deletes the application bridge record
 			// which instantly removes the candidate from the employer's ATS drawer.
-			await fetch("/api/jobs/applicants", {
+			const response = await fetch("/api/jobs/applicants", {
 				method: "DELETE",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({ jobId }),
 			});
 
+			if (!response.ok) throw new Error("Could not remove application");
 			window.dispatchEvent(new Event("jobsUpdated"));
 		} catch (error) {
 			console.error("Failed to remove application", error);
@@ -181,37 +152,36 @@ export default function AppliedPipeline() {
 		if (dragOverColumn !== columnId) setDragOverColumn(columnId);
 	};
 
-	const handleDrop = async (e: React.DragEvent, columnId: string) => {
-		e.preventDefault();
-		setDragOverColumn(null);
-		if (!draggedCardId) return;
-
-		setCards((prev) =>
-			prev.map((card) =>
-				card.id === draggedCardId ? { ...card, columnId } : card,
-			),
-		);
-
-		try {
-			await fetch("/api/jobs/status", {
-				method: "PUT",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({
-					jobId: draggedCardId,
-					status: columnId,
-					stage: columnId,
-				}),
-			});
-		} catch (error) {
-			console.error("Database sync failed", error);
-		}
-	};
+	const moveCard = async (jobId: string, columnId: string) => {
+    if (cards.find(card => card.id === jobId)?.isDirectPost) return;
+    setPipelineError("");
+    setUpdatingId(jobId);
+    setCards(prev => prev.map(card => card.id === jobId ? { ...card, columnId } : card));
+    try {
+      const response = await fetch("/api/jobs/status", {
+        method: "PUT", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ jobId, status: columnId }),
+      });
+      if (!response.ok) throw new Error("Could not update application status");
+      window.dispatchEvent(new Event("jobsUpdated"));
+    } catch {
+      setPipelineError("Your change could not be saved. The pipeline has been reloaded.");
+      void loadPipeline();
+    } finally { setUpdatingId(null); }
+  };
+  const handleDrop = (e: React.DragEvent, columnId: string) => {
+    e.preventDefault(); setDragOverColumn(null);
+    if (draggedCardId) void moveCard(draggedCardId, columnId);
+  };
 
 	return (
 		<section
 			className="pane active"
 			style={{ height: "100%", display: "flex", flexDirection: "column" }}
 		>
+            {pipelineError && <p role="alert">{pipelineError}</p>}
+            {loadError && <div className="pipeline-load-error" role="alert"><p>{loadError}</p><button onClick={() => void loadPipeline()} disabled={refreshing}>Retry loading</button></div>}
+            {refreshing && !isLoading && <p role="status">Updating applications…</p>}
 			<div style={{ marginBottom: "2rem" }}>
 				<h1
 					className="page-title"
@@ -229,8 +199,7 @@ export default function AppliedPipeline() {
 					className="page-sub"
 					style={{ margin: "4px 0 0 0", fontSize: "14px", color: "#64748b" }}
 				>
-					Drag and drop active roles to track your hiring progress. Click a card
-					to revisit the posting.
+					Keep each application up to date using its stage selector.
 				</p>
 			</div>
 
@@ -320,11 +289,21 @@ export default function AppliedPipeline() {
 						color: "#94a3b8",
 					}}
 				>
-					[SYSTEM] Loading application pipeline...
+					Loading your applications…
 				</div>
 			) : (
+                <>
+                <div className="pipeline-mobile-controls">
+                  <label htmlFor="pipeline-stage-filter">Show applications</label>
+                  <select id="pipeline-stage-filter" value={stageFilter} onChange={event => setStageFilter(event.target.value)}>
+                    <option value="all">All stages ({cards.length})</option>
+                    {columns.map(column => <option key={column.id} value={column.id}>{column.title} ({cards.filter(card => card.columnId === column.id).length})</option>)}
+                  </select>
+                  <p>Filter by stage to focus on what’s next.</p>
+                </div>
+                {!loadError && cards.length === 0 && stageFilter === "all" && <p className="pipeline-mobile-empty" role="status">No applications yet. Find a role in Job Matches to start your pipeline.</p>}
 				<div
-					className="mobile-stack"
+					className="mobile-stack pipeline-board"
 					style={{
 						display: "flex",
 						gap: "1.5rem",
@@ -341,6 +320,7 @@ export default function AppliedPipeline() {
 						return (
 							<div
 								key={col.id}
+                                className={`pipeline-column ${stageFilter === "all" ? (columnCards.length ? "mobile-visible" : "mobile-hidden") : (stageFilter === col.id ? "mobile-visible" : "mobile-hidden")}`}
 								onDragOver={(e) => handleDragOver(e, col.id)}
 								onDrop={(e) => handleDrop(e, col.id)}
 								style={{
@@ -426,10 +406,11 @@ export default function AppliedPipeline() {
 										<div
 											key={card.id}
 											id={card.id}
-											draggable
+                                        className="pipeline-card"
+											draggable={!card.isDirectPost}
 											onDragStart={(e) => handleDragStart(e, card.id)}
 											onDragEnd={(e) => handleDragEnd(e, card.id)}
-											onClick={() => handleCardClick(card.url)}
+
 											style={{
 												background: "rgba(255, 255, 255, 0.95)",
 												borderRadius: "16px",
@@ -626,6 +607,14 @@ export default function AppliedPipeline() {
 													</svg>
 												</div>
 											</div>
+                                            <button className="pipeline-posting-button" onClick={() => setViewingPosting(card)}>View posting</button>
+                                            {card.isDirectPost && <p style={{ fontSize: 12, color: "#64748b", margin: "12px 0 0" }}>Stage updated by the employer.</p>}
+                                            {!card.isDirectPost && <label style={{ display: "block", marginTop: 12, fontSize: 12, color: "#64748b" }} onClick={event => event.stopPropagation()}>
+                                              Application stage
+                                              <select disabled={updatingId !== null} aria-label={`Application stage for ${card.role}`} value={card.columnId} onChange={event => void moveCard(card.id, event.target.value)} style={{ width: "100%", marginTop: 6, padding: 10, borderRadius: 8, border: "1px solid #dbe2ea", background: "white", color: "#0B2444" }}>
+                                                {columns.map(column => <option key={column.id} value={column.id}>{column.title}</option>)}
+                                              </select>
+                                            </label>}
 										</div>
 									))}
 
@@ -643,7 +632,7 @@ export default function AppliedPipeline() {
 												fontWeight: 600,
 											}}
 										>
-											Drop jobs here
+											<span className="pipeline-desktop-empty">Drop jobs here</span><span className="pipeline-phone-empty">No applications in this stage.</span>
 										</div>
 									)}
 								</div>
@@ -651,7 +640,9 @@ export default function AppliedPipeline() {
 						);
 					})}
 				</div>
+                </>
 			)}
+            {viewingPosting && <PostingDialog posting={viewingPosting} onClose={closePosting} />}
 		</section>
 	);
 }

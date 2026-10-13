@@ -1,9 +1,11 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useMounted } from "@/lib/use-mounted";
+import type { ClientJob } from "@/lib/types";
+import { useState } from "react";
 import { createPortal } from "react-dom";
 
 export default function AdminCommandCenter() {
-	const [mounted, setMounted] = useState(false);
+	const mounted = useMounted();
 	const [activeTab, setActiveTab] = useState<"inject" | "manage">("inject");
 	const [passcode, setPasscode] = useState("");
 
@@ -18,7 +20,7 @@ export default function AdminCommandCenter() {
 	const [message, setMessage] = useState({ text: "", type: "" });
 
 	// Manage State
-	const [managedJobs, setManagedJobs] = useState<any[]>([]);
+	const [managedJobs, setManagedJobs] = useState<ClientJob[]>([]);
 	const [loadingJobs, setLoadingJobs] = useState(false);
 
 	// Edit Modal State
@@ -33,8 +35,6 @@ export default function AdminCommandCenter() {
 		salary: "",
 		skills: "",
 	});
-
-	useEffect(() => setMounted(true), []);
 
 	const handleInject = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -71,7 +71,7 @@ export default function AdminCommandCenter() {
 			} else {
 				setMessage({ text: `✕ ${data.error}`, type: "error" });
 			}
-		} catch (err) {
+		} catch {
 			setMessage({ text: "✕ Network error.", type: "error" });
 		} finally {
 			setLoading(false);
@@ -89,7 +89,7 @@ export default function AdminCommandCenter() {
 		setMessage({ text: "", type: "" });
 		try {
 			const res = await fetch(
-				`/api/admin/jobs?passcode=${encodeURIComponent(passcode)}`,
+				"/api/admin/jobs", { headers: { Authorization: `Bearer ${passcode}` } },
 			);
 			const data = await res.json();
 			if (data.success) {
@@ -102,7 +102,7 @@ export default function AdminCommandCenter() {
 			} else {
 				setMessage({ text: `✕ ${data.error}`, type: "error" });
 			}
-		} catch (err) {
+		} catch {
 			setMessage({ text: "✕ Failed to load jobs.", type: "error" });
 		} finally {
 			setLoadingJobs(false);
@@ -140,7 +140,7 @@ export default function AdminCommandCenter() {
 			} else {
 				setMessage({ text: `✕ ${data.error}`, type: "error" });
 			}
-		} catch (err) {
+		} catch {
 			setMessage({ text: "✕ Network error updating job.", type: "error" });
 		} finally {
 			setLoading(false);
@@ -172,7 +172,7 @@ export default function AdminCommandCenter() {
 			} else {
 				setMessage({ text: `✕ ${data.error}`, type: "error" });
 			}
-		} catch (err) {
+		} catch {
 			setMessage({ text: "✕ Network error.", type: "error" });
 		}
 	};
@@ -193,6 +193,7 @@ export default function AdminCommandCenter() {
 
 	return (
 		<section className="pane active" style={{ paddingBottom: "4rem" }}>
+<a href="/admin/reviews" style={{ display: "inline-block", marginBottom: 16 }}>Review employers and credentials →</a>
 			{mounted &&
 				editModal.isOpen &&
 				createPortal(
@@ -202,7 +203,7 @@ export default function AdminCommandCenter() {
 							top: 0,
 							left: 0,
 							width: "100vw",
-							height: "100vh",
+							height: "100dvh",
 							background: "rgba(15, 23, 42, 0.15)",
 							backdropFilter: "blur(18px)",
 							WebkitBackdropFilter: "blur(18px)",

@@ -1,13 +1,25 @@
 "use client";
-import { useState, useEffect } from "react";
+import { sharedPageRequest } from "@/lib/shared-page-request";
+import { signOutToHome } from "@/lib/client-logout";
+import { candidateProfile } from "@/lib/candidate-profile";
+import { HOME_MENU_ON_DEMAND } from "@/lib/home-navigation";
+import { useCallback } from "react";
+import Image from "next/image";
+import { startTransition } from "react";
+import { useMounted } from "@/lib/use-mounted";
+import type { ClientJob } from "@/lib/types";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { createPortal } from "react-dom";
 import ProfileComplianceOverlay from "../components/ProfileComplianceOverlay";
 
 export default function Sidebar() {
 	const pathname = usePathname();
-	const router = useRouter();
+	const isHomeNavigation = HOME_MENU_ON_DEMAND && pathname === "/home";
+	const navigationRef = useRef<HTMLDivElement>(null);
+    const identitySequence = useRef(0);
+	const [logoutError, setLogoutError] = useState("");
 
 	// 🚀 ROLE STATES
 	const [user, setUser] = useState<{
@@ -21,17 +33,21 @@ export default function Sidebar() {
 		email: string;
 	} | null>(null);
 
+	const [careerLocation, setCareerLocation] = useState("All Nigeria");
+	const [placementStage, setPlacementStage] = useState("seeking");
+	const [careerPhase, setCareerPhase] = useState("licensed");
 	const [jobCount, setJobCount] = useState(0);
 	const [appliedCount, setAppliedCount] = useState(0);
 	const [avatar, setAvatar] = useState<string | null>(null);
 	const [isSchedulerActive, setIsSchedulerActive] = useState(false);
 	const [isMobileOpen, setIsMobileOpen] = useState(false);
-	const [mounted, setMounted] = useState(false);
+	const mounted = useMounted();
 
 	const [isScanning, setIsScanning] = useState(false);
 	const [isComplianceOpen, setIsComplianceOpen] = useState(false);
 
-	const fetchActiveIdentity = async () => {
+	const fetchActiveIdentity = useCallback(async () => {
+        const sequence = ++identitySequence.current;
 		// 1. Check for Employer Identity First
 		const activeEmployerStr = localStorage.getItem(
 			"benchscout_active_employer",
@@ -49,10 +65,14 @@ export default function Sidebar() {
 		const activeEmail = localStorage.getItem("labpro_active_user");
 		if (activeEmail) {
 			try {
-				const res = await fetch(`/api/user?email=${activeEmail}`);
+				const res = await sharedPageRequest(`/api/user?email=${encodeURIComponent(activeEmail)}`);
 				const data = await res.json();
+                if (sequence !== identitySequence.current || activeEmail !== localStorage.getItem("labpro_active_user")) return;
 				if (data.success && data.user) {
-					const parts = data.user.name.trim().split(" ");
+					setCareerPhase(data.user.careerPhase || "licensed");
+                    setPlacementStage(candidateProfile(data.user.candidateProfile).placementStage);
+                    setCareerLocation(candidateProfile(data.user.candidateProfile).preferredLocations || data.user.location || "All Nigeria");
+                    const parts = data.user.name.trim().split(" ");
 					const initials =
 						parts.length > 1
 							? parts[0].charAt(0) + parts[1].charAt(0)
@@ -71,19 +91,18 @@ export default function Sidebar() {
 					});
 
 					setAvatar(
-						data.user.avatarUrl ||
-							localStorage.getItem(`labpro_avatar_${data.user.email}`),
+						data.user.documentStatus?.avatar === "private" ? data.user.avatarUrl : null,
 					);
 				}
-			} catch (error) {}
+			} catch {}
 		} else {
 			setUser(null);
 			setAvatar(null);
 		}
-	};
+	}, []);
 
-	const fetchDynamicStats = async () => {
-		if (employerNode) return; // Employers don't need job counts
+	const fetchDynamicStats = useCallback(async () => {
+		if (localStorage.getItem("benchscout_active_employer")) return; // Employers don't need job counts
 
 		const activeEmail = localStorage.getItem("labpro_active_user");
 		const schedActive =
@@ -97,32 +116,25 @@ export default function Sidebar() {
 		}
 
 		try {
-			const res = await fetch(`/api/jobs?email=${activeEmail}`);
+			const res = await sharedPageRequest(`/api/jobs?email=${encodeURIComponent(activeEmail)}`);
 			const data = await res.json();
 
 			if (Array.isArray(data)) {
-				const myJobs = data.filter(
-					(j: any) =>
-						j.targetEmail === activeEmail ||
-						j.userEmail === activeEmail ||
-						j.email === activeEmail ||
-						(!j.targetEmail && !j.userEmail && !j.email),
-				);
+				const myJobs = data;
 
-				const activeJobs = myJobs.filter((j: any) => j.status !== "cleared");
+				const activeJobs = myJobs.filter((j: ClientJob) => j.status !== "cleared");
 
-				setJobCount(activeJobs.filter((j: any) => j.applied !== true).length);
-				setAppliedCount(myJobs.filter((j: any) => j.applied === true).length);
+				setJobCount(activeJobs.filter((j: ClientJob) => j.applied !== true).length);
+				setAppliedCount(myJobs.filter((j: ClientJob) => j.applied === true).length);
 			} else {
 				setJobCount(0);
 				setAppliedCount(0);
 			}
-		} catch (e) {}
-	};
+		} catch {}
+	}, []);
 
 	useEffect(() => {
-		setMounted(true);
-		fetchActiveIdentity();
+		startTransition(() => { fetchActiveIdentity(); });
 
 		setTimeout(fetchDynamicStats, 100);
 
@@ -146,15 +158,32 @@ export default function Sidebar() {
 			window.removeEventListener("schedulerUpdated", fetchDynamicStats);
 			window.removeEventListener("toggleMobileMenu", toggleMenu);
 		};
-	}, []);
+	}, [fetchActiveIdentity, fetchDynamicStats]);
 
 	useEffect(() => {
-		setIsMobileOpen(false);
+		startTransition(() => { setIsMobileOpen(false); });
 		const mainContentArea = document.querySelector("main");
 		if (mainContentArea) {
 			mainContentArea.scrollTop = 0;
 		}
 	}, [pathname]);
+	useEffect(() => {
+		window.dispatchEvent(new CustomEvent("navigationMenuChanged", { detail: isMobileOpen }));
+		if (!isHomeNavigation || !isMobileOpen) return;
+		const previousFocus = document.activeElement as HTMLElement | null;
+		const drawer = navigationRef.current;
+		drawer?.querySelector<HTMLButtonElement>(".home-menu-close")?.focus();
+		const handleKey = (event: KeyboardEvent) => {
+			if (event.key === "Escape") setIsMobileOpen(false);
+			if (event.key !== "Tab") return;
+			const controls = Array.from(drawer?.querySelectorAll<HTMLElement>('button:not(:disabled), a[href], input, select') || []).filter(element => element.getClientRects().length > 0);
+			const first = controls[0], last = controls[controls.length - 1];
+			if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
+			else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
+		};
+		document.addEventListener("keydown", handleKey);
+		return () => { document.removeEventListener("keydown", handleKey); if (previousFocus?.isConnected) previousFocus.focus(); };
+	}, [isHomeNavigation, isMobileOpen]);
 
 	const handleQuickScan = async () => {
 		if (!user) {
@@ -166,7 +195,7 @@ export default function Sidebar() {
 
 		try {
 			const targetLocation =
-				localStorage.getItem("labpro_dashboard_temp_location") || "All Nigeria";
+				localStorage.getItem("labpro_dashboard_temp_location") || careerLocation;
 			const includeTier3 = localStorage.getItem("labpro_tier3") === "true";
 			const autoSend = localStorage.getItem("labpro_auto") !== "false";
 
@@ -197,15 +226,13 @@ export default function Sidebar() {
 		}
 	};
 
-	const handleEmployerLogout = () => {
-		localStorage.removeItem("benchscout_active_employer");
-		setEmployerNode(null);
-		window.dispatchEvent(new Event("employerStateChanged"));
-		router.push("/employer");
+	const handleEmployerLogout = async () => {
+		setLogoutError("");
+		if (!(await signOutToHome())) setLogoutError("Couldn’t sign out. Please try again.");
 	};
 
 	// 🚀 DYNAMIC ROLE-BASED MENU CONSTRUCTION
-	let activeMenuItems: any[] = [];
+	let activeMenuItems: { name: string; path: string; badge?: string | number | null; icon: React.ReactNode; count?: number }[] = [];
 
 	if (employerNode) {
 		// 🏢 B2B EMPLOYER MENU
@@ -256,7 +283,7 @@ export default function Sidebar() {
 				),
 			},
 			{
-				name: "Dashboard",
+				name: careerPhase === "internship" ? placementStage === "training" ? "Training dashboard" : "Placement dashboard" : "Dashboard",
 				path: "/",
 				icon: (
 					<svg
@@ -277,7 +304,7 @@ export default function Sidebar() {
 				),
 			},
 			{
-				name: "Job Matches",
+				name: careerPhase === "internship" ? "Placement matches" : "Job Matches",
 				path: "/matches",
 				badge: jobCount > 0 ? jobCount.toString() : null,
 				icon: (
@@ -297,7 +324,7 @@ export default function Sidebar() {
 				),
 			},
 			{
-				name: "Applied",
+				name: careerPhase === "internship" ? "My applications" : "Applied",
 				path: "/applied",
 				badge: appliedCount > 0 ? appliedCount.toString() : null,
 				icon: (
@@ -398,7 +425,7 @@ export default function Sidebar() {
 				),
 			},
 			{
-				name: "Settings",
+				name: "Profile & documents",
 				path: "/settings",
 				icon: (
 					<svg
@@ -457,7 +484,7 @@ export default function Sidebar() {
 			<style
 				dangerouslySetInnerHTML={{
 					__html: `
-          .sidebar-wrapper { width: 260px; height: 100vh; flex-shrink: 0; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 9999; position: relative; } 
+          .sidebar-wrapper { width: 260px; height: 100dvh; flex-shrink: 0; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 9999; position: relative; }
           .mobile-close-btn { display: none !important; } 
           
           @keyframes radarPulse { 
@@ -480,7 +507,14 @@ export default function Sidebar() {
           .tagline-status-dot::after { content: ''; position: absolute; inset: 0; border-radius: 50%; background: transparent; border: 1.5px solid #22B89F; animation: taglineRipple 2s ease-out infinite; }
 
           @keyframes spin { 100% { transform: rotate(360deg); } } 
-          @media (max-width: 768px) { .mobile-close-btn { display: flex !important; margin-left: auto; } .sidebar-wrapper { position: fixed; top: 0; left: 0; transform: translateX(-100%); background: rgba(255, 255, 255, 0.95) !important; boxShadow: 20px 0 50px rgba(0,0,0,0.1); } .sidebar-wrapper.mobile-open { transform: translateX(0); } }
+           .mobile-menu-overlay { display: none; }
+          @media (max-width: 900px) { .mobile-menu-overlay { display: block; } .mobile-close-btn { display: flex !important; margin-left: auto; } .sidebar-wrapper { position: fixed; top: 0; left: 0; transform: translateX(-100%); background: rgba(255, 255, 255, 0.95) !important; box-shadow: 20px 0 50px rgba(0,0,0,0.1); } .sidebar-wrapper.mobile-open { transform: translateX(0); } }
+          .sidebar-wrapper.home-navigation { position: fixed; top: 0; left: 0; transform: translateX(-100%); visibility: hidden; background: #f8fafc !important; box-shadow: 20px 0 50px rgba(0,0,0,.12) !important; }
+          .sidebar-wrapper.home-navigation.mobile-open { transform: translateX(0); visibility: visible; }
+          .home-menu-overlay { display: block !important; }
+          .home-menu-close { flex-shrink: 0; align-self: flex-end; display: flex; align-items: center; gap: 6px; min-height: 44px; margin: 8px 12px 0; padding: 8px 12px; border: 1px solid #dce6ee; border-radius: 10px; background: white; color: #0B2444; font: inherit; cursor: pointer; }
+          .home-navigation .sidebar-brand { height: 90px !important; }
+          @media (prefers-reduced-motion: reduce) { .sidebar-wrapper.home-navigation { transition: none; } }
           
           .premium-btn {
             position: relative;
@@ -522,13 +556,14 @@ export default function Sidebar() {
 				isMobileOpen &&
 				createPortal(
 					<div
+                        className={`mobile-menu-overlay ${isHomeNavigation ? "home-menu-overlay" : ""}`}
 						onClick={() => setIsMobileOpen(false)}
 						style={{
 							position: "fixed",
 							top: 0,
 							left: 0,
 							width: "100vw",
-							height: "100vh",
+							height: "100dvh",
 							background: "rgba(15, 23, 42, 0.5)",
 							backdropFilter: "blur(4px)",
 							zIndex: 9998,
@@ -537,7 +572,13 @@ export default function Sidebar() {
 					document.body,
 				)}
 			<div
-				className={`sidebar-wrapper ${isMobileOpen ? "mobile-open" : ""}`}
+				ref={navigationRef}
+				id="app-navigation"
+				inert={isHomeNavigation && !isMobileOpen}
+				role={isHomeNavigation && isMobileOpen ? "dialog" : undefined}
+				aria-modal={isHomeNavigation && isMobileOpen ? true : undefined}
+				aria-label={isHomeNavigation ? "Navigation menu" : undefined}
+				className={`sidebar-wrapper ${isHomeNavigation ? "home-navigation" : ""} ${isMobileOpen ? "mobile-open" : ""}`}
 				style={{
 					background: "transparent",
 					borderRight: "none",
@@ -546,6 +587,7 @@ export default function Sidebar() {
 					boxShadow: "none",
 				}}
 			>
+				{isHomeNavigation && <button className="home-menu-close" onClick={() => setIsMobileOpen(false)} aria-label="Close navigation menu">Close <span aria-hidden="true">×</span></button>}
 				<div
 					style={{
 						position: "absolute",
@@ -566,7 +608,7 @@ export default function Sidebar() {
 					}}
 				/>
 
-				<div
+				<div className="sidebar-brand"
 					style={{
 						height: "110px",
 						padding: "0 1rem",
@@ -717,13 +759,14 @@ export default function Sidebar() {
 					</div>
 				</div>
 
-				<nav style={{ flex: 1, padding: "0 1rem", overflowY: "auto" }}>
-					{activeMenuItems.map((item) => {
+				<nav style={{ flex: 1, minHeight: 0, padding: "0 1rem", overflowY: "auto" }}>
+					{activeMenuItems.filter(item => careerPhase !== "internship" || item.path !== "/salary").map((item) => {
 						const isActive = pathname === item.path;
 						return (
 							<Link
 								key={item.name}
 								href={item.path}
+								onClick={isHomeNavigation ? () => setIsMobileOpen(false) : undefined}
 								style={{ textDecoration: "none" }}
 							>
 								<div
@@ -789,7 +832,7 @@ export default function Sidebar() {
 					})}
 				</nav>
 
-				<div
+				<div className="sidebar-footer"
 					style={{
 						padding: "1.5rem",
 						display: "flex",
@@ -862,9 +905,10 @@ export default function Sidebar() {
 
 					<div
 						onClick={() => {
-							if (employerNode) return;
+							if (localStorage.getItem("benchscout_active_employer")) return;
 							if (user) {
-								setIsComplianceOpen(true);
+								if (careerPhase === "internship") { window.location.assign("/settings#career-profile"); return; }
+                                setIsComplianceOpen(true);
 							} else {
 								window.dispatchEvent(new Event("openProfileModal"));
 							}
@@ -915,7 +959,7 @@ export default function Sidebar() {
 									<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
 								</svg>
 							) : avatar ? (
-								<img
+								<Image unoptimized width={80} height={80}
 									src={avatar}
 									alt="Profile"
 									style={{ width: "100%", height: "100%", objectFit: "cover" }}
@@ -956,12 +1000,13 @@ export default function Sidebar() {
 								{employerNode
 									? employerNode.email
 									: user
-										? "MLS • MLSCN Registered"
+										? (careerPhase === "internship" ? placementStage === "training" ? "Intern • Training hub" : "Intern • Placement hub" : "MLS • Career hub")
 										: "Please log in"}
 							</p>
 						</div>
 					</div>
 
+					{logoutError && <p role="alert" style={{ color: "#b42318", fontSize: 13 }}>{logoutError}</p>}
 					<button
 						className={employerNode ? "" : "premium-btn"}
 						onClick={() => {

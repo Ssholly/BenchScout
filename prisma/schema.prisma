@@ -17,6 +17,8 @@ model User {
   licenseUrl        String?      // Link to MLSCN practicing license
   provisionalUrl    String?      // Provisional license specifically for interns
   degreeUrl         String?      // Link to B.MLS degree
+  licenseReviewReference String?
+  licenseReviewedAt DateTime?
   licenseNumber     String?
   mlscnNumber       String?      // Extracted RA/Intern Number
   licenseExpiry     DateTime?
@@ -24,7 +26,16 @@ model User {
   isLicenseVerified Boolean      @default(false)
   isVerified        Boolean      @default(false) // Blocks login until email is confirmed. ALSO acts as the general verification flag.
   
+  scanTime          String       @default("09:00")
+  scanDays          String       @default("Monday,Tuesday,Wednesday,Thursday,Friday")
+  scanTimezone      String       @default("Africa/Lagos")
+  lastScheduledAt   DateTime?
+  scanLeaseUntil    DateTime?
   careerPhase       String       @default("licensed") // "internship" or "licensed"
+  candidateProfile  Json         @default("{}")
+  statementOfResultUrl String?
+  placementLetterUrl String?
+  certificateUrl    String?
 
   password          String       // We will hash this in the backend
   location          String       @default("All Nigeria")
@@ -71,8 +82,11 @@ model Job {
   // Job Meta
   jobType         String   @default("full-time") // "full-time", "internship", "locum"
   isMlscnApproved Boolean  @default(false)       // Critical for internships
+  listingDetails  Json     @default("{}")
   
   // Employer / B2B Relations
+  source          String?
+  lastSeenAt      DateTime?
   isDirectPost    Boolean   @default(false)      // True if an employer posted it directly
   employerId      String?   
   employer        Employer? @relation(fields: [employerId], references: [id])
@@ -126,6 +140,7 @@ model PasswordResetToken {
 
 model SalaryReport {
   id         String   @id @default(uuid())
+  ownerKey   String?  @unique
   role       String
   location   String
   salary     Int      // Stored as a raw integer (e.g., 350000)
@@ -160,11 +175,15 @@ model MlscnNews {
 // ==========================================
 model Employer {
   id            String   @id @default(cuid())
+  verificationReference String?
+  verifiedAt DateTime?
   companyName   String   @unique
   email         String   @unique
   passwordHash  String
   contactName   String?
   isVerified    Boolean  @default(false) // You manually verify hospitals to prevent spam
+  emailVerificationRequired Boolean @default(false) // Legacy accounts retain their existing access.
+  emailVerifiedAt DateTime?
   jobs          Job[]    // A hospital can have many direct job postings
   createdAt     DateTime @default(now())
 }
@@ -198,4 +217,21 @@ model Notification {
   createdAt DateTime @default(now())
 
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+// Only a hash of each random session token is stored. Logout revokes it immediately.
+model AuthSession {
+  tokenHash String @id
+  subjectId String
+  role String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  @@index([subjectId, role])
+  @@index([expiresAt])
+}
+
+model RateLimit {
+  key String @id
+  count Int @default(1)
+  expiresAt DateTime
+  @@index([expiresAt])
 }

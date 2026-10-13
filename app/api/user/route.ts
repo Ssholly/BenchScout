@@ -1,10 +1,12 @@
+import { withApi } from "@/lib/api";
+import { ApiError, textField } from "@/lib/security";
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
 
-const prisma = new PrismaClient();
+
 
 // GET: Fetch the specific logged-in user by their email
-export async function GET(request: Request) {
+export const GET = withApi("candidate", async (request: Request) => {
 	try {
 		const { searchParams } = new URL(request.url);
 		const email = searchParams.get("email");
@@ -22,24 +24,27 @@ export async function GET(request: Request) {
 			return NextResponse.json({ error: "No user found" }, { status: 404 });
 		}
 
-		return NextResponse.json({ success: true, user });
-	} catch (error) {
+		return NextResponse.json({ success: true, user, uploadsAvailable: Boolean(process.env.BLOB_PRIVATE_READ_WRITE_TOKEN) });
+	} catch (error: unknown) {
+    if (error instanceof ApiError) throw error;
 		console.error("Failed to fetch user:", error);
 		return NextResponse.json(
 			{ error: "Failed to fetch user" },
 			{ status: 500 },
 		);
-	} finally {
-		await prisma.$disconnect();
 	}
-}
+}, {});
 
 // POST: Update the specific user's settings when they click "Update Profile"
-export async function POST(request: Request) {
+export const POST = withApi("candidate", async (request: Request) => {
 	try {
 		const body = await request.json();
 		// 🚀 Added avatarUrl to the destructured payload
-		const { name, email, location, keywords, minScore, avatarUrl } = body;
+		const { name, email, location, keywords, minScore } = body;
+		textField(name, "name");
+		textField(location, "location");
+		if (!Number.isInteger(minScore) || minScore < 0 || minScore > 100) throw new ApiError(400, "Match score must be between 0 and 100.");
+		if (keywords != null && !(typeof keywords === "string" || (Array.isArray(keywords) && keywords.every(value => typeof value === "string")))) throw new ApiError(400, "Invalid keywords.");
 
 		if (!email) {
 			return NextResponse.json(
@@ -70,19 +75,18 @@ export async function POST(request: Request) {
 				keywords: Array.isArray(keywords) ? keywords.join(", ") : keywords,
 				minScore: minScore,
 				// 🚀 Added avatarUrl mapping here
-				avatarUrl: avatarUrl !== undefined ? avatarUrl : undefined,
+
 			},
 		});
 
 		console.log("Successfully updated profile for:", email);
 		return NextResponse.json({ success: true });
-	} catch (error) {
+	} catch (error: unknown) {
+    if (error instanceof ApiError) throw error;
 		console.error("Failed to update profile:", error);
 		return NextResponse.json(
 			{ success: false, error: "Database error" },
 			{ status: 500 },
 		);
-	} finally {
-		await prisma.$disconnect();
 	}
-}
+}, {});

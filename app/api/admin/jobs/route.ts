@@ -1,20 +1,19 @@
+import { ApiError } from "@/lib/security";
+import { withApi } from "@/lib/api";
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
 
-const prisma = new PrismaClient();
 
-export async function GET(request: Request) {
+
+export const GET = withApi("admin", async () => {
 	try {
-		const { searchParams } = new URL(request.url);
-		const passcode = searchParams.get("passcode");
 
-		if (passcode !== (process.env.CRON_SECRET || "admin123")) {
-			return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-		}
+
+
 
 		// Identify Admin Injections by looking for Global Tier 1 / Score 99 roles
 		const jobs = await prisma.job.findMany({
-			where: { score: 99, tier: 1, isDirectPost: false },
+			where: { source: "Admin", isDirectPost: false },
 			distinct: ["role", "company"],
 			select: {
 				role: true,
@@ -29,79 +28,59 @@ export async function GET(request: Request) {
 		});
 
 		return NextResponse.json({ success: true, jobs });
-	} catch (error) {
+	} catch (error: unknown) {
+    if (error instanceof ApiError) throw error;
 		return NextResponse.json(
 			{ error: "Failed to fetch jobs." },
 			{ status: 500 },
 		);
-	} finally {
-		await prisma.$disconnect();
 	}
-}
+}, {});
 
-export async function PATCH(request: Request) {
+export const PATCH = withApi("admin", async (request: Request) => {
 	try {
 		const body = await request.json();
-		const {
-			passcode,
-			oldRole,
-			oldCompany,
-			role,
-			company,
-			loc,
-			url,
-			salary,
-			skills,
-		} = body;
+		const { oldRole, oldCompany, role, company, loc, url, salary, skills } = body;
 
-		if (passcode !== (process.env.CRON_SECRET || "admin123")) {
-			return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-		}
 
 		// Update ALL copies of this globally injected job across every user's feed
 		const updated = await prisma.job.updateMany({
 			where: {
 				role: oldRole,
 				company: oldCompany,
-				score: 99,
-				tier: 1,
+				source: "Admin",
 				isDirectPost: false,
 			},
 			data: { role, company, loc, url, salary, skills },
 		});
 
 		return NextResponse.json({ success: true, count: updated.count });
-	} catch (error) {
+	} catch (error: unknown) {
+    if (error instanceof ApiError) throw error;
 		return NextResponse.json(
 			{ error: "Failed to update jobs." },
 			{ status: 500 },
 		);
-	} finally {
-		await prisma.$disconnect();
 	}
-}
+}, {});
 
-export async function DELETE(request: Request) {
+export const DELETE = withApi("admin", async (request: Request) => {
 	try {
 		const body = await request.json();
-		const { passcode, role, company } = body;
+		const { role, company } = body;
 
-		if (passcode !== (process.env.CRON_SECRET || "admin123")) {
-			return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-		}
 
 		// Wipe this specific job from EVERY candidate's feed simultaneously
 		const deleted = await prisma.job.deleteMany({
-			where: { role, company, score: 99, tier: 1, isDirectPost: false },
+			where: { role, company, source: "Admin", isDirectPost: false },
 		});
 
 		return NextResponse.json({ success: true, count: deleted.count });
-	} catch (error) {
+	} catch (error: unknown) {
+    if (error instanceof ApiError) throw error;
 		return NextResponse.json(
 			{ error: "Failed to delete jobs." },
 			{ status: 500 },
 		);
-	} finally {
-		await prisma.$disconnect();
 	}
-}
+}, {});

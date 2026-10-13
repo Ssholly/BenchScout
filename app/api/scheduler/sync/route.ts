@@ -1,9 +1,11 @@
+import { ApiError } from "@/lib/security";
+import { withApi } from "@/lib/api";
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
 
-const prisma = new PrismaClient();
 
-export async function GET(request: Request) {
+
+export const GET = withApi("candidate", async (request: Request) => {
 	try {
 		const { searchParams } = new URL(request.url);
 		const email = searchParams.get("email");
@@ -61,6 +63,8 @@ export async function GET(request: Request) {
 			return {
 				id: `b2b-${app.id}`,
 				date: targetDay,
+				fullDate: app.interviewDate,
+				timezone: "Africa/Lagos",
 				time: formattedTime,
 				title: `Confirmed Interview: ${app.job?.role || "Clinical Assessment"}`,
 				company: app.job?.company || "BenchScout Partner",
@@ -70,10 +74,9 @@ export async function GET(request: Request) {
 		});
 
 		return NextResponse.json({ success: true, employerEvents });
-	} catch (error) {
+	} catch (error: unknown) {
+    if (error instanceof ApiError) throw error;
 		console.error("Scheduler sync crash:", error);
 		return NextResponse.json({ error: "Internal sync error" }, { status: 500 });
-	} finally {
-		await prisma.$disconnect();
 	}
-}
+}, {});

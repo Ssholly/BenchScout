@@ -1,5 +1,14 @@
 "use client";
-import { useEffect, useState } from "react";
+import { sharedPageRequest } from "@/lib/shared-page-request";
+import Toast from "@/components/Toast";
+import { listingUrl } from "@/lib/listing-url";
+import { buildJobDigest } from "@/lib/digest";
+import { startTransition } from "react";
+import { SkeletonRow, TableHeader } from "@/components/JobTableParts";
+import { useMounted } from "@/lib/use-mounted";
+import type { ClientJob } from "@/lib/types";
+import { useEffect, useState, useRef } from "react";
+import ListingEvidence from "@/components/ListingEvidence";
 import { createPortal } from "react-dom";
 
 const getAvatarStyle = (companyName: string) => {
@@ -25,16 +34,37 @@ type VaultDoc = {
 };
 
 export default function MatchesPage() {
-	const [mounted, setMounted] = useState(false);
+	const mounted = useMounted();
 	const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
-	const [jobs, setJobs] = useState<any[]>([]);
+	const [profilePhase, setProfilePhase] = useState("licensed");
+	const [jobs, setJobs] = useState<ClientJob[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
+	const [loadError, setLoadError] = useState<string | null>(null);
+	const [isRefreshing, setIsRefreshing] = useState(false);
+	const loadedEmail = useRef<string | null>(null);
+	const loadSequence = useRef(0);
 	const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 	const [appliedJobs, setAppliedJobs] = useState<string[]>([]);
 
 	const [activeFilter, setActiveFilter] = useState<string | null>(null);
 	const [showLinkModal, setShowLinkModal] = useState(false);
-	const [toolkitJob, setToolkitJob] = useState<any | null>(null);
+	const [toolkitJob, setToolkitJob] = useState<ClientJob | null>(null);
+	const applicationDialogRef = useRef<HTMLDivElement>(null);
+	useEffect(() => {
+		if (!toolkitJob) return;
+		const previousFocus = document.activeElement as HTMLElement | null;
+		applicationDialogRef.current?.focus();
+		const handleKey = (event: KeyboardEvent) => {
+			if (event.key === "Escape") setToolkitJob(null);
+			if (event.key !== "Tab") return;
+			const controls = Array.from(applicationDialogRef.current?.querySelectorAll<HTMLElement>('button:not(:disabled), a[href], textarea, input, [tabindex="0"]') || []).filter(element => element.getClientRects().length > 0);
+			const first = controls[0], last = controls[controls.length - 1];
+			if (event.shiftKey && (document.activeElement === first || document.activeElement === applicationDialogRef.current)) { event.preventDefault(); last?.focus(); }
+			else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
+		};
+		document.addEventListener("keydown", handleKey);
+		return () => { document.removeEventListener("keydown", handleKey); previousFocus?.focus(); };
+	}, [toolkitJob]);
 	const [vaultDocs, setVaultDocs] = useState<VaultDoc[]>([]);
 
 	const [coverLetter, setCoverLetter] = useState("");
@@ -56,9 +86,13 @@ export default function MatchesPage() {
 	};
 
 	const loadData = () => {
+		const sequence = ++loadSequence.current;
 		const activeEmail = localStorage.getItem("labpro_active_user");
+		const isCurrent = () => sequence === loadSequence.current && activeEmail === localStorage.getItem("labpro_active_user");
+		setLoadError(null);
 		const careerPhase =
 			localStorage.getItem("labpro_career_phase") || "licensed";
+        setProfilePhase(careerPhase);
 
 		// 🚀 RESTORE DECLINED JOBS FROM STORAGE ON LOAD
 		const savedDeclined = localStorage.getItem("labpro_declined_jobs");
@@ -122,6 +156,8 @@ export default function MatchesPage() {
 					];
 
 		if (!activeEmail) {
+			loadedEmail.current = null;
+			setIsRefreshing(false);
 			setIsUserLoggedIn(false);
 			setJobs([]);
 			setAppliedJobs([]);
@@ -131,57 +167,51 @@ export default function MatchesPage() {
 		}
 
 		setIsUserLoggedIn(true);
-		setIsLoading(true);
+		const firstLoad = loadedEmail.current !== activeEmail;
+		setIsLoading(firstLoad);
+		setIsRefreshing(!firstLoad);
+		if (firstLoad) { setJobs([]); setAppliedJobs([]); setVaultDocs(initialDocs); }
 
 		const searchParams = new URLSearchParams(window.location.search);
 		const employerParam = searchParams.get("employer");
 		setActiveFilter(employerParam);
 
-		fetch(`/api/jobs?email=${activeEmail}&_t=${Date.now()}`, {
-			cache: "no-store",
-		})
-			.then((res) => res.json())
+		sharedPageRequest(`/api/jobs?email=${encodeURIComponent(activeEmail)}`)
+			.then(async (res) => { if (!res.ok) throw new Error("Matches unavailable"); return res.json(); })
 			.then((data) => {
+				if (!isCurrent()) return;
 				if (!Array.isArray(data)) {
-					console.error("API returned a non-array response:", data);
-					setJobs([]);
-					setAppliedJobs([]);
-					setIsLoading(false);
-					return;
+					throw new Error("Invalid matches response");
 				}
 
 				let myJobs = data;
 
-				myJobs = myJobs.filter(
-					(j: any) =>
-						(j.targetEmail === activeEmail ||
-							j.userEmail === activeEmail ||
-							j.email === activeEmail ||
-							(!j.targetEmail && !j.userEmail && !j.email)) &&
-						j.status !== "cleared",
-				);
-
 				if (employerParam) {
 					myJobs = myJobs.filter(
-						(j: any) => j.company.trim() === employerParam,
+						(j: ClientJob) => j.company.trim() === employerParam,
 					);
 				}
 
 				setJobs(myJobs);
 				const alreadyApplied = myJobs
-					.filter((j: any) => j.applied === true)
-					.map((j: any) => j.id);
+					.filter((j: ClientJob) => j.applied === true)
+					.map((j: ClientJob) => j.id);
 				setAppliedJobs(alreadyApplied);
+				loadedEmail.current = activeEmail;
 				setIsLoading(false);
+				setIsRefreshing(false);
 			})
 			.catch(() => {
-				setJobs([]);
+				if (!isCurrent()) return;
+				setLoadError(loadedEmail.current === activeEmail ? "Couldn’t refresh matches. Your previous results are still shown." : "Couldn’t load your matches. Please try again.");
 				setIsLoading(false);
+				setIsRefreshing(false);
 			});
 
-		fetch(`/api/user?email=${activeEmail}`)
+		sharedPageRequest(`/api/user?email=${encodeURIComponent(activeEmail)}`)
 			.then((res) => res.json())
 			.then((data) => {
+				if (!isCurrent()) return;
 				if (data.success && data.user) {
 					const updatedDocs = [...initialDocs];
 					if (data.user.resumeUrl)
@@ -230,8 +260,7 @@ export default function MatchesPage() {
 	};
 
 	useEffect(() => {
-		setMounted(true);
-		loadData();
+		startTransition(() => { loadData(); });
 		window.addEventListener("userStateChanged", loadData);
 		window.addEventListener("jobsUpdated", loadData);
 		window.addEventListener("refreshNotifications", loadData);
@@ -249,7 +278,7 @@ export default function MatchesPage() {
 	};
 
 	// 🚀 HANDLER TO DECLINE AN INVITATION AND SAVE LOCALLY
-	const handleDeclinePlacement = async (e: React.MouseEvent, job: any) => {
+	const handleDeclinePlacement = async (e: React.MouseEvent, job: ClientJob) => {
 		e.stopPropagation();
 
 		const updatedDeclines = [...declinedJobIds, job.id];
@@ -329,7 +358,7 @@ export default function MatchesPage() {
 
 	const dynamicStats = calculateDynamicStats();
 
-	const handleInitiateApply = async (job: any) => {
+	const handleInitiateApply = async (job: ClientJob) => {
 		if (
 			!job.isDirectPost &&
 			(!job.url ||
@@ -342,6 +371,10 @@ export default function MatchesPage() {
 		}
 		setToolkitJob(job);
 		setCoverLetter("");
+		setIsGeneratingLetter(false);
+	};
+
+	const generateCoverLetter = async (job: ClientJob) => {
 		setIsGeneratingLetter(true);
 
 		try {
@@ -358,7 +391,7 @@ export default function MatchesPage() {
 				setCoverLetter(`Error generating letter: ${data.error}`);
 				showToast("Gemini failed to generate draft.", "error");
 			}
-		} catch (error) {
+		} catch {
 			setCoverLetter("Network error. Could not connect to AI Engine.");
 			showToast("Network error.", "error");
 		} finally {
@@ -372,16 +405,22 @@ export default function MatchesPage() {
 		const activeEmail = localStorage.getItem("labpro_active_user");
 
 		if (!appliedJobs.includes(toolkitJob.id)) {
-			setAppliedJobs((prev) => [...prev, toolkitJob.id]);
 			try {
-				await fetch("/api/apply", {
+				const response = await fetch("/api/apply", {
 					method: "POST",
 					headers: { "Content-Type": "application/json" },
 					body: JSON.stringify({ jobId: toolkitJob.id, email: activeEmail }),
 				});
+                if (!response.ok) {
+                    const failure = await response.json().catch(() => ({}));
+                    showToast(failure.error || "Your application could not be submitted. Please try again.", "error");
+                    return;
+                }
+                setAppliedJobs((prev) => [...prev, toolkitJob.id]);
 				window.dispatchEvent(new Event("jobsUpdated"));
-			} catch (e) {
-				console.error("Apply logging failed.");
+			} catch {
+				showToast("Your application could not be submitted. Please try again.", "error");
+                return;
 			}
 		}
 
@@ -411,7 +450,7 @@ export default function MatchesPage() {
 		try {
 			new URL(finalUrl);
 			window.open(finalUrl, "_blank", "noopener,noreferrer");
-		} catch (error) {
+		} catch {
 			setShowLinkModal(true);
 		}
 		setToolkitJob(null);
@@ -422,81 +461,9 @@ export default function MatchesPage() {
 		showToast("Cover Letter copied to clipboard!");
 	};
 
-	const SkeletonRow = () => (
-		<tr style={{ borderBottom: "1px solid rgba(0,0,0,0.05)" }}>
-			<td style={{ padding: "1.25rem 1.5rem" }}>
-				<div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-					<div
-						className="skeleton"
-						style={{
-							width: "42px",
-							height: "42px",
-							borderRadius: "50%",
-							flexShrink: 0,
-						}}
-					></div>
-					<div>
-						<div
-							className="skeleton"
-							style={{
-								width: "150px",
-								height: "14px",
-								marginBottom: "6px",
-								borderRadius: "4px",
-							}}
-						></div>
-						<div
-							className="skeleton"
-							style={{ width: "100px", height: "12px", borderRadius: "4px" }}
-						></div>
-					</div>
-				</div>
-			</td>
-			<td className="hide-mobile" style={{ padding: "1.25rem 1rem" }}>
-				<div
-					className="skeleton"
-					style={{ width: "80px", height: "14px", borderRadius: "4px" }}
-				></div>
-			</td>
-			<td className="hide-mobile" style={{ padding: "1.25rem 1rem" }}>
-				<div
-					className="skeleton"
-					style={{ width: "70px", height: "14px", borderRadius: "4px" }}
-				></div>
-			</td>
-			<td className="hide-mobile" style={{ padding: "1.25rem 1rem" }}>
-				<div style={{ display: "flex", gap: "6px" }}>
-					<div
-						className="skeleton"
-						style={{ width: "50px", height: "20px", borderRadius: "6px" }}
-					></div>
-					<div
-						className="skeleton"
-						style={{ width: "60px", height: "20px", borderRadius: "6px" }}
-					></div>
-				</div>
-			</td>
-			<td className="hide-mobile" style={{ padding: "1.25rem 1rem" }}>
-				<div
-					className="skeleton"
-					style={{ width: "40px", height: "40px", borderRadius: "50%" }}
-				></div>
-			</td>
-			<td style={{ padding: "1.25rem 1.5rem" }}>
-				<div
-					className="skeleton"
-					style={{
-						width: "80px",
-						height: "30px",
-						borderRadius: "8px",
-						marginLeft: "auto",
-					}}
-				></div>
-			</td>
-		</tr>
-	);
 
-	const renderJobRow = (j: any) => {
+
+	const renderJobRow = (j: ClientJob) => {
 		const isApplied = appliedJobs.includes(j.id);
 		const avatar = getAvatarStyle(j.company);
 
@@ -578,6 +545,7 @@ export default function MatchesPage() {
 							</div>
 							<div style={{ fontSize: "13px", color: "#64748b" }}>
 								{j.company}
+								<ListingEvidence job={j} />
 							</div>
 						</div>
 					</div>
@@ -612,7 +580,7 @@ export default function MatchesPage() {
 						{j.salary === "Competitive" ? "Competitive" : j.salary}
 					</div>
 				</td>
-				<td data-label="Skills" style={{ padding: "1.25rem 1rem" }}>
+				<td className="job-skills" data-label="Skills" style={{ padding: "1.25rem 1rem" }}>
 					<div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
 						{j.skills
 							.split(",")
@@ -636,8 +604,8 @@ export default function MatchesPage() {
 							))}
 					</div>
 				</td>
-				<td data-label="Match Score" style={{ padding: "1.25rem 1rem" }}>
-					<span
+				<td className="job-score-cell" data-label="Match Score" style={{ padding: "1.25rem 1rem" }}>
+					<span className={`job-score${j.isDirectPost ? " job-score-direct" : ""}`} aria-label={j.isDirectPost ? "Employer posted" : `${j.score}% relevance`}
 						style={{
 							border: `2px solid ${j.tier === 1 ? "#1A8C7A" : j.tier === 2 ? "#0B2444" : "#94a3b8"}`,
 							borderRadius: "50%",
@@ -652,7 +620,7 @@ export default function MatchesPage() {
 								j.tier === 1 ? "#1A8C7A" : j.tier === 2 ? "#0B2444" : "#94a3b8",
 						}}
 					>
-						{j.score}
+						{j.isDirectPost ? "—" : j.score}
 					</span>
 				</td>
 				<td
@@ -713,136 +681,17 @@ export default function MatchesPage() {
 		);
 	};
 
-	const TableHeader = () => (
-		<thead
-			style={{
-				background: "rgba(255, 255, 255, 0.4)",
-				borderBottom: "1px solid rgba(0,0,0,0.05)",
-			}}
-		>
-			<tr>
-				<th
-					style={{
-						padding: "1rem 1.5rem",
-						fontSize: "11px",
-						fontWeight: 800,
-						color: "#94a3b8",
-						textTransform: "uppercase",
-						letterSpacing: "1px",
-						textAlign: "left",
-					}}
-				>
-					Role / Company
-				</th>
-				<th
-					style={{
-						padding: "1rem",
-						fontSize: "11px",
-						fontWeight: 800,
-						color: "#94a3b8",
-						textTransform: "uppercase",
-						letterSpacing: "1px",
-						textAlign: "left",
-					}}
-				>
-					Location
-				</th>
-				<th
-					style={{
-						padding: "1rem",
-						fontSize: "11px",
-						fontWeight: 800,
-						color: "#94a3b8",
-						textTransform: "uppercase",
-						letterSpacing: "1px",
-						textAlign: "left",
-					}}
-				>
-					Salary
-				</th>
-				<th
-					style={{
-						padding: "1rem",
-						fontSize: "11px",
-						fontWeight: 800,
-						color: "#94a3b8",
-						textTransform: "uppercase",
-						letterSpacing: "1px",
-						textAlign: "left",
-					}}
-				>
-					Skills
-				</th>
-				<th
-					style={{
-						padding: "1rem",
-						fontSize: "11px",
-						fontWeight: 800,
-						color: "#94a3b8",
-						textTransform: "uppercase",
-						letterSpacing: "1px",
-						textAlign: "left",
-					}}
-				>
-					Score
-				</th>
-				<th
-					style={{
-						padding: "1rem 1.5rem",
-						fontSize: "11px",
-						fontWeight: 800,
-						color: "#94a3b8",
-						textTransform: "uppercase",
-						letterSpacing: "1px",
-						textAlign: "right",
-					}}
-				>
-					Action
-				</th>
-			</tr>
-		</thead>
-	);
+
 
 	return (
-		<section className="pane active" style={{ paddingBottom: "2rem" }}>
+		<section className="pane active matches-page" style={{ paddingBottom: "2rem" }}>
 			<style
 				dangerouslySetInnerHTML={{
 					__html: `@keyframes slideDownToast { 0% { transform: translate(-50%, -20px) scale(0.95); opacity: 0; } 100% { transform: translate(-50%, 0) scale(1); opacity: 1; } } @keyframes shimmer { 0% { background-position: -1000px 0; } 100% { background-position: 1000px 0; } } .skeleton { background: rgba(255,255,255,0.4); background-image: linear-gradient(90deg, rgba(255,255,255,0) 0px, rgba(255,255,255,0.5) 40px, rgba(255,255,255,0) 80px); background-size: 1000px 100%; animation: shimmer 2s infinite linear; } @media screen and (max-width: 768px) { .responsive-table table, .responsive-table thead, .responsive-table tbody, .responsive-table th, .responsive-table td, .responsive-table tr { display: block; } .responsive-table thead tr { position: absolute; top: -9999px; left: -9999px; } .responsive-table tr { margin-bottom: 1.5rem; border: 1px solid rgba(255,255,255,0.5) !important; border-radius: 16px; background: rgba(255,255,255,0.6) !important; backdrop-filter: blur(16px); box-shadow: 0 4px 16px -2px rgba(0,0,0,0.03); overflow: hidden; } .responsive-table td { border: none !important; border-bottom: 1px solid rgba(0,0,0,0.03) !important; position: relative; padding: 1rem 1.25rem !important; display: flex; flex-direction: column; gap: 0.25rem; text-align: left !important; } .responsive-table td:last-child { border-bottom: 0 !important; } .responsive-table td::before { content: attr(data-label); font-size: 10px; font-weight: 800; text-transform: uppercase; color: #94a3b8; letter-spacing: 0.5px; margin-bottom: 4px; } .hide-mobile { display: none !important; } .responsive-table td:last-child > button { width: 100%; justify-content: center !important; background: rgba(255,255,255,0.8) !important; padding: 12px !important; border-radius: 8px !important; margin-top: 8px; border: 1px solid rgba(0,0,0,0.05) !important; } .responsive-table td:last-child > button:disabled { background: transparent !important; border: none !important; } }`,
 				}}
 			/>
 
-			{mounted &&
-				toast &&
-				createPortal(
-					<div
-						style={{
-							position: "fixed",
-							top: "24px",
-							left: "50%",
-							background:
-								toast.type === "success"
-									? "rgba(15, 23, 42, 0.9)"
-									: "rgba(153, 27, 27, 0.9)",
-							backdropFilter: "blur(12px)",
-							color: "white",
-							padding: "12px 24px",
-							borderRadius: "30px",
-							fontSize: "13px",
-							fontWeight: 700,
-							display: "flex",
-							alignItems: "center",
-							gap: "8px",
-							boxShadow: "0 10px 40px -5px rgba(0,0,0,0.3)",
-							zIndex: 99999,
-							animation:
-								"slideDownToast 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards",
-							transform: "translateX(-50%)",
-						}}
-					>
-						{toast.type === "success" ? "✓ " : "✕ "} {toast.message}
-					</div>,
-					document.body,
-				)}
+			{toast && <Toast message={toast.message} type={toast.type} />}
 
 			{showLinkModal && (
 				<div
@@ -851,7 +700,7 @@ export default function MatchesPage() {
 						top: 0,
 						left: 0,
 						width: "100vw",
-						height: "100vh",
+						height: "100dvh",
 						background: "rgba(248, 250, 252, 0.7)",
 						backdropFilter: "blur(8px)",
 						zIndex: 9999,
@@ -961,7 +810,7 @@ export default function MatchesPage() {
 							gap: "12px",
 						}}
 					>
-						Latest Job Matches
+						{profilePhase === "internship" ? "Placement matches" : "Latest Job Matches"}
 						{activeFilter && (
 							<span
 								style={{
@@ -991,6 +840,7 @@ export default function MatchesPage() {
 					</div>
 				</div>
 				<button
+					aria-label="Preview Email"
 					onClick={() => setIsPreviewOpen(true)}
 					disabled={unappliedJobs.length === 0 || !isUserLoggedIn}
 					style={{
@@ -1108,6 +958,8 @@ export default function MatchesPage() {
 				</div>
 			) : (
 				<>
+					{isRefreshing && <p role="status" style={{ color: "#4A6080", fontSize: 13 }}>Refreshing matches…</p>}
+					{loadError && <div role="alert" className="page-load-error"><span>{loadError}</span><button onClick={loadData}>Retry</button></div>}
 					{isLoading ? (
 						<div
 							style={{
@@ -1149,7 +1001,7 @@ export default function MatchesPage() {
 								</div>
 							</div>
 						</div>
-					) : unappliedJobs.length === 0 ? (
+					) : loadError && jobs.length === 0 ? null : unappliedJobs.length === 0 ? (
 						<div
 							style={{
 								padding: "4rem",
@@ -1202,7 +1054,7 @@ export default function MatchesPage() {
 						>
 							{/* VIP SCOUTED INVITATION SECTION */}
 							{scoutedJobs.length > 0 && (
-								<div style={{ marginBottom: "1rem" }}>
+								<div className="scouted-list" style={{ marginBottom: "1rem" }}>
 									<h3
 										style={{
 											display: "flex",
@@ -1215,7 +1067,7 @@ export default function MatchesPage() {
 										}}
 									>
 										<span
-											style={{
+											style={{ whiteSpace: "nowrap", flexShrink: 0,
 												background: "#d97706",
 												color: "white",
 												padding: "4px 12px",
@@ -1238,7 +1090,7 @@ export default function MatchesPage() {
 											>
 												<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
 											</svg>{" "}
-											VIP PRIORITY
+											INVITED
 										</span>
 										Exclusive Scouted Invitations
 									</h3>
@@ -1251,7 +1103,7 @@ export default function MatchesPage() {
 									>
 										{scoutedJobs.map((j) => (
 											<div
-												key={j.id}
+												key={j.id} className="invitation-card"
 												style={{
 													background:
 														"linear-gradient(135deg, #0B2444 0%, #05162a 100%)",
@@ -1284,8 +1136,8 @@ export default function MatchesPage() {
 													}}
 												></div>
 
-												<div style={{ position: "relative", zIndex: 1 }}>
-													<div
+												<div className="invitation-copy" style={{ position: "relative", zIndex: 1 }}>
+													<div className="invitation-meta"
 														style={{
 															display: "flex",
 															alignItems: "center",
@@ -1340,7 +1192,7 @@ export default function MatchesPage() {
 													</p>
 												</div>
 
-												<div
+												<div className="invitation-footer"
 													style={{
 														position: "relative",
 														zIndex: 1,
@@ -1361,7 +1213,7 @@ export default function MatchesPage() {
 															? "Competitive"
 															: j.salary}
 													</div>
-													<div
+													<div className="invitation-actions"
 														style={{
 															display: "flex",
 															gap: "12px",
@@ -1423,7 +1275,7 @@ export default function MatchesPage() {
 																(e.currentTarget.style.transform = "scale(1)")
 															}
 														>
-															Claim Placement{" "}
+															Accept invitation{" "}
 															<svg
 																width="16"
 																height="16"
@@ -1595,7 +1447,7 @@ export default function MatchesPage() {
 						<div
 							style={{
 								display: "grid",
-								gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+								gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 280px), 1fr))",
 								gap: "1.5rem",
 								marginTop: "4rem",
 							}}
@@ -1631,10 +1483,7 @@ export default function MatchesPage() {
 										flex: 1,
 									}}
 								>
-									MLS demand in <strong>{dynamicStats.primaryLoc}</strong> has
-									increased by 14% in your region this quarter.{" "}
-									<strong>{dynamicStats.primarySkill}</strong> roles remain the
-									strongest fit for your profile.
+									Your saved matches include roles in <strong>{dynamicStats.primaryLoc}</strong> and skills such as <strong>{dynamicStats.primarySkill}</strong>. Review each posting before applying.
 								</p>
 								<a
 									href="/news"
@@ -1766,7 +1615,7 @@ export default function MatchesPage() {
 										margin: "0 0 16px 0",
 									}}
 								>
-									Resume Score
+									Match Summary
 								</h4>
 								<div
 									style={{
@@ -1795,8 +1644,8 @@ export default function MatchesPage() {
 										}}
 									>
 										{dynamicStats.grade.includes("A")
-											? "High Visibility. Your profile matches deeply with top employers."
-											: "Standard Visibility. Update your CV to unlock Tier 1 roles."}
+											? "Your saved roles have a high average match score."
+											: "Based on your saved match scores. Keep your skills up to date."}
 									</div>
 								</div>
 								<button
@@ -1827,12 +1676,13 @@ export default function MatchesPage() {
 						toolkitJob &&
 						createPortal(
 							<div
+								className="application-backdrop"
 								style={{
 									position: "fixed",
 									top: 0,
 									left: 0,
 									width: "100vw",
-									height: "100vh",
+									height: "100dvh",
 									background: "rgba(248, 250, 252, 0.7)",
 									backdropFilter: "blur(8px)",
 									zIndex: 10000,
@@ -1843,6 +1693,9 @@ export default function MatchesPage() {
 								}}
 							>
 								<div
+									className="application-dialog"
+									ref={applicationDialogRef} tabIndex={-1}
+									role="dialog" aria-modal="true" aria-labelledby="application-dialog-title"
 									style={{
 										background: "white",
 										width: "100%",
@@ -1855,6 +1708,7 @@ export default function MatchesPage() {
 									}}
 								>
 									<div
+										className="application-dialog-header"
 										style={{
 											padding: "1.5rem 2rem",
 											borderBottom: "1px solid #f1f5f9",
@@ -1865,6 +1719,7 @@ export default function MatchesPage() {
 									>
 										<div>
 											<h3
+												id="application-dialog-title"
 												style={{
 													fontSize: "20px",
 													fontWeight: 800,
@@ -1899,6 +1754,7 @@ export default function MatchesPage() {
 											</p>
 										</div>
 										<button
+											aria-label="Close application toolkit"
 											onClick={() => setToolkitJob(null)}
 											style={{
 												background: "#f1f5f9",
@@ -1928,6 +1784,7 @@ export default function MatchesPage() {
 										</button>
 									</div>
 
+									<div className="application-dialog-body" tabIndex={0} aria-label="Application details">
 									{/* 🚀 RESTORED: DISPLAY JOB INSTRUCTIONS IF THEY EXIST */}
 									{toolkitJob.desc && (
 										<div
@@ -2070,7 +1927,7 @@ export default function MatchesPage() {
 										<div
 											style={{
 												flex: 1.5,
-												display: "flex",
+												display: toolkitJob.isDirectPost ? "none" : "flex",
 												flexDirection: "column",
 												gap: "1rem",
 											}}
@@ -2101,7 +1958,7 @@ export default function MatchesPage() {
 													}}
 												>
 													<button
-														onClick={() => handleInitiateApply(toolkitJob)}
+														onClick={() => generateCoverLetter(toolkitJob)}
 														disabled={isGeneratingLetter}
 														style={{
 															background: "none",
@@ -2129,7 +1986,7 @@ export default function MatchesPage() {
 															<polyline points="23 4 23 10 17 10"></polyline>
 															<path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
 														</svg>{" "}
-														Regenerate
+														{coverLetter ? "Regenerate" : "Generate draft"}
 													</button>
 													<button
 														onClick={copyCoverLetter}
@@ -2167,7 +2024,8 @@ export default function MatchesPage() {
 													</button>
 												</div>
 											</div>
-											{isGeneratingLetter ? (
+											<p style={{ fontSize: 12, color: "#64748b", lineHeight: 1.5 }}>Generate draft sends your saved CV text and this listing to Google AI. You can also write your own letter below.</p>
+                                            {isGeneratingLetter ? (
 												<div
 													style={{
 														width: "100%",
@@ -2210,6 +2068,7 @@ export default function MatchesPage() {
 												</div>
 											) : (
 												<textarea
+															placeholder="Write your cover letter here, or generate a draft using Google AI."
 													value={coverLetter}
 													onChange={(e) => setCoverLetter(e.target.value)}
 													style={{
@@ -2230,7 +2089,9 @@ export default function MatchesPage() {
 											)}
 										</div>
 									</div>
+									</div>
 									<div
+										className="application-dialog-footer"
 										style={{
 											padding: "1.5rem 2rem",
 											background: "white",
@@ -2249,7 +2110,7 @@ export default function MatchesPage() {
 												fontWeight: 600,
 											}}
 										>
-											Downloads will save directly to your device.
+											{toolkitJob.isDirectPost ? "Submitting shares your vault documents with this employer." : "Downloads will save directly to your device."}
 										</span>
 										<button
 											onClick={executeFinalApply}
@@ -2292,13 +2153,13 @@ export default function MatchesPage() {
 					{mounted &&
 						isPreviewOpen &&
 						createPortal(
-							<div
+							<div className="digest-preview-backdrop"
 								style={{
 									position: "fixed",
 									top: 0,
 									left: 0,
 									width: "100vw",
-									height: "100vh",
+									height: "100dvh",
 									background: "rgba(248, 250, 252, 0.7)",
 									backdropFilter: "blur(8px)",
 									zIndex: 10000,
@@ -2308,12 +2169,12 @@ export default function MatchesPage() {
 									padding: "1rem",
 								}}
 							>
-								<div
+								<div className="digest-preview-dialog" role="dialog" aria-modal="true" aria-label="Email digest preview"
 									style={{
 										background: "white",
 										width: "100%",
 										maxWidth: "650px",
-										maxHeight: "90vh",
+										maxHeight: "calc(100dvh - 2rem)",
 										borderRadius: "20px",
 										overflow: "hidden",
 										display: "flex",
@@ -2322,7 +2183,7 @@ export default function MatchesPage() {
 										border: "1px solid rgba(0,0,0,0.05)",
 									}}
 								>
-									<div
+									<div className="digest-preview-header"
 										style={{
 											padding: "1.25rem 1.5rem",
 											background: "white",
@@ -2350,10 +2211,11 @@ export default function MatchesPage() {
 													margin: "2px 0 0 0",
 												}}
 											>
-												This is exactly how the email will look when sent.
+												Preview of saved matches. Delivered digests follow your alert preferences.
 											</p>
 										</div>
 										<button
+											aria-label="Close digest preview"
 											onClick={() => setIsPreviewOpen(false)}
 											style={{
 												background: "#f1f5f9",
@@ -2382,424 +2244,7 @@ export default function MatchesPage() {
 											</svg>
 										</button>
 									</div>
-									<div
-										style={{
-											overflowY: "auto",
-											padding: "1.5rem",
-											background: "#f8fafc",
-											flex: 1,
-										}}
-									>
-										<div
-											style={{
-												background: "white",
-												borderRadius: "12px",
-												padding: "2.5rem",
-												border: "1px solid #e2e8f0",
-												boxShadow: "0 4px 10px -2px rgba(0, 0, 0, 0.02)",
-											}}
-										>
-											<div
-												style={{
-													textAlign: "center",
-													marginBottom: "2rem",
-													borderBottom: "2px solid #f1f5f9",
-													paddingBottom: "1.5rem",
-													display: "flex",
-													flexDirection: "column",
-													alignItems: "center",
-												}}
-											>
-												<div
-													style={{
-														width: "48px",
-														height: "48px",
-														marginBottom: "8px",
-													}}
-												>
-													<svg
-														width="100%"
-														height="100%"
-														viewBox="0 0 56 56"
-														fill="none"
-														xmlns="http://www.w3.org/2000/svg"
-													>
-														<circle
-															cx="26"
-															cy="22"
-															r="13.5"
-															stroke="#0B2444"
-															strokeWidth="2.5"
-														/>
-														<path
-															d="M34.5 13.5 A13.5 13.5 0 0 1 39 22"
-															stroke="#1A8C7A"
-															strokeWidth="2.5"
-															strokeLinecap="round"
-														/>
-														<circle cx="26" cy="22" r="3.5" fill="#1A8C7A" />
-														<circle
-															cx="21.5"
-															cy="17.5"
-															r="1.5"
-															fill="#22B89F"
-															opacity="0.5"
-														/>
-														<line
-															x1="26"
-															y1="35.5"
-															x2="26"
-															y2="43"
-															stroke="#0B2444"
-															strokeWidth="2.5"
-															strokeLinecap="round"
-														/>
-														<line
-															x1="17"
-															y1="43"
-															x2="35"
-															y2="43"
-															stroke="#0B2444"
-															strokeWidth="2.5"
-															strokeLinecap="round"
-														/>
-														<line
-															x1="18.5"
-															y1="43"
-															x2="18.5"
-															y2="47"
-															stroke="#0B2444"
-															strokeWidth="2"
-															strokeLinecap="round"
-														/>
-														<line
-															x1="33.5"
-															y1="43"
-															x2="33.5"
-															y2="47"
-															stroke="#0B2444"
-															strokeWidth="2"
-															strokeLinecap="round"
-														/>
-													</svg>
-												</div>
-												<h1
-													style={{
-														margin: 0,
-														fontFamily: "'Fraunces', serif",
-														fontSize: "26px",
-														fontWeight: 600,
-														letterSpacing: "-0.03em",
-														color: "#0B2444",
-													}}
-												>
-													Bench<span style={{ color: "#1A8C7A" }}>Scout</span>
-												</h1>
-												<p
-													style={{
-														margin: "4px 0 0 0",
-														color: "#4A6080",
-														fontSize: "11px",
-														textTransform: "uppercase",
-														letterSpacing: "2px",
-														fontWeight: 600,
-														fontFamily: "'DM Sans', sans-serif",
-													}}
-												>
-													Job Digest
-												</p>
-											</div>
-											<p
-												style={{
-													color: "#475569",
-													fontSize: "14px",
-													lineHeight: "1.6",
-													marginBottom: "2rem",
-												}}
-											>
-												Hello,
-												<br />
-												<br />
-												Here are the latest clinical opportunities matched to
-												your specific laboratory parameters. The system
-												identified <strong>{unappliedJobs.length}</strong>{" "}
-												active positions.
-											</p>
-											{t1Jobs.length > 0 && (
-												<div style={{ marginBottom: "2rem" }}>
-													<div
-														style={{
-															background: "#1A8C7A",
-															color: "white",
-															padding: "6px 12px",
-															borderRadius: "6px",
-															fontSize: "11px",
-															fontWeight: 800,
-															display: "inline-block",
-															marginBottom: "1rem",
-															letterSpacing: "0.5px",
-														}}
-													>
-														TIER 1 MATCHES
-													</div>
-													{t1Jobs.map((j) => (
-														<div
-															key={j.id}
-															style={{
-																border: "1px solid #e2e8f0",
-																borderRadius: "12px",
-																padding: "1.25rem",
-																marginBottom: "1rem",
-																borderLeft: "4px solid #1A8C7A",
-															}}
-														>
-															<div
-																style={{
-																	fontWeight: 800,
-																	color: "#0f172a",
-																	fontSize: "15px",
-																}}
-															>
-																{j.role}
-															</div>
-															<div
-																style={{
-																	color: "#0B2444",
-																	fontSize: "13px",
-																	fontWeight: 700,
-																	margin: "6px 0",
-																}}
-															>
-																{j.company} • {j.loc}
-															</div>
-															<div
-																style={{
-																	display: "flex",
-																	justifyContent: "space-between",
-																	alignItems: "center",
-																	marginTop: "1rem",
-																}}
-															>
-																<span
-																	style={{
-																		fontSize: "12px",
-																		color: "#64748b",
-																		fontWeight: 600,
-																	}}
-																>
-																	Match Score:{" "}
-																	<strong
-																		style={{
-																			color: "#1A8C7A",
-																			fontSize: "14px",
-																		}}
-																	>
-																		{j.score}%
-																	</strong>
-																</span>
-																<span
-																	style={{
-																		color: "#0B2444",
-																		fontSize: "12px",
-																		fontWeight: 700,
-																	}}
-																>
-																	Apply Online →
-																</span>
-															</div>
-														</div>
-													))}
-												</div>
-											)}
-											{t2Jobs.length > 0 && (
-												<div style={{ marginBottom: "2rem" }}>
-													<div
-														style={{
-															background: "#0B2444",
-															color: "white",
-															padding: "6px 12px",
-															borderRadius: "6px",
-															fontSize: "11px",
-															fontWeight: 800,
-															display: "inline-block",
-															marginBottom: "1rem",
-															letterSpacing: "0.5px",
-														}}
-													>
-														TIER 2 MATCHES
-													</div>
-													{t2Jobs.map((j) => (
-														<div
-															key={j.id}
-															style={{
-																border: "1px solid #e2e8f0",
-																borderRadius: "12px",
-																padding: "1.25rem",
-																marginBottom: "1rem",
-																borderLeft: "4px solid #0B2444",
-															}}
-														>
-															<div
-																style={{
-																	fontWeight: 800,
-																	color: "#0f172a",
-																	fontSize: "15px",
-																}}
-															>
-																{j.role}
-															</div>
-															<div
-																style={{
-																	color: "#0B2444",
-																	fontSize: "13px",
-																	fontWeight: 700,
-																	margin: "6px 0",
-																}}
-															>
-																{j.company} • {j.loc}
-															</div>
-															<div
-																style={{
-																	display: "flex",
-																	justifyContent: "space-between",
-																	alignItems: "center",
-																	marginTop: "1rem",
-																}}
-															>
-																<span
-																	style={{
-																		fontSize: "12px",
-																		color: "#64748b",
-																		fontWeight: 600,
-																	}}
-																>
-																	Match Score:{" "}
-																	<strong
-																		style={{
-																			color: "#0B2444",
-																			fontSize: "14px",
-																		}}
-																	>
-																		{j.score}%
-																	</strong>
-																</span>
-																<span
-																	style={{
-																		color: "#0B2444",
-																		fontSize: "12px",
-																		fontWeight: 700,
-																	}}
-																>
-																	Apply Online →
-																</span>
-															</div>
-														</div>
-													))}
-												</div>
-											)}
-											{t3Jobs.length > 0 && (
-												<div>
-													<div
-														style={{
-															background: "#94a3b8",
-															color: "white",
-															padding: "6px 12px",
-															borderRadius: "6px",
-															fontSize: "11px",
-															fontWeight: 800,
-															display: "inline-block",
-															marginBottom: "1rem",
-															letterSpacing: "0.5px",
-														}}
-													>
-														TIER 3 MATCHES
-													</div>
-													{t3Jobs.map((j) => (
-														<div
-															key={j.id}
-															style={{
-																border: "1px solid #e2e8f0",
-																borderRadius: "12px",
-																padding: "1.25rem",
-																marginBottom: "1rem",
-																borderLeft: "4px solid #94a3b8",
-															}}
-														>
-															<div
-																style={{
-																	fontWeight: 800,
-																	color: "#0f172a",
-																	fontSize: "15px",
-																}}
-															>
-																{j.role}
-															</div>
-															<div
-																style={{
-																	color: "#0B2444",
-																	fontSize: "13px",
-																	fontWeight: 700,
-																	margin: "6px 0",
-																}}
-															>
-																{j.company} • {j.loc}
-															</div>
-															<div
-																style={{
-																	display: "flex",
-																	justifyContent: "space-between",
-																	alignItems: "center",
-																	marginTop: "1rem",
-																}}
-															>
-																<span
-																	style={{
-																		fontSize: "12px",
-																		color: "#64748b",
-																		fontWeight: 600,
-																	}}
-																>
-																	Match Score:{" "}
-																	<strong
-																		style={{
-																			color: "#94a3b8",
-																			fontSize: "14px",
-																		}}
-																	>
-																		{j.score}%
-																	</strong>
-																</span>
-																<span
-																	style={{
-																		color: "#0B2444",
-																		fontSize: "12px",
-																		fontWeight: 700,
-																	}}
-																>
-																	Apply Online →
-																</span>
-															</div>
-														</div>
-													))}
-												</div>
-											)}
-											<div
-												style={{
-													marginTop: "3rem",
-													paddingTop: "1.5rem",
-													borderTop: "1px solid #e2e8f0",
-													textAlign: "center",
-													color: "#94a3b8",
-													fontSize: "11px",
-												}}
-											>
-												This digest was automatically generated by BenchScout.{" "}
-												<br />
-												You can update your email preferences in System
-												Settings.
-											</div>
-										</div>
-									</div>
+                                    <iframe title="BenchScout email digest preview" sandbox="allow-popups allow-popups-to-escape-sandbox" srcDoc={buildJobDigest(unappliedJobs.filter(job => !job.isDirectPost && job.status === "active" && listingUrl(job.url)).slice(0, 15), { appUrl: window.location.origin }).html} style={{ border: 0, width: "100%", minHeight: 0, flex: 1, height: "100%", background: "#eef3f7" }} />
 								</div>
 							</div>,
 							document.body,

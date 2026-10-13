@@ -1,287 +1,80 @@
 "use client";
 
-import { useEffect, useState, Suspense } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { Suspense, useEffect, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import styles from "./verification.module.css";
 
-// We wrap the main content in a component so we can use useSearchParams safely inside Suspense
+type Result = { ok: boolean; status: number; data: { message?: string; error?: string } };
+
+function VerificationLogo({ loading }: { loading: boolean }) {
+  return <svg className={`${styles.logo} ${loading ? styles.loading : ""}`} viewBox="8 5 36 46" fill="none" aria-hidden="true">
+    <circle cx="26" cy="22" r="13.5" stroke="#0B2444" strokeWidth="2.5" />
+    <circle className={styles.sweep} cx="26" cy="22" r="13.5" stroke="#1A8C7A" strokeWidth="2.8" strokeLinecap="round" strokeDasharray="23 62" />
+    <circle cx="26" cy="22" r="3.5" fill="#1A8C7A" />
+    <circle cx="21.5" cy="17.5" r="1.5" fill="#22B89F" />
+    <path d="M26 35.5V43M17 43H35M18.5 43V47M33.5 43V47" stroke="#0B2444" strokeWidth="2.5" strokeLinecap="round" />
+  </svg>;
+}
+
 function VerifyContent() {
-	const searchParams = useSearchParams();
-	const router = useRouter();
+  const params = useSearchParams();
+  const token = params.get("token");
+  const email = params.get("email");
+  const role = params.get("role") || "candidate";
+  const valid = !!token && !!email && ["candidate", "employer"].includes(role);
+  const pending = useRef<{ key: string; request: Promise<Result> } | null>(null);
+  const [status, setStatus] = useState<"loading" | "success" | "error">(valid ? "loading" : "error");
+  const [message, setMessage] = useState(valid ? "Confirming your email. This should only take a moment." : "This link is incomplete. Open the full link in your confirmation email, or request a new one.");
+  const [retryable, setRetryable] = useState(false);
+  const [attempt, setAttempt] = useState(0);
 
-	const [status, setStatus] = useState<"loading" | "success" | "error">(
-		"loading",
-	);
-	const [message, setMessage] = useState("Verifying your secure token...");
+  useEffect(() => {
+    if (!valid) return;
+    let cancelled = false;
+    const key = `${role}:${email}:${token}:${attempt}`;
+    if (pending.current?.key !== key) {
+      pending.current = { key, request: fetch("/api/auth/verify", {
+        method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email, token, role }),
+      }).then(async response => ({ ok: response.ok, status: response.status, data: await response.json() })) };
+    }
+    void pending.current.request.then(result => {
+      if (cancelled) return;
+      setStatus(result.ok ? "success" : "error");
+      setRetryable(result.status >= 500 || result.status === 429);
+      setMessage(result.ok ? "Your email is confirmed. You can now sign in to BenchScout." : result.data.error || "We couldn’t confirm your email. Please try again.");
+    }).catch(() => {
+      if (cancelled) return;
+      setStatus("error"); setRetryable(true);
+      setMessage("We couldn’t connect. Check your connection and try again.");
+    });
+    return () => { cancelled = true; };
+  }, [valid, token, email, role, attempt]);
 
-	useEffect(() => {
-		const token = searchParams.get("token");
-		const email = searchParams.get("email");
+  function signIn() {
+    window.dispatchEvent(new CustomEvent("openProfileModal", { detail: { mode: "login", role, email: email || "" } }));
+  }
+  function resend() {
+    window.dispatchEvent(new CustomEvent("openProfileModal", { detail: { mode: "verify-sent", role, email: email || "" } }));
+  }
 
-		if (!token || !email) {
-			setStatus("error");
-			setMessage(
-				"Invalid verification link. Missing token or email parameter.",
-			);
-			return;
-		}
-
-		const verifyEmail = async () => {
-			try {
-				const res = await fetch("/api/auth/verify", {
-					method: "POST",
-					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify({ email, token }),
-				});
-
-				const data = await res.json();
-
-				if (res.ok) {
-					setStatus("success");
-					setMessage(data.message || "Email verified successfully!");
-
-					// Optional: Auto-redirect to dashboard/login after 3 seconds
-					setTimeout(() => {
-						router.push("/");
-					}, 3500);
-				} else {
-					setStatus("error");
-					setMessage(data.error || "Verification failed.");
-				}
-			} catch (err) {
-				setStatus("error");
-				setMessage("An unexpected network error occurred. Please try again.");
-			}
-		};
-
-		verifyEmail();
-	}, [searchParams, router]);
-
-	return (
-		<div
-			style={{
-				display: "flex",
-				flexDirection: "column",
-				alignItems: "center",
-				textAlign: "center",
-			}}
-		>
-			{/* Dynamic Icon based on status */}
-			<div
-				style={{
-					width: "80px",
-					height: "80px",
-					borderRadius: "50%",
-					display: "flex",
-					alignItems: "center",
-					justifyContent: "center",
-					marginBottom: "24px",
-					background:
-						status === "loading"
-							? "#eff4ff"
-							: status === "success"
-								? "#dcfce7"
-								: "#fef2f2",
-					color:
-						status === "loading"
-							? "#0058bc"
-							: status === "success"
-								? "#15803d"
-								: "#dc2626",
-				}}
-			>
-				{status === "loading" && (
-					<svg
-						width="40"
-						height="40"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						strokeWidth="2"
-						strokeLinecap="round"
-						strokeLinejoin="round"
-						style={{ animation: "spin 1.5s linear infinite" }}
-					>
-						<line x1="12" y1="2" x2="12" y2="6"></line>
-						<line x1="12" y1="18" x2="12" y2="22"></line>
-						<line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line>
-						<line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line>
-						<line x1="2" y1="12" x2="6" y2="12"></line>
-						<line x1="18" y1="12" x2="22" y2="12"></line>
-						<line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line>
-						<line x1="16.24" y1="4.93" x2="19.07" y2="7.76"></line>
-					</svg>
-				)}
-				{status === "success" && (
-					<svg
-						width="40"
-						height="40"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						strokeWidth="2.5"
-						strokeLinecap="round"
-						strokeLinejoin="round"
-					>
-						<polyline points="20 6 9 17 4 12"></polyline>
-					</svg>
-				)}
-				{status === "error" && (
-					<svg
-						width="40"
-						height="40"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						strokeWidth="2.5"
-						strokeLinecap="round"
-						strokeLinejoin="round"
-					>
-						<circle cx="12" cy="12" r="10"></circle>
-						<line x1="15" y1="9" x2="9" y2="15"></line>
-						<line x1="9" y1="9" x2="15" y2="15"></line>
-					</svg>
-				)}
-			</div>
-
-			{/* Dynamic Text */}
-			<h2
-				style={{
-					fontSize: "24px",
-					fontWeight: 800,
-					color: "#0b1c30",
-					marginBottom: "12px",
-					fontFamily: "'Manrope', sans-serif",
-				}}
-			>
-				{status === "loading"
-					? "Verifying Account..."
-					: status === "success"
-						? "Verification Complete!"
-						: "Verification Failed"}
-			</h2>
-			<p
-				style={{
-					fontSize: "15px",
-					color: "#414755",
-					lineHeight: "1.6",
-					marginBottom: "32px",
-					maxWidth: "400px",
-				}}
-			>
-				{message}
-			</p>
-
-			{/* Action Buttons */}
-			{status === "success" && (
-				<div
-					style={{
-						display: "flex",
-						flexDirection: "column",
-						gap: "12px",
-						width: "100%",
-						maxWidth: "300px",
-					}}
-				>
-					<Link
-						href="/"
-						style={{
-							background: "#0058bc",
-							color: "white",
-							padding: "14px",
-							borderRadius: "12px",
-							fontSize: "15px",
-							fontWeight: 700,
-							textDecoration: "none",
-							boxShadow: "0 4px 14px rgba(0,88,188,0.2)",
-							transition: "transform 0.15s",
-						}}
-					>
-						Proceed to Dashboard
-					</Link>
-					<p style={{ fontSize: "12px", color: "#717786", marginTop: "8px" }}>
-						Redirecting automatically...
-					</p>
-				</div>
-			)}
-
-			{status === "error" && (
-				<Link
-					href="/"
-					style={{
-						background: "#f8f9ff",
-						color: "#0b1c30",
-						border: "1px solid #e8ecf5",
-						padding: "14px 24px",
-						borderRadius: "12px",
-						fontSize: "15px",
-						fontWeight: 700,
-						textDecoration: "none",
-						transition: "background 0.2s",
-					}}
-				>
-					Return Home
-				</Link>
-			)}
-		</div>
-	);
+  return <section className={styles.card} aria-labelledby="verification-heading">
+    <div className={styles.brand}><VerificationLogo loading={status === "loading"} /><span>Bench<span>Scout</span></span></div>
+    <span className={styles.eyebrow}>EMAIL CONFIRMATION</span>
+    <div role="status" aria-live="polite">
+      <h1 id="verification-heading">{status === "loading" ? "Confirming your email" : status === "success" ? "Email confirmed" : "Let’s confirm your email"}</h1>
+      <p className={styles.message}>{message}</p>
+    </div>
+    {status === "success" && role === "employer" && <p className={styles.note}>Company review is a separate step before publishing roles or viewing applicants.</p>}
+    <div className={styles.actions}>
+      {status === "success" && <button className={styles.primary} onClick={signIn}>Sign in to BenchScout <span aria-hidden="true">→</span></button>}
+      {status === "error" && retryable && <button className={styles.primary} onClick={() => { setStatus("loading"); setMessage("Confirming your email. This should only take a moment."); setAttempt(value => value + 1); }}>Try again <span aria-hidden="true">→</span></button>}
+      {status === "error" && !retryable && <button className={styles.primary} onClick={resend}>Request a new link <span aria-hidden="true">→</span></button>}
+      {status !== "loading" && <Link className={styles.home} href="/home">Return to Home</Link>}
+    </div>
+  </section>;
 }
 
 export default function VerifyPage() {
-	return (
-		<div
-			style={{
-				minHeight: "100vh",
-				display: "flex",
-				alignItems: "center",
-				justifyContent: "center",
-				background: "#f8f9ff",
-				padding: "2rem",
-			}}
-		>
-			<style
-				dangerouslySetInnerHTML={{
-					__html: `
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-      `,
-				}}
-			/>
-
-			<div
-				style={{
-					background: "#ffffff",
-					padding: "3rem 2.5rem",
-					borderRadius: "24px",
-					boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.1)",
-					border: "1px solid #e8ecf5",
-					width: "100%",
-					maxWidth: "500px",
-					position: "relative",
-					overflow: "hidden",
-				}}
-			>
-				{/* Decorative Top Gradient */}
-				<div
-					style={{
-						position: "absolute",
-						top: 0,
-						left: 0,
-						right: 0,
-						height: "6px",
-						background: "linear-gradient(90deg, #0058bc, #0ea5e9)",
-					}}
-				></div>
-
-				<Suspense
-					fallback={
-						<div style={{ textAlign: "center", color: "#717786" }}>
-							Loading verification module...
-						</div>
-					}
-				>
-					<VerifyContent />
-				</Suspense>
-			</div>
-		</div>
-	);
+  return <div className={styles.page}><Suspense fallback={<section className={styles.card}><VerificationLogo loading /><p className={styles.message}>Preparing your email confirmation…</p></section>}><VerifyContent /></Suspense></div>;
 }

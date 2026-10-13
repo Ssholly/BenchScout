@@ -1,20 +1,17 @@
+import { safeExternalUrl } from "@/lib/security";
+import { ApiError } from "@/lib/security";
+import { withApi } from "@/lib/api";
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
 
-const prisma = new PrismaClient();
 
-export async function POST(request: Request) {
+
+export const POST = withApi("admin", async (request: Request) => {
 	try {
 		const body = await request.json();
-		const { passcode, role, company, loc, url, salary, skills } = body;
+		const { role, company, loc, url, salary, skills } = body;
 
 		// 🔒 Security check
-		if (passcode !== (process.env.CRON_SECRET || "admin123")) {
-			return NextResponse.json(
-				{ error: "Unauthorized. Invalid Admin Passcode." },
-				{ status: 401 },
-			);
-		}
 
 		if (!role || !company || !loc) {
 			return NextResponse.json(
@@ -39,10 +36,12 @@ export async function POST(request: Request) {
 			role,
 			company,
 			loc,
-			url: url || "#",
+			url: safeExternalUrl(url),
 			salary: salary || "Competitive",
 			skills: skills || "Medical Laboratory Scientist",
 			isDirectPost: false,
+			source: "Admin",
+			lastSeenAt: new Date(),
 			score: 99,
 			tier: 1,
 			status: "active",
@@ -51,13 +50,12 @@ export async function POST(request: Request) {
 		await prisma.job.createMany({ data: jobPayloads });
 
 		return NextResponse.json({ success: true, injectedCount: users.length });
-	} catch (error) {
+	} catch (error: unknown) {
+    if (error instanceof ApiError) throw error;
 		console.error("Admin Injection Error:", error);
 		return NextResponse.json(
 			{ error: "Failed to inject job into network." },
 			{ status: 500 },
 		);
-	} finally {
-		await prisma.$disconnect();
 	}
-}
+}, {});

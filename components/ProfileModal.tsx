@@ -1,4 +1,9 @@
 "use client";
+import { setClientIdentity } from "@/lib/client-identity";
+import { signOutToHome } from "@/lib/client-logout";
+import Toast from "@/components/Toast";
+import Image from "next/image";
+import { useMounted } from "@/lib/use-mounted";
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 
@@ -6,7 +11,7 @@ export default function ProfileModal() {
 	const [isOpen, setIsOpen] = useState(false);
 	const [view, setView] = useState<
 		"login" | "signup" | "profile" | "forgot" | "verify-sent"
-	>("signup");
+	>("login");
 
 	const [isAuthLoading, setIsAuthLoading] = useState(false);
 	const [isUploadingResume, setIsUploadingResume] = useState(false);
@@ -17,7 +22,6 @@ export default function ProfileModal() {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [showPassword, setShowPassword] = useState(false);
-	const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
 	// 🚀 NEW: Employer Specific Fields
 	const [companyName, setCompanyName] = useState("");
@@ -48,7 +52,7 @@ export default function ProfileModal() {
 	} | null>(null);
 	const updateCvRef = useRef<HTMLInputElement>(null);
 	const avatarUploadRef = useRef<HTMLInputElement>(null);
-	const [mounted, setMounted] = useState(false);
+	const mounted = useMounted();
 
 	const showToast = (
 		message: string,
@@ -59,8 +63,13 @@ export default function ProfileModal() {
 	};
 
 	useEffect(() => {
-		setMounted(true);
-		const handleOpen = async () => {
+		const handleOpen = async (event: Event) => {
+			const detail = (event as CustomEvent<{ mode?: string; role?: string; email?: string }>).detail;
+			if (detail?.mode === "forgot" || detail?.mode === "verify-sent" || detail?.mode === "login") {
+				setLoginPhase(detail.role === "employer" ? "employer" : "scientist");
+				setEmail(typeof detail.email === "string" ? detail.email : "");
+				setView(detail.mode); setIsOpen(true); return;
+			}
 			// If Employer is logged in, route directly to B2B portal
 			if (localStorage.getItem("benchscout_active_employer")) {
 				window.location.href = "/employer";
@@ -75,11 +84,7 @@ export default function ProfileModal() {
 			if (savedPhase) setCareerPhase(savedPhase);
 
 			if (activeEmail) {
-				const savedAvatar = localStorage.getItem(
-					`labpro_avatar_${activeEmail}`,
-				);
-				if (savedAvatar) setAvatar(savedAvatar);
-				else setAvatar(null);
+				setAvatar(null);
 
 				const savedResume = localStorage.getItem(
 					`labpro_resume_name_${activeEmail}`,
@@ -91,11 +96,11 @@ export default function ProfileModal() {
 				setEmail(activeEmail);
 
 				try {
-					const res = await fetch(`/api/user?email=${activeEmail}`);
+					const res = await fetch(`/api/user?email=${encodeURIComponent(activeEmail)}`);
 					const data = await res.json();
 					if (data.success && data.user) {
 						setActiveUser(data.user);
-						if (data.user.avatarUrl) setAvatar(data.user.avatarUrl);
+						setAvatar(data.user.documentStatus?.avatar === "private" ? data.user.avatarUrl : null);
 						if (data.user.careerPhase) {
 							setCareerPhase(data.user.careerPhase);
 							localStorage.setItem(
@@ -107,9 +112,9 @@ export default function ProfileModal() {
 							setResumeName("Resume Attached");
 						}
 					}
-				} catch (error) {}
+				} catch {}
 			} else {
-				setView("signup");
+				setView("login");
 			}
 			setIsOpen(true);
 		};
@@ -121,17 +126,7 @@ export default function ProfileModal() {
 	if (!isOpen || !mounted) return null;
 
 	const handlePhaseChange = (phase: "licensed" | "internship") => {
-		setCareerPhase(phase);
-		localStorage.setItem("labpro_career_phase", phase);
-		window.dispatchEvent(new Event("userStateChanged"));
-		showToast(
-			`Platform switched to ${phase === "internship" ? "Internship" : "Licensed"} mode.`,
-		);
-	};
-
-	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		if (e.target.files && e.target.files.length > 0)
-			setSelectedFile(e.target.files[0]);
+		if (phase !== careerPhase) window.location.assign("/settings#career-profile");
 	};
 
 	const handleUpdateCv = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -159,7 +154,7 @@ export default function ProfileModal() {
 				} else {
 					showToast(data.error || "Failed to upload resume.", "error");
 				}
-			} catch (err) {
+			} catch {
 				showToast("Network error uploading resume.", "error");
 			} finally {
 				setIsUploadingResume(false);
@@ -197,7 +192,7 @@ export default function ProfileModal() {
 				} else {
 					showToast("Failed to sync avatar to cloud.", "error");
 				}
-			} catch (err) {
+			} catch {
 				showToast("Network error syncing avatar.", "error");
 			} finally {
 				setIsUploadingAvatar(false);
@@ -230,13 +225,13 @@ export default function ProfileModal() {
 				const data = await res.json();
 
 				if (data.success) {
-					setView("login");
+					setView(data.requiresEmailVerification ? "verify-sent" : "login");
 					setLoginPhase("employer");
-					showToast("B2B Node Registered! Please log in.");
+					showToast(data.warning || data.message || "Confirm your employer email before signing in.", data.warning ? "warning" : "success");
 				} else {
 					showToast(data.error, "error");
 				}
-			} catch (err) {
+			} catch {
 				showToast("Network error during registration.", "error");
 			} finally {
 				setIsAuthLoading(false);
@@ -245,16 +240,15 @@ export default function ProfileModal() {
 		}
 
 		// 🔬 SCIENTIST REGISTRATION ROUTE
-		if (!name || !email || !password || !selectedFile) {
+		if (!name || !email || !password) {
 			setIsAuthLoading(false);
-			return showToast("Please fill all fields and select a resume.", "error");
+			return showToast("Please fill in your name, email, and password.", "error");
 		}
 
 		const formData = new FormData();
 		formData.append("name", name);
 		formData.append("email", email);
 		formData.append("password", password);
-		formData.append("resume", selectedFile);
 		formData.append("careerPhase", signupPhase);
 
 		try {
@@ -264,14 +258,15 @@ export default function ProfileModal() {
 			});
 			const data = await res.json();
 			if (data.success) {
-				localStorage.setItem(`labpro_resume_name_${email}`, selectedFile.name);
 				localStorage.setItem("labpro_career_phase", signupPhase);
 				setCareerPhase(signupPhase as "licensed" | "internship");
 				setView("verify-sent");
+				setLoginPhase("scientist");
+				if (data.warning) showToast(data.warning, "error");
 			} else {
 				showToast(data.error, "error");
 			}
-		} catch (err: any) {
+		} catch {
 			showToast("Network error during registration.", "error");
 		} finally {
 			setIsAuthLoading(false);
@@ -293,6 +288,7 @@ export default function ProfileModal() {
 				});
 				const data = await res.json();
 				if (data.success) {
+					setClientIdentity("employer", data.employer.id);
 					localStorage.setItem(
 						"benchscout_active_employer",
 						JSON.stringify(data.employer),
@@ -304,7 +300,7 @@ export default function ProfileModal() {
 				} else {
 					showToast(data.error, "error");
 				}
-			} catch (err) {
+			} catch {
 				showToast("Network error during login.", "error");
 			} finally {
 				setIsAuthLoading(false);
@@ -321,6 +317,7 @@ export default function ProfileModal() {
 			});
 			const data = await res.json();
 			if (data.success) {
+				setClientIdentity("candidate", data.user.id);
 				localStorage.setItem("labpro_active_user", data.user.email);
 				if (data.user.careerPhase) {
 					localStorage.setItem("labpro_career_phase", data.user.careerPhase);
@@ -331,13 +328,12 @@ export default function ProfileModal() {
 					email: data.user.email,
 					keywords: data.user.keywords || "",
 				});
-				window.dispatchEvent(new Event("userStateChanged"));
-				showToast("Welcome back!");
-				setTimeout(() => setIsOpen(false), 1000);
+				// Replace the whole page so the previous account's component state cannot survive.
+				window.location.replace("/home");
 			} else {
 				showToast(data.error, "error");
 			}
-		} catch (err) {
+		} catch {
 			showToast("Network error during login.", "error");
 		} finally {
 			setIsAuthLoading(false);
@@ -352,15 +348,15 @@ export default function ProfileModal() {
 			const res = await fetch("/api/auth/resend-verification", {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ email }),
+				body: JSON.stringify({ email, role: loginPhase === "employer" ? "employer" : "candidate" }),
 			});
 			const data = await res.json();
 			if (res.ok) {
-				showToast("A new verification link has been sent.");
+				showToast(data.message || "Check your inbox for a new verification link.");
 			} else {
 				showToast(data.error || "Failed to resend link.", "error");
 			}
-		} catch (error) {
+		} catch {
 			showToast("Network error.", "error");
 		} finally {
 			setIsAuthLoading(false);
@@ -375,28 +371,20 @@ export default function ProfileModal() {
 			const res = await fetch("/api/auth/forgot", {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ email }),
+				body: JSON.stringify({ email, role: loginPhase === "employer" ? "employer" : "candidate" }),
 			});
 			const data = await res.json();
-			showToast(data.message || "Request processed.");
+			showToast(data.message || data.error || "Request processed.", res.ok ? "success" : "error");
 			if (res.ok) setView("login");
-		} catch (error) {
+		} catch {
 			showToast("Network error.", "error");
 		} finally {
 			setIsAuthLoading(false);
 		}
 	};
 
-	const handleLogout = () => {
-		localStorage.removeItem("labpro_active_user");
-		localStorage.removeItem("labpro_results");
-		localStorage.removeItem("labpro_history");
-		localStorage.removeItem("labpro_scheduler_active");
-		window.dispatchEvent(new Event("schedulerUpdated"));
-		setActiveUser(null);
-		setAvatar(null);
-		setView("login");
-		window.location.href = "/";
+	const handleLogout = async () => {
+		if (!(await signOutToHome())) showToast("Couldn’t sign out. Please try again.", "error");
 	};
 
 	const inputStyle = {
@@ -420,7 +408,7 @@ export default function ProfileModal() {
 				top: 0,
 				left: 0,
 				width: "100vw",
-				height: "100vh",
+				height: "100dvh",
 				background: "rgba(15, 23, 42, 0.5)",
 				backdropFilter: "blur(12px)",
 				zIndex: 999999,
@@ -430,38 +418,15 @@ export default function ProfileModal() {
 				padding: "1rem",
 			}}
 		>
-			{toast && (
-				<div
-					style={{
-						position: "absolute",
-						top: "24px",
-						left: "50%",
-						transform: "translateX(-50%)",
-						background:
-							toast.type === "success"
-								? "rgba(15, 23, 42, 0.9)"
-								: "rgba(153, 27, 27, 0.9)",
-						color: "white",
-						padding: "12px 24px",
-						borderRadius: "30px",
-						fontSize: "14px",
-						fontWeight: 700,
-						zIndex: 1000001,
-						display: "flex",
-						alignItems: "center",
-						gap: "8px",
-					}}
-				>
-					{toast.type === "success" ? "✓" : "✕"} {toast.message}
-				</div>
-			)}
+			{toast && <Toast message={toast.message} type={toast.type} />}
 
 			<div
+                className="account-dialog"
 				style={{
 					background: "white",
 					width: "100%",
 					maxWidth: "480px",
-					maxHeight: "90vh",
+					maxHeight: "calc(100dvh - 2rem)",
 					display: "flex",
 					flexDirection: "column",
 					borderRadius: "24px",
@@ -526,7 +491,7 @@ export default function ProfileModal() {
 								lineHeight: "1.5",
 							}}
 						>
-							We just sent a verification link to <br />
+							Check your inbox for the confirmation link for <br />
 							<span style={{ color: "#0f172a", fontWeight: 700 }}>{email}</span>
 							.
 						</p>
@@ -595,6 +560,7 @@ export default function ProfileModal() {
 				) : (
 					<>
 						<div
+                            className="account-dialog-header"
 							style={{
 								padding: "2rem 2.5rem 1.5rem 2.5rem",
 								borderBottom: "1px solid #f1f5f9",
@@ -714,6 +680,7 @@ export default function ProfileModal() {
 							</div>
 							<button
 								onClick={() => setIsOpen(false)}
+                                aria-label="Close account dialog"
 								style={{
 									background: "#f1f5f9",
 									border: "none",
@@ -748,7 +715,7 @@ export default function ProfileModal() {
 							</button>
 						</div>
 
-						<div style={{ padding: "2rem 2.5rem", overflowY: "auto", flex: 1 }}>
+						<div className="account-dialog-body" style={{ padding: "2rem 2.5rem", overflowY: "auto", flex: 1, minHeight: 0 }}>
 							{(view === "signup" || view === "login") && (
 								<div>
 									{view === "signup" && (
@@ -896,7 +863,8 @@ export default function ProfileModal() {
 										</>
 									)}
 
-									{view === "login" && (
+
+                                    {view === "login" && (
 										<div style={{ marginBottom: "16px", marginTop: "4px" }}>
 											<div
 												style={{
@@ -981,6 +949,8 @@ export default function ProfileModal() {
 
 									<input
 										type="email"
+                                        aria-label="Email address"
+                                        autoComplete="email"
 										placeholder={
 											signupPhase === "employer" || loginPhase === "employer"
 												? "Corporate Email Address"
@@ -995,6 +965,8 @@ export default function ProfileModal() {
 										<input
 											type={showPassword ? "text" : "password"}
 											placeholder="Password"
+                                            aria-label="Password"
+                                            autoComplete={view === "signup" ? "new-password" : "current-password"}
 											value={password}
 											onChange={(e) => setPassword(e.target.value)}
 											style={{
@@ -1021,7 +993,8 @@ export default function ProfileModal() {
 										</button>
 									</div>
 
-									{view === "login" && (
+									{view === "signup" && <p style={{ fontSize: "12px", color: "#64748b", marginTop: "8px" }}>Use at least 12 characters for your password.</p>}
+                                    {view === "login" && (
 										<div
 											style={{
 												display: "flex",
@@ -1067,74 +1040,7 @@ export default function ProfileModal() {
 										</div>
 									)}
 
-									{view === "signup" && signupPhase !== "employer" && (
-										<div
-											style={{
-												background: "#f8fafc",
-												padding: "1.5rem",
-												borderRadius: "12px",
-												border: "2px dashed #cbd5e1",
-												textAlign: "center",
-												marginTop: "1rem",
-												transition: "0.2s",
-											}}
-											onMouseEnter={(e) =>
-												(e.currentTarget.style.borderColor = "#1A8C7A")
-											}
-											onMouseLeave={(e) =>
-												(e.currentTarget.style.borderColor = "#cbd5e1")
-											}
-										>
-											<p
-												style={{
-													margin: "0 0 10px 0",
-													fontSize: "11px",
-													color: "#475569",
-													fontWeight: 800,
-													letterSpacing: "0.5px",
-												}}
-											>
-												UPLOAD RESUME (AI SCAN)
-											</p>
-											<input
-												type="file"
-												id="resume"
-												accept=".pdf,.doc,.docx"
-												hidden
-												onChange={handleFileChange}
-												disabled={isAuthLoading}
-											/>
-											<label
-												htmlFor="resume"
-												style={{
-													cursor: isAuthLoading ? "wait" : "pointer",
-													color: "#0B2444",
-													fontWeight: 800,
-													fontSize: "14px",
-													display: "flex",
-													alignItems: "center",
-													justifyContent: "center",
-													gap: "8px",
-												}}
-											>
-												<svg
-													width="18"
-													height="18"
-													viewBox="0 0 24 24"
-													fill="none"
-													stroke="currentColor"
-													strokeWidth="2.5"
-												>
-													<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-													<polyline points="17 8 12 3 7 8"></polyline>
-													<line x1="12" y1="3" x2="12" y2="15"></line>
-												</svg>
-												{selectedFile
-													? selectedFile.name
-													: "Select PDF or Word Doc"}
-											</label>
-										</div>
-									)}
+									{view === "signup" && signupPhase !== "employer" && <p style={{ color: "#64748b", fontSize: "12px", marginTop: "12px", lineHeight: 1.5 }}>Add your PDF CV and license documents after signing in.</p>}
 
 									<button
 										onClick={view === "signup" ? handleRegister : handleLogin}
@@ -1181,18 +1087,19 @@ export default function ProfileModal() {
 												? "Already have an account? "
 												: "Need an account? "}
 										</span>
-										<span
+										<button type="button"
 											onClick={() =>
 												setView(view === "signup" ? "login" : "signup")
 											}
 											style={{
-												color: "#1A8C7A",
+												background: "none", border: "none", padding: 0, font: "inherit",
+                                                color: "#1A8C7A",
 												fontWeight: 800,
 												cursor: "pointer",
 											}}
 										>
 											{view === "signup" ? "Log in" : "Sign up"}
-										</span>
+										</button>
 									</div>
 								</div>
 							)}
@@ -1201,6 +1108,8 @@ export default function ProfileModal() {
 								<div>
 									<input
 										type="email"
+                                        aria-label="Email address"
+                                        autoComplete="email"
 										placeholder="Email Address"
 										value={email}
 										onChange={(e) => setEmail(e.target.value)}
@@ -1297,7 +1206,7 @@ export default function ProfileModal() {
 												}}
 											>
 												{avatar ? (
-													<img
+													<Image unoptimized width={80} height={80}
 														src={avatar}
 														alt="Profile"
 														style={{
@@ -1540,7 +1449,7 @@ export default function ProfileModal() {
 										<div>
 											<input
 												type="file"
-												accept=".pdf,.doc,.docx"
+												accept="application/pdf,.pdf"
 												hidden
 												ref={updateCvRef}
 												onChange={handleUpdateCv}
@@ -1587,6 +1496,7 @@ export default function ProfileModal() {
 											AI EXTRACTED SKILLS & ROLES
 										</div>
 										<div
+											className="profile-keywords"
 											style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}
 										>
 											{activeUser?.keywords &&

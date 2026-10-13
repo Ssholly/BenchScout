@@ -1,9 +1,11 @@
+import { ApiError } from "@/lib/security";
+import { withApi } from "@/lib/api";
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
 
-const prisma = new PrismaClient();
 
-export async function POST(request: Request) {
+
+export const POST = withApi("candidate", async (request: Request) => {
 	try {
 		const { email } = await request.json();
 
@@ -17,7 +19,8 @@ export async function POST(request: Request) {
 		});
 
 		return NextResponse.json({ success: true });
-	} catch (error) {
+	} catch (error: unknown) {
+    if (error instanceof ApiError) throw error;
 		return NextResponse.json({ error: "Failed to update" }, { status: 500 });
 	}
-}
+}, {});

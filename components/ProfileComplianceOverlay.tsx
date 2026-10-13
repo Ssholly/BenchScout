@@ -1,4 +1,6 @@
 "use client";
+import { useMounted } from "@/lib/use-mounted";
+import type { ComplianceMetrics } from "@/lib/types";
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 
@@ -9,21 +11,16 @@ export default function ProfileComplianceOverlay({
 	isOpen: boolean;
 	onClose: () => void;
 }) {
-	const [data, setData] = useState<any>(null);
+	const [data, setData] = useState<ComplianceMetrics | null>(null);
 	const [loading, setLoading] = useState(true);
-	const [mounted, setMounted] = useState(false);
-
-	useEffect(() => {
-		setMounted(true);
-	}, []);
+	const mounted = useMounted();
 
 	useEffect(() => {
 		if (!isOpen) return;
 		const email = localStorage.getItem("labpro_active_user");
 		if (!email) return;
 
-		setLoading(true);
-		fetch(`/api/user/compliance?email=${email}`)
+		fetch(`/api/user/compliance?email=${encodeURIComponent(email)}`)
 			.then((res) => res.json())
 			.then((resData) => {
 				if (resData.success) setData(resData);
@@ -59,9 +56,9 @@ export default function ProfileComplianceOverlay({
 			bg: "rgba(22, 163, 74, 0.04)",
 			border: "rgba(22, 163, 74, 0.1)",
 			progressBg: "linear-gradient(90deg, #4ade80, #16a34a)",
-			badge: "SECURE",
+			badge: "RECORDED",
 			message:
-				"Your practicing credentials are up to date and fully compliant.",
+				"Your recorded expiry date is more than 60 days away.",
 		};
 	};
 
@@ -223,8 +220,8 @@ export default function ProfileComplianceOverlay({
 							{/* Integrated Compliance Card Container */}
 							<div
 								style={{
-									background: theme.bg,
-									border: `1px solid ${theme.border}`,
+									background: theme!.bg,
+									border: `1px solid ${theme!.border}`,
 									borderRadius: "20px",
 									padding: "1.25rem",
 									display: "flex",
@@ -243,17 +240,17 @@ export default function ProfileComplianceOverlay({
 										style={{
 											fontSize: "10px",
 											fontWeight: 900,
-											color: theme.text,
+											color: theme!.text,
 											letterSpacing: "0.5px",
 										}}
 									>
-										SYSTEM AUDIT: {theme.badge}
+										SYSTEM AUDIT: {theme!.badge}
 									</span>
 									<span
 										style={{
 											fontSize: "14px",
 											fontWeight: 900,
-											color: theme.text,
+											color: theme!.text,
 										}}
 									>
 										{data.daysLeft <= 0 ? "0" : data.daysLeft} Days Left
@@ -267,7 +264,7 @@ export default function ProfileComplianceOverlay({
 										lineHeight: "1.4",
 									}}
 								>
-									{theme.message}
+									{theme!.message}
 								</p>
 
 								{/* 🚀 EXTRACTED ROUTING LINK VIA OFFICIAL GATWAY PROFILE */}
@@ -277,7 +274,7 @@ export default function ProfileComplianceOverlay({
 									rel="noopener noreferrer"
 									style={{
 										marginTop: "4px",
-										background: data.daysLeft <= 60 ? theme.text : "#0f172a",
+										background: data.daysLeft <= 60 ? theme!.text : "#0f172a",
 										color: "white",
 										textDecoration: "none",
 										textAlign: "center",
@@ -425,7 +422,7 @@ export default function ProfileComplianceOverlay({
 										style={{
 											width: `${standardPercentage}%`,
 											height: "100%",
-											background: theme.progressBg,
+											background: theme!.progressBg,
 											borderRadius: "4px",
 											transition: "width 0.5s ease",
 										}}
@@ -438,7 +435,7 @@ export default function ProfileComplianceOverlay({
 										fontWeight: 600,
 									}}
 								>
-									Official Registry Expiration Date: {data.expiryFormatted}
+									Recorded expiration date: {data.expiryFormatted}
 								</span>
 							</div>
 
@@ -464,7 +461,7 @@ export default function ProfileComplianceOverlay({
 								>
 									<span>ANNUAL CPD TARGET</span>
 									<span style={{ color: "#0058bc", fontWeight: 800 }}>
-										{data.cpdPoints} / 30 Credits Earned
+										{data.cpdPoints} credits recorded (tracking target: 30)
 									</span>
 								</div>
 								<div

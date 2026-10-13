@@ -9,7 +9,7 @@ const transporter = nodemailer.createTransport({
 	},
 });
 
-export async function sendJobDigest(userEmail: string, jobs: any[]) {
+export async function sendJobDigest(userEmail: string, jobs: (Pick<import("@/lib/types").ClientJob, "role" | "company" | "loc" | "score" | "tier" | "url"> & { title?: string })[]) {
 	if (jobs.length === 0) return;
 
 	const date = new Date().toLocaleDateString("en-GB", {
@@ -23,7 +23,7 @@ export async function sendJobDigest(userEmail: string, jobs: any[]) {
 	const t2 = jobs.filter((j) => j.tier === 2);
 	const t3 = jobs.filter((j) => j.tier === 3); // NEW: Now we are successfully gathering Tier 3 jobs!
 
-	const formatJobs = (jobList: any[], tierColor: string) => {
+	const formatJobs = (jobList: (Pick<import("@/lib/types").ClientJob, "role" | "company" | "loc" | "score" | "tier" | "url"> & { title?: string })[], tierColor: string) => {
 		return jobList
 			.map(
 				(j) => `

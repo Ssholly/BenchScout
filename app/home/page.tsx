@@ -1,6 +1,8 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
+import { HOME_MENU_ON_DEMAND } from "@/lib/home-navigation";
 
 const AutonomousIcon = ({ size = 24, stroke = 2.5 }) => (
 	<svg
@@ -296,32 +298,56 @@ const DigestMailIcon = ({ size = 24, stroke = 2.5 }) => (
 
 export default function HomePage() {
 	const router = useRouter();
+
 	const [tourStep, setTourStep] = useState(0);
+    const tourDialog = useRef<HTMLDivElement>(null);
+    const tourOpen = tourStep > 0;
+    useEffect(() => {
+        if (!tourOpen) return;
+        const previousFocus = document.activeElement;
+        document.body.classList.add("walkthrough-open");
+        tourDialog.current?.querySelector<HTMLButtonElement>("button")?.focus();
+        const onKeyDown = (event: KeyboardEvent) => {
+            if (event.key === "Escape") setTourStep(0);
+            if (event.key !== "Tab") return;
+            const buttons = Array.from(tourDialog.current?.querySelectorAll<HTMLButtonElement>("button:not(:disabled)") || []);
+            const first = buttons[0], last = buttons[buttons.length - 1];
+            if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
+            else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
+        };
+        document.addEventListener("keydown", onKeyDown);
+        return () => {
+            document.body.classList.remove("walkthrough-open");
+            document.removeEventListener("keydown", onKeyDown);
+            if (previousFocus instanceof HTMLElement && previousFocus.isConnected) previousFocus.focus({ preventScroll: true });
+        };
+    }, [tourOpen]);
+
 
 	const tourContent = [
 		{
 			title: "Welcome to BenchScout",
-			text: "You have arrived at the final version of our platform, a 100% autonomous career engine built exclusively for Medical Laboratory Scientists in Nigeria. This tour will explain how the entire ecosystem works to build your future.",
+			text: "Find laboratory roles across Nigeria, keep your application documents together, and track your next steps. This tour shows how to get started.",
 			icon: WelcomeIcon,
 		},
 		{
-			title: "The Autonomous Engine",
-			text: "Every morning at your set time, our engines wake up completely on their own. They don't need a human to click anything. They deploy background workers that securely fan out across major Nigerian job portals, hospital networks, and MLSCN announcements simultaneously.",
+			title: "Job scans and schedules",
+			text: "Run a scan when you need fresh matches, or save a schedule with your preferred days, time, and timezone. Source availability can affect results; check Run History after a scheduled scan.",
 			icon: AutonomousIcon,
 		},
 		{
-			title: "Resume Parsing & Scoring AI",
-			text: "Our proprietary algorithm reads your uploaded resume. It extracts your complex clinical skills (e.g., hematology, microbiology, phlebotomy,...). When the engine finds a job, it analyzes that description against YOUR unique skills, calculating a precise Match Score out of 100%.",
+			title: "Skills and match relevance",
+			text: "Upload your CV and review your skill keywords in Settings. Matches use the vacancy title, location, career phase, and keywords. Scores indicate relevance; check the actual requirements before applying.",
 			icon: ResumeMatchIcon,
 		},
 		{
 			title: "Tiered Filtering",
-			text: "Jobs aren't just listed; they are ranked. Scores above 90% are marked 'Tier 1' (Priority). 75-90% are 'Tier 2'. Anything below that or non-clinical is filtered out. Only high-quality, matched opportunities ever make it past this stage.",
+			text: "Matches are grouped into three relevance tiers: Tier 1 at 90 or above, Tier 2 from 75 to 89, and Tier 3 below 75. Choose a minimum score and whether to include Tier 3.",
 			icon: TieredScoringIcon,
 		},
 		{
 			title: "Daily Email Digest",
-			text: "Immediately after filtering, the engine compiles a beautifully designed Daily Digest email containing only your new, high-scoring matches. This email is dispatched directly to your inbox before you've likely even woken up, giving you a massive head start.",
+			text: "Enable email alerts to receive newly discovered matches after a scan. Select the tiers and keywords you want to hear about. Saved matches remain available even if an email cannot be delivered.",
 			icon: EmailIcon,
 		},
 		{
@@ -331,12 +357,12 @@ export default function HomePage() {
 		},
 		{
 			title: "Job Matches",
-			text: "The definitive list. Unlike the email summary, this page hosts every currently open job matched to you. You can review full descriptions, match scores, company data, and click 'Apply' to log the attempt.",
+			text: "Review saved matches, their source links, and the last time each listing was seen. Confirm that a vacancy is still open on its source website before applying.",
 			icon: JobMatchesIcon,
 		},
 		{
 			title: "Applied & Tracking",
-			text: "Your career pipeline. Whenever you click 'Apply' on a match, it moves here. Stop using spreadsheets; BenchScout tracks the date and role, so you are always organized.",
+			text: "Keep your applications in one place. For employer-posted roles, the employer updates the application status. For external listings, track your own progress after applying on the source website.",
 			icon: AppliedIcon,
 		},
 		{
@@ -346,17 +372,17 @@ export default function HomePage() {
 		},
 		{
 			title: "Salary Intelligence",
-			text: "Anonymous, verified monthly salary data from peers and live job market analysis. View industry averages, monitor Tier 1 base salaries, and contribute securely to improve market transparency for all MLS professionals.",
+			text: "Explore monthly salary contributions from other users and add your own. Reports are self-reported, and small samples may not represent the wider market.",
 			icon: SalaryIcon,
 		},
 		{
 			title: "The Scheduler",
-			text: "Your automation control center. Here you can set your timer and verify if your daily job-matching engine is active, pause it if you are taking a break, and review the exact background status of your autonomous web scrapers.",
+			text: "Save your scan days, time, and timezone, and choose whether to receive email alerts. Review Run History to confirm completed scans.",
 			icon: SchedulerIcon,
 		},
 		{
 			title: "Run History",
-			text: "Transparency is key. Every time the autonomous engine runs or you trigger a Quick Scan, it logs the results here. Review past matches found, run durations, and performance metrics over time.",
+			text: "See when a scan ran, how many new matches it found, and whether email delivery succeeded. Source failures preserve your existing matches.",
 			icon: HistoryIcon,
 		},
 		{
@@ -386,27 +412,21 @@ export default function HomePage() {
 		}
 	};
 
-	const glassBaseStyle = {
-		background: "rgba(255, 255, 255, 0.5)",
-		backdropFilter: "blur(20px)",
-		WebkitBackdropFilter: "blur(20px)",
-		border: "1px solid rgba(255, 255, 255, 0.2)",
-		borderRadius: "24px",
-		boxShadow: "0 8px 32px rgba(31, 38, 135, 0.07)",
-	};
-
 	const featureCardStyle = {
 		position: "relative" as const,
 		background: "transparent",
 		padding: "1.5rem",
 		borderRadius: "16px",
 		transition: "all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
-		cursor: "default",
+		cursor: "pointer",
+		textAlign: "left" as const,
+		fontFamily: "inherit",
+		border: "1px solid transparent",
 		zIndex: 1,
 	};
 
 	return (
-		<div
+		<div className="home-container"
 			style={{
 				minHeight: "100vh",
 				background: "transparent",
@@ -425,7 +445,15 @@ export default function HomePage() {
             }
 
             .premium-feature-card {
+               display: flex;
+               flex-direction: column;
+               align-items: stretch;
+               justify-content: flex-start;
                transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s;
+            }
+            .premium-feature-card:focus-visible {
+               outline: 2px solid #1A8C7A;
+               outline-offset: 3px;
             }
 
             .premium-feature-card::before {
@@ -469,23 +497,23 @@ export default function HomePage() {
                color: #1A8C7A !important;
                transition: transform 0.4s ease, color 0.4s ease;
             }
-            
+
             .explore-cta-button {
                 transition: all 0.3s ease;
-                background: #0B2444 !important; 
-                box-shadow: 0 10px 25px rgba(11, 36, 68, 0.3) !important; 
+                background: #0B2444 !important;
+                box-shadow: 0 10px 25px rgba(11, 36, 68, 0.3) !important;
                 font-weight: 900 !important;
             }
             .explore-cta-button:hover {
                 transform: translateY(-3px) scale(1.02);
-                background: #1A8C7A !important; 
-                box-shadow: 0 12px 30px rgba(26, 140, 122, 0.45) !important; 
+                background: #1A8C7A !important;
+                box-shadow: 0 12px 30px rgba(26, 140, 122, 0.45) !important;
             }
           `,
 				}}
 			/>
 
-			<div
+			<div className="home-page"
 				style={{
 					maxWidth: "1200px",
 					margin: "0 auto",
@@ -493,7 +521,7 @@ export default function HomePage() {
 					zIndex: 1,
 				}}
 			>
-				<div
+				<div className="home-hero"
 					style={{
 						textAlign: "center",
 						marginBottom: "5rem",
@@ -501,7 +529,7 @@ export default function HomePage() {
 					}}
 				>
 					{/* 🚀 RESTORED EXACT BRAND LOGO LOCKUP FOR HERO SECTION */}
-					<div
+					<div className="home-brand"
 						style={{
 							display: "flex",
 							alignItems: "center",
@@ -510,10 +538,10 @@ export default function HomePage() {
 							marginBottom: "1.5rem",
 						}}
 					>
-						<div style={{ width: "80px", height: "80px" }}>
+						<div className="home-brand-icon" style={{ width: "80px", height: "80px" }}>
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
-								viewBox="0 0 56 56"
+								viewBox="10 7 32 42"
 								fill="none"
 								width="100%"
 								height="100%"
@@ -599,7 +627,8 @@ export default function HomePage() {
 						<div
 							style={{
 								fontFamily: "'Fraunces', serif",
-								fontSize: "76px" /* 🚀 INCREASED SIZE */,
+								whiteSpace: "nowrap",
+								fontSize: "clamp(1.75rem, 6vw, 4.75rem)",
 								fontWeight: 600,
 								letterSpacing: "-0.04em",
 								color: "#0B2444",
@@ -612,7 +641,7 @@ export default function HomePage() {
 
 					<h1
 						style={{
-							fontSize: "3.5rem",
+							fontSize: "clamp(1.5rem, 4.5vw, 3.5rem)",
 							fontWeight: 900,
 							color: "#0f172a",
 							letterSpacing: "-1.5px",
@@ -620,7 +649,7 @@ export default function HomePage() {
 							lineHeight: 1.05,
 						}}
 					>
-						The Career Engine for
+						The Career Hub for
 						<br />
 						<span
 							style={{
@@ -633,6 +662,7 @@ export default function HomePage() {
 						</span>
 					</h1>
 					<p
+						className="home-intro"
 						style={{
 							fontSize: "1.2rem",
 							color: "#64748b",
@@ -642,17 +672,20 @@ export default function HomePage() {
 							fontWeight: 500,
 						}}
 					>
-						BenchScout is the definitive MLS career ecosystem. Our engines
-						autonomously scan, score, and filter premium laboratory roles from
-						across Nigeria, delivering tailored opportunities directly to your
-						inbox before dawn.
+						Find laboratory roles across Nigeria, understand why they match,
+                        and keep your applications and credentials in one place.
+                        Scan when you need to or save a schedule that suits you.
 					</p>
 
+					<div className={HOME_MENU_ON_DEMAND ? "home-actions" : undefined}>
+					{HOME_MENU_ON_DEMAND && <button className="explore-cta-button home-dashboard-button" onClick={() => router.push(localStorage.getItem("benchscout_active_employer") ? "/employer" : "/")}>
+						Open my dashboard <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
+					</button>}
 					<button
 						onClick={() => setTourStep(1)}
-						className="explore-cta-button"
+						className={HOME_MENU_ON_DEMAND ? "home-explore-secondary" : "explore-cta-button"}
 						style={{
-							color: "white",
+							color: HOME_MENU_ON_DEMAND ? "#0B2444" : "white",
 							padding: "18px 36px",
 							borderRadius: "14px",
 							fontSize: "16px",
@@ -663,7 +696,7 @@ export default function HomePage() {
 							gap: "10px",
 						}}
 					>
-						Explore the Autonomous System
+						Explore BenchScout
 						<svg
 							width="22"
 							height="22"
@@ -675,35 +708,36 @@ export default function HomePage() {
 							<path d="M5 12h14M12 5l7 7-7 7" />
 						</svg>
 					</button>
+					</div>
 				</div>
 
-				<div
+				<div className="home-features"
 					style={{
 						display: "grid",
-						gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+						gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 280px), 1fr))",
 						gap: "1.5rem",
 						paddingBottom: "4rem",
 					}}
 				>
 					{[
 						{
-							title: "Autonomous Sourcing",
-							desc: "No human input required. Daily, our engines scan Nigerian hospitals, job boards, and clinic portals automatically.",
+							title: "Scheduled job scans",
+							desc: "Find listings from supported job sources. Run a scan yourself or save your preferred schedule.",
 							icon: AutonomousIcon,
 						},
 						{
-							title: "Resume Match AI",
-							desc: "Our proprietary scrapper maps your CV's clinical skills directly against job descriptions for precision matching.",
+							title: "Skills-based matching",
+							desc: "Match listings using your career phase, location, and skill keywords. Review the requirements on the source website.",
 							icon: ResumeMatchIcon,
 						},
 						{
-							title: "Hyper-Curated Matches",
-							desc: "Stop wasting hours scrolling through generic boards. We cut through the noise, matching your specific MLSCN license and specialty directly to high-quality roles.",
+							title: "Relevant opportunities",
+							desc: "Focus on laboratory roles that fit your preferences, with source links and clear relevance scores.",
 							icon: FilterIcon,
 						},
 						{
 							title: "Tiered Scoring",
-							desc: "We automatically rank opportunities (Tier 1-3) so you instantly know what roles are worth your focus.",
+							desc: "Compare three relevance tiers and choose a minimum score to focus your search.",
 							icon: TieredScoringIcon,
 						},
 						{
@@ -718,18 +752,21 @@ export default function HomePage() {
 						},
 						{
 							title: "Licensure Compliance Tracker",
-							desc: "Securely upload your MLSCN practicing license. Our automated parser extracts registration meta-parameters and accurately visualizes dynamic expiry metrics.",
+							desc: "Keep your license documents private, review extracted details, and track recorded expiry dates. Independent review is shown separately.",
 							icon: ShieldComplianceIcon,
 						},
 						{
 							title: "Automated Digest Engine",
-							desc: "Synchronizes background tasks to bundle top high-scoring job parameter metrics, natively routing clean HTML digests straight to your inbox.",
+							desc: "Receive newly discovered matches by email, filtered by your selected tiers and keywords.",
 							icon: DigestMailIcon,
 						},
 					].map((feat, i) => {
 						const Icon = feat.icon;
 						return (
-							<div
+							<button
+								type="button"
+								onClick={() => setTourStep([2, 3, 7, 4, 8, 9, 13, 5][i])}
+								aria-label={`Learn about ${feat.title}`}
 								key={i}
 								className="premium-feature-card"
 								style={featureCardStyle}
@@ -760,222 +797,36 @@ export default function HomePage() {
 								>
 									{feat.desc}
 								</p>
-							</div>
+							</button>
 						);
 					})}
 				</div>
 			</div>
 
-			{tourStep > 0 && (
-				<div
-					style={{
-						position: "fixed",
-						top: 0,
-						left: 0,
-						width: "100%",
-						height: "100%",
-						background: "rgba(15,23,42,0.7)",
-						backdropFilter: "blur(12px)",
-						zIndex: 10000,
-						display: "flex",
-						alignItems: "center",
-						justifyContent: "center",
-						padding: "1.5rem",
-					}}
-				>
-					<div
-						style={{
-							...glassBaseStyle,
-							background: "rgba(255, 255, 255, 0.95)",
-							width: "90vw",
-							maxWidth: "900px",
-							padding: "3rem",
-							position: "relative",
-							boxShadow: "0 30px 70px -15px rgba(0,0,0,0.3)",
-						}}
-					>
-						<div
-							style={{
-								display: "inline-flex",
-								alignItems: "center",
-								gap: "8px",
-								position: "absolute",
-								top: "1rem",
-								left: "2rem",
-								background: "white",
-								padding: "4px 10px",
-								borderRadius: "12px",
-								border: "1px solid #e2e8f0",
-							}}
-						>
-							<span
-								style={{ fontSize: "11px", fontWeight: 800, color: "#64748b" }}
-							>
-								PLATFORM WALKTHROUGH
-							</span>
-							<span
-								style={{ fontSize: "13px", fontWeight: 900, color: "#1A8C7A" }}
-							>
-								Step {tourStep} of {tourContent.length}
-							</span>
-						</div>
-
-						<button
-							onClick={() => setTourStep(0)}
-							style={{
-								position: "absolute",
-								top: "1.5rem",
-								right: "1.5rem",
-								background: "white",
-								border: "1px solid #e2e8f0",
-								width: "32px",
-								height: "32px",
-								borderRadius: "50%",
-								cursor: "pointer",
-								color: "#64748b",
-								display: "flex",
-								alignItems: "center",
-								justifyContent: "center",
-								transition: "0.2s",
-							}}
-						>
-							✕
-						</button>
-
-						<div
-							style={{
-								display: "flex",
-								gap: "2.5rem",
-								alignItems: "flex-start",
-								marginTop: "1rem",
-							}}
-						>
-							<div
-								style={{
-									color: "#0B2444",
-									minWidth: "120px",
-									display: "flex",
-									justifyContent: "center",
-									alignItems: "center",
-									marginTop: "6px",
-								}}
-							>
-								{(() => {
-									const Icon = tourContent[tourStep - 1].icon;
-									return <Icon size={90} stroke={1.5} />;
-								})()}
-							</div>
-
-							<div style={{ flex: 1 }}>
-								<h2
-									style={{
-										margin: "0 0 1.25rem 0",
-										fontSize: "2rem",
-										color: "#0f172a",
-										fontWeight: 900,
-										letterSpacing: "-1px",
-										lineHeight: 1.1,
-									}}
-								>
-									{tourContent[tourStep - 1].title}
-								</h2>
-
-								<p
-									style={{
-										color: "#475569",
-										fontSize: "16px",
-										lineHeight: 1.7,
-										marginBottom: "2.5rem",
-										minHeight: "100px",
-									}}
-								>
-									{tourContent[tourStep - 1].text}
-								</p>
-
-								<div
-									style={{
-										display: "flex",
-										justifyContent: "space-between",
-										alignItems: "center",
-									}}
-								>
-									<div style={{ display: "flex", gap: "5px" }}>
-										{tourContent.map((_, idx) => (
-											<div
-												key={idx}
-												style={{
-													width: tourStep === idx + 1 ? "16px" : "6px",
-													height: "6px",
-													borderRadius: "3px",
-													background:
-														tourStep === idx + 1 ? "#0B2444" : "#e2e8f0",
-													transition:
-														"0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
-												}}
-											/>
-										))}
-									</div>
-
-									<div style={{ display: "flex", gap: "12px" }}>
-										{tourStep > 1 && (
-											<button
-												onClick={handlePrev}
-												style={{
-													background: "#f1f5f9",
-													color: "#64748b",
-													border: "none",
-													padding: "12px 24px",
-													borderRadius: "12px",
-													fontSize: "15px",
-													fontWeight: 800,
-													cursor: "pointer",
-													transition: "all 0.2s",
-												}}
-											>
-												Prev
-											</button>
-										)}
-
-										<button
-											onClick={handleNext}
-											style={{
-												background: "#0B2444",
-												color: "white",
-												border: "none",
-												padding: "12px 24px",
-												borderRadius: "12px",
-												fontSize: "15px",
-												fontWeight: 800,
-												cursor: "pointer",
-												display: "flex",
-												alignItems: "center",
-												gap: "8px",
-												transition: "all 0.2s",
-											}}
-										>
-											{tourStep === tourContent.length
-												? "Secure Signup"
-												: "Next"}
-											{tourStep !== tourContent.length && (
-												<svg
-													width="18"
-													height="18"
-													viewBox="0 0 24 24"
-													fill="none"
-													stroke="currentColor"
-													strokeWidth="3"
-												>
-													<path d="M5 12h14M12 5l7 7-7 7" />
-												</svg>
-											)}
-										</button>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			)}
+			{tourOpen && createPortal(
+                <div className="walkthrough-backdrop">
+                    <div className="walkthrough-dialog" ref={tourDialog} role="dialog" aria-modal="true" aria-labelledby="walkthrough-title" aria-describedby="walkthrough-description">
+                        <header className="walkthrough-header">
+                            <div><span>Platform walkthrough</span><strong>Step {tourStep} of {tourContent.length}</strong></div>
+                            <button type="button" aria-label="Close walkthrough" onClick={() => setTourStep(0)}>×</button>
+                        </header>
+                        <div className="walkthrough-body" aria-live="polite">
+                            <div className="walkthrough-icon" aria-hidden="true">{(() => { const Icon = tourContent[tourStep - 1].icon; return <Icon size={72} stroke={1.5} />; })()}</div>
+                            <div className="walkthrough-copy">
+                                <h2 id="walkthrough-title">{tourContent[tourStep - 1].title}</h2>
+                                <p id="walkthrough-description">{tourContent[tourStep - 1].text}</p>
+                            </div>
+                        </div>
+                        <footer className="walkthrough-footer">
+                            <div className="walkthrough-progress" aria-hidden="true">{tourContent.map((_, idx) => <span key={idx} className={tourStep === idx + 1 ? "is-current" : ""} />)}</div>
+                            <div className="walkthrough-actions">
+                                {tourStep > 1 && <button type="button" onClick={handlePrev}>Previous</button>}
+                                <button type="button" onClick={handleNext}>{tourStep === tourContent.length ? "Secure Signup" : "Next →"}</button>
+                            </div>
+                        </footer>
+                    </div>
+                </div>, document.body
+            )}
 		</div>
 	);
 }

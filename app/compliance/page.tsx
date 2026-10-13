@@ -1,19 +1,21 @@
 "use client";
+import { startTransition } from "react";
+import type { ComplianceMetrics } from "@/lib/types";
 import { useEffect, useState } from "react";
 
 export default function ComplianceHubPage() {
-	const [metrics, setMetrics] = useState<any>(null);
+	const [metrics, setMetrics] = useState<ComplianceMetrics | null>(null);
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
 		const email = localStorage.getItem("labpro_active_user");
-		if (!email) return;
-		fetch(`/api/user/compliance?email=${email}`)
+		if (!email) { startTransition(() => setLoading(false)); return; }
+		fetch(`/api/user/compliance?email=${encodeURIComponent(email)}`)
 			.then((res) => res.json())
 			.then((data) => {
 				if (data.success) setMetrics(data);
 				setLoading(false);
-			});
+			}).catch(() => setLoading(false));
 	}, []);
 
 	if (loading)
@@ -57,6 +59,7 @@ export default function ComplianceHubPage() {
 	return (
 		<div style={{ padding: "0 1.5rem", width: "100%" }}>
 			<div style={{ marginBottom: "2rem", marginTop: "1rem" }}>
+                <p style={{ fontSize: 12, color: "#64748b" }}>Credential review: {metrics.isVerified ? "Reviewed" : "Self-reported"}. Recorded expiry is separate from independent verification.</p>
 				<h1
 					style={{
 						margin: 0,
@@ -68,15 +71,14 @@ export default function ComplianceHubPage() {
 					MLSCN Compliance Hub
 				</h1>
 				<p style={{ margin: "2px 0 0 0", fontSize: "13px", color: "#64748b" }}>
-					Professional license, credential verification, and CPD progression
-					tracking engine.
+					Recorded license expiry and learning activity.
 				</p>
 			</div>
 
 			<div
 				style={{
 					display: "grid",
-					gridTemplateColumns: "1fr 1fr",
+					gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 260px), 1fr))",
 					gap: "1.5rem",
 					marginBottom: "2rem",
 				}}
@@ -107,10 +109,10 @@ export default function ComplianceHubPage() {
 								letterSpacing: "0.5px",
 							}}
 						>
-							REGISTRATION STATUS
+							RECORDED LICENSE EXPIRY
 						</span>
 						<span
-							style={{
+							style={{ whiteSpace: "nowrap", flexShrink: 0,
 								background: alertColors.bg,
 								color: alertColors.text,
 								border: `1px solid ${alertColors.border}`,
@@ -204,7 +206,7 @@ export default function ComplianceHubPage() {
 					<p style={{ margin: 0, fontSize: "12px", color: "#475569" }}>
 						You have achieved{" "}
 						<strong style={{ color: "#0f172a" }}>{metrics.cpdPercent}%</strong>{" "}
-						of your required annual Continuous Professional Development points.
+						of the app’s 30-credit tracking target. Points are self-reported.
 					</p>
 				</div>
 			</div>

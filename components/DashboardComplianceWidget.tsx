@@ -1,18 +1,16 @@
 "use client";
+import type { ComplianceMetrics } from "@/lib/types";
 import { useEffect, useState } from "react";
 
 export default function DashboardComplianceWidget() {
-	const [data, setData] = useState<any>(null);
+	const [data, setData] = useState<ComplianceMetrics | null>(null);
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
 		const email = localStorage.getItem("labpro_active_user");
-		if (!email) {
-			setLoading(false);
-			return;
-		}
+		if (!email) return;
 
-		fetch(`/api/user/compliance?email=${email}`)
+		fetch(`/api/user/compliance?email=${encodeURIComponent(email)}`)
 			.then((res) => res.json())
 			.then((resData) => {
 				if (resData.success) setData(resData);
@@ -51,7 +49,7 @@ export default function DashboardComplianceWidget() {
 			border: "rgba(22, 163, 74, 0.1)",
 			progressBg: "linear-gradient(90deg, #4ade80, #16a34a)",
 			message:
-				"Your practicing credentials are secure and fully compliant with MLSCN regulations.",
+				"Your recorded expiry date is more than 60 days away. Credential review is separate.",
 		};
 	};
 
@@ -111,7 +109,7 @@ export default function DashboardComplianceWidget() {
 								border: `1px solid ${theme.border}`,
 							}}
 						>
-							{data.daysLeft <= 0 ? "EXPIRED" : "VERIFIED"}
+							{data.daysLeft <= 0 ? "EXPIRED" : data.isVerified ? "REVIEWED" : "SELF-REPORTED"}
 						</span>
 					</div>
 					<p
@@ -210,7 +208,7 @@ export default function DashboardComplianceWidget() {
 					>
 						<span>CPD ANNUAL LOG</span>
 						<span style={{ color: "#0058bc" }}>
-							{data.cpdPoints} / 30 Units Earned
+							{data.cpdPoints} credits recorded (tracking target: 30)
 						</span>
 					</div>
 					<div

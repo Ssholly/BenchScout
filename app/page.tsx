@@ -1,5 +1,13 @@
 "use client";
-import { useState, useEffect } from "react";
+import Toast from "@/components/Toast";
+import { startTransition } from "react";
+import type { ClientJob } from "@/lib/types";
+import { useState, useEffect, useRef } from "react";
+import ApplicationReadiness from "@/components/ApplicationReadiness";
+import LicensedCareerOverview from "@/components/LicensedCareerOverview";
+import InternDashboard from "@/components/InternDashboard";
+import { candidateProfile } from "@/lib/candidate-profile";
+import HubLoading from "@/components/HubLoading";
 import DashboardAnalytics from "@/components/DashboardAnalytics";
 
 const NIGERIA_STATES = [
@@ -44,6 +52,16 @@ const NIGERIA_STATES = [
 ];
 
 export default function Dashboard() {
+ const profileSequence = useRef(0);
+ const jobSequence = useRef(0);
+ const profileIdentity = useRef<string | null>(null);
+ const [jobsUnavailable, setJobsUnavailable] = useState(true);
+ const [profileAsOf, setProfileAsOf] = useState<number | null>(null);
+	const [profileError, setProfileError] = useState(false);
+ const [careerPhase, setCareerPhase] = useState<string | null>(null);
+ const [licenseExpiry, setLicenseExpiry] = useState<string | null>(null);
+ const [careerProfile, setCareerProfile] = useState<unknown>({});
+ const [careerJobs, setCareerJobs] = useState<ClientJob[]>([]);
 	const [isScraping, setIsScraping] = useState(false);
 	const [progress, setProgress] = useState(0);
 	const [email, setEmail] = useState("");
@@ -84,6 +102,7 @@ export default function Dashboard() {
 	};
 
 	const refreshJobStats = async () => {
+		const sequence = ++jobSequence.current;
 		const activeEmail = localStorage.getItem("labpro_active_user");
 		if (!activeEmail) {
 			setTotalJobs(0);
@@ -93,29 +112,27 @@ export default function Dashboard() {
 		}
 
 		try {
-			const res = await fetch(`/api/jobs?email=${activeEmail}`);
+			const res = await fetch(`/api/jobs?email=${encodeURIComponent(activeEmail)}`);
 			const data = await res.json();
+            if (sequence !== jobSequence.current || activeEmail !== localStorage.getItem("labpro_active_user")) return;
+            if (!res.ok || !Array.isArray(data)) throw new Error("Matches unavailable");
 			if (Array.isArray(data)) {
-				const activeJobs = data.filter(
-					(j: any) =>
-						j.status !== "cleared" &&
-						j.applied !== true &&
-						(j.targetEmail === activeEmail ||
-							j.userEmail === activeEmail ||
-							j.email === activeEmail ||
-							(!j.targetEmail && !j.userEmail && !j.email)),
-				);
+				const activeJobs = data;
+                setCareerJobs(data);
+                setJobsUnavailable(false);
 
 				setTotalJobs(activeJobs.length);
-				setTier1Count(activeJobs.filter((j: any) => j.tier === 1).length);
-				setTier2Count(activeJobs.filter((j: any) => j.tier === 2).length);
+				setTier1Count(activeJobs.filter((j: ClientJob) => j.tier === 1).length);
+				setTier2Count(activeJobs.filter((j: ClientJob) => j.tier === 2).length);
 			}
-		} catch (e) {}
+		} catch { setJobsUnavailable(true); }
 	};
 
 	useEffect(() => {
 		const fetchUserData = async () => {
+			const sequence = ++profileSequence.current;
 			const activeEmail = localStorage.getItem("labpro_active_user");
+            if (profileIdentity.current !== activeEmail) { setCareerPhase(null); setCareerProfile({}); profileIdentity.current = activeEmail; }
 
 			if (!activeEmail) {
 				setIsUserLoggedIn(false);
@@ -137,43 +154,51 @@ export default function Dashboard() {
 			setIsUserLoggedIn(true);
 
 			try {
-				const res = await fetch(`/api/user?email=${activeEmail}`);
+				const res = await fetch(`/api/user?email=${encodeURIComponent(activeEmail)}`);
 				const data = await res.json();
+                if (sequence !== profileSequence.current || activeEmail !== localStorage.getItem("labpro_active_user")) return;
+                if (!res.ok || !data.success || !data.user) throw new Error("Profile unavailable");
+                setProfileError(false);
 				if (data.success && data.user) {
 					setEmail(data.user.email);
-					setDbMinScore(data.user.minScore || 75);
-					setUserKeywords(data.user.keywords || "Medical Laboratory Scientist");
+                    setCareerPhase(data.user.careerPhase || "licensed");
+                    setCareerProfile(data.user.candidateProfile || {});
+                    setLicenseExpiry(data.user.licenseExpiry || null);
+                    setProfileAsOf(Date.now());
+					setDbMinScore(data.user.minScore ?? 75);
+					setUserKeywords(data.user.keywords || candidateProfile(data.user.candidateProfile).specialties || "Medical Laboratory Scientist");
 
 					const dashboardFilter = localStorage.getItem(
 						"labpro_dashboard_temp_location",
 					);
-					setLocation(dashboardFilter || data.user.location || "All Nigeria");
+					setLocation(dashboardFilter || candidateProfile(data.user.candidateProfile).preferredLocations || data.user.location || "All Nigeria");
 				}
-			} catch (error) {}
+			} catch { setProfileError(true); }
 		};
 
-		refreshJobStats();
+		startTransition(() => { refreshJobStats(); });
 		fetchUserData();
 
 		const savedLastRun = localStorage.getItem("labpro_last_run");
 		const activeUser = localStorage.getItem("labpro_active_user");
-		if (savedLastRun && activeUser) setLastRun(savedLastRun);
+		if (savedLastRun && activeUser) startTransition(() => { setLastRun(savedLastRun); });
 
 		const savedT3 = localStorage.getItem("labpro_tier3");
-		if (savedT3) setIncludeTier3(savedT3 === "true");
+		if (savedT3) startTransition(() => { setIncludeTier3(savedT3 === "true"); });
 
 		const savedAuto = localStorage.getItem("labpro_auto");
-		if (savedAuto) setAutoSend(savedAuto === "true");
+		if (savedAuto) startTransition(() => { setAutoSend(savedAuto === "true"); });
 
-		window.addEventListener("userStateChanged", () => {
+		const refreshIdentity = () => {
 			setIsUserLoggedIn(!!localStorage.getItem("labpro_active_user"));
 			fetchUserData();
 			refreshJobStats();
-		});
+		};
+        window.addEventListener("userStateChanged", refreshIdentity);
 		window.addEventListener("jobsUpdated", refreshJobStats);
 
 		return () => {
-			window.removeEventListener("userStateChanged", fetchUserData);
+			window.removeEventListener("userStateChanged", refreshIdentity);
 			window.removeEventListener("jobsUpdated", refreshJobStats);
 		};
 	}, []);
@@ -249,6 +274,7 @@ export default function Dashboard() {
 			if (data.success) {
 				setProgress(100);
 				addLog("DONE", data.message);
+                if (Array.isArray(data.warnings)) data.warnings.forEach((warning: string) => addLog("INFO", warning));
 				showNotification(data.message);
 				const timeNow = new Date().toLocaleTimeString([], {
 					hour: "2-digit",
@@ -262,34 +288,26 @@ export default function Dashboard() {
 			} else {
 				throw new Error(data.error);
 			}
-		} catch (error: any) {
+		} catch (error: unknown) {
 			setProgress(0);
-			addLog("ERROR", error.message || "Scan failed.");
-			showNotification(error.message || "Scan failed.", "error");
+			addLog("ERROR", (error instanceof Error ? error.message : "Request failed") || "Scan failed.");
+			showNotification((error instanceof Error ? error.message : "Request failed") || "Scan failed.", "error");
 		} finally {
 			clearInterval(progressInterval);
 			setTimeout(() => setIsScraping(false), 2000);
 		}
 	};
 
-	const getAiRecommendation = () => {
-		if (!email)
-			return "Log in to unlock AI-driven market recommendations for your region.";
-		if (location.includes("Abuja"))
-			return 'Abuja matches are up 24%. Consider adding "Molecular Biology" to keywords.';
-		if (location.includes("Lagos"))
-			return "Lagos is seeing a 15% spike in rapid-response lab roles.";
-		if (location === "All Nigeria")
-			return "Nationwide scan active. Maximizing match volume across all hubs.";
-		return `Opportunities in ${location} are stable. We recommend running a scan early Monday mornings.`;
-	};
+	const getAiRecommendation = () => email
+    ? `Your search covers ${location}. Keep your skills and minimum score up to date to improve relevance.`
+    : "Sign in to set your search location and matching preferences.";
 
 	const iosSwitchStyle = (active: boolean) => ({
 		width: "32px",
 		height: "18px",
 		background: active ? "#1A8C7A" : "#cbd5e1", // 🚀 BRANDED TEAL TOGGLE
 		borderRadius: "20px",
-		position: "relative" as "relative",
+		position: "relative" as const,
 		cursor: "pointer",
 		transition: "all 0.2s ease",
 		display: "inline-block",
@@ -300,12 +318,15 @@ export default function Dashboard() {
 		height: "14px",
 		background: "white",
 		borderRadius: "50%",
-		position: "absolute" as "absolute",
+		position: "absolute" as const,
 		top: "2px",
 		left: active ? "16px" : "2px",
 		transition: "all 0.2s ease",
 		boxShadow: "0 1px 2px rgba(0,0,0,0.1)",
 	});
+
+ if (isUserLoggedIn && !careerPhase) return profileError ? <div role="alert"><p>Your profile is temporarily unavailable.</p><button onClick={()=>window.location.reload()}>Try again</button></div> : <HubLoading />;
+ if (isUserLoggedIn && careerPhase === "internship") return <><InternDashboard initial={careerProfile} jobs={careerJobs} onScan={runScraper} scanning={isScraping} unavailable={jobsUnavailable} />{toast && <Toast message={toast.message} type={toast.type} />}</>;
 
 	return (
 		<div
@@ -314,34 +335,7 @@ export default function Dashboard() {
 				fontFamily: "system-ui, -apple-system, sans-serif",
 			}}
 		>
-			{toast && (
-				<div
-					style={{
-						position: "fixed",
-						top: "24px",
-						left: "50%",
-						transform: "translateX(-50%)",
-						background:
-							toast.type === "success"
-								? "rgba(15, 23, 42, 0.85)"
-								: "rgba(153, 27, 27, 0.85)",
-						backdropFilter: "blur(12px)",
-						border: "1px solid rgba(255,255,255,0.1)",
-						color: "white",
-						padding: "12px 24px",
-						borderRadius: "30px",
-						fontSize: "13px",
-						fontWeight: 700,
-						display: "flex",
-						alignItems: "center",
-						gap: "8px",
-						boxShadow: "0 10px 25px -5px rgba(0,0,0,0.2)",
-						zIndex: 9999,
-					}}
-				>
-					{toast.type === "success" ? "✓ " : "✕ "} {toast.message}
-				</div>
-			)}
+			{toast && <Toast message={toast.message} type={toast.type} />}
 
 			{!isUserLoggedIn ? (
 				<div
@@ -423,8 +417,10 @@ export default function Dashboard() {
 				</div>
 			) : (
 				<>
+					<ApplicationReadiness />
+                    <LicensedCareerOverview initial={careerProfile} expiry={licenseExpiry} asOf={profileAsOf} />
 					<div
-						className="mobile-stack"
+						className="dashboard-metrics"
 						style={{ display: "flex", gap: "1rem", marginBottom: "1.5rem" }}
 					>
 						<div
@@ -470,7 +466,7 @@ export default function Dashboard() {
 											color: "#1A8C7A", // 🚀 BRANDED UP-TICK
 										}}
 									>
-										+12% ↗
+										Saved matches
 									</span>
 								)}
 							</div>
@@ -773,7 +769,8 @@ export default function Dashboard() {
 											cursor: email ? "pointer" : "not-allowed",
 										}}
 									>
-										{NIGERIA_STATES.map((state) => (
+										{!NIGERIA_STATES.includes(location) && <option value={location}>{location}</option>}
+{NIGERIA_STATES.map((state) => (
 											<option key={state} value={state}>
 												{state}
 											</option>
@@ -962,7 +959,7 @@ export default function Dashboard() {
 										color: "#0f172a",
 									}}
 								>
-									AI Recommendation
+									Search guidance
 								</div>
 								<div
 									style={{

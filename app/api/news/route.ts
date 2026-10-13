@@ -1,6 +1,9 @@
+import type { NewsArticle } from "@/lib/types";
+import { ApiError } from "@/lib/security";
+import { withApi } from "@/lib/api";
 import { NextResponse } from "next/server";
 
-export async function GET() {
+export const GET = withApi("public", async () => {
 	try {
 		// Fetch live news from Google News specifically targeting Nigerian MLS and MLSCN
 		const res = await fetch(
@@ -21,7 +24,7 @@ export async function GET() {
 
 		// Parse the XML using Regex to extract the <item> blocks
 		const items = [...xml.matchAll(/<item>([\s\S]*?)<\/item>/g)];
-		const newsData: any[] = [];
+		const newsData: NewsArticle[] = [];
 
 		items.forEach((itemMatch, index) => {
 			const itemXml = itemMatch[1];
@@ -43,7 +46,7 @@ export async function GET() {
 							year: "numeric",
 						})
 					: new Date().toLocaleDateString();
-				let source = sourceMatch ? sourceMatch[1].trim() : "Healthcare News";
+				const source = sourceMatch ? sourceMatch[1].trim() : "Healthcare News";
 
 				// Clean up title (Google News appends " - Source Name" to titles)
 				title = title.replace(` - ${source}`, "");
@@ -126,8 +129,9 @@ export async function GET() {
 		}
 
 		return NextResponse.json(newsData);
-	} catch (error) {
+	} catch (error: unknown) {
+    if (error instanceof ApiError) throw error;
 		console.error("News fetcher error:", error);
 		return NextResponse.json([], { status: 500 });
 	}
-}
+}, {});

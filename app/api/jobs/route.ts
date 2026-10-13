@@ -1,13 +1,16 @@
+import { legacyPortalUrls } from "@/lib/job-matching";
+import { opportunityForPhase, opportunityForPreferences, internshipApproval } from "@/lib/candidate-profile";
+import { withApi } from "@/lib/api";
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
 
-const prisma = new PrismaClient();
 
-export async function GET(request: Request) {
-	try {
-		const { searchParams } = new URL(request.url);
-		const email = searchParams.get("email");
-		const employerId = searchParams.get("employerId");
+
+export const GET = withApi("either", async (request: Request, session: import("@/lib/auth").Session | null) => {
+
+
+		const email = session!.role === "candidate" ? session!.email : null;
+		const employerId = session!.role === "employer" ? session!.id : null;
 
 		// 🚀 EMPLOYER FETCH: Include a raw count of all ATS applications!
 		if (employerId) {
@@ -33,32 +36,33 @@ export async function GET(request: Request) {
 		}
 
 		// 🚀 CANDIDATE FETCH: Verify User
-		const user = await prisma.user.findUnique({ where: { email } });
-		if (!user)
-			return NextResponse.json({ error: "User not found" }, { status: 404 });
+		const userId = session!.id;
+        const pipeline = new URL(request.url).searchParams.get("view") === "pipeline";
 
 		// 🚀 NEW: Fetch the user's active CRM Invitations to cross-reference
-		const invites = await prisma.notification.findMany({
+		const invitesPromise = pipeline ? Promise.resolve([]) : prisma.notification.findMany({
 			where: {
-				userId: user.id,
+				userId,
 				title: "Exclusive Recruitment Invitation",
 			},
 		});
 
 		// Fetch the jobs array
-		const jobs = await prisma.job.findMany({
+		const jobsPromise = prisma.job.findMany({
 			where: {
-				OR: [{ userId: user.id }, { isDirectPost: true }],
+				OR: pipeline ? [{ userId, applied: true }, { isDirectPost: true, applications: { some: { userId } } }] : [{ userId }, { isDirectPost: true }],
 				NOT: { status: "cleared" },
 			},
 			include: {
-				applications: { where: { userId: user.id } }, // Check their inbox records
+				applications: { where: { userId }, select: { status: true, interviewDate: true, interviewTime: true, interviewLoc: true } },
+				employer: { select: { isVerified: true } }, // Check their inbox records
 			},
 			orderBy: { score: "desc" },
 		});
 
+        const [invites, jobs] = await Promise.all([invitesPromise, jobsPromise]);
 		// Merge standard applied status with B2B ATS applied status + VIP Scout flag
-		const formattedJobs = jobs.map((job) => {
+		const formattedJobs = jobs.filter(job => job.applied || job.applications.length > 0 || (!legacyPortalUrls.includes(job.url) && opportunityForPhase(job, session!.careerPhase || "licensed") && opportunityForPreferences(job, session!.careerPhase || "licensed", session!.candidateProfile, session!.location) && job.status === "active")).map((job) => {
 			// If the system finds a notification message containing this specific job's details, flag it as a VIP invite
 			const isScoutedInvite = invites.some(
 				(inv) =>
@@ -67,15 +71,15 @@ export async function GET(request: Request) {
 
 			return {
 				...job,
+                isMlscnApproved: internshipApproval(job),
 				applied: job.applied || job.applications.length > 0,
 				isScoutedInvite,
+				listingSource: job.isDirectPost ? "Employer posted" : "External listing",
+				employerVerified: job.employer?.isVerified === true,
+				lastSeenAt: job.lastSeenAt,
+				matchExplanation: job.isDirectPost ? "Posted by this employer; not a personalized match score." : "Keyword and location relevance; confirm requirements on the source listing.",
 			};
 		});
 
 		return NextResponse.json(formattedJobs);
-	} catch (error: any) {
-		return NextResponse.json([]); // Prevents UI crashes
-	} finally {
-		await prisma.$disconnect();
-	}
-}
+}, {});

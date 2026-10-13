@@ -1,8 +1,9 @@
+import { prisma } from "@/lib/prisma";
 import nodemailer from "nodemailer";
 
 // A resilient function to draft the email and push it to the queue
 export async function queueWelcomeEmail(
-	tx: any,
+	tx: import("@prisma/client").Prisma.TransactionClient,
 	email: string,
 	name: string | null,
 	token: string,
@@ -17,20 +18,20 @@ export async function queueWelcomeEmail(
       <p>Hello ${name || "Scientist"},</p>
       <p>Thank you for creating an account with BenchScout, your clinical MLS career hub.</p>
       <p>To ensure the security of your account and activate your automated job digest, please confirm your email address by clicking the button below:</p>
-      
+
       <div style="text-align: center; margin: 30px 0;">
         <a href="${confirmLink}" style="background-color: #0058bc; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold;">
           Verify Email Address
         </a>
       </div>
-      
+
       <p style="font-size: 12px; color: #717786;">
         If the button doesn't work, copy and paste this link into your browser:<br/>
         <a href="${confirmLink}" style="color: #0058bc;">${confirmLink}</a>
       </p>
-      
+
       <hr style="border: none; border-top: 1px solid #e8ecf5; margin: 30px 0;" />
-      
+
       <p style="font-size: 11px; color: #717786;">
         <strong>Didn't create this account?</strong><br/>
         You can safely ignore and delete this email. Your email address will not be used, and the unverified account will be automatically purged from our system.
@@ -56,8 +57,7 @@ export async function queueWelcomeEmail(
 // The background worker that actually talks to the SMTP server
 export async function processEmailQueue() {
 	// Normally you would import your Prisma client here
-	const { PrismaClient } = require("@prisma/client");
-	const prisma = new PrismaClient();
+
 
 	// Find 5 pending emails
 	const pendingEmails = await prisma.emailQueue.findMany({
@@ -91,7 +91,7 @@ export async function processEmailQueue() {
 				where: { id: email.id },
 				data: { status: "SENT" },
 			});
-		} catch (error) {
+		} catch {
 			// If it fails, increment retry count but leave as PENDING
 			await prisma.emailQueue.update({
 				where: { id: email.id },

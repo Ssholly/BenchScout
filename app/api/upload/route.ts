@@ -1,134 +1,40 @@
 import { NextResponse } from "next/server";
-import { put, del } from "@vercel/blob"; // 🚀 Added 'del' for the delete handler
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
+import { withApi } from "@/lib/api";
+import { ApiError, documentUrl } from "@/lib/security";
+import { documentFields, documentKind, removeDocument, resumeText, storeDocument } from "@/lib/documents";
 
-const prisma = new PrismaClient();
+export const POST = withApi("candidate", async (request, session) => {
+  const form = await request.formData();
+  if (form.get("email") && form.get("email") !== session!.email) throw new ApiError(403, "Account identity does not match your session.");
+  const kind = documentKind(form.get("documentType"));
+  const user = await prisma.user.findUniqueOrThrow({ where: { id: session!.id } });
+  const blob = await storeDocument(form.get("file"), kind, user.id);
+  let updated;
+  try {
+    updated = await prisma.user.update({ where: { id: user.id }, data: {
+      [documentFields[kind]]: blob.url,
+      ...(kind === "license" ? { licenseNumber: null, licenseExpiry: null } : {}),
+      ...((kind === "license" && user.careerPhase !== "internship") || (kind === "provisional" && user.careerPhase === "internship") ? { isLicenseVerified: false, licenseReviewedAt: null, licenseReviewReference: null } : {}),
+      ...(kind === "resume" ? { cvParsedText: await resumeText(blob.buffer) } : {}),
+    } });
+  } catch (error) { await removeDocument(blob.url); throw error; }
+  // Replacements are committed before removing the old object.
+  await removeDocument(user[documentFields[kind]]).catch(error => console.error("Old document cleanup failed", error));
+  return NextResponse.json({ success: true, url: documentUrl(user.id, kind), user: updated });
+}, { limit: 10 });
 
-// 🚀 A Retry function to survive Neon Database "Cold Starts"
-async function withRetry<T>(
-	operation: () => Promise<T>,
-	maxRetries = 3,
-): Promise<T> {
-	for (let i = 0; i < maxRetries; i++) {
-		try {
-			return await operation();
-		} catch (error: any) {
-			if (i === maxRetries - 1) throw error;
-			console.warn(
-				`Database asleep. Retrying operation... (${i + 1}/${maxRetries})`,
-			);
-			await new Promise((res) => setTimeout(res, 1500)); // Wait 1.5s for DB to wake up
-		}
-	}
-	throw new Error("Unreachable");
-}
-
-export async function POST(request: Request) {
-	try {
-		const formData = await request.formData();
-		const file = formData.get("file") as File;
-		const email = formData.get("email") as string;
-		const documentType = formData.get("documentType") as string;
-
-		if (!file || !email || !documentType) {
-			return NextResponse.json(
-				{ error: "Missing required fields" },
-				{ status: 400 },
-			);
-		}
-
-		// 🚀 THE BLOB FIX: addRandomSuffix prevents the Vercel Blob name collision entirely
-		const blob = await put(
-			`users/${email}/${documentType}-${file.name}`,
-			file,
-			{
-				access: "public",
-				addRandomSuffix: true,
-			},
-		);
-
-		const updateData: any = {};
-		if (documentType === "resume") updateData.resumeUrl = blob.url;
-		if (documentType === "degree") updateData.degreeUrl = blob.url;
-		if (documentType === "avatar") updateData.avatarUrl = blob.url;
-
-		// 🚀 SCHEMA ALIGNMENT: Save URL and reset verification status so they must confirm
-		if (documentType === "license") {
-			updateData.licenseUrl = blob.url;
-			updateData.isLicenseVerified = false;
-		}
-
-		// Execute with Retry
-		const user = await withRetry(() =>
-			prisma.user.update({
-				where: { email },
-				data: updateData,
-			}),
-		);
-
-		return NextResponse.json({ success: true, url: blob.url, user });
-	} catch (error: any) {
-		console.error("Upload/DB Error:", error);
-		return NextResponse.json(
-			{ error: error.message || "Failed to process upload." },
-			{ status: 500 },
-		);
-	} finally {
-		await prisma.$disconnect();
-	}
-}
-
-// 🚀 NEW DELETE HANDLER: Permanently wipes files from Vercel Blob & Database
-export async function DELETE(request: Request) {
-	try {
-		const { email, documentType, fileUrl } = await request.json();
-
-		if (!email || !documentType) {
-			return NextResponse.json(
-				{ error: "Missing required fields" },
-				{ status: 400 },
-			);
-		}
-
-		// 1. Delete the actual file from Vercel Cloud Storage
-		if (fileUrl) {
-			await del(fileUrl);
-		}
-
-		// 2. Prepare the database wipe command
-		const updateData: any = {};
-
-		if (documentType === "resume") updateData.resumeUrl = null;
-		if (documentType === "degree") updateData.degreeUrl = null;
-		if (documentType === "avatar") updateData.avatarUrl = null;
-
-		// Wipe all license data entirely
-		if (documentType === "license") {
-			updateData.licenseUrl = null;
-			updateData.licenseNumber = null;
-			updateData.licenseExpiry = null;
-			updateData.isLicenseVerified = false;
-		}
-
-		// 3. Execute the database update using your retry wrapper
-		const user = await withRetry(() =>
-			prisma.user.update({
-				where: { email },
-				data: updateData,
-			}),
-		);
-
-		return NextResponse.json({
-			success: true,
-			message: `${documentType} deleted successfully`,
-		});
-	} catch (error: any) {
-		console.error("Delete Error:", error);
-		return NextResponse.json(
-			{ error: "Failed to delete document from server." },
-			{ status: 500 },
-		);
-	} finally {
-		await prisma.$disconnect();
-	}
-}
+export const DELETE = withApi("candidate", async (request, session) => {
+  const body = await request.json();
+  const kind = documentKind(body.documentType);
+  const user = await prisma.user.findUniqueOrThrow({ where: { id: session!.id } });
+  // Never delete a URL supplied by the client.
+  await removeDocument(user[documentFields[kind]]);
+  await prisma.user.update({ where: { id: user.id }, data: {
+    [documentFields[kind]]: null,
+    ...(kind === "license" ? { licenseNumber: null, licenseExpiry: null } : {}),
+    ...((kind === "license" && user.careerPhase !== "internship") || (kind === "provisional" && user.careerPhase === "internship") ? { isLicenseVerified: false, licenseReviewedAt: null, licenseReviewReference: null } : {}),
+    ...(kind === "resume" ? { cvParsedText: null } : {}),
+  } });
+  return NextResponse.json({ success: true });
+});

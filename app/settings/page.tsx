@@ -1,4 +1,9 @@
 "use client";
+import { sharedPageRequest } from "@/lib/shared-page-request";
+import Toast from "@/components/Toast";
+import CandidateCareerProfile from "@/components/CandidateCareerProfile";
+import DocumentPreview from "@/components/DocumentPreview";
+import { startTransition } from "react";
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 
@@ -79,6 +84,14 @@ const DEFAULT_DOCS: VaultDoc[] = [
 	},
 ];
 
+const careerDocs = (phase: string): VaultDoc[] => {
+ const extras = phase === "internship" ? [
+  ["provisional", "MLSCN Provisional License"], ["degree", "B.MLS Degree Certificate"], ["result", "Statement of Result"], ["placement", "Placement Letter (optional)"], ["license", "Practicing License (for professional transition)"],
+ ] : [["license", "MLSCN Practicing License"], ["degree", "B.MLS Degree Certificate"], ["certificate", "Relevant Certificate (optional)"]];
+ return [{...DEFAULT_DOCS[0]}, ...extras.map(([id,name]) => ({id,name,type:"PDF / Image",size:"-",uploadedAt:null,url:null}))];
+};
+const vaultFields: Record<string,string> = {cv:"resumeUrl",license:"licenseUrl",provisional:"provisionalUrl",degree:"degreeUrl",result:"statementOfResultUrl",placement:"placementLetterUrl",certificate:"certificateUrl"};
+
 export default function SettingsPage() {
 	const [userData, setUserData] = useState({
 		name: "",
@@ -88,8 +101,10 @@ export default function SettingsPage() {
 		minScore: 85,
 	});
 
+	const [career, setCareer] = useState<{phase:string; profile:unknown}>({phase:"licensed",profile:{}});
 	const [checkingAuth, setCheckingAuth] = useState(true);
 	const [isSaving, setIsSaving] = useState(false);
+	const [uploadsAvailable, setUploadsAvailable] = useState(false);
 	const [isUploading, setIsUploading] = useState(false);
 	const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
 	const [toast, setToast] = useState<{
@@ -118,9 +133,19 @@ export default function SettingsPage() {
 		setTimeout(() => setToast(null), 3500);
 	};
 
+	const settingsLoaded = useRef(false);
+	const settingsIdentity = useRef<string | null>(null);
+	const settingsSequence = useRef(0);
+	const [settingsError, setSettingsError] = useState<string | null>(null);
+	const [hasSettings, setHasSettings] = useState(false);
 	const loadSettings = async () => {
-		setCheckingAuth(true);
+		const sequence = ++settingsSequence.current;
 		const activeEmail = localStorage.getItem("labpro_active_user");
+		const isCurrent = () => sequence === settingsSequence.current && activeEmail === localStorage.getItem("labpro_active_user");
+		if (settingsIdentity.current !== activeEmail) { settingsLoaded.current = false; setHasSettings(false); }
+		settingsIdentity.current = activeEmail;
+		if (!settingsLoaded.current) setCheckingAuth(true);
+		setSettingsError(null);
 
 		if (!activeEmail) {
 			setIsUserLoggedIn(false);
@@ -139,9 +164,13 @@ export default function SettingsPage() {
 		setIsUserLoggedIn(true);
 
 		try {
-			const res = await fetch(`/api/user?email=${activeEmail}`);
+			const res = await sharedPageRequest(`/api/user?email=${encodeURIComponent(activeEmail)}`);
 			const data = await res.json();
+			if (!isCurrent()) return;
+			if (!res.ok || !data.success || !data.user) throw new Error("Settings unavailable");
 			if (data.success && data.user) {
+                setUploadsAvailable(data.uploadsAvailable === true);
+				setExtractedData({ fullName: data.user.name || "", licenseNumber: data.user.licenseNumber || "", expiryDate: data.user.licenseExpiry ? String(data.user.licenseExpiry).slice(0, 10) : "" });
 				setUserData({
 					name: data.user.name || "",
 					email: data.user.email || "",
@@ -152,35 +181,19 @@ export default function SettingsPage() {
 					minScore: data.user.minScore ?? 85,
 				});
 
-				const updatedDocs = [...DEFAULT_DOCS];
-				if (data.user.resumeUrl)
-					updatedDocs[0] = {
-						...updatedDocs[0],
-						url: data.user.resumeUrl,
-						size: "Secure",
-						uploadedAt: "Cloud",
-					};
-				if (data.user.licenseUrl)
-					updatedDocs[1] = {
-						...updatedDocs[1],
-						url: data.user.licenseUrl,
-						size: "Secure",
-						uploadedAt: "Cloud",
-					};
-				if (data.user.degreeUrl)
-					updatedDocs[2] = {
-						...updatedDocs[2],
-						url: data.user.degreeUrl,
-						size: "Secure",
-						uploadedAt: "Cloud",
-					};
+                setCareer({phase:data.user.careerPhase || "licensed",profile:data.user.candidateProfile || {}});
+                const updatedDocs = careerDocs(data.user.careerPhase).map(doc => {
+                 const url = data.user[vaultFields[doc.id]];
+                 const kind = doc.id === "cv" ? "resume" : doc.id;
+                 return url ? {...doc,url,size:data.user.documentStatus?.[kind] === "private" ? "Private" : "Re-upload required",uploadedAt:"Cloud"} : doc;
+                });
 
 				const savedMeta = localStorage.getItem(`labpro_vault_${activeEmail}`);
 				if (savedMeta) {
 					const parsedMeta = JSON.parse(savedMeta);
 					const finalDocs = updatedDocs.map((doc) => {
 						const meta = parsedMeta.find((m: VaultDoc) => m.id === doc.id);
-						return meta && meta.url === doc.url
+						return doc.size === "Private" && meta && meta.url === doc.url
 							? { ...doc, size: meta.size, uploadedAt: meta.uploadedAt }
 							: doc;
 					});
@@ -189,17 +202,27 @@ export default function SettingsPage() {
 					setDocuments(updatedDocs);
 				}
 			}
+			settingsLoaded.current = true;
+			setHasSettings(true);
 		} catch (error) {
+			if (!isCurrent()) return;
+			setSettingsError(settingsLoaded.current ? "Couldn’t refresh settings. Your existing details are still shown." : "Couldn’t load your settings. Please try again.");
 			console.error("Failed to load settings:", error);
 		}
 		setCheckingAuth(false);
 	};
 
 	useEffect(() => {
-		loadSettings();
+		startTransition(() => { loadSettings(); });
 		window.addEventListener("userStateChanged", loadSettings);
 		return () => window.removeEventListener("userStateChanged", loadSettings);
 	}, []);
+
+    useEffect(() => {
+      if (!hasSettings || window.location.hash !== "#career-profile") return;
+      const frame = requestAnimationFrame(() => document.getElementById("career-profile")?.scrollIntoView({ block: "start" }));
+      return () => cancelAnimationFrame(frame);
+    }, [hasSettings]);
 
 	const handleAddKeyword = (e: React.KeyboardEvent<HTMLInputElement>) => {
 		if (e.key === "Enter") {
@@ -238,7 +261,7 @@ export default function SettingsPage() {
 			} else {
 				showToast("Failed to update profile.", "error");
 			}
-		} catch (error) {
+		} catch {
 			showToast("Network error.", "error");
 		}
 		setIsSaving(false);
@@ -253,8 +276,8 @@ export default function SettingsPage() {
 		const file = e.target.files?.[0];
 		if (!file || !activeUploadId) return;
 
-		if (file.size > 10 * 1024 * 1024) {
-			showToast("File is too large. Max 10MB allowed.", "error");
+		if (file.size > 4 * 1024 * 1024) {
+			showToast("File is too large. Maximum file size is 4 MB.", "error");
 			if (fileInputRef.current) fileInputRef.current.value = "";
 			return;
 		}
@@ -273,6 +296,7 @@ export default function SettingsPage() {
 
 		const docTypeMap: Record<string, string> = {
 			cv: "resume",
+            provisional:"provisional",result:"result",placement:"placement",certificate:"certificate",
 			license: "license",
 			degree: "degree",
 		};
@@ -284,20 +308,20 @@ export default function SettingsPage() {
 				body: formData,
 			}).then((res) => res.json());
 
-			let aiPromise: Promise<any> = Promise.resolve(null);
+			let aiPromise: Promise<{ success: boolean; error?: string; data?: { fullName?: string; licenseNumber?: string; expiryDate?: string } } | null> = Promise.resolve(null);
 			if (activeUploadId === "license") {
 				const scanForm = new FormData();
 				scanForm.append("file", file);
 				aiPromise = fetch("/api/extract-license", {
 					method: "POST",
 					body: scanForm,
-				}).then((res) => res.json());
+				}).then((res) => res.json()).catch(() => ({ success: false }));
 			}
 
 			const [uploadData, scanData] = (await Promise.all([
 				uploadPromise,
 				aiPromise,
-			])) as [any, any];
+			]));
 
 			if (uploadData.success) {
 				const updatedDocs = documents.map((doc) => {
@@ -335,16 +359,18 @@ export default function SettingsPage() {
 					});
 					setShowVerificationModal(true);
 				} else {
+					setExtractedData({ fullName: userData.name || "", licenseNumber: "", expiryDate: "" });
+					setShowVerificationModal(true);
 					showToast(
-						`AI Error: ${scanData.error || "Could not read license."}`,
+						"License uploaded, but AI could not read it. Enter its details manually.",
 						"error",
 					);
 					console.error("Backend AI Error Details:", scanData);
 				}
 			}
-		} catch (error: any) {
+		} catch (error: unknown) {
 			console.error("Pipeline Error:", error);
-			showToast(`Error: ${error.message}`, "error");
+			showToast(`Error: ${(error instanceof Error ? error.message : "Request failed")}`, "error");
 		} finally {
 			setIsUploading(false);
 			setActiveUploadId(null);
@@ -368,6 +394,7 @@ export default function SettingsPage() {
 
 		const docTypeMap: Record<string, string> = {
 			cv: "resume",
+            provisional:"provisional",result:"result",placement:"placement",certificate:"certificate",
 			license: "license",
 			degree: "degree",
 		};
@@ -392,6 +419,10 @@ export default function SettingsPage() {
 	};
 
 	const confirmAndSaveLicense = async () => {
+		if (!extractedData.licenseNumber.trim() || !extractedData.expiryDate) {
+			showToast("Enter the registration number and expiry date printed on your license.", "error");
+			return;
+		}
 		setIsVerifying(true);
 		try {
 			const res = await fetch("/api/user/compliance", {
@@ -406,13 +437,13 @@ export default function SettingsPage() {
 			});
 			const data = await res.json();
 			if (data.success) {
-				showToast("Compliance tracking activated!");
+				showToast("License details saved. This does not verify the license.");
 				setShowVerificationModal(false);
 				window.dispatchEvent(new Event("userStateChanged"));
 			} else {
-				showToast("Failed to save compliance data.", "error");
+				showToast(data.error || "Failed to save license details.", "error");
 			}
-		} catch (error) {
+		} catch {
 			showToast("Network error during save.", "error");
 		}
 		setIsVerifying(false);
@@ -437,11 +468,11 @@ export default function SettingsPage() {
 		color: "#64748b",
 		letterSpacing: "1px",
 		marginBottom: "6px",
-		textTransform: "uppercase" as "uppercase",
+		textTransform: "uppercase" as const,
 	};
 
 	return (
-		<div style={{ padding: "0 1.5rem", width: "100%", position: "relative" }}>
+		<div className={`settings-page ${career.phase === "internship" ? "intern-settings" : ""}`} style={{ padding: "0 1.5rem", width: "100%", position: "relative" }}>
 			<input
 				type="file"
 				ref={fileInputRef}
@@ -450,34 +481,7 @@ export default function SettingsPage() {
 				style={{ display: "none" }}
 			/>
 
-			{toast && (
-				<div
-					style={{
-						position: "fixed",
-						top: "40px",
-						left: "50%",
-						transform: "translateX(-50%)",
-						background:
-							toast.type === "success"
-								? "rgba(15, 23, 42, 0.95)"
-								: "rgba(153, 27, 27, 0.95)",
-						backdropFilter: "blur(12px)",
-						color: "white",
-						padding: "14px 28px",
-						borderRadius: "30px",
-						fontSize: "14px",
-						fontWeight: 700,
-						display: "flex",
-						alignItems: "center",
-						gap: "10px",
-						boxShadow: "0 20px 25px -5px rgba(0,0,0,0.2)",
-						zIndex: 9999,
-						border: "1px solid rgba(255,255,255,0.1)",
-					}}
-				>
-					{toast.type === "success" ? "✓" : "✕"} {toast.message}
-				</div>
-			)}
+			{toast && <Toast message={toast.message} type={toast.type} />}
 
 			{showVerificationModal &&
 				createPortal(
@@ -503,7 +507,8 @@ export default function SettingsPage() {
 								width: "100%",
 								maxWidth: "450px",
 								borderRadius: "24px",
-								overflow: "hidden",
+								maxHeight: "calc(100dvh - 2rem)",
+								overflowY: "auto",
 								boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
 								border: "1px solid rgba(0,0,0,0.05)",
 							}}
@@ -551,7 +556,7 @@ export default function SettingsPage() {
 										margin: "0 0 8px 0",
 									}}
 								>
-									Verify Your License
+									License details
 								</h3>
 								<p
 									style={{
@@ -561,8 +566,7 @@ export default function SettingsPage() {
 										lineHeight: "1.5",
 									}}
 								>
-									BenchScout AI has extracted your details. Please confirm them
-									to activate automated renewal tracking.
+									Enter or correct the registration number and expiry date from your license. Saving these details enables renewal tracking; independent review is separate.
 								</p>
 							</div>
 
@@ -582,8 +586,9 @@ export default function SettingsPage() {
 									/>
 								</div>
 								<div style={{ marginBottom: "1.5rem" }}>
-									<label style={labelStyle}>MLSCN Registration Number</label>
+									<label htmlFor="license-registration-number" style={labelStyle}>MLSCN Registration Number</label>
 									<input
+										id="license-registration-number"
 										type="text"
 										value={extractedData.licenseNumber}
 										onChange={(e) =>
@@ -597,8 +602,9 @@ export default function SettingsPage() {
 									/>
 								</div>
 								<div style={{ marginBottom: "1.5rem" }}>
-									<label style={labelStyle}>Expiry Date</label>
+									<label htmlFor="license-expiry-date" style={labelStyle}>Expiry Date</label>
 									<input
+										id="license-expiry-date"
 										type="date"
 										value={extractedData.expiryDate}
 										onChange={(e) =>
@@ -649,7 +655,7 @@ export default function SettingsPage() {
 											boxShadow: "0 4px 12px rgba(11, 36, 68, 0.2)",
 										}}
 									>
-										{isVerifying ? "Saving..." : "Confirm & Activate"}
+										{isVerifying ? "Saving..." : "Save license details"}
 									</button>
 								</div>
 							</div>
@@ -687,7 +693,7 @@ export default function SettingsPage() {
 								border: "1px solid rgba(0,0,0,0.05)",
 								display: "flex",
 								flexDirection: "column",
-								maxHeight: "90vh",
+								maxHeight: "calc(100dvh - 2rem)",
 							}}
 						>
 							<div
@@ -788,33 +794,7 @@ export default function SettingsPage() {
 									minHeight: "50vh",
 								}}
 							>
-								{previewDoc.url?.toLowerCase().includes(".pdf") ? (
-									<iframe
-										src={previewDoc.url}
-										style={{
-											width: "100%",
-											height: "100%",
-											minHeight: "55vh",
-											border: "none",
-											borderRadius: "12px",
-											background: "white",
-											boxShadow: "0 2px 8px rgba(0,0,0,0.02)",
-										}}
-										title="PDF Preview"
-									/>
-								) : (
-									<img
-										src={previewDoc.url || ""}
-										alt={previewDoc.name}
-										style={{
-											maxWidth: "100%",
-											maxHeight: "60vh",
-											objectFit: "contain",
-											borderRadius: "12px",
-											boxShadow: "0 2px 8px rgba(0,0,0,0.02)",
-										}}
-									/>
-								)}
+								<DocumentPreview key={previewDoc.url} url={previewDoc.url || ""} name={previewDoc.name} />
 							</div>
 							<div
 								style={{
@@ -843,8 +823,8 @@ export default function SettingsPage() {
 								</button>
 								{/* 🚀 BRANDED ACTION BUTTON */}
 								<a
-									href={previewDoc.url || "#"}
-									target="_blank"
+									href={previewDoc.url ? `${previewDoc.url}&download=1` : "#"}
+                                    download
 									rel="noopener noreferrer"
 									style={{
 										padding: "10px 20px",
@@ -873,7 +853,7 @@ export default function SettingsPage() {
 										<polyline points="7 10 12 15 17 10"></polyline>
 										<line x1="12" y1="15" x2="12" y2="3"></line>
 									</svg>{" "}
-									Open Original File
+									Download file
 								</a>
 							</div>
 						</div>
@@ -895,13 +875,15 @@ export default function SettingsPage() {
 					System Settings
 				</h1>
 				<p style={{ margin: "2px 0 0 0", fontSize: "13px", color: "#64748b" }}>
-					Manage your personal files, API keys, and application preferences.
+					Manage your documents, search preferences, and profile.
 				</p>
 			</div>
 
-			{checkingAuth ? (
+			{settingsError && <div role="alert" className="page-load-error"><span>{settingsError}</span><button onClick={loadSettings}>Retry</button></div>}
+			{settingsError && !hasSettings ? null : checkingAuth ? (
 				<div
-					style={{
+					className="settings-loading" role="status"
+                    style={{
 						display: "flex",
 						flexDirection: "column",
 						alignItems: "center",
@@ -933,7 +915,7 @@ export default function SettingsPage() {
 							letterSpacing: "-0.2px",
 						}}
 					>
-						Awakening database connection...
+						Loading your settings…
 					</span>
 				</div>
 			) : !isUserLoggedIn ? (
@@ -1014,7 +996,7 @@ export default function SettingsPage() {
 				</div>
 			) : (
 				<>
-					<div
+					<div className="settings-preferences-card"
 						style={{
 							background: "rgba(255, 255, 255, 0.4)",
 							backdropFilter: "blur(24px)",
@@ -1063,11 +1045,11 @@ export default function SettingsPage() {
 									Profile & Search Preferences
 								</h2>
 								<p style={{ margin: 0, fontSize: "12px", color: "#64748b" }}>
-									Fine-tune how LabPro Connect identifies opportunities.
+									Fine-tune how BenchScout identifies opportunities.
 								</p>
 							</div>
 						</div>
-						<div style={{ padding: "1.5rem" }}>
+						<div className="settings-preferences-body" style={{ padding: "1.5rem" }}>
 							<div
 								className="mobile-grid"
 								style={{
@@ -1111,7 +1093,7 @@ export default function SettingsPage() {
 							</div>
 							<div style={{ marginBottom: "1.5rem" }}>
 								<label style={labelStyle}>ROLE KEYWORDS</label>
-								<div
+								<div className="settings-keywords"
 									style={{
 										border: "1px solid rgba(0,0,0,0.1)",
 										background: "rgba(255,255,255,0.5)",
@@ -1139,8 +1121,8 @@ export default function SettingsPage() {
 												gap: "4px",
 											}}
 										>
-											{kw}{" "}
-											<span
+											<span>{kw}</span>
+											<button type="button" aria-label={`Remove ${kw}`}
 												onClick={() => removeKeyword(idx)}
 												style={{
 													cursor: "pointer",
@@ -1150,13 +1132,13 @@ export default function SettingsPage() {
 												}}
 											>
 												×
-											</span>
+											</button>
 										</div>
 									))}
 									<input
 										type="text"
 										placeholder={
-											userData.email ? "Add keyword (Press Enter)..." : ""
+											userData.email ? "Add keyword…" : ""
 										}
 										onKeyDown={handleAddKeyword}
 										disabled={!userData.email}
@@ -1259,7 +1241,7 @@ export default function SettingsPage() {
 												cursor: !userData.email ? "not-allowed" : "pointer",
 											}}
 										/>
-										<span
+										<span className="settings-score"
 											style={{
 												fontSize: "20px",
 												fontWeight: 800,
@@ -1339,7 +1321,8 @@ export default function SettingsPage() {
 								width: "100%",
 							}}
 						>
-							<div>
+							<CandidateCareerProfile key={JSON.stringify(career)} phase={career.phase} initial={career.profile} onSaved={()=>showToast("Career profile saved.")} />
+<div>
 								<h2
 									style={{
 										fontSize: "16px",
@@ -1367,7 +1350,8 @@ export default function SettingsPage() {
 									Secure Document Vault
 								</h2>
 								<p style={{ fontSize: "11px", color: "#64748b", margin: 0 }}>
-									Keep your standard files ready for deployment.
+									Upload documents for private sharing with employers you apply to.
+                                {!uploadsAvailable && <span role="status" style={{ display: "block", marginTop: 8, color: "#92400e" }}>Private uploads are temporarily unavailable. Existing files are preserved; older files need to be uploaded again once storage is ready.</span>}
 								</p>
 							</div>
 							<div
@@ -1380,7 +1364,7 @@ export default function SettingsPage() {
 								{documents.map((doc) => (
 									<div
 										key={doc.id}
-										className="mobile-stack"
+										className="vault-card"
 										style={{
 											background: "rgba(255, 255, 255, 0.5)",
 											backdropFilter: "blur(16px)",
@@ -1445,6 +1429,7 @@ export default function SettingsPage() {
 												>
 													{doc.name}
 												</h3>
+												{doc.id === "license" && doc.url && <button type="button" onClick={() => setShowVerificationModal(true)} style={{ margin: "6px 0", minHeight: 44, padding: "8px 12px", border: "1px solid #cbd5e1", borderRadius: 8, background: "white", color: "#0B2444", fontSize: 12, fontWeight: 700, cursor: "pointer" }}>Edit license details</button>}
 												<div
 													style={{
 														display: "flex",
@@ -1496,11 +1481,11 @@ export default function SettingsPage() {
 												</div>
 											</div>
 										</div>
-										<div style={{ display: "flex", gap: "6px", flexShrink: 0 }}>
+										<div className="vault-actions" style={{ display: "flex", gap: "6px", flexShrink: 0 }}>
 											{doc.url ? (
 												<>
 													<button
-														onClick={() => setPreviewDoc(doc)}
+														onClick={() => doc.size === "Re-upload required" ? (uploadsAvailable ? triggerUpload(doc.id) : showToast("Private uploads are temporarily unavailable. Your existing document has been kept.", "error")) : setPreviewDoc(doc)}
 														style={{
 															background: "rgba(255,255,255,0.8)",
 															border: "1px solid rgba(0,0,0,0.05)",
@@ -1513,7 +1498,7 @@ export default function SettingsPage() {
 															whiteSpace: "nowrap",
 														}}
 													>
-														View
+														{doc.size === "Re-upload required" ? "Re-upload" : "View"}
 													</button>
 													<button
 														onClick={() => handleDeleteDoc(doc.id)}
@@ -1535,7 +1520,7 @@ export default function SettingsPage() {
 											) : (
 												<button
 													onClick={() => triggerUpload(doc.id)}
-													disabled={!userData.email || isUploading}
+													disabled={!userData.email || isUploading || !uploadsAvailable}
 													style={{
 														background:
 															!userData.email || isUploading
@@ -1569,83 +1554,6 @@ export default function SettingsPage() {
 							</div>
 						</div>
 
-						<div
-							style={{
-								flex: 1,
-								display: "flex",
-								flexDirection: "column",
-								gap: "1rem",
-								width: "100%",
-							}}
-						>
-							<div>
-								<h2
-									style={{
-										fontSize: "16px",
-										fontWeight: 800,
-										color: "#0f172a",
-										margin: "0 0 4px 0",
-									}}
-								>
-									System Integrations
-								</h2>
-								<p style={{ fontSize: "11px", color: "#64748b", margin: 0 }}>
-									API keys for AI parsing and delivery.
-								</p>
-							</div>
-							<div
-								style={{
-									background: "rgba(255, 255, 255, 0.5)",
-									backdropFilter: "blur(24px)",
-									border: "1px solid rgba(255, 255, 255, 0.3)",
-									borderRadius: "12px",
-									padding: "1.25rem",
-									boxShadow: "0 4px 16px rgba(0,0,0,0.02)",
-									width: "100%",
-								}}
-							>
-								<div style={{ marginBottom: "1rem" }}>
-									<label style={labelStyle}>ANTHROPIC API KEY (CLAUDE)</label>
-									<input
-										type="password"
-										placeholder="sk-ant-api03-..."
-										defaultValue="sk-ant-api03-xxxx-xxxx-xxxx"
-										style={inputStyle}
-									/>
-								</div>
-								<div style={{ marginBottom: "1.25rem" }}>
-									<label style={labelStyle}>GMAIL APP PASSWORD</label>
-									<input
-										type="password"
-										placeholder="xxxx xxxx xxxx xxxx"
-										style={inputStyle}
-									/>
-								</div>
-								<div
-									style={{
-										display: "flex",
-										justifyContent: "flex-end",
-										marginTop: "1rem",
-									}}
-								>
-									<button
-										onClick={() => showToast("API Configuration Saved!")}
-										style={{
-											background: "#0B2444", // 🚀 BRANDED BUTTON
-											color: "white",
-											border: "none",
-											padding: "10px 24px",
-											borderRadius: "8px",
-											fontSize: "12px",
-											fontWeight: 700,
-											cursor: "pointer",
-										}}
-									>
-										Save Integrations
-									</button>
-								</div>
-							</div>
-						</div>
 					</div>
 				</>
 			)}

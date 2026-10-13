@@ -1,77 +1,25 @@
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
-
-export async function POST(request: Request) {
-	try {
-		const { jobId, email } = await request.json();
-
-		if (!jobId) {
-			return NextResponse.json({ error: "Missing jobId" }, { status: 400 });
-		}
-
-		const job = await prisma.job.findUnique({ where: { id: jobId } });
-		if (!job)
-			return NextResponse.json({ error: "Job not found" }, { status: 404 });
-
-		// 🚀 B2B ATS ROUTING: Drop candidate into the Employer's Inbox
-		if (job.isDirectPost) {
-			if (!email)
-				return NextResponse.json(
-					{ error: "Email required for B2B apply" },
-					{ status: 400 },
-				);
-
-			const user = await prisma.user.findUnique({ where: { email } });
-			if (!user)
-				return NextResponse.json({ error: "User not found" }, { status: 404 });
-
-			await prisma.application.create({
-				data: {
-					jobId: job.id,
-					userId: user.id,
-				},
-			});
-			return NextResponse.json({
-				success: true,
-				message: "ATS Application Logged",
-			});
-		}
-
-		// 🚀 STANDARD BEHAVIOR: Flip the boolean on their personal scraped job
-		const updatedJob = await prisma.job.update({
-			where: { id: jobId },
-			data: { applied: true },
-		});
-		return NextResponse.json(updatedJob);
-	} catch (error) {
-		console.error("Apply update error:", error);
-		return NextResponse.json(
-			{ error: "Failed to update job status" },
-			{ status: 500 },
-		);
-	} finally {
-		await prisma.$disconnect();
-	}
-}
-
-export async function DELETE(request: Request) {
-	// Legacy support for undoing standard applications
-	try {
-		const { jobId } = await request.json();
-		if (!jobId)
-			return NextResponse.json({ error: "Missing jobId" }, { status: 400 });
-
-		const updatedJob = await prisma.job.update({
-			where: { id: jobId },
-			data: { applied: false, status: "applied" },
-		});
-		return NextResponse.json(updatedJob);
-	} catch (error) {
-		return NextResponse.json(
-			{ error: "Failed to cancel job application" },
-			{ status: 500 },
-		);
-	}
-}
+import { prisma } from "@/lib/prisma";
+import { withApi } from "@/lib/api";
+import { ApiError } from "@/lib/security";
+import { opportunityForPhase, listingDetails } from "@/lib/candidate-profile";
+export const POST = withApi("candidate", async (request, session) => {
+  const { jobId } = await request.json();
+  const job = await prisma.job.findUniqueOrThrow({ where: { id: jobId } });
+  if (!opportunityForPhase(job, session!.careerPhase || "licensed")) throw new ApiError(400, "This opportunity does not match your professional stage.");
+  const deadline = listingDetails(job.listingDetails).deadline;
+  if (deadline && deadline < new Date().toISOString().slice(0,10)) throw new ApiError(400, "The recorded application deadline has passed.");
+  if (job.isDirectPost) {
+    const user = await prisma.user.findUniqueOrThrow({ where: { id: session!.id } });
+    if (!user.resumeUrl) throw new ApiError(400, "Upload your CV in Settings before applying.");
+    await prisma.application.upsert({ where: { jobId_userId: { jobId, userId: user.id } }, create: { jobId, userId: user.id }, update: {} });
+  } else await prisma.job.update({ where: { id: jobId }, data: { applied: true, status: "applied" } });
+  return NextResponse.json({ success: true });
+}, { job: "available", limit: 20 });
+export const DELETE = withApi("candidate", async (request, session) => {
+  const { jobId } = await request.json();
+  const job = await prisma.job.findUniqueOrThrow({ where: { id: jobId } });
+  if (job.isDirectPost) await prisma.application.deleteMany({ where: { jobId, userId: session!.id } });
+  else await prisma.job.update({ where: { id: jobId }, data: { applied: false, status: "active" } });
+  return NextResponse.json({ success: true });
+}, { job: "available" });

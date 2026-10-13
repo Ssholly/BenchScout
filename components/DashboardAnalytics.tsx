@@ -1,5 +1,6 @@
 "use client";
-import { useEffect, useState } from "react";
+import type { ClientJob } from "@/lib/types";
+import { useEffect, useState, startTransition } from "react";
 
 export default function DashboardAnalytics() {
 	const [chartData, setChartData] = useState<
@@ -21,14 +22,14 @@ export default function DashboardAnalytics() {
 		if (!activeEmail) return;
 
 		try {
-			const res = await fetch(`/api/jobs?email=${activeEmail}`);
+			const res = await fetch(`/api/jobs?email=${encodeURIComponent(activeEmail)}`);
 			const jobs = await res.json();
 
 			if (Array.isArray(jobs)) {
 				// SMART DEDUPLICATION:
 				// We only count active jobs based on their immutable creation date in the database.
 				// Even if the user runs the scraper 50 times today, the exact same job won't be counted twice.
-				const activeJobs = jobs.filter((j: any) => j.status !== "cleared");
+				const activeJobs = jobs.filter((j: ClientJob) => j.status !== "cleared");
 
 				// 🚀 THE FIX: Explicitly tell TypeScript the structure of the objects in this array
 				const days: { day: string; fullDate: string; count: number }[] = [];
@@ -44,7 +45,7 @@ export default function DashboardAnalytics() {
 					});
 				}
 
-				activeJobs.forEach((job: any) => {
+				activeJobs.forEach((job: ClientJob) => {
 					if (job.createdAt) {
 						const jobDate = new Date(job.createdAt).toLocaleDateString();
 						const dayItem = days.find((d) => d.fullDate === jobDate);
@@ -70,7 +71,7 @@ export default function DashboardAnalytics() {
 	};
 
 	useEffect(() => {
-		loadGraphData();
+		startTransition(() => { void loadGraphData(); });
 		window.addEventListener("jobsUpdated", loadGraphData);
 		window.addEventListener("userStateChanged", loadGraphData);
 
@@ -81,11 +82,11 @@ export default function DashboardAnalytics() {
 	}, []);
 
 	const networks = [
-		{ name: "Indeed", status: "ONLINE", color: "#22c55e" },
-		{ name: "LinkedIn", status: "ONLINE", color: "#22c55e" },
-		{ name: "MyJobMag", status: "SYNCING", color: "#0ea5e9" },
-		{ name: "HotNigerianJobs", status: "ONLINE", color: "#22c55e" },
-		{ name: "SmartRecruiters", status: "ONLINE", color: "#22c55e" },
+		{ name: "Indeed", status: "SOURCE", color: "#64748b" },
+		{ name: "LinkedIn", status: "SOURCE", color: "#64748b" },
+		{ name: "MyJobMag", status: "SOURCE", color: "#64748b" },
+		{ name: "HotNigerianJobs", status: "SOURCE", color: "#64748b" },
+		{ name: "SmartRecruiters", status: "SOURCE", color: "#64748b" },
 	];
 
 	return (
@@ -128,7 +129,7 @@ export default function DashboardAnalytics() {
 						</p>
 					</div>
 					<div style={{ fontSize: "16px", fontWeight: 800, color: "#0058bc" }}>
-						Live
+						Saved data
 					</div>
 				</div>
 
@@ -245,7 +246,7 @@ export default function DashboardAnalytics() {
 										onMouseEnter={() => setHoveredIndex(i)}
 										onMouseLeave={() => setHoveredIndex(null)}
 										style={{
-											width: "24px",
+											width: "min(24px, 80%)",
 											height: `${heightPercent}%`,
 											background: d.count > 0 ? "#0058bc" : "transparent",
 											borderRadius: "6px 6px 0 0",
@@ -294,7 +295,7 @@ export default function DashboardAnalytics() {
 						gap: "8px",
 					}}
 				>
-					Network Telemetry
+					Search Sources
 					<span
 						style={{
 							background: "#fef2f2",
@@ -306,7 +307,7 @@ export default function DashboardAnalytics() {
 							textTransform: "uppercase",
 						}}
 					>
-						Live
+						Saved data
 					</span>
 				</h3>
 

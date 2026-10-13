@@ -1,6 +1,14 @@
 "use client";
+import { setClientIdentity } from "@/lib/client-identity";
+import { signOutToHome } from "@/lib/client-logout";
+import Toast from "@/components/Toast";
+import { useCallback } from "react";
+import { csvCell } from "@/lib/csv";
+import { startTransition } from "react";
+import { useMounted } from "@/lib/use-mounted";
+import { careerLabel, listingDetails } from "@/lib/candidate-profile";
+import type { Candidate, ClientApplication, ClientEmployer, ClientJob } from "@/lib/types";
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { createPortal } from "react-dom";
 
 type InvitedRecord = {
@@ -15,10 +23,10 @@ type InvitedRecord = {
 };
 
 export default function EmployerGateway() {
-	const router = useRouter();
-	const [mounted, setMounted] = useState(false);
+
+	const mounted = useMounted();
 	const [view, setView] = useState<"login" | "register" | "dashboard">("login");
-	const [employer, setEmployer] = useState<any>(null);
+	const [employer, setEmployer] = useState<ClientEmployer | null>(null);
 
 	// ACTIVE PANEL SUB-TAB STATE
 	const [activeTab, setActiveTab] = useState<"broadcasts" | "crm" | "invites">(
@@ -36,18 +44,20 @@ export default function EmployerGateway() {
 	const [loc, setLoc] = useState("");
 	const [salary, setSalary] = useState("");
 	const [skills, setSkills] = useState("");
+	const [deadline, setDeadline] = useState("");
+ const [requiredDocuments, setRequiredDocuments] = useState("");
 	const [jobType, setJobType] = useState("full-time");
-	const [isMlscnApproved, setIsMlscnApproved] = useState(false);
+
 
 	const [toast, setToast] = useState<{
 		message: string;
 		type: "success" | "error" | "warning";
 	} | null>(null);
-	const [postedJobs, setPostedJobs] = useState<any[]>([]);
+	const [postedJobs, setPostedJobs] = useState<ClientJob[]>([]);
 	const [loadingJobs, setLoadingJobs] = useState(false);
 
 	// TALENT SOURCING CRM DIRECTORY STATE
-	const [talentPool, setTalentPool] = useState<any[]>([]);
+	const [talentPool, setTalentPool] = useState<Candidate[]>([]);
 	const [crmLoading, setCrmLoading] = useState(false);
 	const [filterLocation, setFilterLocation] = useState("");
 	const [invitingId, setInvitingId] = useState<string | null>(null);
@@ -58,7 +68,7 @@ export default function EmployerGateway() {
 	// MULTI-BROADCAST SELECTION PORTAL STATE
 	const [scoutTargetModal, setScoutTargetModal] = useState<{
 		isOpen: boolean;
-		user: any | null;
+		user: Candidate | null;
 	}>({ isOpen: false, user: null });
 
 	const [deleteModal, setDeleteModal] = useState<{
@@ -73,14 +83,16 @@ export default function EmployerGateway() {
 		loc: string;
 		salary: string;
 		skills: string;
-	}>({ isOpen: false, jobId: "", role: "", loc: "", salary: "", skills: "" });
+        deadline:string;requiredDocuments:string;
+	}>({ isOpen: false, jobId: "", role: "", loc: "", salary: "", skills: "", deadline:"", requiredDocuments:"" });
 
 	const [drawer, setDrawer] = useState<{
 		isOpen: boolean;
 		jobTitle: string;
-		applicants: any[];
+		applicants: ClientApplication[];
 		loading: boolean;
-	}>({ isOpen: false, jobTitle: "", applicants: [], loading: false });
+		error: string;
+	}>({ isOpen: false, jobTitle: "", applicants: [], loading: false, error: "" });
 
 	const [interviewModal, setInterviewModal] = useState<{
 		isOpen: boolean;
@@ -114,18 +126,18 @@ export default function EmployerGateway() {
 				const data = await res.json();
 				setPostedJobs(data);
 			}
-		} catch (error) {
+		} catch {
 			console.error("Failed to load employer jobs.");
 		} finally {
 			setLoadingJobs(false);
 		}
 	};
 
-	const fetchTalentDirectory = async () => {
+	const fetchTalentDirectory = useCallback(async () => {
 		setCrmLoading(true);
 		try {
 			const res = await fetch(
-				`/api/employer/talent?location=${filterLocation}`,
+				`/api/employer/talent?location=${encodeURIComponent(filterLocation)}`,
 			);
 			const data = await res.json();
 			if (data.success) {
@@ -136,24 +148,23 @@ export default function EmployerGateway() {
 		} finally {
 			setCrmLoading(false);
 		}
-	};
+	}, [filterLocation]);
 
-	const handleInitiateSourcingInvite = (user: any) => {
-		if (postedJobs.length === 0) {
+	const handleInitiateSourcingInvite = (user: Candidate) => {
+		if (!postedJobs.some(job => job.status === "active")) {
 			return showToast(
-				"Deploy at least one active broadcast role to dispatch an invite.",
+				"You need an active vacancy before sending an invitation.",
 				"warning",
 			);
 		}
 		setScoutTargetModal({ isOpen: true, user });
 	};
 
-	const executeTargetedInvite = async (selectedJob: any) => {
+	const executeTargetedInvite = async (selectedJob: ClientJob) => {
 		const targetUser = scoutTargetModal.user;
 		if (!targetUser) return;
 
 		setInvitingId(targetUser.id);
-		setScoutTargetModal({ isOpen: false, user: null });
 
 		try {
 			const res = await fetch("/api/employer/talent", {
@@ -163,43 +174,45 @@ export default function EmployerGateway() {
 					candidateId: targetUser.id,
 					candidateEmail: targetUser.email,
 					candidateName: targetUser.name,
-					employerName: employer.companyName,
+					employerName: employer!.companyName,
 					jobId: selectedJob.id,
 					jobRole: selectedJob.role,
 				}),
 			});
 
+			const invitation = await res.json();
 			if (res.ok) {
+				setScoutTargetModal({ isOpen: false, user: null });
 				showToast(
-					`Headhunting invite sent for ${selectedJob.role} successfully!`,
+					`Invitation sent for ${selectedJob.role}.`,
 					"success",
 				);
 
 				// 🚀 SAVE RICH RECORD TO STATE & STORAGE
 				const newRecord: InvitedRecord = {
 					candidateId: targetUser.id,
-					candidateName: targetUser.name || "Verified Scientist",
+					candidateName: targetUser.name || "Scientist",
 					candidateEmail: targetUser.email,
 					resumeUrl: targetUser.resumeUrl || "",
 					licenseUrl: targetUser.licenseUrl || "",
 					jobId: selectedJob.id,
 					jobRole: selectedJob.role,
-					timestamp: Date.now(),
+					timestamp: Date.parse(invitation.createdAt),
 				};
 
 				const updatedRecords = [...invitedRecords, newRecord];
 				setInvitedRecords(updatedRecords);
 				localStorage.setItem(
-					`benchscout_invited_v2_${employer.id}`,
+					`benchscout_invited_v2_${employer!.id}`,
 					JSON.stringify(updatedRecords),
 				);
 
 				window.dispatchEvent(new Event("refreshNotifications"));
 			} else {
-				showToast("Sourcing error during delivery.", "error");
+				showToast(invitation.error || "Couldn’t send this invitation. Please try again.", "error");
 			}
-		} catch (e) {
-			showToast("Network pipeline failure.", "error");
+		} catch {
+			showToast("Couldn’t connect to send the invitation. Please try again.", "error");
 		} finally {
 			setInvitingId(null);
 		}
@@ -207,19 +220,19 @@ export default function EmployerGateway() {
 
 	useEffect(() => {
 		if ((activeTab === "crm" || activeTab === "invites") && employer) {
-			fetchTalentDirectory();
+			startTransition(() => { fetchTalentDirectory(); });
 		}
-	}, [activeTab, filterLocation]);
+	}, [activeTab, employer, fetchTalentDirectory]);
 
 	const openApplicantDrawer = async (jobId: string, jobTitle: string) => {
-		setDrawer({ isOpen: true, jobTitle, applicants: [], loading: true });
+		setDrawer({ isOpen: true, jobTitle, applicants: [], loading: true, error: "" });
 		try {
 			const res = await fetch(`/api/jobs/applicants?jobId=${jobId}`);
+			const data = await res.json();
 			if (!res.ok) {
-				setDrawer((prev) => ({ ...prev, loading: false }));
+				setDrawer((prev) => ({ ...prev, loading: false, error: data.error || "Unable to load applicants. Please try again." }));
 				return;
 			}
-			const data = await res.json();
 			if (data.success) {
 				setDrawer((prev) => ({
 					...prev,
@@ -227,10 +240,10 @@ export default function EmployerGateway() {
 					loading: false,
 				}));
 			} else {
-				setDrawer((prev) => ({ ...prev, loading: false }));
+				setDrawer((prev) => ({ ...prev, loading: false, error: "Unable to load applicants. Please try again." }));
 			}
-		} catch (e) {
-			setDrawer((prev) => ({ ...prev, loading: false }));
+		} catch {
+			setDrawer((prev) => ({ ...prev, loading: false, error: "Unable to connect. Please try again." }));
 		}
 	};
 
@@ -249,7 +262,7 @@ export default function EmployerGateway() {
 				body: JSON.stringify({ applicationId, status: "rejected" }),
 			});
 			showToast("Candidate rejected.", "warning");
-		} catch (err) {
+		} catch {
 			showToast("Network error while updating status.", "error");
 		}
 	};
@@ -301,7 +314,7 @@ export default function EmployerGateway() {
 			} else {
 				showToast("Failed to schedule interview.", "error");
 			}
-		} catch (err) {
+		} catch {
 			showToast("Network error while scheduling.", "error");
 		} finally {
 			setLoading(false);
@@ -309,20 +322,22 @@ export default function EmployerGateway() {
 	};
 
 	useEffect(() => {
-		setMounted(true);
-		const saved = localStorage.getItem("benchscout_active_employer");
-		if (saved) {
-			const parsed = JSON.parse(saved);
-			setEmployer(parsed);
+		let cancelled = false;
+		fetch("/api/auth/session").then(async response => {
+			if (!response.ok) return;
+			const data = await response.json();
+			if (cancelled || data.session?.role !== "employer") return;
+			const session = data.session;
+			const account = { id: session.id, email: session.email, companyName: session.name, isVerified: session.verified };
+			setEmployer(account);
 			setView("dashboard");
-			fetchEmployerJobs(parsed.id);
-
-			// Load v2 Rich Records
-			const savedInvites = localStorage.getItem(
-				`benchscout_invited_v2_${parsed.id}`,
-			);
-			if (savedInvites) setInvitedRecords(JSON.parse(savedInvites));
-		}
+			fetchEmployerJobs(account.id);
+			try {
+				const saved = JSON.parse(localStorage.getItem(`benchscout_invited_v2_${account.id}`) || "[]");
+				if (Array.isArray(saved)) setInvitedRecords(saved);
+			} catch { /* Ignore an invalid local invitation cache. */ }
+		}).catch(() => setError("Unable to restore your session. Please sign in again."));
+		return () => { cancelled = true; };
 	}, []);
 
 	const handleAuth = async (e: React.FormEvent) => {
@@ -346,33 +361,26 @@ export default function EmployerGateway() {
 
 			if (data.success) {
 				if (view === "login") {
+					setClientIdentity("employer", data.employer.id);
 					localStorage.setItem(
 						"benchscout_active_employer",
 						JSON.stringify(data.employer),
 					);
-					setEmployer(data.employer);
-					setView("dashboard");
-					fetchEmployerJobs(data.employer.id);
-
-					const savedInvites = localStorage.getItem(
-						`benchscout_invited_v2_${data.employer.id}`,
-					);
-					if (savedInvites) setInvitedRecords(JSON.parse(savedInvites));
-
-					window.dispatchEvent(new Event("employerStateChanged"));
+					window.location.replace("/employer");
+					return;
 				} else {
 					setView("login");
 					setCompanyName("");
 					setPassword("");
 					showToast(
-						"Registration complete! Access your secure portal.",
-						"success",
+						data.warning || data.message || "Confirm your email before signing in.",
+						data.warning ? "warning" : "success",
 					);
 				}
 			} else {
 				setError(data.error || "An authentication error occurred.");
 			}
-		} catch (err) {
+		} catch {
 			setError("Network timeout. Check server connection.");
 		} finally {
 			setLoading(false);
@@ -391,13 +399,14 @@ export default function EmployerGateway() {
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({
 					role,
-					company: employer.companyName,
+					company: employer!.companyName,
 					loc,
 					salary,
 					skills,
 					jobType,
-					isMlscnApproved,
-					employerId: employer.id,
+                    deadline, requiredDocuments,
+
+					employerId: employer!.id,
 				}),
 			});
 			const data = await res.json();
@@ -411,11 +420,11 @@ export default function EmployerGateway() {
 				setLoc("");
 				setSalary("");
 				setSkills("");
-				fetchEmployerJobs(employer.id);
+				fetchEmployerJobs(employer!.id);
 			} else {
 				showToast("Failed to sync listing to platform network.", "error");
 			}
-		} catch (err) {
+		} catch {
 			showToast("Network error processing request.", "error");
 		} finally {
 			setLoading(false);
@@ -436,6 +445,7 @@ export default function EmployerGateway() {
 					loc: editModal.loc,
 					salary: editModal.salary,
 					skills: editModal.skills,
+                    deadline:editModal.deadline,requiredDocuments:editModal.requiredDocuments,
 				}),
 			});
 			const data = await res.json();
@@ -443,11 +453,11 @@ export default function EmployerGateway() {
 			if (data.success) {
 				showToast("Broadcast updated successfully!", "success");
 				setEditModal((prev) => ({ ...prev, isOpen: false }));
-				fetchEmployerJobs(employer.id);
+				fetchEmployerJobs(employer!.id);
 			} else {
 				showToast("Failed to update broadcast.", "error");
 			}
-		} catch (err) {
+		} catch {
 			showToast("Network error updating broadcast.", "error");
 		} finally {
 			setLoading(false);
@@ -462,26 +472,23 @@ export default function EmployerGateway() {
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({
 					jobId: deleteModal.jobId,
-					employerId: employer.id,
+					employerId: employer!.id,
 				}),
 			});
 			if (res.ok) {
 				showToast("Broadcast terminated successfully.", "success");
 				setDeleteModal({ isOpen: false, jobId: null });
-				fetchEmployerJobs(employer.id);
+				fetchEmployerJobs(employer!.id);
 			} else {
 				showToast("Failed to terminate broadcast.", "error");
 			}
-		} catch (e) {
+		} catch {
 			showToast("Network error terminating broadcast.", "error");
 		}
 	};
 
-	const handleLogout = () => {
-		localStorage.removeItem("benchscout_active_employer");
-		setEmployer(null);
-		setView("login");
-		window.dispatchEvent(new Event("employerStateChanged"));
+	const handleLogout = async () => {
+		if (!(await signOutToHome())) showToast("Couldn’t sign out. Please try again.", "error");
 	};
 
 	const boxStyle = {
@@ -511,62 +518,26 @@ export default function EmployerGateway() {
 	if (!mounted) return null;
 
 	return (
-		<div style={{ width: "100%", minHeight: "100vh" }}>
+		<div className="employer-page" style={{ width: "100%", minHeight: "100dvh" }}>
 			<style
 				dangerouslySetInnerHTML={{
 					__html: `@keyframes slideDownToast { 0% { transform: translate(-50%, -20px) scale(0.95); opacity: 0; } 100% { transform: translate(-50%, 0) scale(1); opacity: 1; } } @keyframes modalFadeIn { 0% { opacity: 0; transform: scale(0.98); } 100% { opacity: 1; transform: scale(1); } } @keyframes slideInDrawer { 0% { transform: translateX(120%); } 100% { transform: translateX(0); } } @keyframes fadeOverlay { 0% { opacity: 0; } 100% { opacity: 1; } }`,
 				}}
 			/>
 
-			{toast &&
-				createPortal(
-					<div
-						style={{
-							position: "fixed",
-							top: "24px",
-							left: "50%",
-							background:
-								toast.type === "success"
-									? "rgba(15, 23, 42, 0.95)"
-									: toast.type === "warning"
-										? "rgba(217, 119, 6, 0.95)"
-										: "rgba(153, 27, 27, 0.95)",
-							backdropFilter: "blur(12px)",
-							color: "white",
-							padding: "12px 24px",
-							borderRadius: "30px",
-							fontSize: "13px",
-							fontWeight: 700,
-							display: "flex",
-							alignItems: "center",
-							gap: "8px",
-							boxShadow: "0 10px 40px -5px rgba(0,0,0,0.3)",
-							zIndex: 99999,
-							animation:
-								"slideDownToast 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards",
-							transform: "translateX(-50%)",
-						}}
-					>
-						{toast.type === "success"
-							? "✓ "
-							: toast.type === "warning"
-								? "⚠️ "
-								: "✕ "}{" "}
-						{toast.message}
-					</div>,
-					document.body,
-				)}
+			{toast && <Toast message={toast.message} type={toast.type} />}
 
 			{/* 🚀 UPGRADED: MULTI-BROADCAST SELECTION OVERLAY */}
 			{scoutTargetModal.isOpen &&
 				createPortal(
 					<div
+						className="employer-overlay"
 						style={{
 							position: "fixed",
 							top: 0,
 							left: 0,
 							width: "100vw",
-							height: "100vh",
+							height: "100dvh",
 							background: "rgba(15, 23, 42, 0.15)",
 							backdropFilter: "blur(18px)",
 							WebkitBackdropFilter: "blur(18px)",
@@ -578,6 +549,7 @@ export default function EmployerGateway() {
 						}}
 					>
 						<div
+							className="employer-dialog employer-panel" role="dialog" aria-modal="true" aria-label="Employer dialog"
 							style={{
 								background: "white",
 								width: "100%",
@@ -606,7 +578,7 @@ export default function EmployerGateway() {
 											margin: 0,
 										}}
 									>
-										Select Assignment Node
+										Select a vacancy
 									</h3>
 									<p
 										style={{
@@ -615,7 +587,7 @@ export default function EmployerGateway() {
 											color: "#64748b",
 										}}
 									>
-										Choose which layout to fast-track the clinician against.
+										Choose an active vacancy for this candidate.
 									</p>
 								</div>
 								<button
@@ -658,18 +630,20 @@ export default function EmployerGateway() {
 								}}
 							>
 								{postedJobs.map((job) => {
+									const unavailable = job.status !== "active";
 									const isAlreadySent = invitedRecords.some(
 										(r) =>
 											r.candidateId === scoutTargetModal.user?.id &&
 											r.jobId === job.id,
 									);
 									return (
-										<div
+										<button type="button" disabled={unavailable || isAlreadySent || invitingId !== null}
 											key={job.id}
 											onClick={() =>
-												!isAlreadySent && executeTargetedInvite(job)
+												!unavailable && !isAlreadySent && invitingId === null && executeTargetedInvite(job)
 											}
 											style={{
+												font: "inherit", textAlign: "left", width: "100%",
 												padding: "14px 16px",
 												background: isAlreadySent
 													? "rgba(241, 245, 249, 0.5)"
@@ -677,21 +651,21 @@ export default function EmployerGateway() {
 												border: "1px solid",
 												borderColor: isAlreadySent ? "transparent" : "#e2e8f0",
 												borderRadius: "12px",
-												cursor: isAlreadySent ? "not-allowed" : "pointer",
+												cursor: unavailable || isAlreadySent || invitingId !== null ? "not-allowed" : "pointer",
 												display: "flex",
 												justifyContent: "space-between",
 												alignItems: "center",
-												opacity: isAlreadySent ? 0.6 : 1,
+												opacity: unavailable || isAlreadySent ? 0.6 : 1,
 												transition: "0.2s",
 											}}
 											onMouseEnter={(e) => {
-												if (!isAlreadySent) {
+												if (!unavailable && !isAlreadySent) {
 													e.currentTarget.style.borderColor = "#1A8C7A";
 													e.currentTarget.style.background = "#e6fcf5";
 												}
 											}}
 											onMouseLeave={(e) => {
-												if (!isAlreadySent) {
+												if (!unavailable && !isAlreadySent) {
 													e.currentTarget.style.borderColor = "#e2e8f0";
 													e.currentTarget.style.background = "#f8fafc";
 												}
@@ -717,7 +691,7 @@ export default function EmployerGateway() {
 													{job.loc} • {job.salary}
 												</div>
 											</div>
-											{isAlreadySent && (
+											{(isAlreadySent || unavailable) && (
 												<span
 													style={{
 														fontSize: "11px",
@@ -728,10 +702,10 @@ export default function EmployerGateway() {
 														borderRadius: "6px",
 													}}
 												>
-													Sent ✓
+													{isAlreadySent ? "Sent ✓" : "Not active"}
 												</span>
 											)}
-										</div>
+										</button>
 									);
 								})}
 							</div>
@@ -744,12 +718,13 @@ export default function EmployerGateway() {
 			{interviewModal.isOpen &&
 				createPortal(
 					<div
+						className="employer-overlay"
 						style={{
 							position: "fixed",
 							top: 0,
 							left: 0,
 							width: "100vw",
-							height: "100vh",
+							height: "100dvh",
 							background: "rgba(15, 23, 42, 0.15)",
 							backdropFilter: "blur(18px)",
 							WebkitBackdropFilter: "blur(18px)",
@@ -762,6 +737,7 @@ export default function EmployerGateway() {
 						}}
 					>
 						<div
+							className="employer-dialog employer-panel" role="dialog" aria-modal="true" aria-label="Employer dialog"
 							style={{
 								background: "rgba(255, 255, 255, 0.95)",
 								border: "1px solid rgba(255, 255, 255, 0.5)",
@@ -942,7 +918,7 @@ export default function EmployerGateway() {
 											lineHeight: "1.5",
 										}}
 									>
-										Saving will automatically sync this to the candidate's
+										Saving will automatically sync this to the candidate&apos;s
 										Master Scheduler and dispatch a priority email.
 									</p>
 								</div>
@@ -975,12 +951,13 @@ export default function EmployerGateway() {
 			{editModal.isOpen &&
 				createPortal(
 					<div
+						className="employer-overlay"
 						style={{
 							position: "fixed",
 							top: 0,
 							left: 0,
 							width: "100vw",
-							height: "100vh",
+							height: "100dvh",
 							background: "rgba(15, 23, 42, 0.15)",
 							backdropFilter: "blur(18px)",
 							WebkitBackdropFilter: "blur(18px)",
@@ -993,6 +970,7 @@ export default function EmployerGateway() {
 						}}
 					>
 						<div
+							className="employer-dialog employer-panel" role="dialog" aria-modal="true" aria-label="Employer dialog"
 							style={{
 								background: "rgba(255, 255, 255, 0.95)",
 								border: "1px solid rgba(255, 255, 255, 0.5)",
@@ -1022,10 +1000,10 @@ export default function EmployerGateway() {
 										letterSpacing: "-0.2px",
 									}}
 								>
-									Edit Broadcast Details
+									Edit vacancy
 								</h3>
 								<button
-									onClick={() => setEditModal({ ...editModal, isOpen: false })}
+									aria-label="Close dialog" onClick={() => setEditModal({ ...editModal, isOpen: false })}
 									style={{
 										background: "#f1f5f9",
 										border: "none",
@@ -1063,7 +1041,7 @@ export default function EmployerGateway() {
 										textTransform: "uppercase",
 									}}
 								>
-									Target Assignment Role
+									Job title
 								</label>
 								<input
 									type="text"
@@ -1083,7 +1061,7 @@ export default function EmployerGateway() {
 										textTransform: "uppercase",
 									}}
 								>
-									Geographic Location Hub
+									Location
 								</label>
 								<input
 									type="text"
@@ -1103,7 +1081,7 @@ export default function EmployerGateway() {
 										textTransform: "uppercase",
 									}}
 								>
-									Compensatory Parameter (Monthly)
+									Monthly salary
 								</label>
 								<input
 									type="text"
@@ -1122,7 +1100,7 @@ export default function EmployerGateway() {
 										textTransform: "uppercase",
 									}}
 								>
-									Core Skill Directives (Comma Separated)
+									Skills (comma separated)
 								</label>
 								<input
 									type="text"
@@ -1133,7 +1111,9 @@ export default function EmployerGateway() {
 									style={inputStyle}
 									required
 								/>
-								<button
+								<label style={{fontSize:12,color:"#64748b"}}>Deadline (optional)<input type="date" value={editModal.deadline} onChange={event=>setEditModal({...editModal,deadline:event.target.value})} style={inputStyle} /></label>
+<label style={{fontSize:12,color:"#64748b"}}>Required documents<input value={editModal.requiredDocuments} maxLength={500} onChange={event=>setEditModal({...editModal,requiredDocuments:event.target.value})} style={inputStyle} /></label>
+<button
 									type="submit"
 									disabled={loading}
 									style={{
@@ -1151,7 +1131,7 @@ export default function EmployerGateway() {
 										transition: "0.2s",
 									}}
 								>
-									{loading ? "Updating Node..." : "Save Broadcast Changes"}
+									{loading ? "Updating Node..." : "Save changes"}
 								</button>
 							</form>
 						</div>
@@ -1163,12 +1143,13 @@ export default function EmployerGateway() {
 			{deleteModal.isOpen &&
 				createPortal(
 					<div
+						className="employer-overlay"
 						style={{
 							position: "fixed",
 							top: 0,
 							left: 0,
 							width: "100vw",
-							height: "100vh",
+							height: "100dvh",
 							background: "rgba(15, 23, 42, 0.15)",
 							backdropFilter: "blur(18px)",
 							WebkitBackdropFilter: "blur(18px)",
@@ -1181,6 +1162,7 @@ export default function EmployerGateway() {
 						}}
 					>
 						<div
+							className="employer-dialog employer-panel" role="dialog" aria-modal="true" aria-label="Employer dialog"
 							style={{
 								background: "rgba(255, 255, 255, 0.8)",
 								border: "1px solid rgba(255, 255, 255, 0.5)",
@@ -1245,7 +1227,7 @@ export default function EmployerGateway() {
 							</p>
 							<div style={{ display: "flex", gap: "10px" }}>
 								<button
-									onClick={() => setDeleteModal({ isOpen: false, jobId: null })}
+									aria-label="Close dialog" onClick={() => setDeleteModal({ isOpen: false, jobId: null })}
 									style={{
 										flex: 1,
 										padding: "12px",
@@ -1294,7 +1276,7 @@ export default function EmployerGateway() {
 							top: 0,
 							left: 0,
 							width: "100vw",
-							height: "100vh",
+							height: "100dvh",
 							zIndex: 300000,
 							display: "flex",
 							justifyContent: "flex-end",
@@ -1316,6 +1298,7 @@ export default function EmployerGateway() {
 							}}
 						></div>
 						<div
+							className="employer-drawer" role="dialog" aria-modal="true" aria-label="Applicant roster"
 							style={{
 								position: "relative",
 								background: "rgba(248, 250, 252, 0.9)",
@@ -1323,7 +1306,7 @@ export default function EmployerGateway() {
 								WebkitBackdropFilter: "blur(40px)",
 								width: "100%",
 								maxWidth: "460px",
-								height: "100vh",
+								height: "100dvh",
 								borderLeft: "1px solid rgba(255, 255, 255, 0.7)",
 								display: "flex",
 								flexDirection: "column",
@@ -1334,6 +1317,7 @@ export default function EmployerGateway() {
 							}}
 						>
 							<div
+								className="employer-panel"
 								style={{
 									padding: "2rem",
 									display: "flex",
@@ -1380,20 +1364,18 @@ export default function EmployerGateway() {
 													"B.MLS Degree",
 												];
 												const rows = drawer.applicants.map((app) => [
-													`"${app.user.name || "Verified Candidate"}"`,
-													`"${app.user.email}"`,
-													`"${app.status || "pending"}"`,
-													`"${app.user.resumeUrl || "None"}"`,
-													`"${app.user.licenseUrl ? "Verified" : "Missing"}"`,
-													`"${app.user.degreeUrl ? "Verified" : "Missing"}"`,
-												]);
-												const csvContent =
+    app.user.name || "Candidate", app.user.email, app.status || "pending",
+    app.user.resumeUrl || "None",
+    app.user.isLicenseVerified ? "Reviewed" : (app.user.careerPhase === "internship" ? app.user.provisionalUrl : app.user.licenseUrl) ? "Not reviewed" : "Missing",
+    app.user.degreeUrl ? "Uploaded, not reviewed" : "Missing",
+  ].map(csvCell));
+  const csvContent =
 													"data:text/csv;charset=utf-8," +
 													[
 														headers.join(","),
 														...rows.map((e) => e.join(",")),
 													].join("\n");
-												const encodedUri = encodeURI(csvContent);
+												const encodedUri = "data:text/csv;charset=utf-8," + encodeURIComponent(csvContent.slice("data:text/csv;charset=utf-8,".length));
 												const link = document.createElement("a");
 												link.setAttribute("href", encodedUri);
 												link.setAttribute(
@@ -1469,6 +1451,7 @@ export default function EmployerGateway() {
 								</div>
 							</div>
 							<div
+								className="employer-panel"
 								style={{
 									padding: "0 2rem 2rem 2rem",
 									flex: 1,
@@ -1493,8 +1476,13 @@ export default function EmployerGateway() {
 									>
 										Extracting Candidate Profiles...
 									</div>
+								) : drawer.error ? (
+									<div role="alert" className="employer-panel" style={{ padding: "1.25rem", background: "#fff7ed", border: "1px solid #fed7aa", borderRadius: "16px", color: "#9a3412", fontSize: "14px", lineHeight: 1.6, overflowWrap: "anywhere" }}>
+										{drawer.error}
+									</div>
 								) : drawer.applicants.length === 0 ? (
 									<div
+										className="employer-panel"
 										style={{
 											textAlign: "center",
 											padding: "3rem",
@@ -1562,7 +1550,7 @@ export default function EmployerGateway() {
 															color: "#0f172a",
 														}}
 													>
-														{app.user.name || "Verified Candidate"}
+														{app.user.name || "Candidate"}
 													</div>
 													<div
 														style={{
@@ -1572,7 +1560,7 @@ export default function EmployerGateway() {
 															marginTop: "1px",
 														}}
 													>
-														{app.user.email}
+														{app.user.email}<div style={{fontSize:11,color:"#1A8C7A",marginTop:4}}>{careerLabel(app.user.careerPhase,{placementStage:app.user.placementStage})} · {app.user.isLicenseVerified ? "Credentials reviewed" : (app.user.careerPhase === "internship" ? app.user.provisionalUrl : app.user.licenseUrl) ? "Credentials self-reported" : "Credentials not submitted"}</div>
 													</div>
 												</div>
 											</div>
@@ -1600,7 +1588,9 @@ export default function EmployerGateway() {
 												>
 													Vault Documents
 												</h4>
-												{app.user.resumeUrl && (
+												{app.user.careerPhase === "internship" && app.user.provisionalUrl && <a href={app.user.provisionalUrl} target="_blank" rel="noopener noreferrer" style={{color:"#1A8C7A",fontSize:13}}>Provisional license ↗</a>}
+{app.user.careerPhase === "internship" && app.user.statementOfResultUrl && <a href={app.user.statementOfResultUrl} target="_blank" rel="noopener noreferrer" style={{color:"#1A8C7A",fontSize:13}}>Statement of result ↗</a>}
+{app.user.resumeUrl && (
 													<a
 														href={app.user.resumeUrl}
 														target="_blank"
@@ -1650,9 +1640,13 @@ export default function EmployerGateway() {
 														</span>
 													</a>
 												)}
-												{app.user.licenseUrl && (
-													<div
+												{app.user.careerPhase !== "internship" && app.user.licenseUrl && (
+												<a
+														href={app.user.licenseUrl}
+														target="_blank"
+														rel="noopener noreferrer"
 														style={{
+															textDecoration: "none",
 															display: "flex",
 															alignItems: "center",
 															justifyContent: "space-between",
@@ -1699,9 +1693,9 @@ export default function EmployerGateway() {
 																fontWeight: 800,
 															}}
 														>
-															Verified ✓
+															{app.user.isLicenseVerified ? "Reviewed" : "Not reviewed"} · View
 														</span>
-													</div>
+													</a>
 												)}
 												{app.user.degreeUrl ? (
 													<div
@@ -1745,7 +1739,7 @@ export default function EmployerGateway() {
 																fontWeight: 800,
 															}}
 														>
-															Verified ✓
+															Uploaded
 														</span>
 													</div>
 												) : (
@@ -1911,6 +1905,7 @@ export default function EmployerGateway() {
 			{/* Main Dashboard Render */}
 			{view === "dashboard" && employer ? (
 				<div
+					className="employer-panel employer-dashboard"
 					style={{
 						maxWidth: "1000px",
 						margin: "0 auto",
@@ -1919,6 +1914,7 @@ export default function EmployerGateway() {
 					}}
 				>
 					<div
+						className="employer-heading"
 						style={{
 							display: "flex",
 							justifyContent: "space-between",
@@ -1935,7 +1931,7 @@ export default function EmployerGateway() {
 									margin: 0,
 								}}
 							>
-								{employer.companyName} Portal
+								{employer!.companyName} Portal
 							</h1>
 							<p
 								style={{
@@ -1965,6 +1961,7 @@ export default function EmployerGateway() {
 
 					{/* GLASS NAVIGATION SWITCHER FOR TAB MODE */}
 					<div
+						className="employer-tabs"
 						style={{
 							display: "flex",
 							background: "rgba(15, 23, 42, 0.04)",
@@ -1997,7 +1994,7 @@ export default function EmployerGateway() {
 										: "none",
 							}}
 						>
-							Active Broadcasts
+							Vacancies
 						</button>
 						<button
 							onClick={() => setActiveTab("crm")}
@@ -2016,7 +2013,7 @@ export default function EmployerGateway() {
 									activeTab === "crm" ? "0 4px 12px rgba(0,0,0,0.05)" : "none",
 							}}
 						>
-							Scout Directory
+							Previous applicants
 						</button>
 						<button
 							onClick={() => setActiveTab("invites")}
@@ -2044,14 +2041,16 @@ export default function EmployerGateway() {
 					{activeTab === "broadcasts" ? (
 						<>
 							<div
+								className="employer-grid"
 								style={{
 									display: "grid",
-									gridTemplateColumns: "1fr 1.2fr",
+									gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 340px), 1fr))",
 									gap: "2rem",
 									alignItems: "start",
 								}}
 							>
 								<div
+									className="employer-panel employer-post-card"
 									style={{
 										background: "white",
 										borderRadius: "20px",
@@ -2068,85 +2067,28 @@ export default function EmployerGateway() {
 											margin: "0 0 1.5rem 0",
 										}}
 									>
-										Deploy Direct Match Listing
+										Post a laboratory role
 									</h2>
-									<form onSubmit={handlePostJob}>
-										<label
-											style={{
-												fontSize: "11px",
-												fontWeight: 800,
-												color: "#64748b",
-												letterSpacing: "0.5px",
-												textTransform: "uppercase",
-											}}
-										>
-											Target Assignment Role
-										</label>
-										<input
-											type="text"
-											placeholder="e.g. Intern Medical Laboratory Scientist"
-											value={role}
-											onChange={(e) => setRole(e.target.value)}
-											style={inputStyle}
-											required
-										/>
-										<label
-											style={{
-												fontSize: "11px",
-												fontWeight: 800,
-												color: "#64748b",
-												letterSpacing: "0.5px",
-												textTransform: "uppercase",
-											}}
-										>
-											Geographic Location Hub
-										</label>
-										<input
-											type="text"
-											placeholder="e.g. Garki, Abuja"
-											value={loc}
-											onChange={(e) => setLoc(e.target.value)}
-											style={inputStyle}
-											required
-										/>
-										<label
-											style={{
-												fontSize: "11px",
-												fontWeight: 800,
-												color: "#64748b",
-												letterSpacing: "0.5px",
-												textTransform: "uppercase",
-											}}
-										>
-											Compensatory Parameter (Monthly)
-										</label>
-										<input
-											type="text"
-											placeholder="e.g. ₦180,000"
-											value={salary}
-											onChange={(e) => setSalary(e.target.value)}
-											style={inputStyle}
-										/>
-										<label
-											style={{
-												fontSize: "11px",
-												fontWeight: 800,
-												color: "#64748b",
-												letterSpacing: "0.5px",
-												textTransform: "uppercase",
-											}}
-										>
-											Core Skill Directives (Comma Separated)
-										</label>
-										<input
-											type="text"
-											placeholder="e.g. Hematology, Blood Bank, QMS"
-											value={skills}
-											onChange={(e) => setSkills(e.target.value)}
-											style={inputStyle}
-											required
-										/>
-										<div
+									<form className="employer-post-form" onSubmit={handlePostJob}>
+										<div className="employer-post-fields">
+											<div className="employer-post-field post-field-wide">
+												<label htmlFor="post-role">Job title</label>
+												<input id="post-role" type="text" placeholder="e.g. Laboratory Scientist" value={role} onChange={(e) => setRole(e.target.value)} style={inputStyle} required />
+											</div>
+											<div className="employer-post-field">
+												<label htmlFor="post-location">Location</label>
+												<input id="post-location" type="text" placeholder="Garki, Abuja" value={loc} onChange={(e) => setLoc(e.target.value)} style={inputStyle} required />
+											</div>
+											<div className="employer-post-field">
+												<label htmlFor="post-salary">Monthly salary</label>
+												<input id="post-salary" type="text" placeholder="₦180,000" value={salary} onChange={(e) => setSalary(e.target.value)} style={inputStyle} />
+											</div>
+											<div className="employer-post-field post-field-wide">
+												<label htmlFor="post-skills">Skills (comma separated)</label>
+												<input id="post-skills" type="text" placeholder="e.g. Hematology, QMS" value={skills} onChange={(e) => setSkills(e.target.value)} style={inputStyle} required />
+											</div>
+										</div>
+										<div className="employer-post-options"
 											style={{
 												display: "flex",
 												gap: "1.5rem",
@@ -2157,52 +2099,15 @@ export default function EmployerGateway() {
 												border: "1px solid #e2e8f0",
 											}}
 										>
-											<label
-												style={{
-													display: "flex",
-													alignItems: "center",
-													gap: "6px",
-													fontSize: "13px",
-													fontWeight: 700,
-													color: "#475569",
-													cursor: "pointer",
-												}}
-											>
-												<input
-													type="checkbox"
-													checked={jobType === "internship"}
-													onChange={(e) =>
-														setJobType(
-															e.target.checked ? "internship" : "full-time",
-														)
-													}
-													style={{ accentColor: "#1A8C7A" }}
-												/>{" "}
-												Mark as Internship
-											</label>
-											{jobType === "internship" && (
-												<label
-													style={{
-														display: "flex",
-														alignItems: "center",
-														gap: "6px",
-														fontSize: "13px",
-														fontWeight: 700,
-														color: "#1A8C7A",
-														cursor: "pointer",
-													}}
-												>
-													<input
-														type="checkbox"
-														checked={isMlscnApproved}
-														onChange={(e) =>
-															setIsMlscnApproved(e.target.checked)
-														}
-														style={{ accentColor: "#1A8C7A" }}
-													/>{" "}
-													MLSCN Approved Center
-												</label>
-											)}
+											<div className="employer-vacancy-extra" style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:12,marginBottom:14}}>
+<label style={{fontSize:12,color:"#64748b",minWidth:0}}>Deadline (optional)<input type="date" value={deadline} onChange={event=>setDeadline(event.target.value)} style={{display:"block",boxSizing:"border-box",width:"100%",minWidth:0,padding:10,border:"1px solid #e2e8f0",borderRadius:10,marginTop:6,font:"inherit"}} /></label>
+<label style={{fontSize:12,color:"#64748b",minWidth:0}}>Required documents<input value={requiredDocuments} maxLength={500} onChange={event=>setRequiredDocuments(event.target.value)} placeholder="CV, provisional license…" style={{display:"block",boxSizing:"border-box",width:"100%",minWidth:0,padding:10,border:"1px solid #e2e8f0",borderRadius:10,marginTop:6,font:"inherit"}} /></label>
+</div>
+<label style={{display:"flex",alignItems:"center",gap:10,fontSize:12,color:"#64748b"}}>Vacancy type
+<select value={jobType} onChange={event=>setJobType(event.target.value)} style={{minWidth:0,padding:"9px 12px",border:"1px solid #e2e8f0",borderRadius:10,background:"#f8fafc",color:"#0b2444",font:"inherit"}}>
+<option value="full-time">Licensed scientist · Permanent</option><option value="internship">Internship placement</option><option value="locum">Licensed scientist · Locum</option><option value="contract">Licensed scientist · Contract</option><option value="part-time">Licensed scientist · Part-time</option>
+</select></label>
+											{jobType === "internship" && <p style={{fontSize:11,color:"#64748b",lineHeight:1.6,margin:0}}>Internship-site approval is shown only after independent review of official MLSCN evidence.</p>}
 										</div>
 										<button
 											type="submit"
@@ -2221,8 +2126,8 @@ export default function EmployerGateway() {
 											}}
 										>
 											{loading
-												? "Publishing Transaction..."
-												: "Broadcast Native Placement"}
+												? "Publishing…"
+												: "Publish vacancy"}
 										</button>
 									</form>
 								</div>
@@ -2259,10 +2164,7 @@ export default function EmployerGateway() {
 												lineHeight: "1.6",
 											}}
 										>
-											Your listings are broadcast with an automatic **Verified
-											Badge** priority flag. Only candidate pools with
-											pre-extracted, verified MLSCN credentials will populate
-											your candidate dispatch stack.
+											Only reviewed employers can publish listings and access applicants. Uploaded credentials are shown separately from independently reviewed licenses.
 										</p>
 									</div>
 									<div
@@ -2282,26 +2184,25 @@ export default function EmployerGateway() {
 												marginBottom: "8px",
 											}}
 										>
-											[B2B_SYSTEM_READY] Core services streaming active...
+											Employer workspace
 										</div>
 										<div>
-											&gt; Syncing dashboard analytics for hospital node.
+											Manage your vacancies and applicant updates here.
 										</div>
 										<div>
-											&gt; Ready to catch direct credential verification
-											pipelines.
+											Credential uploads do not establish independent verification.
 										</div>
 										{postedJobs.length > 0 && (
 											<div style={{ color: "#fbbf24", marginTop: "8px" }}>
-												&gt; Broadcasting {postedJobs.length} active placements
-												to network.
+												Active vacancies: {postedJobs.filter(job => job.status === "active").length}{" "}
+												published.
 											</div>
 										)}
 									</div>
 								</div>
 							</div>
-							<div style={{ marginTop: "4rem" }}>
-								<h2
+							<div className="employer-vacancy-section" style={{ marginTop: "4rem" }}>
+								<h2 className="employer-vacancy-heading"
 									style={{
 										fontSize: "20px",
 										fontWeight: 800,
@@ -2312,8 +2213,8 @@ export default function EmployerGateway() {
 										gap: "10px",
 									}}
 								>
-									Active Broadcasts{" "}
-									<span
+									<span className="vacancy-heading-text">Vacancies</span>
+									<span className="vacancy-count"
 										style={{
 											background: "#e2e8f0",
 											color: "#475569",
@@ -2327,6 +2228,7 @@ export default function EmployerGateway() {
 								</h2>
 								{loadingJobs ? (
 									<div
+										className="employer-panel"
 										style={{
 											padding: "3rem",
 											textAlign: "center",
@@ -2342,6 +2244,7 @@ export default function EmployerGateway() {
 									</div>
 								) : postedJobs.length === 0 ? (
 									<div
+										className="employer-panel"
 										style={{
 											padding: "4rem",
 											textAlign: "center",
@@ -2363,7 +2266,7 @@ export default function EmployerGateway() {
 										</p>
 									</div>
 								) : (
-									<div
+									<div className="employer-vacancies"
 										style={{
 											background: "white",
 											borderRadius: "20px",
@@ -2372,7 +2275,7 @@ export default function EmployerGateway() {
 											overflow: "hidden",
 										}}
 									>
-										<table
+										<table className="employer-jobs-table"
 											style={{
 												width: "100%",
 												borderCollapse: "collapse",
@@ -2443,7 +2346,7 @@ export default function EmployerGateway() {
 														key={job.id}
 														style={{ borderBottom: "1px solid #f1f5f9" }}
 													>
-														<td style={{ padding: "16px 24px" }}>
+														<td className="vacancy-role" data-label="Role" style={{ padding: "16px 24px" }}>
 															<div
 																style={{
 																	fontWeight: 800,
@@ -2481,7 +2384,7 @@ export default function EmployerGateway() {
 																	))}
 															</div>
 														</td>
-														<td
+														<td className="vacancy-location" data-label="Location"
 															style={{
 																padding: "16px 24px",
 																color: "#475569",
@@ -2489,9 +2392,10 @@ export default function EmployerGateway() {
 																fontWeight: 600,
 															}}
 														>
-															{job.loc}
+															<span>{job.loc}</span>
+														<span className="vacancy-salary">Salary: {job.salary || "Not disclosed"}</span>
 														</td>
-														<td style={{ padding: "16px 24px" }}>
+														<td className="vacancy-activity" data-label="Status / Applicants" style={{ padding: "16px 24px" }}>
 															<div
 																style={{
 																	display: "flex",
@@ -2500,7 +2404,7 @@ export default function EmployerGateway() {
 																	alignItems: "flex-start",
 																}}
 															>
-																<span
+																<span className="vacancy-status-badge" data-status={job.status}
 																	style={{
 																		background: "#e6fcf5",
 																		color: "#1A8C7A",
@@ -2523,7 +2427,7 @@ export default function EmployerGateway() {
 																			display: "block",
 																		}}
 																	></span>{" "}
-																	Broadcasting
+																	{job.status === "active" ? "Active" : (job.status || "Unknown").replaceAll("_", " ")}
 																</span>
 																<button
 																	onClick={() =>
@@ -2561,13 +2465,14 @@ export default function EmployerGateway() {
 																			textUnderlineOffset: "4px",
 																		}}
 																	>
-																		{job._count?.applications || 0} Applicants
+																		{job._count?.applications || 0}{" "}
+														{job._count?.applications === 1 ? "Applicant" : "Applicants"}{" "}
 																		&rarr;
 																	</span>
 																</button>
 															</div>
 														</td>
-														<td
+														<td className="vacancy-actions" data-label="Actions"
 															style={{
 																padding: "16px 24px",
 																textAlign: "right",
@@ -2589,6 +2494,7 @@ export default function EmployerGateway() {
 																			loc: job.loc,
 																			salary: job.salary,
 																			skills: job.skills,
+                                                        deadline:listingDetails(job.listingDetails).deadline,requiredDocuments:listingDetails(job.listingDetails).requiredDocuments,
 																		})
 																	}
 																	style={{
@@ -2639,6 +2545,7 @@ export default function EmployerGateway() {
 					) : activeTab === "crm" ? (
 						/* SCOUT CRM DIRECTORY VIEW PANEL */
 						<div
+							className="employer-panel employer-talent-panel"
 							style={{
 								background: "white",
 								borderRadius: "24px",
@@ -2647,7 +2554,7 @@ export default function EmployerGateway() {
 								boxShadow: "0 4px 24px rgba(0,0,0,0.01)",
 							}}
 						>
-							<div
+							<div className="employer-talent-header"
 								style={{
 									display: "flex",
 									justifyContent: "space-between",
@@ -2675,12 +2582,12 @@ export default function EmployerGateway() {
 											color: "#64748b",
 										}}
 									>
-										Directly scout and invite verified clinicians across the
+										Invite previous applicants from your organization’s
 										platform infrastructure.
 									</p>
 								</div>
-								<div style={{ position: "relative" }}>
-									<select
+								<div className="employer-talent-filter" style={{ position: "relative" }}>
+									<select aria-label="Filter applicants by location"
 										value={filterLocation}
 										onChange={(e) => setFilterLocation(e.target.value)}
 										style={{
@@ -2696,7 +2603,7 @@ export default function EmployerGateway() {
 											appearance: "none",
 										}}
 									>
-										<option value="">Filter Location (All)</option>
+										<option value="">All locations</option>
 										<option value="Abuja">Abuja, FCT</option>
 										<option value="Lagos">Lagos</option>
 										<option value="Rivers">Rivers</option>
@@ -2723,6 +2630,7 @@ export default function EmployerGateway() {
 							</div>
 							{crmLoading ? (
 								<div
+									className="employer-panel"
 									style={{
 										textAlign: "center",
 										padding: "4rem",
@@ -2731,10 +2639,11 @@ export default function EmployerGateway() {
 										fontSize: "14px",
 									}}
 								>
-									Scanning verified credential node registers...
+									Loading your applicant directory...
 								</div>
 							) : talentPool.length === 0 ? (
 								<div
+									className="employer-panel"
 									style={{
 										textAlign: "center",
 										padding: "4rem",
@@ -2751,8 +2660,7 @@ export default function EmployerGateway() {
 											fontWeight: 600,
 										}}
 									>
-										No passive candidate registers active for the selected
-										filters right now.
+										No previous applicants match this location.
 									</p>
 								</div>
 							) : (
@@ -2765,7 +2673,7 @@ export default function EmployerGateway() {
 								>
 									{talentPool.map((user) => {
 										return (
-											<div
+											<div className="employer-talent-card"
 												key={user.id}
 												style={{
 													display: "flex",
@@ -2779,14 +2687,14 @@ export default function EmployerGateway() {
 													borderRadius: "16px",
 												}}
 											>
-												<div
+												<div className="employer-talent-identity"
 													style={{
 														display: "flex",
 														alignItems: "center",
 														gap: "1rem",
 													}}
 												>
-													<div
+													<div className="employer-talent-avatar" aria-hidden="true"
 														style={{
 															width: "44px",
 															height: "44px",
@@ -2804,8 +2712,8 @@ export default function EmployerGateway() {
 															? user.name.charAt(0).toUpperCase()
 															: "S"}
 													</div>
-													<div>
-														<div
+													<div className="employer-talent-copy">
+														<div className="employer-talent-name-row"
 															style={{
 																fontSize: "15px",
 																fontWeight: 800,
@@ -2815,9 +2723,9 @@ export default function EmployerGateway() {
 																gap: "8px",
 															}}
 														>
-															{user.name || "Verified Scientist"}
-															{user.licenseUrl && (
-																<span
+															<span className="employer-talent-name">{user.name || "Candidate"}</span>
+															{(user.careerPhase === "internship" ? user.provisionalUrl : user.licenseUrl) && (
+																<span className="employer-talent-credentials"
 																	style={{
 																		fontSize: "10px",
 																		fontWeight: 800,
@@ -2827,11 +2735,11 @@ export default function EmployerGateway() {
 																		borderRadius: "4px",
 																	}}
 																>
-																	MLSCN VERIFIED ✓
+																	Credentials submitted
 																</span>
 															)}
 														</div>
-														<div
+														<div className="employer-talent-email"
 															style={{
 																fontSize: "12px",
 																color: "#64748b",
@@ -2839,11 +2747,11 @@ export default function EmployerGateway() {
 																fontWeight: 550,
 															}}
 														>
-															{user.email}
+															{user.email}<div style={{fontSize:11,color:"#1A8C7A",fontWeight:500,marginTop:3}}>{careerLabel(user.careerPhase,{placementStage:user.placementStage})}</div>
 														</div>
 													</div>
 												</div>
-												<div
+												<div className="employer-talent-actions"
 													style={{
 														display: "flex",
 														gap: "10px",
@@ -2901,6 +2809,7 @@ export default function EmployerGateway() {
 					) : activeTab === "invites" ? (
 						/* 🚀 NEW SENT INVITES TRACKER TAB */
 						<div
+							className="employer-panel"
 							style={{
 								background: "white",
 								borderRadius: "24px",
@@ -2944,6 +2853,7 @@ export default function EmployerGateway() {
 
 							{crmLoading ? (
 								<div
+									className="employer-panel"
 									style={{
 										textAlign: "center",
 										padding: "4rem",
@@ -2956,6 +2866,7 @@ export default function EmployerGateway() {
 								</div>
 							) : invitedRecords.length === 0 ? (
 								<div
+									className="employer-panel"
 									style={{
 										textAlign: "center",
 										padding: "4rem",
@@ -3034,7 +2945,7 @@ export default function EmployerGateway() {
 															gap: "8px",
 														}}
 													>
-														{record.candidateName || "Verified Scientist"}
+														{record.candidateName || "Scientist"}
 														{record.licenseUrl && (
 															<span
 																style={{
@@ -3046,7 +2957,7 @@ export default function EmployerGateway() {
 																	borderRadius: "4px",
 																}}
 															>
-																MLSCN VERIFIED ✓
+																CREDENTIALS SUBMITTED
 															</span>
 														)}
 													</div>
@@ -3123,7 +3034,7 @@ export default function EmployerGateway() {
 						padding: "1.5rem",
 					}}
 				>
-					<div style={boxStyle}>
+					<div className="employer-auth-card" style={boxStyle}>
 						<div style={{ textAlign: "center", marginBottom: "2rem" }}>
 							<h2
 								style={{
@@ -3138,7 +3049,7 @@ export default function EmployerGateway() {
 							<p
 								style={{ color: "#64748b", fontSize: "14px", marginTop: "4px" }}
 							>
-								Deploy verified placement pipelines directly.
+								Post laboratory roles and manage applications from one workspace. Employer review is required before publishing.
 							</p>
 						</div>
 						{error && (
@@ -3206,11 +3117,13 @@ export default function EmployerGateway() {
 									letterSpacing: "0.5px",
 								}}
 							>
-								CORPORATE EMAIL ADDRESS
+								WORK EMAIL ADDRESS
 							</label>
 							<input
 								type="email"
-								placeholder="admin@hospital.gov.ng"
+								placeholder="you@hospital.ng"
+                                    aria-label="Work email address"
+                                    autoComplete="email"
 								value={email}
 								onChange={(e) => setEmail(e.target.value)}
 								style={inputStyle}
@@ -3224,16 +3137,20 @@ export default function EmployerGateway() {
 									letterSpacing: "0.5px",
 								}}
 							>
-								SECURE ENTRY ACCESS CREDENTIAL
+								PASSWORD
 							</label>
 							<input
 								type="password"
-								placeholder="••••••••"
+								placeholder="Password"
+                                    aria-label="Password"
+                                    autoComplete={view === "login" ? "current-password" : "new-password"}
 								value={password}
 								onChange={(e) => setPassword(e.target.value)}
 								style={inputStyle}
 								required
 							/>
+							{view === "login" && <button type="button" onClick={() => window.dispatchEvent(new CustomEvent("openProfileModal", { detail: { mode: "forgot", role: "employer", email } }))} style={{ display: "block", marginLeft: "auto", padding: "8px 0", border: "none", background: "none", color: "#1A8C7A", font: "inherit", fontSize: 13, cursor: "pointer" }}>Forgot password?</button>}
+							{view === "login" && <button type="button" onClick={() => { if (!email) { setError("Enter your email address first."); return; } window.dispatchEvent(new CustomEvent("openProfileModal", { detail: { mode: "verify-sent", role: "employer", email } })); }} style={{ display: "block", marginLeft: "auto", padding: "8px 0", border: "none", background: "none", color: "#1A8C7A", font: "inherit", fontSize: 13, cursor: "pointer" }}>Resend confirmation</button>}
 							<button
 								type="submit"
 								disabled={loading}
@@ -3251,10 +3168,10 @@ export default function EmployerGateway() {
 								}}
 							>
 								{loading
-									? "Processing Network Event..."
+									? "Please wait…"
 									: view === "login"
-										? "Secure Portal Entry"
-										: "Register Acquisition Node"}
+										? "Log in"
+										: "Create employer account"}
 							</button>
 						</form>
 						<div
@@ -3267,14 +3184,14 @@ export default function EmployerGateway() {
 						>
 							<span style={{ color: "#64748b" }}>
 								{view === "login"
-									? "Need direct network credentials? "
+									? "New to BenchScout? "
 									: "Already verified node? "}
 							</span>
 							<span
 								onClick={() => setView(view === "login" ? "register" : "login")}
 								style={{ color: "#1A8C7A", cursor: "pointer" }}
 							>
-								{view === "login" ? "Request Entry" : "Login Securely"}
+								{view === "login" ? "Create employer account" : "Log in"}
 							</span>
 						</div>
 					</div>
