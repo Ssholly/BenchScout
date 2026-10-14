@@ -104,7 +104,7 @@ export default function SettingsPage() {
 	const [career, setCareer] = useState<{phase:string; profile:unknown}>({phase:"licensed",profile:{}});
 	const [checkingAuth, setCheckingAuth] = useState(true);
 	const [isSaving, setIsSaving] = useState(false);
-	const [uploadsAvailable, setUploadsAvailable] = useState(false);
+	const [uploadsAvailable, setUploadsAvailable] = useState<boolean | null>(null);
 	const [isUploading, setIsUploading] = useState(false);
 	const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
 	const [toast, setToast] = useState<{
@@ -1351,7 +1351,7 @@ export default function SettingsPage() {
 								</h2>
 								<p style={{ fontSize: "11px", color: "#64748b", margin: 0 }}>
 									Upload documents for private sharing with employers you apply to.
-                                {!uploadsAvailable && <span role="status" style={{ display: "block", marginTop: 8, color: "#92400e" }}>Private uploads are temporarily unavailable. Existing files are preserved; older files need to be uploaded again once storage is ready.</span>}
+                                {uploadsAvailable === false && <span role="status" style={{ display: "block", marginTop: 8, color: "#92400e" }}>Document uploads are unavailable while private storage is being connected. Your existing files are preserved.</span>}
 								</p>
 							</div>
 							<div
@@ -1462,7 +1462,7 @@ export default function SettingsPage() {
 																}}
 															></span>
 															<span style={{ color: "#1A8C7A" }}>
-																Uploaded {doc.uploadedAt}
+																Uploaded
 															</span>
 														</>
 													) : (

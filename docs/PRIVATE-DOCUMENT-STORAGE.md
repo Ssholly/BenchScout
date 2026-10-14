@@ -46,3 +46,7 @@ After migration, verify file bytes/metadata and owner/employer access. Confirm o
 Additional release work: monitor failed object cleanup, consider a scheduled orphan-object reconciliation, and add malware scanning if document handling expands beyond the current validated types. File signatures establish type, not the trustworthiness of content.
 
 References: [Vercel private storage](https://vercel.com/docs/vercel-blob/private-storage), [server upload request limit](https://vercel.com/docs/vercel-blob/server-upload).
+
+## Testing preview connection — 14 October 2026
+
+The Vercel project was missing `BLOB_PRIVATE_READ_WRITE_TOKEN`, causing Settings to report uploads unavailable on the testing deployment. With explicit user approval, the existing local private-store token was saved as a Secret for Preview deployments only. The next testing deployment activates it. Production is unchanged. No existing documents were migrated or deleted. The Settings warning now appears only after a confirmed unavailable response, rather than during initial loading.

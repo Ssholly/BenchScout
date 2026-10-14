@@ -169,7 +169,7 @@ export default function SalaryIntelligencePage() {
 
 	return (
 		<section
-			className="pane active"
+			className="pane active salary-page"
 			style={{ paddingBottom: "4rem", width: "100%" }}
 		>
 			<style
@@ -299,11 +299,11 @@ export default function SalaryIntelligencePage() {
 								backdropFilter: "blur(16px)",
 								borderRadius: "20px",
 								border: "1px solid rgba(255,255,255,0.9)",
-								padding: "2.5rem 2rem",
+								padding: "16px 20px",
 								boxShadow: "0 10px 30px -10px rgba(11, 36, 68, 0.1)",
 								display: "flex",
 								flexDirection: "column",
-								justifyContent: "center",
+								justifyContent: "flex-start",
 								transition: "transform 0.3s ease",
 							}}
 							onMouseEnter={(e) =>
@@ -335,7 +335,7 @@ export default function SalaryIntelligencePage() {
 							>
 								<span
 									style={{
-										fontSize: "clamp(2rem, 5vw, 3.5rem)",
+										fontSize: "32px",
 										fontWeight: 900,
 										color: "#0f172a",
 										letterSpacing: "-1px",
@@ -388,13 +388,13 @@ export default function SalaryIntelligencePage() {
 								flex: 1,
 								background: "rgba(255, 255, 255, 0.5)",
 								backdropFilter: "blur(24px)",
-								padding: "2.5rem 2rem",
+								padding: "16px 20px",
 								borderRadius: "20px",
 								border: "1px solid rgba(255, 255, 255, 0.4)",
 								boxShadow: "0 4px 20px -2px rgba(0,0,0,0.03)",
 								display: "flex",
 								flexDirection: "column",
-								justifyContent: "center",
+								justifyContent: "flex-start",
 							}}
 						>
 							<h3
@@ -411,7 +411,7 @@ export default function SalaryIntelligencePage() {
 							</h3>
 							<div
 								style={{
-									fontSize: "clamp(2rem, 5vw, 3.5rem)",
+									fontSize: "32px",
 									fontWeight: 900,
 									color: "#0f172a",
 									letterSpacing: "-1px",
@@ -436,19 +436,19 @@ export default function SalaryIntelligencePage() {
 						</div>
 					</div>
 
-					<div className="responsive-grid">
+					<div className="responsive-grid salary-details">
 						{/* LEFT COLUMN: THE FORM */}
 						<div
 							style={{
 								background: "rgba(255, 255, 255, 0.6)",
 								backdropFilter: "blur(24px)",
-								padding: "2rem",
+								padding: "20px",
 								borderRadius: "20px",
 								border: "1px solid rgba(255, 255, 255, 0.5)",
 								boxShadow: "0 4px 20px -2px rgba(0,0,0,0.03)",
 								display: "flex",
 								flexDirection: "column",
-								justifyContent: "center",
+								justifyContent: "flex-start",
 							}}
 						>
 							{mySubmissionId && !isEditing ? (
@@ -456,7 +456,7 @@ export default function SalaryIntelligencePage() {
 									style={{
 										display: "flex",
 										flexDirection: "column",
-										justifyContent: "center",
+										justifyContent: "flex-start",
 										textAlign: "center",
 										padding: "1rem 0",
 									}}
@@ -702,7 +702,7 @@ export default function SalaryIntelligencePage() {
 							style={{
 								background: "rgba(255, 255, 255, 0.6)",
 								backdropFilter: "blur(24px)",
-								padding: "2rem",
+								padding: "20px",
 								borderRadius: "20px",
 								border: "1px solid rgba(255, 255, 255, 0.5)",
 								boxShadow: "0 4px 20px -2px rgba(0,0,0,0.03)",
@@ -735,7 +735,7 @@ export default function SalaryIntelligencePage() {
 									flex: 1,
 									display: "flex",
 									flexDirection: "column",
-									justifyContent: "center",
+									justifyContent: "flex-start",
 								}}
 							>
 								{chartData.map((data, idx) => (
@@ -803,7 +803,7 @@ export default function SalaryIntelligencePage() {
 						style={{
 							background: "rgba(255, 255, 255, 0.4)",
 							backdropFilter: "blur(24px)",
-							padding: "2rem",
+							padding: "20px",
 							borderRadius: "20px",
 							border: "1px solid rgba(255, 255, 255, 0.3)",
 							boxShadow: "0 4px 20px -2px rgba(0,0,0,0.03)",
@@ -822,7 +822,7 @@ export default function SalaryIntelligencePage() {
 						{salaryData.recent?.length === 0 ? (
 							<div
 								style={{
-									padding: "2rem",
+									padding: "20px",
 									textAlign: "center",
 									color: "#64748b",
 									fontSize: "14px",

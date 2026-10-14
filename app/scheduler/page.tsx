@@ -645,8 +645,8 @@ export default function SchedulerPage() {
 
 			{toast && <Toast message={toast.message} type={toast.type} />}
 
-			<section className="pane active" style={{ position: "relative" }}>
-				<div style={{ marginBottom: "2.5rem" }}>
+			<section className="pane active scheduler-page" style={{ position: "relative" }}>
+				<div style={{ marginBottom: "20px" }}>
 					<div style={{ marginBottom: "1.25rem" }}>
 						<h1
 							className="page-title"
@@ -756,16 +756,17 @@ export default function SchedulerPage() {
 				) : (
 					<>
 						<div
-							className="mobile-stack"
+							className="mobile-stack scheduler-stack"
 							style={{
 								display: "flex",
-								gap: "1.25rem",
+								gap: "12px",
 								alignItems: "flex-start",
 							}}
 						>
 							<div
 								style={{
 									flex: 1,
+									minWidth: 0,
 									width: "100%",
 									maxWidth: "300px",
 									background: "rgba(255, 255, 255, 0.4)",
@@ -773,7 +774,7 @@ export default function SchedulerPage() {
 									WebkitBackdropFilter: "blur(24px)",
 									borderRadius: "20px",
 									border: "1px solid rgba(255, 255, 255, 0.3)",
-									padding: "1.25rem",
+									padding: "16px",
 									boxShadow: "0 4px 20px -2px rgba(0,0,0,0.03)",
 								}}
 							>
@@ -962,18 +963,20 @@ export default function SchedulerPage() {
 							</div>
 
 							<div
+								className="scheduler-agenda"
 								style={{
 									flex: 1.2,
+									minWidth: 0,
 									background: "rgba(255, 255, 255, 0.5)",
 									backdropFilter: "blur(24px)",
 									WebkitBackdropFilter: "blur(24px)",
 									borderRadius: "20px",
 									border: "1px solid rgba(255, 255, 255, 0.3)",
-									padding: "1.25rem",
+									padding: "16px",
 									boxShadow: "0 4px 20px -2px rgba(0,0,0,0.03)",
 									display: "flex",
 									flexDirection: "column",
-									minHeight: "320px",
+									minHeight: "220px",
 									width: "100%",
 								}}
 							>
@@ -1054,7 +1057,7 @@ export default function SchedulerPage() {
 												alignItems: "center",
 												justifyContent: "center",
 												color: "#94a3b8",
-												padding: "2rem 0",
+												padding: "12px 0",
 											}}
 										>
 											<svg
@@ -1246,7 +1249,7 @@ export default function SchedulerPage() {
 								width: "100%",
 								height: "1px",
 								background: "rgba(0,0,0,0.05)",
-								marginBottom: "2.5rem",
+								marginBottom: "20px",
 								marginTop: "1.25rem",
 							}}
 						></div>
@@ -1268,10 +1271,10 @@ export default function SchedulerPage() {
 						</div>
 
 						<div
-							className="mobile-stack"
+							className="mobile-stack scheduler-stack"
 							style={{
 								display: "flex",
-								gap: "1.5rem",
+								gap: "14px",
 								alignItems: "flex-start",
 								flexWrap: "wrap",
 							}}
@@ -1283,7 +1286,7 @@ export default function SchedulerPage() {
 									width: "100%",
 									display: "flex",
 									flexDirection: "column",
-									gap: "1.25rem",
+									gap: "12px",
 								}}
 							>
 								<div
@@ -1292,7 +1295,7 @@ export default function SchedulerPage() {
 										backdropFilter: "blur(24px)",
 										borderRadius: "20px",
 										border: "1px solid rgba(255, 255, 255, 0.3)",
-										padding: "1.25rem",
+										padding: "16px",
 										boxShadow: "0 4px 20px -2px rgba(0,0,0,0.02)",
 									}}
 								>
@@ -1301,7 +1304,7 @@ export default function SchedulerPage() {
 											display: "flex",
 											justifyContent: "space-between",
 											alignItems: "flex-start",
-											marginBottom: "1.5rem",
+											marginBottom: "14px",
 											flexWrap: "wrap",
 											gap: "1rem",
 										}}
@@ -1362,7 +1365,7 @@ export default function SchedulerPage() {
 										</div>
 									</div>
 
-									<div style={{ marginBottom: "1.5rem" }}>
+									<div style={{ marginBottom: "14px" }}>
 										<div
 											style={{
 												fontSize: "10px",
@@ -1375,7 +1378,7 @@ export default function SchedulerPage() {
 											SCHEDULE & LOCATION
 										</div>
 										<div
-											className="mobile-stack"
+											className="mobile-stack scheduler-stack"
 											style={{
 												display: "flex",
 												gap: "1rem",
@@ -1618,7 +1621,7 @@ export default function SchedulerPage() {
 										backdropFilter: "blur(16px)",
 										border: "1px solid rgba(26, 140, 122, 0.2)",
 										borderRadius: "20px",
-										padding: "1.25rem",
+										padding: "16px",
 										display: "flex",
 										gap: "1rem",
 									}}
@@ -1710,7 +1713,7 @@ export default function SchedulerPage() {
 									maxWidth: "300px",
 									display: "flex",
 									flexDirection: "column",
-									gap: "1.25rem",
+									gap: "12px",
 									flexShrink: 0,
 								}}
 							>
@@ -1731,7 +1734,7 @@ export default function SchedulerPage() {
 												: "rgba(100, 116, 139, 0.8)",
 											backdropFilter: "blur(12px)",
 											color: "white",
-											padding: "1.25rem",
+											padding: "16px",
 										}}
 									>
 										<div
@@ -1757,7 +1760,7 @@ export default function SchedulerPage() {
 											{countdown}
 										</div>
 									</div>
-									<div style={{ padding: "1.25rem" }}>
+									<div style={{ padding: "16px" }}>
 										<div
 											style={{
 												display: "flex",
@@ -1828,7 +1831,7 @@ export default function SchedulerPage() {
 										backdropFilter: "blur(24px)",
 										borderRadius: "20px",
 										border: "1px solid rgba(226, 232, 240, 0.5)",
-										padding: "1.25rem",
+										padding: "16px",
 										boxShadow: "0 4px 20px -2px rgba(0,0,0,0.03)",
 									}}
 								>
@@ -1889,7 +1892,7 @@ export default function SchedulerPage() {
 										background: "rgba(11, 36, 68, 0.85)",
 										backdropFilter: "blur(24px)",
 										borderRadius: "20px",
-										padding: "1.25rem",
+										padding: "16px",
 										color: "white",
 										border: "1px solid rgba(255,255,255,0.1)",
 										position: "relative",
@@ -2009,7 +2012,7 @@ export default function SchedulerPage() {
 						>
 							<div
 								style={{
-									padding: "1.25rem",
+									padding: "16px",
 									borderBottom: "1px solid rgba(0,0,0,0.05)",
 									display: "flex",
 									justifyContent: "space-between",
@@ -2060,7 +2063,7 @@ export default function SchedulerPage() {
 							<form
 								onSubmit={handleSaveEvent}
 								style={{
-									padding: "1.25rem",
+									padding: "16px",
 									display: "flex",
 									flexDirection: "column",
 									gap: "1rem",
@@ -2355,7 +2358,7 @@ export default function SchedulerPage() {
 						>
 							<div
 								style={{
-									padding: "1.25rem",
+									padding: "16px",
 									borderBottom: "1px solid rgba(0,0,0,0.05)",
 									display: "flex",
 									justifyContent: "space-between",
@@ -2403,10 +2406,10 @@ export default function SchedulerPage() {
 
 							<div
 								style={{
-									padding: "1.25rem",
+									padding: "16px",
 									display: "flex",
 									flexDirection: "column",
-									gap: "1.25rem",
+									gap: "12px",
 								}}
 							>
 								<div
@@ -2511,7 +2514,7 @@ export default function SchedulerPage() {
 
 							<div
 								style={{
-									padding: "1.25rem",
+									padding: "16px",
 									background: "#f8fafc",
 									borderTop: "1px solid rgba(0,0,0,0.05)",
 									display: "flex",

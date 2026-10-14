@@ -2330,3 +2330,38 @@ body.walkthrough-open { overflow: hidden !important; }
 
 .notified-job { background: #e8f7f2 !important; opacity: 1 !important; box-shadow: inset 4px 0 0 #1a8c7a; }
 .notified-invitation { outline: 3px solid #1a8c7a; outline-offset: 3px; }
+
+/* Compact salary, schedule and document cards without truncating phone text. */
+.salary-summary { gap: 14px !important; margin-bottom: 16px !important; }
+.salary-summary > div { min-width: 0; padding: 16px 20px !important; border-radius: 14px !important; }
+.salary-summary h3 { margin-bottom: 8px !important; line-height: 1.4; }
+.salary-summary > div > div { margin-bottom: 6px !important; }
+.salary-details { gap: 14px !important; align-items: start; }
+.salary-details > div { min-width: 0; border-radius: 14px !important; }
+.scheduler-page p { line-height: 1.45; }
+.scheduler-stack { gap: 12px !important; }
+.scheduler-stack > div { min-width: 0; }
+.scheduler-page input, .scheduler-page select { box-sizing: border-box; min-width: 0; max-width: 100%; }
+.vault-card h3 { white-space: normal !important; overflow-wrap: anywhere; }
+@media (max-width: 600px) {
+  .salary-summary > div, .salary-details > div { padding: 12px !important; border-radius: 12px !important; }
+  .salary-page input, .salary-page select, .scheduler-page input:not([type="checkbox"]), .scheduler-page select { font-size: 16px !important; min-height: 44px; padding: 8px 10px !important; }
+  .salary-page p, .scheduler-page p { overflow-wrap: anywhere; }
+  .scheduler-stack > div { max-width: 100% !important; flex: none !important; }
+  .scheduler-agenda { min-height: 140px !important; }
+  .scheduler-stack .scheduler-stack { gap: 8px !important; }
+  .scheduler-page button { white-space: normal; max-width: 100%; }
+  .vault-card { flex-wrap: wrap; padding: 10px !important; gap: 6px; }
+  .vault-card > div:first-child { flex: 1 1 160px !important; }
+  .vault-actions { margin-left: auto; }
+  .vault-card h3 { font-size: 13px !important; }
+  .vault-card button { white-space: normal; }
+  .vault-card > div:first-child > div:last-child > button { min-height: 36px !important; padding: 6px 8px !important; margin: 4px 0 !important; font-size: 11px !important; }
+}
+@media (max-width: 900px) {
+  #career-profile input, #career-profile select { font-size: 16px !important; }
+}
+@media (max-width: 900px) {
+ .salary-page input:not([type="range"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+ .scheduler-page input:not([type="range"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]) { font-size:16px !important; }
+}
