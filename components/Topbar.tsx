@@ -1,4 +1,5 @@
 "use client";
+import { notificationTarget } from "@/lib/notification-target";
 import { startTransition } from "react";
 import { useMounted } from "@/lib/use-mounted";
 import type { ClientJob, ClientNotification, NotificationView } from "@/lib/types";
@@ -24,6 +25,7 @@ export default function Topbar() {
 	const [isOnline, setIsOnline] = useState(true);
 	const [hasNotifications, setHasNotifications] = useState(false);
 	const [showNotifs, setShowNotifs] = useState(false);
+ const [notificationError, setNotificationError] = useState("");
 	const [searchQuery, setSearchQuery] = useState("");
 	const [isSearchActive, setIsSearchActive] = useState(false);
 	const [showHelp, setShowHelp] = useState(false);
@@ -52,7 +54,7 @@ export default function Topbar() {
 			const res = await fetch("/api/jobs");
 			const data = await res.json();
 			if (Array.isArray(data)) {
-				setAllJobs(data.filter((j: ClientJob) => j.applied !== true));
+				setAllJobs(data);
 			}
 		} catch {
 			console.error("Failed to fetch jobs for search bar");
@@ -135,22 +137,23 @@ export default function Topbar() {
 
 	const handleMarkAsRead = async (e: React.MouseEvent) => {
 		e.stopPropagation();
-		setHasNotifications(false);
+        setNotificationError("");
+        try {
+            const response = await fetch("/api/notifications/mark-read", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({}) });
+            if (!response.ok) throw new Error();
+            setHasNotifications(false);
+            setNotifications(previous => previous.map(notification => ({ ...notification, isRead: true })));
+        } catch { setNotificationError("Couldn’t mark notifications as read. Please retry."); }
+    };
 
-		// Optimistically update UI
-		setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
-
-		try {
-			const activeEmail = localStorage.getItem("labpro_active_user");
-			await fetch("/api/notifications/mark-read", {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ email: activeEmail }),
-			});
-		} catch {
-			console.error("Failed to mark notifications as read");
-		}
-	};
+    const openNotification = (notification: NotificationView) => {
+        clearSearch();
+        setShowNotifs(false);
+        router.push(notificationTarget(notification, allJobs));
+        void fetch("/api/notifications/mark-read", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ notificationId: notification.id }) })
+            .then(response => { if (response.ok) window.dispatchEvent(new Event("refreshNotifications")); })
+            .catch(() => { setNotificationError("Couldn’t mark the notification as read. Please retry."); });
+    };
 
 	const handleHelpClick = () => {
 		setHelpView("menu");
@@ -719,16 +722,19 @@ export default function Topbar() {
 									)}
 								</div>
 								<div style={{ overflowY: "auto" }}>
+                                    {notificationError && <p role="alert" style={{padding:"8px 20px",fontSize:12,color:"#b91c1c"}}>{notificationError}</p>}
 									{/* 🚀 FIXED: Only map out UNREAD notifications dynamically */}
 									{notifications.filter((n) => !n.isRead).length > 0 ? (
 										notifications
 											.filter((n) => !n.isRead)
 											.map((notif) => (
-												<div
+												<button
 													key={notif.id}
-													onClick={handleResultClick}
+													type="button"
+                                                    onClick={() => openNotification(notif)}
 													style={{
 														padding: "16px 20px",
+                                                    width: "100%", border: "none", textAlign: "left", font: "inherit",
 														display: "flex",
 														gap: "12px",
 														background: "#f0fdf4",
@@ -780,7 +786,7 @@ export default function Topbar() {
 															{notif.time}
 														</p>
 													</div>
-												</div>
+												</button>
 											))
 									) : (
 										<div style={{ padding: "40px 20px", textAlign: "center" }}>

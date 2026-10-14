@@ -7,7 +7,8 @@ import { startTransition } from "react";
 import { SkeletonRow, TableHeader } from "@/components/JobTableParts";
 import { useMounted } from "@/lib/use-mounted";
 import type { ClientJob } from "@/lib/types";
-import { useEffect, useState, useRef } from "react";
+import { useSearchParams } from "next/navigation";
+import { Suspense, useCallback, useEffect, useState, useRef } from "react";
 import ListingEvidence from "@/components/ListingEvidence";
 import { createPortal } from "react-dom";
 
@@ -33,7 +34,8 @@ type VaultDoc = {
 	base64: string | null;
 };
 
-export default function MatchesPage() {
+function MatchesPage() {
+ const routeQuery = useSearchParams().toString();
 	const mounted = useMounted();
 	const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
 	const [profilePhase, setProfilePhase] = useState("licensed");
@@ -85,7 +87,7 @@ export default function MatchesPage() {
 		setTimeout(() => setToast(null), 3000);
 	};
 
-	const loadData = () => {
+	const loadData = useCallback(() => {
 		const sequence = ++loadSequence.current;
 		const activeEmail = localStorage.getItem("labpro_active_user");
 		const isCurrent = () => sequence === loadSequence.current && activeEmail === localStorage.getItem("labpro_active_user");
@@ -172,9 +174,11 @@ export default function MatchesPage() {
 		setIsRefreshing(!firstLoad);
 		if (firstLoad) { setJobs([]); setAppliedJobs([]); setVaultDocs(initialDocs); }
 
-		const searchParams = new URLSearchParams(window.location.search);
+		const searchParams = new URLSearchParams(routeQuery);
 		const employerParam = searchParams.get("employer");
-		setActiveFilter(employerParam);
+        const selectedJob = searchParams.get("job");
+        const search = searchParams.get("search");
+		setActiveFilter(employerParam || search || (selectedJob ? "Selected vacancy" : null));
 
 		sharedPageRequest(`/api/jobs?email=${encodeURIComponent(activeEmail)}`)
 			.then(async (res) => { if (!res.ok) throw new Error("Matches unavailable"); return res.json(); })
@@ -192,6 +196,8 @@ export default function MatchesPage() {
 					);
 				}
 
+                if (selectedJob) myJobs = myJobs.filter((job: ClientJob) => job.id === selectedJob);
+                if (search) myJobs = myJobs.filter((job: ClientJob) => `${job.role} ${job.company}`.toLowerCase().includes(search.toLowerCase()));
 				setJobs(myJobs);
 				const alreadyApplied = myJobs
 					.filter((j: ClientJob) => j.applied === true)
@@ -257,7 +263,7 @@ export default function MatchesPage() {
 				}
 			})
 			.catch(() => console.error("Failed to load user vault URLs"));
-	};
+	}, [routeQuery]);
 
 	useEffect(() => {
 		startTransition(() => { loadData(); });
@@ -270,12 +276,9 @@ export default function MatchesPage() {
 			window.removeEventListener("jobsUpdated", loadData);
 			window.removeEventListener("refreshNotifications", loadData);
 		};
-	}, []);
+	}, [loadData]);
 
-	const clearFilter = () => {
-		window.history.pushState({}, "", "/matches");
-		loadData();
-	};
+	const clearFilter = () => { window.history.pushState({}, "", "/matches"); };
 
 	// 🚀 HANDLER TO DECLINE AN INVITATION AND SAVE LOCALLY
 	const handleDeclinePlacement = async (e: React.MouseEvent, job: ClientJob) => {
@@ -2256,3 +2259,5 @@ export default function MatchesPage() {
 		</section>
 	);
 }
+
+export default function MatchesRoute() { return <Suspense fallback={<p>Loading matches…</p>}><MatchesPage /></Suspense>; }

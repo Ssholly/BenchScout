@@ -1,5 +1,7 @@
 "use client";
-import { startTransition } from "react";
+import { useSearchParams } from "next/navigation";
+import Link from "next/link";
+import { Suspense, startTransition } from "react";
 import type { ClientJob } from "@/lib/types";
 import { useState, useEffect, useRef, useCallback } from "react";
 import PostingDialog from "@/components/PostingDialog";
@@ -19,7 +21,10 @@ type JobCard = {
 	desc: string;
 };
 
-export default function AppliedPipeline() {
+function AppliedPipeline() {
+ const params = useSearchParams();
+ const selectedJob = params.get("job");
+ const search = params.get("search");
 	const [cards, setCards] = useState<JobCard[]>([]);
 	const [stageFilter, setStageFilter] = useState("all");
 	const [updatingId, setUpdatingId] = useState<string | null>(null);
@@ -174,11 +179,14 @@ export default function AppliedPipeline() {
     if (draggedCardId) void moveCard(draggedCardId, columnId);
   };
 
+ const visibleCards = cards.filter(card => (!selectedJob || card.id === selectedJob) && (!search || `${card.role} ${card.company}`.toLowerCase().includes(search.toLowerCase())));
 	return (
 		<section
 			className="pane active"
 			style={{ height: "100%", display: "flex", flexDirection: "column" }}
 		>
+            {(selectedJob || search) && <p role="status">Showing the application from your notification. <Link href="/applied">View all applications →</Link></p>}
+            {!isLoading && (selectedJob || search) && !visibleCards.length && <p role="status">This application is no longer available in your pipeline.</p>}
             {pipelineError && <p role="alert">{pipelineError}</p>}
             {loadError && <div className="pipeline-load-error" role="alert"><p>{loadError}</p><button onClick={() => void loadPipeline()} disabled={refreshing}>Retry loading</button></div>}
             {refreshing && !isLoading && <p role="status">Updating applications…</p>}
@@ -296,8 +304,8 @@ export default function AppliedPipeline() {
                 <div className="pipeline-mobile-controls">
                   <label htmlFor="pipeline-stage-filter">Show applications</label>
                   <select id="pipeline-stage-filter" value={stageFilter} onChange={event => setStageFilter(event.target.value)}>
-                    <option value="all">All stages ({cards.length})</option>
-                    {columns.map(column => <option key={column.id} value={column.id}>{column.title} ({cards.filter(card => card.columnId === column.id).length})</option>)}
+                    <option value="all">All stages ({visibleCards.length})</option>
+                    {columns.map(column => <option key={column.id} value={column.id}>{column.title} ({visibleCards.filter(card => card.columnId === column.id).length})</option>)}
                   </select>
                   <p>Filter by stage to focus on what’s next.</p>
                 </div>
@@ -314,7 +322,7 @@ export default function AppliedPipeline() {
 					}}
 				>
 					{columns.map((col) => {
-						const columnCards = cards.filter((c) => c.columnId === col.id);
+						const columnCards = visibleCards.filter((c) => c.columnId === col.id);
 						const isOver = dragOverColumn === col.id;
 
 						return (
@@ -646,3 +654,5 @@ export default function AppliedPipeline() {
 		</section>
 	);
 }
+
+export default function AppliedRoute() { return <Suspense fallback={<p>Loading applications…</p>}><AppliedPipeline /></Suspense>; }

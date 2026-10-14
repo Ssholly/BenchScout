@@ -5,16 +5,13 @@ import { prisma } from "@/lib/prisma";
 
 
 
-export const POST = withApi("candidate", async (request: Request) => {
+export const POST = withApi("candidate", async (request: Request, session) => {
 	try {
-		const { email } = await request.json();
-
-		const user = await prisma.user.findUnique({ where: { email } });
-		if (!user)
-			return NextResponse.json({ error: "User not found" }, { status: 404 });
+        const { notificationId } = await request.json();
+        if (notificationId !== undefined && (typeof notificationId !== "string" || !notificationId || notificationId.length > 200)) throw new ApiError(400, "Invalid notification.");
 
 		await prisma.notification.updateMany({
-			where: { userId: user.id, isRead: false },
+			where: { userId: session!.id, isRead: false, ...(notificationId ? { id: notificationId } : {}) },
 			data: { isRead: true },
 		});
 

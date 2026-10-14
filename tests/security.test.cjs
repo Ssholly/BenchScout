@@ -227,3 +227,15 @@ test('document status identifies private and legacy files without revealing stor
  assert.equal(result.documentStatus.resume,'private'); assert.equal(result.documentStatus.license,'legacy'); assert.equal(result.documentStatus.degree,'missing');
  assert.equal(JSON.stringify(result).includes('vercel-storage.com'),false);
 });
+test('opening one notification only marks that item read within the authenticated account',async()=>{
+ const route=require('../app/api/notifications/mark-read/route.ts');let write;
+ prisma.notification.updateMany=async args=>{write=args;return {count:1};};
+ const response=await route.POST(request('/api/notifications/mark-read',{notificationId:'notice-1'}));
+ assert.equal(response.status,200);assert.deepEqual(write.where,{userId:'owner',isRead:false,id:'notice-1'});
+});
+test('notification read changes cannot target another account',async()=>{
+ const route=require('../app/api/notifications/mark-read/route.ts');let called=false;
+ prisma.notification.updateMany=async()=>{called=true;return {count:1};};
+ const response=await route.POST(request('/api/notifications/mark-read',{email:'other@example.com',notificationId:'notice-1'}));
+ assert.equal(response.status,403);assert.equal(called,false);
+});

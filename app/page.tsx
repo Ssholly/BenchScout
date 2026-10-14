@@ -1,4 +1,6 @@
 "use client";
+import { useJobScan } from "@/lib/use-job-scan";
+import { startJobScan } from "@/lib/client-job-scan";
 import Toast from "@/components/Toast";
 import { startTransition } from "react";
 import type { ClientJob } from "@/lib/types";
@@ -63,8 +65,10 @@ export default function Dashboard() {
  const [licenseExpiry, setLicenseExpiry] = useState<string | null>(null);
  const [careerProfile, setCareerProfile] = useState<unknown>({});
  const [careerJobs, setCareerJobs] = useState<ClientJob[]>([]);
-	const [isScraping, setIsScraping] = useState(false);
-	const [progress, setProgress] = useState(0);
+	const scan = useJobScan();
+ const isScraping = scan.running;
+ const progress = scan.progress;
+ const logs = scan.logs;
 	const [email, setEmail] = useState("");
 	const [location, setLocation] = useState("All Nigeria");
 	const [dbMinScore, setDbMinScore] = useState(75);
@@ -83,25 +87,6 @@ export default function Dashboard() {
 		type: "success" | "error";
 	} | null>(null);
 	const [lastRun, setLastRun] = useState("Never");
-	const [logs, setLogs] = useState([
-		{ time: "--:--:--", level: "IDLE", msg: "System awaiting next command..." },
-	]);
-
-	const addLog = (level: string, msg: string) => {
-		setLogs((prev) => [
-			...prev,
-			{
-				time: new Date().toLocaleTimeString([], {
-					hour: "2-digit",
-					minute: "2-digit",
-					second: "2-digit",
-				}),
-				level,
-				msg,
-			},
-		]);
-	};
-
 	const refreshJobStats = async () => {
 		const sequence = ++jobSequence.current;
 		const activeEmail = localStorage.getItem("labpro_active_user");
@@ -142,13 +127,7 @@ export default function Dashboard() {
 				setTier1Count(0);
 				setTier2Count(0);
 				setLastRun("—");
-				setLogs([
-					{
-						time: "--:--:--",
-						level: "AUTH",
-						msg: "Please log in to load dashboard metrics.",
-					},
-				]);
+
 				return;
 			}
 
@@ -165,6 +144,8 @@ export default function Dashboard() {
                     setCareerPhase(data.user.careerPhase || "licensed");
                     setCareerProfile(data.user.candidateProfile || {});
                     setLicenseExpiry(data.user.licenseExpiry || null);
+                    const savedRun = localStorage.getItem("labpro_last_run");
+                    if (savedRun) setLastRun(savedRun);
                     setProfileAsOf(Date.now());
 					setDbMinScore(data.user.minScore ?? 75);
 					setUserKeywords(data.user.keywords || candidateProfile(data.user.candidateProfile).specialties || "Medical Laboratory Scientist");
@@ -236,69 +217,8 @@ export default function Dashboard() {
 			return;
 		}
 
-		setIsScraping(true);
-		setProgress(15);
-		setLogs([]);
-		addLog("INIT", "Starting scan; saved applications and previous matches are preserved.");
-		addLog(
-			"INIT",
-			`Aggressive scan for ${location} targeting: ${userKeywords}`,
-		);
-
-		let currentProgress = 15;
-		const progressInterval = setInterval(() => {
-			currentProgress += 5;
-			if (currentProgress <= 90) setProgress(currentProgress);
-			if (currentProgress === 30)
-				addLog("INFO", "Authenticating job boards...");
-			if (currentProgress === 50)
-				addLog("INFO", "Parsing cross-platform data...");
-			if (currentProgress === 75)
-				addLog("INFO", `Filtering out matches below ${dbMinScore}%...`);
-		}, 1000);
-
-		try {
-			const response = await fetch("/api/scrape", {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({
-					targetEmail: email,
-					targetLocation: location,
-					includeTier3,
-					autoSend,
-					minScore: dbMinScore,
-					keywords: userKeywords,
-					strict_mls: true,
-				}),
-			});
-			const data = await response.json();
-			if (data.success) {
-				setProgress(100);
-                if (data.report) setCareerProfile((previous:unknown)=>({...candidateProfile(previous),lastScan:data.report}));
-				addLog("DONE", data.message);
-                if (Array.isArray(data.warnings)) data.warnings.forEach((warning: string) => addLog("INFO", warning));
-				showNotification(data.message);
-				const timeNow = new Date().toLocaleTimeString([], {
-					hour: "2-digit",
-					minute: "2-digit",
-				});
-				setLastRun(timeNow);
-				localStorage.setItem("labpro_last_run", timeNow);
-
-				await refreshJobStats();
-				window.dispatchEvent(new Event("jobsUpdated"));
-			} else {
-				throw new Error(data.error);
-			}
-		} catch (error: unknown) {
-			setProgress(0);
-			addLog("ERROR", (error instanceof Error ? error.message : "Request failed") || "Scan failed.");
-			showNotification((error instanceof Error ? error.message : "Request failed") || "Scan failed.", "error");
-		} finally {
-			clearInterval(progressInterval);
-			setTimeout(() => setIsScraping(false), 2000);
-		}
-	};
+        await startJobScan({ targetLocation: location, includeTier3, autoSend, minScore: dbMinScore, keywords: userKeywords, strict_mls: true });
+    };
 
 	const getAiRecommendation = () => email
     ? `Your search covers ${location}. Keep your skills and minimum score up to date to improve relevance.`

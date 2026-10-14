@@ -1,4 +1,6 @@
 "use client";
+import { useJobScan } from "@/lib/use-job-scan";
+import { startJobScan } from "@/lib/client-job-scan";
 import { sharedPageRequest } from "@/lib/shared-page-request";
 import { signOutToHome } from "@/lib/client-logout";
 import { candidateProfile } from "@/lib/candidate-profile";
@@ -43,7 +45,7 @@ export default function Sidebar() {
 	const [isMobileOpen, setIsMobileOpen] = useState(false);
 	const mounted = useMounted();
 
-	const [isScanning, setIsScanning] = useState(false);
+	const isScanning = useJobScan().running;
 	const [isComplianceOpen, setIsComplianceOpen] = useState(false);
 
 	const fetchActiveIdentity = useCallback(async () => {
@@ -191,40 +193,13 @@ export default function Sidebar() {
 			return;
 		}
 
-		setIsScanning(true);
-
-		try {
-			const targetLocation =
-				localStorage.getItem("labpro_dashboard_temp_location") || careerLocation;
-			const includeTier3 = localStorage.getItem("labpro_tier3") === "true";
-			const autoSend = localStorage.getItem("labpro_auto") !== "false";
-
-			const response = await fetch("/api/scrape", {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({
-					targetEmail: user.email,
-					targetLocation: targetLocation,
-					includeTier3,
-					autoSend,
-					strict_mls: true,
-				}),
-			});
-
-			if (response.ok) {
-				const timeNow = new Date().toLocaleTimeString([], {
-					hour: "2-digit",
-					minute: "2-digit",
-				});
-				localStorage.setItem("labpro_last_run", timeNow);
-				window.dispatchEvent(new Event("jobsUpdated"));
-			}
-		} catch (error) {
-			console.error("Quick scan failed", error);
-		} finally {
-			setIsScanning(false);
-		}
-	};
+        await startJobScan({
+            targetLocation: localStorage.getItem("labpro_dashboard_temp_location") || careerLocation,
+            includeTier3: localStorage.getItem("labpro_tier3") !== "false",
+            autoSend: localStorage.getItem("labpro_auto") !== "false",
+            strict_mls: true,
+        });
+    };
 
 	const handleEmployerLogout = async () => {
 		setLogoutError("");

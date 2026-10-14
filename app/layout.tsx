@@ -4,6 +4,7 @@ import NavigationScrollReset from "@/components/NavigationScrollReset";
 import SessionGate from "@/components/SessionGate";
 import Sidebar from "@/components/Sidebar";
 import Topbar from "@/components/Topbar";
+import ScanStatus from "@/components/ScanStatus";
 import ProfileModal from "@/components/ProfileModal";
 
 export const metadata = {
@@ -102,6 +103,7 @@ export default function RootLayout({
 
 				<SessionGate>
 				<ProfileModal />
+                <ScanStatus />
 
 				<div className="app-shell"
 					style={{
