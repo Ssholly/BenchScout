@@ -23,14 +23,16 @@ export default function ApplicationReadiness() {
   return <section className="application-readiness" aria-labelledby="readiness-title" style={{ background: "white", border: "1px solid #dbe7e3", borderRadius: 16, padding: "1.25rem", marginBottom: "1.5rem" }}>
     <div style={{ display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
       <h2 id="readiness-title" style={{ margin: 0, fontSize: 18, color: "#0B2444" }}>{data?.careerPhase === "internship" ? data.placementStage === "training" ? "Your training documents" : "Your placement readiness" : "Your application readiness"}</h2>
-      {data && <span style={{ color: "#1A8C7A", fontWeight: 700 }}>{data.complete} of {data.total} complete</span>}
+      {data && <span style={{ color: "#1A8C7A", fontWeight: 700 }}>{data.complete}/{data.total} complete</span>}
     </div>
     {!data && <p role="status">{failed ? "Readiness is temporarily unavailable." : "Checking your profile…"}</p>}
     {data && <>
-      <ul style={{ display: "flex", flexWrap: "wrap", gap: "12px 24px", padding: 0, listStyle: "none" }}>
-        {data.checks.map(check => <li key={check.key}><Link href={check.href} style={{ color: check.done ? "#246451" : "#526174", textDecoration: "none", fontSize: 13 }}>{check.done ? "✓" : "○"} {check.label}</Link></li>)}
+      <div className="readiness-progress" role="progressbar" aria-label="Profile completeness" aria-valuemin={0} aria-valuemax={data.total} aria-valuenow={data.complete}><span style={{width:`${data.total ? data.complete / data.total * 100 : 0}%`}} /></div>
+      <ul className="readiness-checks">
+        {data.checks.map(check => <li key={check.key} className={check.done ? "is-complete" : ""}><Link href={check.href}><span aria-label={check.done ? "Complete" : "Incomplete"}>{check.done ? "✓" : "○"}</span><span>{check.label}</span></Link></li>)}
       </ul>
-      <p style={{ margin: "8px 0 0", color: "#64748b", fontSize: 12 }}>Credentials: <strong>{data.credentialStatus}</strong>. {data.note}</p><p style={{ margin: "6px 0 0", color: "#64748b", fontSize: 12 }}>Your career stage, location, role preferences and matching keywords affect scans. Uploaded documents support applications; they do not increase your match score or unlock scan results.</p>
+      <p className="readiness-credentials">Credentials: <strong>{data.credentialStatus}</strong></p>
+      <details className="readiness-explanation"><summary>How your profile affects matches</summary><p>{data.note}</p><p>Your career stage, location, role preferences and matching keywords affect scans. Documents support applications; they do not increase your match score or unlock results.</p></details>
     </>}
   </section>;
 }

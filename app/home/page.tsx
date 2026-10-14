@@ -803,6 +803,12 @@ export default function HomePage() {
 				</div>
 			</div>
 
+            <footer className="home-footer">
+                <div><strong>BenchScout</strong><span>Your MLS career hub</span></div>
+                <p>Discover opportunities, track applications, and keep your career documents together.</p>
+                <small>© {new Date().getFullYear()} BenchScout. All rights reserved.</small>
+            </footer>
+
 			{tourOpen && createPortal(
                 <div className="walkthrough-backdrop">
                     <div className="walkthrough-dialog" ref={tourDialog} role="dialog" aria-modal="true" aria-labelledby="walkthrough-title" aria-describedby="walkthrough-description">

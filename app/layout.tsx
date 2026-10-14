@@ -18,10 +18,10 @@ export const metadata = {
 	},
 };
 
-// Start mobile browsers at the compact scale requested; keep pinch zoom available.
+// Use native scale so focusing a form does not change the page zoom. Keep pinch zoom available.
 export const viewport: Viewport = {
     width: "device-width",
-    initialScale: 0.85,
+    initialScale: 1,
     viewportFit: "cover",
     themeColor: "#edf5fd",
 };

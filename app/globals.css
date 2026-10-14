@@ -2244,7 +2244,7 @@ body.walkthrough-open { overflow: hidden !important; }
  .settings-loading { min-height: 120px !important; gap: 10px !important; border-radius: 12px !important; }
  .settings-loading span { font-size: 13px !important; }
 }
-/* 20 CSS px stays readable at the requested .85 initial scale during focus. */
+/* Search results retain their own compact layout. */
 .search-result-details { min-width: 0; flex: 1; overflow-wrap: break-word; }
 .search-result-tier { white-space: nowrap; }
 .search-results-heading { overflow-wrap: anywhere; }
@@ -2269,7 +2269,7 @@ body.walkthrough-open { overflow: hidden !important; }
 }
 @media (max-width: 900px) {
  input:not([type="range"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]), select, textarea,
- .settings-keywords > input, .account-dialog-body input, .global-topbar input { font-size: 20px !important; }
+ .settings-keywords > input, .account-dialog-body input, .global-topbar input { font-size: 16px !important; }
 }
 .page-load-error {
   display: flex;
@@ -2364,4 +2364,65 @@ body.walkthrough-open { overflow: hidden !important; }
 @media (max-width: 900px) {
  .salary-page input:not([type="range"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]),
  .scheduler-page input:not([type="range"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]) { font-size:16px !important; }
+}
+
+/* Native-scale forms prevent Safari focus zoom without disabling pinch zoom. */
+@media (max-width:900px) {
+ .settings-page input:not([type="range"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]), .settings-page select, .settings-page textarea { font-size:16px !important; min-width:0; max-width:100%; }
+}
+.dashboard-scan-layout { gap:14px !important; }
+.digest-run-card { min-width:0; padding:18px !important; }
+.dashboard-scan-layout > div:last-child { min-width:0; }
+.dashboard-analytics { gap:14px !important; margin-top:14px !important; }
+.dashboard-analytics > div { min-width:0; padding:18px !important; }
+.readiness-progress { height:4px; border-radius:4px; background:#edf3f1; margin:12px 0; overflow:hidden; }
+.readiness-progress > span { display:block; height:100%; background:#1a8c7a; border-radius:inherit; }
+.readiness-checks { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px 14px; padding:0; margin:0 0 12px; list-style:none; }
+.readiness-checks a { display:flex; align-items:flex-start; gap:6px; font-size:12px; line-height:1.4; color:#526174; text-decoration:none; }
+.readiness-checks a > span:first-child { flex:none; }
+.readiness-checks .is-complete a { color:#246451; }
+.readiness-credentials, .readiness-explanation { color:#64748b; font-size:12px; line-height:1.5; margin:8px 0 0; }
+.readiness-explanation summary { cursor:pointer; color:#1a8c7a; }
+.readiness-explanation p { margin:8px 0 0; }
+.scan-running-toast { position:fixed; bottom:max(16px, env(safe-area-inset-bottom, 0px)); right:16px; z-index:80; display:flex; align-items:center; flex-wrap:wrap; gap:8px 12px; max-width:calc(100vw - 32px); padding:10px 12px; border-radius:12px; background:#0b2444; color:white; box-shadow:0 4px 16px #0b244430; font-size:13px; animation:scanNoticeEnter .25s ease-out; }
+.scan-running-toast a { color:#8ce0cf; }
+.scan-running-toast button { background:transparent; color:white; border:0; min-width:32px; min-height:32px; cursor:pointer; font-size:18px; }
+@keyframes scanNoticeEnter { from { transform:translateY(24px); opacity:0; } to { transform:translateY(0); opacity:1; } }
+.home-footer { max-width:1060px; margin:24px auto 0; padding:20px 0 0; border-top:1px solid #dce5ed; color:#64748b; font-size:12px; line-height:1.5; }
+.home-footer > div { display:flex; align-items:baseline; flex-wrap:wrap; gap:8px 12px; }
+.home-footer strong { color:#0b2444; font-size:16px; }
+.home-footer p { margin:8px 0; }
+.home-footer small { font-size:11px; }
+@media (max-width:600px) {
+ .dashboard-scan-layout, .dashboard-analytics { gap:10px !important; }
+ .digest-run-card, .dashboard-analytics > div { padding:12px !important; border-radius:12px !important; }
+ .digest-run-card h2 { font-size:16px !important; }
+ .digest-run-card > p { margin-bottom:12px !important; font-size:12px !important; line-height:1.45; }
+ .digest-fields { gap:10px !important; margin-bottom:12px !important; }
+ .digest-fields > div { min-width:0; width:100%; }
+ .digest-fields input, .digest-fields select { min-height:44px; box-sizing:border-box; }
+ .digest-options { flex-wrap:wrap; gap:10px 16px !important; margin-bottom:14px !important; }
+ .digest-options > div { min-height:36px; }
+ .digest-run-card > div:last-of-type { margin-bottom:12px !important; }
+ .dashboard-scan-layout > div:last-child > div { padding:12px !important; font-size:12px; }
+ .match-volume-card > div:first-child { margin-bottom:14px !important; gap:8px; }
+ .match-volume-card > div:first-child > div:last-child { font-size:11px !important; white-space:nowrap; }
+ .match-volume-plot { height:160px !important; }
+ .search-sources-card h3 { margin-bottom:10px !important; flex-wrap:wrap; }
+ .search-sources-list { display:grid !important; grid-template-columns:repeat(2,minmax(0,1fr)); gap:6px !important; }
+ .search-sources-list > div { min-width:0; padding:8px !important; background:#f8fafc; border:1px solid #edf1f5 !important; border-radius:8px; gap:6px; }
+ .search-sources-list > div > span { font-size:11px !important; overflow-wrap:anywhere; }
+ .search-sources-list > div > div > span { display:none; }
+ .application-readiness > div:first-child { gap:6px; }
+ .application-readiness > div:first-child > span { font-size:11px; }
+ .application-readiness .readiness-checks { grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px !important; margin:0 0 10px; }
+ .application-readiness .readiness-checks a { font-size:12px !important; }
+ .home-footer { margin-top:12px; padding-top:14px; }
+}
+@media (prefers-reduced-motion:reduce) { .scan-running-toast { animation:none; } }
+.digest-run-card { scroll-margin-top:100px; }
+@media (max-width:600px) {
+ .settings-page .settings-preferences-card { margin-bottom:12px !important; border-radius:14px !important; }
+ .settings-page .settings-preferences-card > div:first-child, .settings-page .settings-preferences-body { padding:12px !important; }
+ .settings-page .settings-preferences-body .mobile-grid { gap:10px !important; margin-bottom:12px !important; }
 }

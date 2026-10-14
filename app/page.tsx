@@ -68,7 +68,6 @@ export default function Dashboard() {
 	const scan = useJobScan();
  const isScraping = scan.running;
  const progress = scan.progress;
- const logs = scan.logs;
 	const [email, setEmail] = useState("");
 	const [location, setLocation] = useState("All Nigeria");
 	const [dbMinScore, setDbMinScore] = useState(75);
@@ -585,7 +584,7 @@ export default function Dashboard() {
 					</div>
 
 					<div
-						className="mobile-stack"
+						className="mobile-stack dashboard-scan-layout"
 						style={{
 							display: "flex",
 							gap: "1.5rem",
@@ -593,6 +592,8 @@ export default function Dashboard() {
 						}}
 					>
 						<div
+							id="run-scan"
+							className="digest-run-card"
 							style={{
 								flex: 1.3,
 								background: "white",
@@ -619,11 +620,11 @@ export default function Dashboard() {
 									margin: "0 0 1.5rem 0",
 								}}
 							>
-								Trigger the recruitment engine to scan nationwide postings.
+								Scan supported sources for matching opportunities.
 							</p>
 
 							<div
-								className="mobile-stack"
+								className="mobile-stack digest-fields"
 								style={{
 									display: "flex",
 									gap: "1rem",
@@ -703,6 +704,7 @@ export default function Dashboard() {
 							</div>
 
 							<div
+								className="digest-options"
 								style={{
 									display: "flex",
 									gap: "1.5rem",
@@ -823,49 +825,6 @@ export default function Dashboard() {
 								gap: "1.25rem",
 							}}
 						>
-							<div
-								style={{
-									background: "#0f172a",
-									borderRadius: "16px",
-									padding: "1.25rem",
-									height: "240px",
-									display: "flex",
-									flexDirection: "column",
-									border: "1px solid #1e293b",
-								}}
-							>
-								<div
-									style={{
-										display: "flex",
-										flexDirection: "column",
-										gap: "6px",
-										overflowY: "auto",
-										flex: 1,
-										fontFamily: "monospace",
-										fontSize: "12px",
-									}}
-								>
-									{logs.map((l, i) => (
-										<div key={i} style={{ display: "flex", gap: "10px" }}>
-											<span style={{ color: "#475569" }}>{l.time}</span>
-											<span
-												style={{
-													color:
-														l.level === "ERROR"
-															? "#ef4444"
-															: l.level === "AUTH"
-																? "#facc15"
-																: "#1A8C7A", // 🚀 BRANDED DONE/INFO
-													fontWeight: 700,
-												}}
-											>
-												[{l.level}]
-											</span>
-											<span style={{ color: "#e2e8f0" }}>{l.msg}</span>
-										</div>
-									))}
-								</div>
-							</div>
 							<div
 								style={{
 									background: "rgba(26, 140, 122, 0.05)", // 🚀 BRANDED RECOMMENDATION BG

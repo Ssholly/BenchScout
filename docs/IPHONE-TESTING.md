@@ -248,3 +248,9 @@ Proof: /private/tmp/benchscout-profile-keywords-aligned.png,
 /private/tmp/benchscout-vault-actions-inline.png,
 /private/tmp/benchscout-dashboard-compact.png and
 /private/tmp/benchscout-branded-feedback.png.
+
+## Mobile card and focus updates — 14 October 2026
+
+The layout now uses initial scale 1 and mobile form text of at least 16px. This removes the compact .85 scale that Safari changed when focusing fields; manual pinch zoom remains enabled. Career, salary, scheduler, digest, source and volume cards use tighter spacing. Readiness has a progress bar, aligned checks and expandable explanatory text. The dashboard no longer renders the developer log panel. Scan-start feedback is a bottom notice that dismisses after 4.5 seconds; the shared scan still continues across route changes. Home includes a compact copyright footer.
+
+Browser checks cover 320px and 390px widths, form text sizes and document overflow. A physical iPhone check is still needed for keyboard focus/blur and installed-app edge gestures. Standard scrolling and pinch gestures are not intercepted. Back-swipe availability belongs to the browser/OS; the app does not implement custom swipe navigation.

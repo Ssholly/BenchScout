@@ -91,11 +91,12 @@ export default function DashboardAnalytics() {
 
 	return (
 		<div
-			className="mobile-stack"
+			className="mobile-stack dashboard-analytics"
 			style={{ display: "flex", gap: "1.5rem", marginTop: "1.5rem" }}
 		>
-			{/* 🚀 THE SMART MATCH VOLUME GRAPH */}
+			{/* Saved match volume */}
 			<div
+				className="match-volume-card"
 				style={{
 					flex: 2,
 					background: "white",
@@ -134,6 +135,7 @@ export default function DashboardAnalytics() {
 				</div>
 
 				<div
+					className="match-volume-plot"
 					style={{
 						position: "relative",
 						height: "200px",
@@ -273,8 +275,9 @@ export default function DashboardAnalytics() {
 				</div>
 			</div>
 
-			{/* 🚀 NETWORK TELEMETRY PANEL */}
+			{/* Sources used by the search */}
 			<div
+				className="search-sources-card"
 				style={{
 					flex: 1,
 					background: "white",
@@ -311,7 +314,7 @@ export default function DashboardAnalytics() {
 					</span>
 				</h3>
 
-				<div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+				<div className="search-sources-list" style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
 					{networks.map((net) => (
 						<div
 							key={net.name}
