@@ -6,8 +6,9 @@ export function notificationTarget(notification: Notification, jobs: Job[]): str
   const role = invitation ? notification.body.match(/invited you to apply for (.+?)\. Review the vacancy/)?.[1] : undefined;
   const matches = jobs.filter(job => (role ? job.role === role : notification.body.includes(job.role)));
   const companyMatches = matches.filter(job => notification.body.includes(job.company));
-  const job = companyMatches.length === 1 ? companyMatches[0] : matches.length === 1 ? matches[0] : undefined;
-  if (job) return `${job.applied ? "/applied" : route}?job=${encodeURIComponent(job.id)}`;
+  const availableInvites = invitation ? companyMatches.filter(job => !job.applied) : [];
+  const job = availableInvites.length === 1 ? availableInvites[0] : companyMatches.length === 1 ? companyMatches[0] : matches.length === 1 ? matches[0] : undefined;
+  if (job) return `/matches?job=${encodeURIComponent(job.id)}`;
   // Old or removed vacancies still open a meaningful filtered destination.
   return role ? `${route}?search=${encodeURIComponent(role)}` : route;
 }

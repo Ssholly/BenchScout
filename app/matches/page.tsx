@@ -36,6 +36,7 @@ type VaultDoc = {
 
 function MatchesPage() {
  const routeQuery = useSearchParams().toString();
+ const selectedJobId = new URLSearchParams(routeQuery).get("job");
 	const mounted = useMounted();
 	const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
 	const [profilePhase, setProfilePhase] = useState("licensed");
@@ -312,11 +313,11 @@ function MatchesPage() {
 
 	// Filter out all applied AND declined items
 	const unappliedJobs = jobs.filter(
-		(j) => !appliedJobs.includes(j.id) && !declinedJobIds.includes(j.id),
+		(j) => j.id === selectedJobId || (!appliedJobs.includes(j.id) && !declinedJobIds.includes(j.id)),
 	);
 
 	// STRICT VIP FILTER: Only show jobs explicitly flagged by an active CRM Headhunting Invitation
-	const scoutedJobs = unappliedJobs.filter((j) => j.isScoutedInvite);
+	const scoutedJobs = unappliedJobs.filter((j) => j.isScoutedInvite && !j.applied);
 	const regularJobs = unappliedJobs.filter(
 		(j) => !scoutedJobs.some((sj) => sj.id === j.id),
 	);
@@ -472,7 +473,7 @@ function MatchesPage() {
 
 		return (
 			<tr
-				key={j.id}
+				key={j.id} className={selectedJobId === j.id ? "notified-job" : undefined}
 				style={{
 					borderBottom: "1px solid rgba(0,0,0,0.05)",
 					opacity: isApplied ? 0.6 : 1,
@@ -839,7 +840,7 @@ function MatchesPage() {
 						)}
 					</div>
 					<div className="page-sub">
-						Pending and completed applications for your review.
+                        {selectedJobId ? "Showing only the vacancy from your notification." : "Pending and completed applications for your review."}
 					</div>
 				</div>
 				<button
@@ -1106,7 +1107,7 @@ function MatchesPage() {
 									>
 										{scoutedJobs.map((j) => (
 											<div
-												key={j.id} className="invitation-card"
+												key={j.id} className={`invitation-card${selectedJobId === j.id ? " notified-invitation" : ""}`}
 												style={{
 													background:
 														"linear-gradient(135deg, #0B2444 0%, #05162a 100%)",
@@ -1446,7 +1447,7 @@ function MatchesPage() {
 						</div>
 					)}
 
-					{!isLoading && unappliedJobs.length > 0 && (
+					{!isLoading && unappliedJobs.length > 0 && !selectedJobId && (
 						<div
 							style={{
 								display: "grid",

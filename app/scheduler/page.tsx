@@ -148,6 +148,8 @@ export default function SchedulerPage() {
 
 	const [isAlertModalOpen, setIsAlertModalOpen] = useState(false);
 	const [isAlertsActive, setIsAlertsActive] = useState(false);
+	const [isTestingEmail, setIsTestingEmail] = useState(false);
+    const [emailTestStatus, setEmailTestStatus] = useState("");
 	const [alertTier, setAlertTier] = useState("Tier 1 Only");
     const [isSavingAlerts, setIsSavingAlerts] = useState(false);
     const [alertSaveError, setAlertSaveError] = useState("");
@@ -395,6 +397,20 @@ export default function SchedulerPage() {
             triggerToast(error instanceof Error ? error.message : "Cannot reach the server. Your schedule was not saved.", "error");
         } finally { setIsSavingSchedule(false); }
 	};
+
+    const testPriorityEmail = async () => {
+      if (isTestingEmail) return;
+      setIsTestingEmail(true);
+      setEmailTestStatus("");
+      try {
+        const response = await fetch("/api/send-digest", {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({triggerType:"PRIORITY_TEST"})});
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error || "Email test failed. Please retry.");
+        setEmailTestStatus(result.message);
+        triggerToast(result.message);
+      } catch (error) { const message = error instanceof Error ? error.message : "Email test failed."; setEmailTestStatus(message); triggerToast(message,"error"); }
+      finally { setIsTestingEmail(false); }
+    };
 
 	const handleSaveAlerts = async () => {
 		if (!isUserLoggedIn || isSavingAlerts) return;
@@ -1947,6 +1963,8 @@ export default function SchedulerPage() {
 									>
 										Configure Alerts
 									</button>
+                                    <button onClick={testPriorityEmail} disabled={isTestingEmail} style={{marginLeft:8,background:"transparent",border:"1px solid #ffffff60",borderRadius:8,padding:"6px 12px",color:"white",fontSize:11,cursor:"pointer"}}>{isTestingEmail ? "Sending test…" : "Test priority email"}</button>
+                                    {emailTestStatus && <p role="status" style={{fontSize:11,lineHeight:1.5,margin:"10px 0 0",color:"#e2e8f0"}}>{emailTestStatus}</p>}
 								</div>
 							</div>
 						</div>

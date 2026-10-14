@@ -415,7 +415,7 @@ export default function Dashboard() {
 									letterSpacing: "0.5px",
 								}}
 							>
-								Tier 1 (88+)
+								Tier 1 (90+)
 							</div>
 							<div
 								style={{ display: "flex", alignItems: "baseline", gap: "8px" }}
@@ -470,7 +470,7 @@ export default function Dashboard() {
 									letterSpacing: "0.5px",
 								}}
 							>
-								Tier 2 (70-87)
+								Tier 2 (75-89)
 							</div>
 							<div
 								style={{ display: "flex", alignItems: "baseline", gap: "8px" }}

@@ -2,7 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { ApiError } from "@/lib/security";
 import { collectJobs } from "@/lib/job-sources";
 import { legacyPortalUrls, scoreJob, type MatchPreferences } from "@/lib/job-matching";
-import { listingUrl } from "@/lib/listing-url";
+import { priorityAlertMatches } from "@/lib/priority-alerts";
 import { buildJobDigest } from "@/lib/digest";
 import { sendEmail } from "@/lib/mailer";
 import { candidateProfile, listingDetails, opportunityForPreferences } from "@/lib/candidate-profile";
@@ -32,8 +32,7 @@ export async function runJobScan(userId: string, overrides: Partial<MatchPrefere
       return previous ? prisma.job.update({ where: { id: previous.id }, data: { ...data, ...(!previous.applied && previous.status !== "declined" ? { status: "active" } : {}) } }) : prisma.job.create({ data: { ...data, userId, salary: "Not disclosed", status: "active" } });
     }));
     let emailStatus = "run only";
-    const alertKeywords = (user.alertKeywords || "").toLowerCase().split(",").map(value => value.trim()).filter(Boolean);
-    const emailJobs = newMatches.filter(job => listingUrl(job.url) && (!alertKeywords.length || alertKeywords.some(keyword => `${job.title} ${job.company} ${job.desc}`.toLowerCase().includes(keyword))) && (user.alertTier !== "Tier 1 Only" || job.tier === 1) && (user.alertTier !== "Tier 1 & Tier 2" || job.tier <= 2));
+    const emailJobs = priorityAlertMatches(newMatches,user);
     if ((overrides.autoSend ?? user.autoSendEmail) && emailJobs.length) {
       try {
         const digest = buildJobDigest(emailJobs, { name: user.name, isNew: true, date: now, appUrl });
@@ -45,7 +44,7 @@ export async function runJobScan(userId: string, overrides: Partial<MatchPrefere
     const report = {location:preferences.location,careerPhase:preferences.careerPhase,scannedAt:now.toISOString(),retrieved:result.jobs.length,matched:matches.length,added:newMatches.length,warnings:result.warnings};
     await prisma.user.update({where:{id:userId},data:{candidateProfile:{...profileFrom(current.candidateProfile),lastScan:report}}});
     const label = preferences.careerPhase === "internship" ? "placements" : "matches";
-    return { success:true, message:`Scan complete for ${preferences.location}: ${matches.length} ${label} matched (${newMatches.length} new) from ${result.jobs.length} retrieved listings.${!matches.length ? " No listings met your professional stage, location and minimum score." : ""}`, warnings:result.warnings, report };
+    return { success:true, message:`Scan complete for ${preferences.location}: ${matches.length} ${label} matched (${newMatches.length} new) from ${result.jobs.length} retrieved listings.${!matches.length ? " No listings met your professional stage, location and minimum score." : ""}${emailStatus === "email failed" ? " Matches were saved, but the email could not be delivered." : ""}`, warnings:result.warnings, report };
   } catch (error) {
     await prisma.runHistory.create({ data: { userId, matches: 0, t1Count: 0, trigger, status: "failed" } }).catch(() => undefined);
     throw error;

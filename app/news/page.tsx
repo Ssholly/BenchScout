@@ -438,7 +438,7 @@ export default function NewsInsightsPage() {
 							>
 								{stats.topLocations.map((loc) => (
 									<div
-										key={loc.name}
+										key={loc.name} className="market-stat-row"
 										style={{
 											display: "flex",
 											alignItems: "center",
@@ -537,7 +537,7 @@ export default function NewsInsightsPage() {
 							>
 								{stats.topSkills.map((skill) => (
 									<div
-										key={skill.name}
+										key={skill.name} className="market-stat-row"
 										style={{
 											display: "flex",
 											alignItems: "center",
@@ -652,7 +652,7 @@ export default function NewsInsightsPage() {
 							>
 								{stats.topEmployers.map((emp, idx) => (
 									<button
-										key={idx}
+										key={idx} className="market-employer-row"
 										onClick={() => {
 											window.location.href = `/matches?employer=${encodeURIComponent(
 												emp.name,

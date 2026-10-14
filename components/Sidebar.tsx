@@ -322,7 +322,7 @@ export default function Sidebar() {
 			{
 				name: "News & Insights",
 				path: "/news",
-				badge: "NEW",
+				badge: "LIVE",
 				icon: (
 					<svg
 						width="20"
@@ -775,7 +775,7 @@ export default function Sidebar() {
 										{item.icon}
 									</span>
 									<span style={{ flex: 1 }}>{item.name}</span>
-									{item.badge && (
+									{item.badge === "LIVE" ? <span className="sidebar-live-dot" role="img" aria-label="Live news feed" title="Live news feed"/> : item.badge && (
 										<span
 											style={{
 												background: isActive
