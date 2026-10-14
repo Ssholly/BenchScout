@@ -87,6 +87,7 @@ export default function DashboardAnalytics() {
 		{ name: "MyJobMag", status: "SOURCE", color: "#64748b" },
 		{ name: "HotNigerianJobs", status: "SOURCE", color: "#64748b" },
 		{ name: "SmartRecruiters", status: "SOURCE", color: "#64748b" },
+        { name: "Jobberman", status: "SOURCE", color: "#64748b" },
 	];
 
 	return (
@@ -345,6 +346,8 @@ export default function DashboardAnalytics() {
 									{net.status}
 								</span>
 								<div
+									className="search-source-pulse"
+									aria-hidden="true"
 									style={{
 										width: "8px",
 										height: "8px",

@@ -88,6 +88,7 @@ export default function ProfileComplianceOverlay({
 			<div style={{ flex: 1 }} onClick={onClose} />
 
 			<div
+				className="compact-compliance-dialog"
 				style={{
 					width: "100%",
 					maxWidth: "420px",
@@ -145,6 +146,7 @@ export default function ProfileComplianceOverlay({
 					</div>
 					<button
 						onClick={onClose}
+						aria-label="Close compliance hub"
 						style={{
 							border: "none",
 							background: "rgba(255,255,255,0.6)",

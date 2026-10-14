@@ -2442,3 +2442,43 @@ body.walkthrough-open { overflow: hidden !important; }
  .settings-keywords button { width:28px; flex-basis:28px; min-height:28px; }
  .settings-keywords > input { min-height:38px; padding:5px 8px !important; }
 }
+
+.home-footer { line-height:1.25; }
+.home-footer > div { gap:1px; }
+.home-footer strong > span:first-child { color:#1a8c7a; }
+.home-footer strong > span:last-child { color:#16a34a; }
+.home-footer small { margin-top:2px; }
+.search-source-pulse { flex-shrink:0; background:#22c55e !important; box-shadow:none !important; animation:sourcePulse 2s ease-in-out infinite; }
+@keyframes sourcePulse { 50% { box-shadow:0 0 0 4px #22c55e20; opacity:.55; } }
+@media(max-width:600px) {
+ .search-sources-list { grid-template-columns:repeat(3,minmax(0,1fr)) !important; }
+ .search-sources-list > div { padding:6px !important; gap:4px; }
+ .search-sources-list > div > span { font-size:10px !important; }
+ .compact-profile-dialog { max-width:380px !important; max-height:calc(85dvh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px)) !important; }
+ .compact-profile-dialog .account-dialog-header { padding:12px !important; }
+ .compact-profile-dialog .account-dialog-header > div > div:first-child { display:none !important; }
+ .compact-profile-dialog .account-dialog-header h3 { font-size:18px !important; margin:0 !important; }
+ .compact-profile-dialog .account-dialog-header p { display:none; }
+ .compact-profile-dialog .account-dialog-body { padding:12px !important; flex:0 1 auto !important; }
+ .profile-summary > div { padding:10px !important; margin-bottom:10px !important; border-radius:10px !important; gap:8px !important; }
+ .profile-summary > div:first-child { padding:0 !important; margin-bottom:12px !important; }
+ .profile-summary > div:first-child > div:first-child { width:40px !important; height:40px !important; flex-shrink:0; }
+ .profile-summary h2 { font-size:14px !important; white-space:normal !important; }
+ .profile-summary p { font-size:11px !important; }
+ .profile-summary button { padding:6px 8px !important; min-height:36px; font-size:11px !important; }
+ .profile-summary > div > div:first-child { font-size:9px !important; }
+ .profile-keywords { gap:4px !important; }
+ .profile-keywords > span { font-size:10px !important; padding:4px 6px !important; font-weight:500 !important; border-radius:6px !important; }
+ .compact-compliance-dialog { height:auto !important; max-height:80dvh; align-self:center; padding:14px !important; border-radius:16px !important; overflow-y:auto; }
+ .compact-compliance-dialog > div:first-of-type { margin-bottom:12px !important; }
+ .compact-compliance-dialog h3 { font-size:18px !important; }
+ .compact-compliance-dialog > div:last-child { flex:0 0 auto !important; gap:10px !important; }
+ .compact-compliance-dialog > div:last-child > div { padding:10px !important; border-radius:12px !important; }
+ .compact-compliance-dialog > div:last-child > div:last-child { margin-top:0 !important; }
+ .compact-compliance-dialog button, .compact-compliance-dialog a { font-size:11px !important; padding:8px 10px !important; }
+}
+@media(prefers-reduced-motion:reduce) { .search-source-pulse { animation:none; } }
+@media(max-width:600px) {
+ .profile-summary > div:first-child img { width:40px !important; height:40px !important; object-fit:cover; }
+ .compact-compliance-dialog > div:last-child > button { margin-top:0 !important; }
+}

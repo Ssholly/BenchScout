@@ -421,7 +421,7 @@ export default function ProfileModal() {
 			{toast && <Toast message={toast.message} type={toast.type} />}
 
 			<div
-                className="account-dialog"
+                className={`account-dialog ${view === "profile" ? "compact-profile-dialog" : ""}`}
 				style={{
 					background: "white",
 					width: "100%",
@@ -1169,7 +1169,7 @@ export default function ProfileModal() {
 							)}
 
 							{view === "profile" && (
-								<div>
+								<div className="profile-summary">
 									<div
 										style={{
 											display: "flex",

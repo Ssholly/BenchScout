@@ -804,7 +804,7 @@ export default function HomePage() {
 			</div>
 
             <footer className="home-footer">
-                <div><strong>BenchScout</strong><span>Your MLS career hub</span></div>
+                <div><strong><span>Bench</span><span>Scout</span></strong><span>Your MLS career hub</span></div>
                 <small>© {new Date().getFullYear()} BenchScout. All rights reserved.</small>
             </footer>
 
