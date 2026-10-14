@@ -30,6 +30,12 @@ export default function Topbar() {
 	const [isSearchActive, setIsSearchActive] = useState(false);
 	const [showHelp, setShowHelp] = useState(false);
 	const [helpView, setHelpView] = useState<"menu" | "docs" | "api">("menu");
+    useEffect(() => {
+      if (!showHelp) return;
+      const close = (event: KeyboardEvent) => { if (event.key === "Escape") setShowHelp(false); };
+      window.addEventListener("keydown", close);
+      return () => window.removeEventListener("keydown", close);
+    }, [showHelp]);
 
 	const [allJobs, setAllJobs] = useState<ClientJob[]>([]);
 	const [searchResults, setSearchResults] = useState<ClientJob[]>([]);
@@ -862,6 +868,7 @@ export default function Topbar() {
 				showHelp &&
 				createPortal(
 					<div
+						className="help-backdrop"
 						onClick={() => setShowHelp(false)}
 						style={{
 							position: "fixed",
@@ -869,14 +876,17 @@ export default function Topbar() {
 							left: 0,
 							width: "100vw",
 							height: "100dvh",
-							background: "rgba(15, 23, 42, 0.2)",
-							backdropFilter: "blur(32px)",
-							WebkitBackdropFilter: "blur(32px)",
+							background: "transparent",
+							backdropFilter: "none",
+							WebkitBackdropFilter: "none",
 							zIndex: 99999,
 							animation: "fadeInOverlay 0.2s ease-out forwards",
 						}}
 					>
 						<div
+							className="help-popover"
+							role="dialog"
+							aria-label="Help and support"
 							onClick={(e) => e.stopPropagation()}
 							style={{
 								position: "absolute",
@@ -1225,7 +1235,7 @@ export default function Topbar() {
 													marginBottom: "4px",
 												}}
 											>
-												Tier 1 (88-100%)
+												Tier 1 (90-100%)
 											</div>
 											High priority matches. These jobs contain nearly all your
 											desired keywords and are within your primary location hub.
@@ -1246,7 +1256,7 @@ export default function Topbar() {
 													marginBottom: "4px",
 												}}
 											>
-												Tier 2 (70-87%)
+												Tier 2 (75-89%)
 											</div>
 											Strong fits. These positions match the core criteria but
 											may be in adjacent locations or missing secondary
@@ -1268,7 +1278,7 @@ export default function Topbar() {
 													marginBottom: "4px",
 												}}
 											>
-												Tier 3 (&lt;70%)
+												Tier 3 (&lt;75%)
 											</div>
 											Potential opportunities. These fall below your standard
 											threshold but are preserved in the system for manual
