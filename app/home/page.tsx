@@ -805,7 +805,6 @@ export default function HomePage() {
 
             <footer className="home-footer">
                 <div><strong>BenchScout</strong><span>Your MLS career hub</span></div>
-                <p>Discover opportunities, track applications, and keep your career documents together.</p>
                 <small>© {new Date().getFullYear()} BenchScout. All rights reserved.</small>
             </footer>
 

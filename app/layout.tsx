@@ -18,10 +18,10 @@ export const metadata = {
 	},
 };
 
-// Use native scale so focusing a form does not change the page zoom. Keep pinch zoom available.
+// Start at the requested compact scale; preserve manual pinch zoom.
 export const viewport: Viewport = {
     width: "device-width",
-    initialScale: 1,
+    initialScale: 0.85,
     viewportFit: "cover",
     themeColor: "#edf5fd",
 };

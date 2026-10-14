@@ -2426,3 +2426,19 @@ body.walkthrough-open { overflow: hidden !important; }
  .settings-page .settings-preferences-card > div:first-child, .settings-page .settings-preferences-body { padding:12px !important; }
  .settings-page .settings-preferences-body .mobile-grid { gap:10px !important; margin-bottom:12px !important; }
 }
+
+/* Centered, widening footer lines form a simple pyramid. */
+.home-footer { text-align:center; }
+.home-footer > div { flex-direction:column; align-items:center; gap:3px; }
+.home-footer strong { font-size:16px; }
+.home-footer > div > span { font-size:12px; }
+.home-footer small { display:block; margin-top:6px; font-size:10px; }
+@media(max-width:900px) {
+ /* At .85 scale, 19 CSS px renders above Safari's 16px focus threshold. */
+ .settings-page input:not([type="range"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]), .settings-page select, .settings-page textarea,
+ #career-profile input, #career-profile select { font-size:19px !important; font-weight:400; }
+ .settings-keywords { gap:4px !important; }
+ .settings-keywords > div { padding:1px 3px 1px 6px !important; font-size:10px !important; line-height:1.3; }
+ .settings-keywords button { width:28px; flex-basis:28px; min-height:28px; }
+ .settings-keywords > input { min-height:38px; padding:5px 8px !important; }
+}

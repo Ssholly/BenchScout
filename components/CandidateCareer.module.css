@@ -78,3 +78,28 @@
  .grid > .field { grid-column:1 / -1; }
  .grid > .field:nth-child(3), .grid > .field:nth-child(4) { grid-column:auto; }
 }
+
+/* The editable profile stays dense while keeping long fields full width. */
+.profileForm .heading { margin-bottom:12px; }
+.profileForm .field input, .profileForm .field select { font-weight:400; }
+.reminderToggle { cursor:pointer; font-size:13px; font-weight:600; margin-bottom:10px; }
+@media(max-width:600px) {
+ .profileForm { padding:10px; border-radius:12px; }
+ .profileForm .heading { flex-wrap:nowrap; align-items:center; gap:8px; margin-bottom:10px; }
+ .profileForm .heading h2 { font-size:17px; margin:0; letter-spacing:-.3px; }
+ .profileForm .heading p, .profileForm .kicker { display:none; }
+ .profileForm .badge { font-size:10px; padding:4px 6px; flex-shrink:0; }
+ .profileForm .grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
+ .profileForm .grid > .field { grid-column:auto; gap:3px; font-size:11px; font-weight:500; line-height:1.35; }
+ .profileForm .grid > .wideField { grid-column:1 / -1; }
+ .profileForm .field input, .profileForm .field select { min-height:38px; height:38px; padding:5px 8px; border-radius:8px; }
+ .profileForm .field small { font-size:10px; line-height:1.35; }
+ .profileForm .check { margin:10px 0; font-size:11px; }
+ .profileForm .subsection { margin-top:10px; padding-top:10px; }
+ .profileForm .footer { margin-top:10px; gap:8px; }
+ .profileForm .footer p { font-size:10px; line-height:1.4; }
+ .profileForm .primary { min-height:40px; padding:8px 12px; border-radius:8px; font-size:12px; }
+}
+@media(max-width:350px) {
+ .profileForm .grid { grid-template-columns:minmax(0,1fr); }
+}
