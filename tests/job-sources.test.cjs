@@ -59,3 +59,13 @@ test('structured job metadata resolves employer references and closing dates',as
  global.fetch=async url=>new Response(url===source.url?'<a href="/listings/test">Medical Laboratory Scientist</a>':`<script type="application/ld+json">${JSON.stringify(graph)}</script>`);
  try {const {jobs}=await collectRecruitmentSource(source,postingDeadline);assert.equal(jobs[0].company,'Test Hospital');assert.equal(jobs[0].loc,'Lagos');assert.equal(jobs[0].deadline,'2030-12-20');}finally{global.fetch=original;}
 });
+test('specific Jobberman advert locations override broad country metadata without reading page navigation',async()=>{
+ const original=global.fetch;const source=recruitmentSources.find(s=>s.name==='Jobberman');
+ const posting={'@type':'JobPosting',title:'Medical Laboratory Scientist',description:'Diagnostic testing',validThrough:'2030-12-20',jobLocation:{address:{addressRegion:'Nigeria'}}};
+ const detail=label=>`<nav><a href="https://www.jobberman.com/jobs/lagos">Lagos</a></nav><a class="inline-flex" href="https://www.jobberman.com/jobs/rest-nigeria">${label}</a><script type="application/ld+json">${JSON.stringify(posting)}</script>`;
+ let label='Rest of Nigeria (Delta)';global.fetch=async url=>new Response(url===source.url?'<a href="/listings/test">Medical Laboratory Scientist</a>':detail(label));
+ try {
+   assert.equal((await collectRecruitmentSource(source,postingDeadline)).jobs[0].loc,'Delta');
+   label='Rest of Nigeria';assert.equal((await collectRecruitmentSource(source,postingDeadline)).jobs[0].loc,'Nigeria');
+ }finally{global.fetch=original;}
+});

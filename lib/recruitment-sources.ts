@@ -69,6 +69,19 @@ export function parseAnnouncement(text: string, title: string, url: string, sour
   const role = lab.test(title) ? title : `Medical Laboratory Science${internship ? " Intern" : ""} — ${title}`;
   return { title: role, company: source.company || title.split(/\s+at\s+/i).slice(1).join(" at ") || title, loc: clean(text.match(/\bLocations?\s*:\s*([^\n]+)/i)?.[1] || source.location || text.match(/\b(?:[A-Z][a-z]+,? )?(?:Lagos|Abuja|Enugu|Anambra|Ebonyi|Imo|Edo|Oyo|Delta|Rivers|Cross River)(?: State)?\b/)?.[0] || "Location not specified"), url, desc: text.slice(0, 10000), source: source.name, ...(internship ? { jobType: "internship" } : {}), deadline };
 }
+export function jobbermanPostingLocation($: cheerio.CheerioAPI) {
+  // Use the advert's location chip, never navigation links or applicant residency requirements.
+  const links = $('a.inline-flex[href*="jobberman.com/jobs/"]').toArray();
+  for (const element of links) {
+    const href = $(element).attr("href") || "";
+    if (!/\/jobs\/(?:rest-nigeria|lagos|abuja|enugu|ibadan-oyo|imo|maiduguri-borno|port-harcourt-rivers|abeokuta-ogun|nigeria|remote)\/?$/.test(href)) continue;
+    const text = clean($(element).text());
+    const specific = text.match(/^Rest of Nigeria\s*\(([^)]+)\)$/i)?.[1];
+    if (specific) return specific.trim();
+    if (text && !/^(?:Nigeria|Rest of Nigeria|Any Locations)$/i.test(text)) return text;
+  }
+  return "";
+}
 export async function collectRecruitmentSource(source: Source, deadlineFrom: (text: string) => string | undefined) {
   const page = await readPublic(source.url, source.url);
   const links = announcementLinks(page.text, source);
@@ -93,7 +106,8 @@ export async function collectRecruitmentSource(source: Source, deadlineFrom: (te
         const organizationRef = posting.hiringOrganization as { name?: string; "@id"?: string } | undefined;
         const organization = (organizationRef?.["@id"] ? entities.get(organizationRef["@id"]) : organizationRef) as { name?: string } | undefined;
         const place = (Array.isArray(posting.jobLocation) ? posting.jobLocation[0] : posting.jobLocation) as { address?: { addressLocality?: string; addressRegion?: string } } | undefined;
-        const location = [place?.address?.addressLocality,place?.address?.addressRegion].filter(value=>typeof value === "string").join(", ");
+        const visibleLocation = source.name === "Jobberman" ? jobbermanPostingLocation($) : "";
+        const location = visibleLocation || [place?.address?.addressLocality,place?.address?.addressRegion].filter(value=>typeof value === "string").join(", ");
         const expiry = typeof posting.validThrough === "string" ? posting.validThrough.slice(0,10) : "";
         const job = parseAnnouncement(`Job description\n${clean(cheerio.load(posting.description).text())}`, posting.title, link.url, {...source,company:organization?.name || source.company,location:location || source.location}, () => /^\d{4}-\d{2}-\d{2}$/.test(expiry) && Number.isFinite(Date.parse(expiry)) ? expiry : undefined);
         if (job) return {...job, ...(posting.employmentType === "INTERN" ? { jobType:"internship" } : {})};
