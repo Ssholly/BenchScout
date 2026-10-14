@@ -2482,3 +2482,6 @@ body.walkthrough-open { overflow: hidden !important; }
  .profile-summary > div:first-child img { width:40px !important; height:40px !important; object-fit:cover; }
  .compact-compliance-dialog > div:last-child > button { margin-top:0 !important; }
 }
+@media(max-width:600px) {
+ .profile-summary > div:first-child > div:first-child > div:first-of-type { width:40px !important; height:40px !important; }
+}
