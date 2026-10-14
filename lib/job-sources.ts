@@ -1,3 +1,4 @@
+import { recruitmentSources, collectRecruitmentSource } from "@/lib/recruitment-sources";
 import * as cheerio from "cheerio";
 import type { ScrapedJob } from "@/lib/types";
 import { safeExternalUrl } from "@/lib/security";
@@ -11,7 +12,7 @@ const fetchPage = async (url: string, init?: RequestInit, timeout = 12000) => {
 const clean = (value: string) => value.replace(/\u00a0/g," ").replace(/[\t ]+/g," ").trim();
 const companyFromTitle = (title: string) => title.split(/\s+at\s+/i).slice(1).join(" at ").trim() || "Employer not specified";
 export function postingDeadline(text: string) {
-  const match = text.match(/(?:Application Closing Date|Closing Date|Deadline)\s*:?\s*(\d{1,2})(?:st|nd|rd|th)?\s+([a-z]+)\s*,?\s*(20\d{2})/i);
+  const match = text.match(/(?:Application Closing Date|Closing Date|Deadline)(?: for [^\n.]{0,80}? is)?\s*:?\s*(\d{1,2})(?:st|nd|rd|th)?\s+([a-z]+)\s*,?\s*(20\d{2})/i);
   if (!match) return undefined;
   const month = ["january","february","march","april","may","june","july","august","september","october","november","december"].findIndex(value=>value.startsWith(match[2].toLowerCase()));
   if (month < 0) return undefined;
@@ -73,6 +74,7 @@ async function detailsFor(jobs: ScrapedJob[], phase: string) {
 }
 export async function collectJobs(careerPhase: string, location: string) {
   const query = careerPhase === "internship" ? "medical laboratory intern" : "medical laboratory scientist";
+  const sourceWarnings: string[] = [];
   const searches: {source:string;run:()=>Promise<ScrapedJob[]>}[] = [
     {source:"MyJobMag",run:async()=> {
       // Use the site's q parameter; the former job_q parameter was ignored.
@@ -87,6 +89,12 @@ export async function collectJobs(careerPhase: string, location: string) {
       return detailsFor(pages.flat(),careerPhase);
     }},
   ];
+  for (const source of recruitmentSources) searches.push({source:source.name,run:async()=> {
+    const config = source.name === "Medical World Nigeria" && careerPhase !== "internship" ? {...source,url:"https://medicalworldnigeria.com/"} : source;
+    const result = await collectRecruitmentSource(config,postingDeadline);
+    if (result.warning) sourceWarnings.push(result.warning);
+    return result.jobs;
+  }});
   if (process.env.APIFY_API_KEY) {
     for (const [source,actor,input] of [
       ["Indeed","misceres~indeed-scraper",{position:query,country:"NG",...(location === "Nigeria" ? {} : {location}),maxItemsPerSearch:30,saveOnlyUniqueItems:true}],
@@ -103,5 +111,5 @@ export async function collectJobs(careerPhase: string, location: string) {
     if (result.status === "rejected") warnings.push(`${searches[index].source} could not be reached.`);
     else { successful++; if (!result.value.length) warnings.push(`${searches[index].source} returned no usable listings.`); result.value.forEach(job=>jobs.set(job.url,job)); }
   });
-  return {jobs:[...jobs.values()],warnings,successful};
+  return {jobs:[...jobs.values()],warnings:[...warnings,...sourceWarnings],successful};
 }

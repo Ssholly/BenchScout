@@ -30,7 +30,7 @@ export default function ApplicationReadiness() {
       <ul style={{ display: "flex", flexWrap: "wrap", gap: "12px 24px", padding: 0, listStyle: "none" }}>
         {data.checks.map(check => <li key={check.key}><Link href={check.href} style={{ color: check.done ? "#246451" : "#526174", textDecoration: "none", fontSize: 13 }}>{check.done ? "✓" : "○"} {check.label}</Link></li>)}
       </ul>
-      <p style={{ margin: "8px 0 0", color: "#64748b", fontSize: 12 }}>Credentials: <strong>{data.credentialStatus}</strong>. {data.note}</p>
+      <p style={{ margin: "8px 0 0", color: "#64748b", fontSize: 12 }}>Credentials: <strong>{data.credentialStatus}</strong>. {data.note}</p><p style={{ margin: "6px 0 0", color: "#64748b", fontSize: 12 }}>Your career stage, location, role preferences and matching keywords affect scans. Uploaded documents support applications; they do not increase your match score or unlock scan results.</p>
     </>}
   </section>;
 }

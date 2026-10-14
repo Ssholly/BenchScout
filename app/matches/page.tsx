@@ -1448,8 +1448,8 @@ export default function MatchesPage() {
 							style={{
 								display: "grid",
 								gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 280px), 1fr))",
-								gap: "1.5rem",
-								marginTop: "4rem",
+								gap: "0.75rem",
+								marginTop: "1.25rem",
 							}}
 						>
 							<div
@@ -1458,7 +1458,7 @@ export default function MatchesPage() {
 									backdropFilter: "blur(24px)",
 									borderRadius: "16px",
 									border: "1px solid rgba(255, 255, 255, 0.3)",
-									padding: "1.75rem",
+									padding: "1rem",
 									boxShadow: "0 4px 20px -2px rgba(0, 0, 0, 0.03)",
 									display: "flex",
 									flexDirection: "column",
@@ -1469,7 +1469,7 @@ export default function MatchesPage() {
 										fontSize: "14px",
 										fontWeight: 800,
 										color: "#0B2444",
-										margin: "0 0 16px 0",
+										margin: "0 0 8px 0",
 									}}
 								>
 									Market Insights
@@ -1483,7 +1483,7 @@ export default function MatchesPage() {
 										flex: 1,
 									}}
 								>
-									Your saved matches include roles in <strong>{dynamicStats.primaryLoc}</strong> and skills such as <strong>{dynamicStats.primarySkill}</strong>. Review each posting before applying.
+									Saved roles include <strong>{dynamicStats.primaryLoc}</strong>. Check each vacancy’s requirements before applying.
 								</p>
 								<a
 									href="/news"
@@ -1518,7 +1518,7 @@ export default function MatchesPage() {
 									backdropFilter: "blur(24px)",
 									borderRadius: "16px",
 									border: "1px solid rgba(255, 255, 255, 0.3)",
-									padding: "1.75rem",
+									padding: "1rem",
 									boxShadow: "0 4px 20px -2px rgba(0, 0, 0, 0.03)",
 									display: "flex",
 									flexDirection: "column",
@@ -1529,18 +1529,18 @@ export default function MatchesPage() {
 										fontSize: "14px",
 										fontWeight: 800,
 										color: "#1A8C7A",
-										margin: "0 0 16px 0",
+										margin: "0 0 8px 0",
 									}}
 								>
 									Quick Stats
 								</h4>
 								<div
-									style={{ display: "flex", gap: "2rem", alignItems: "center" }}
+									style={{ display: "flex", gap: "1rem", alignItems: "center" }}
 								>
 									<div style={{ flex: 1 }}>
 										<div
 											style={{
-												fontSize: "32px",
+												fontSize: "26px",
 												fontWeight: 900,
 												color: "#1A8C7A",
 												lineHeight: "1",
@@ -1571,7 +1571,7 @@ export default function MatchesPage() {
 									<div style={{ flex: 1 }}>
 										<div
 											style={{
-												fontSize: "32px",
+												fontSize: "26px",
 												fontWeight: 900,
 												color: "#1A8C7A",
 												lineHeight: "1",
@@ -1601,7 +1601,7 @@ export default function MatchesPage() {
 									backdropFilter: "blur(24px)",
 									borderRadius: "16px",
 									border: "1px solid rgba(255, 255, 255, 0.3)",
-									padding: "1.75rem",
+									padding: "1rem",
 									boxShadow: "0 4px 20px -2px rgba(0, 0, 0, 0.03)",
 									display: "flex",
 									flexDirection: "column",
@@ -1612,7 +1612,7 @@ export default function MatchesPage() {
 										fontSize: "14px",
 										fontWeight: 800,
 										color: "#0f172a",
-										margin: "0 0 16px 0",
+										margin: "0 0 8px 0",
 									}}
 								>
 									Match Summary
@@ -1628,7 +1628,9 @@ export default function MatchesPage() {
 								>
 									<div
 										style={{
-											fontSize: "40px",
+											whiteSpace: "nowrap",
+											flexShrink: 0,
+											fontSize: "28px",
 											fontWeight: 900,
 											color: "#1A8C7A",
 											lineHeight: "1",

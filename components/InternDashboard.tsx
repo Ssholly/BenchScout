@@ -30,7 +30,7 @@ export default function InternDashboard({ initial, jobs, onScan, scanning, unava
         ["Expected completion",dateLabel(profile.placementEnd),"Does not confirm completion"],
         ["Next action",profile.nextAction || "Add a reminder",profile.nextActionDate ? dateLabel(profile.nextActionDate) : "Manage in your profile"],
       ] : [
-        ["Available placements",String(placements.length),"Saved listings matching your stage"],
+        ["Available placements",String(placements.length),"Active, unapplied listings matching your stage"],
         ["Applications",failed ? "—" : String(pipeline.length),"Platform and tracked external applications"],
         ["Interviews",failed ? "—" : String(interviews.length),"Recorded interview stages"],
         ["Offers / invitations",failed ? "—" : String(offers.length+invites.length),"Recorded offers and recruitment invitations"],
@@ -40,6 +40,7 @@ export default function InternDashboard({ initial, jobs, onScan, scanning, unava
       <section className={styles.panel}>
         <div className={styles.heading}><div><h2>{training ? "Your current placement" : "Placement opportunities"}</h2><p>{training ? "Keep this record up to date as your training progresses." : "Check institution requirements and source details before applying."}</p></div></div>
         {training ? <><div className={styles.listing}><h3>{profile.placementInstitution || "Add your placement institution"}</h3><p>Start: {dateLabel(profile.placementStart)}</p><p>Expected completion: {dateLabel(profile.placementEnd)}</p><p>Training details are self-reported. Completing these dates does not change your professional stage.</p></div><Link className={styles.link} href="/settings#career-profile">Update placement details →</Link><br/><Link className={styles.link} href="/applied">View previous applications →</Link></> : <>
+          <p className={styles.notice}>Showing {Math.min(4, placements.length)} of {placements.length} saved placements. View all placement matches for the full list.</p>
           {placements.slice(0,4).map(job => { const details=listingDetails(job.listingDetails); return <article className={styles.listing} key={job.id}><h3>{job.role}</h3><p>{job.company} · {job.loc}</p><p>Allowance: {job.salary || "Not disclosed"}</p><p>{details.deadline ? `Deadline: ${dateLabel(details.deadline)}` : "Deadline not disclosed"}</p>{details.requiredDocuments && <p>Documents: {details.requiredDocuments}</p>}<p>{internshipApproval(job) ? "Internship approval evidence reviewed" : "Internship-site approval unconfirmed"} · {job.listingSource || job.source || "Source not recorded"}</p>{internshipApproval(job) && <a className={styles.link} href={details.approvalSource} target="_blank" rel="noopener noreferrer">Approval source ↗</a>}<br/><Link className={styles.link} href={`/matches?search=${encodeURIComponent(job.role)}`}>Review placement →</Link></article>; })}
           {!placements.length && <p className={styles.notice}>No saved placements yet. Review your location preferences and run a placement scan.</p>}
           <label className={styles.field}>Scan location<select value={location} disabled={scanning} onChange={event=>onLocationChange(event.target.value)}>{!locations.includes(location) && <option value={location}>{location}</option>}{locations.map(value=><option key={value} value={value}>{value}</option>)}</select><small>Used for your next scan. Minimum score: {minScore}%. Change your score in Settings.</small></label>
@@ -49,10 +50,10 @@ export default function InternDashboard({ initial, jobs, onScan, scanning, unava
         </>}
       </section>
       <div>
-        <section className={styles.panel}><div className={styles.heading}><h2>Next actions</h2></div>
+        <section className={styles.panel}><div className={styles.heading}><h2>Next actions</h2></div><p className={styles.notice}>Upcoming deadlines from your saved matches, interviews and personal reminders.</p>
           {profile.nextAction && <div className={styles.listing}><h3>{profile.nextAction}</h3><p>{profile.nextActionDate ? dateLabel(profile.nextActionDate) : "Date not set"} · Your reminder</p></div>}
           {interviews.filter(job => job.applications?.[0]?.interviewDate).slice(0,3).map(job => <div className={styles.listing} key={job.id}><h3>Interview · {job.company}</h3><p>{dateLabel(job.applications![0].interviewDate!)} · {job.applications![0].interviewTime} WAT</p><p>{job.applications![0].interviewLoc}</p></div>)}
-          {!training && deadlines.map(job=><div className={styles.listing} key={job.id}><h3>{job.company}</h3><p>Application deadline: {dateLabel(listingDetails(job.listingDetails).deadline)}</p></div>)}
+          {!training && deadlines.map(job=><div className={styles.listing} key={job.id}><h3>{job.company}</h3><p>Application deadline: {dateLabel(listingDetails(job.listingDetails).deadline)}</p><Link className={styles.link} href={`/matches?search=${encodeURIComponent(job.role)}`}>Review this saved placement →</Link></div>)}
           {!profile.nextAction && !interviews.length && !deadlines.length && <p className={styles.notice}>No upcoming actions recorded. Add a reminder or complete your placement profile.</p>}
           <Link className={styles.link} href="/settings#career-profile">Manage reminders and profile →</Link>
         </section>
