@@ -6,6 +6,8 @@ The server endpoint is `GET /api/cron/daily-digest`. Requests require `Authoriza
 
 The Vercel project `sholly/bench-scout` currently shows the Cron feature enabled but no configured cron jobs. Its plan is Hobby. The repository and its available history contain no `vercel.json` cron schedule or scheduled GitHub Actions workflow. A local CRON_SECRET is configured and meets the server's minimum length, and the Vercel settings show CRON_SECRET defined for Production and Preview; this is an authentication credential, not a recurring timer. No recurring trigger was added or existing hosting changed during this audit.
 
+After the testing deployment, an authenticated dry-run request to the preview alias was redirected to `https://vercel.com/login`, returning HTML rather than the scheduler response. Preview deployment protection intercepted the request before application authentication. This confirms the testing alias is not currently an accessible unattended scheduler target; the check did not start scans or send emails.
+
 Vercel Cron runs against production deployments, not the testing preview alias. Hobby daily limits cannot deliver each user's arbitrary selected minute reliably. Recover the existing external timer, use an external authenticated recurring trigger, or use a suitable hosting plan before advertising automatic execution as active.
 
 Validated behavior:
