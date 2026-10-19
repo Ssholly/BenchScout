@@ -1,4 +1,5 @@
 "use client";
+import { matchScoreSummary } from "@/lib/match-score-summary";
 import { sharedPageRequest } from "@/lib/shared-page-request";
 import Toast from "@/components/Toast";
 import { listingUrl } from "@/lib/listing-url";
@@ -341,19 +342,7 @@ function MatchesPage() {
 	const t3Jobs = regularJobs.filter((j) => j.tier === 3);
 
 	const calculateDynamicStats = () => {
-		const totalScore = unappliedJobs.reduce(
-			(acc, j) => acc + (j.score || 0),
-			0,
-		);
-		const avgScore =
-			unappliedJobs.length > 0
-				? Math.round(totalScore / unappliedJobs.length)
-				: 0;
-		let grade = "N/A";
-		if (avgScore >= 85) grade = "A";
-		else if (avgScore >= 75) grade = "A-";
-		else if (avgScore >= 65) grade = "B+";
-		else if (avgScore > 0) grade = "B";
+		const {average: avgScore, grade, explanation: scoreExplanation} = matchScoreSummary(unappliedJobs);
 		const todayStr = new Date().toDateString();
 		const newToday = unappliedJobs.filter((j) => {
 			const jobDate = j.createdAt
@@ -371,7 +360,7 @@ function MatchesPage() {
 				: "Diagnostics";
 		const primarySkill =
 			rawSkill.charAt(0).toUpperCase() + rawSkill.slice(1).toLowerCase();
-		return { avgScore, grade, newToday, primaryLoc, primarySkill };
+		return { avgScore, grade, scoreExplanation, newToday, primaryLoc, primarySkill };
 	};
 
 	const dynamicStats = calculateDynamicStats();
@@ -1600,7 +1589,7 @@ function MatchesPage() {
 												lineHeight: "1",
 											}}
 										>
-											{dynamicStats.avgScore}%
+											{dynamicStats.avgScore === null ? "—" : `${dynamicStats.avgScore}%`}
 										</div>
 										<div
 											style={{
@@ -1668,9 +1657,7 @@ function MatchesPage() {
 											lineHeight: "1.4",
 										}}
 									>
-										{dynamicStats.grade.includes("A")
-											? "Your saved roles have a high average match score."
-											: "Based on your saved match scores. Keep your skills up to date."}
+										{dynamicStats.scoreExplanation}
 									</div>
 								</div>
 								<button

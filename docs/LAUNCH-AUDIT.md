@@ -1,5 +1,11 @@
 # Launch audit — 19 October 2026
 
+## 19 October 2026 — Isolated live-service acceptance
+
+The isolated-schema HTTP journey passed on real PostgreSQL/private Blob with local SMTP capture, including competing reviews, forced audit rollback, moderation, document grants, closure, withdrawal, file replacement/deletion and suspension. Actual mobile browser checks covered candidate sign-in, CV/degree selection/submission, history, employer receipt and guarded PDF opening, interview scheduling/notification and withdrawal. A match-summary defect found during that journey was fixed: employer posts no longer dilute personalised scores or trigger a false high-score message. See [Staging acceptance](STAGING-ACCEPTANCE.md) for scope and the aggregate evidence report.
+
+This advances LA-12/LA-13 and the real-transaction portion of LA-14. It does not establish hosted database separation, external inbox delivery, backup/restore or complete interrupted-request acceptance. Browser file-picker certificate upload passed after the user enabled the extension permission; authenticated HTTP upload passed too. Referenced legacy-public inventory was zero; unauthenticated Vercel API access redirects to Vercel SSO. Scoped cleanup removed seven remaining synthetic private files, verified empty prefixes, and removed the temporary schema. Hosted code release is recorded separately in Deployment. Pilot status remains HOLD for the remaining gates.
+
 ## 19 October 2026 — LA-11 implementation update
 
 Candidate review now uses version-bound private evidence, candidate identity checks and an atomic decision/audit transaction. Credential mutation and older profile JSON writes cannot silently inherit an approval. Historical flags need a fresh review. See [Candidate credential review](CANDIDATE-CREDENTIAL-REVIEW.md) for scope and remaining named-admin/staging/retention limits. Migration applied; configured database compatibility, lint, TypeScript, 192 tests, production build and mobile form checks passed. Testing deployment for `e91a6b3` succeeded; exact evidence is in Deployment. Historical findings below are preserved. Full staging acceptance and pilot HOLD remain in force.

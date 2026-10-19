@@ -1,0 +1,44 @@
+# Isolated acceptance workflow
+
+Added 19 October 2026 for LA-12/LA-13/LA-14 evidence. This workflow exercises real application HTTP routes, PostgreSQL transactions and private Blob storage without placing synthetic accounts or vacancies in the configured normal schema. [Deployment](DEPLOYMENT.md) records exact execution and release evidence; passing this runner alone does not establish pilot readiness.
+
+## Running the workflow
+
+- `npm run acceptance` prints a preflight summary without modifying database/storage records.
+- `npm run acceptance -- --run` creates an isolated temporary PostgreSQL schema, applies the repository migrations, starts a loopback Next.js server with that schema and a local SMTP capture server, runs assertions and removes its synthetic resources.
+- `npm run acceptance -- --run --keep` requires an interactive terminal (allocate a TTY in automation), then pauses after API assertions and prepares a synthetic vacancy for browser checks. It prints the loopback URL and synthetic account identifiers. The synthetic-only password is defined in the runner. Send `stop` to its stdin when browser checks finish so cleanup runs. Never use these fixture credentials for real accounts.
+
+Requirements: configured DATABASE_URL with schema/migration permissions, BLOB_PRIVATE_READ_WRITE_TOKEN for the existing private store, installed dependencies, network access, and no competing development server using the same checkout's `.next/dev` lock. The workflow uses a random loopback HTTP port and SMTP port. It does not change Vercel environment variables or target the public testing URL.
+
+The runner derives `qa_acceptance_<random hex>` as a separate schema, asserts that the migrated schema has zero accounts, and gives only that derived connection to its child application process. The normal configured database schema is used only for isolation checks. This is logical PostgreSQL schema separation on the configured database infrastructure, not a separately provisioned database/service account. Do not treat it as a substitute for an independently configured hosted staging environment.
+
+Child-process email configuration explicitly clears Resend/Gmail credentials, uses loopback SMTP capture and fake `example.invalid` addresses, and uses new administrator/cron secrets. AI and job-source keys are cleared. No real candidate/employer approval is performed. Synthetic company/credential decisions contain explicit QA evidence notes rather than claiming genuine independent company checks.
+
+## Coverage
+
+The runner covers candidate registration, blocked unconfirmed sign-in, token confirmation and normal sign-in for licensed and intern seeking/in-training accounts; employer email confirmation separately from company approval; actual private CV/license/provisional upload and owner reads; anonymous/cross-account denial; saved professional stages; competing credential approvals in the real database; database-triggered audit failure with approval rollback; company/vacancy moderation; stage-aware discovery; required/selected attachment submission; duplicate preservation; scoped versus organisation-wide document grants; unrelated employer/candidate denials; interview persistence, notification and local SMTP delivery; vacancy closure without deleting applications; selective and final withdrawal; file replacement/deletion and removal of old private objects; suspension of existing sessions; logout revocation; and absence of synthetic account emails from the normal schema.
+
+The audit-failure trigger/function is created only inside the random QA schema and removed immediately after its assertion. No trigger is installed in the normal schema. File cleanup lists/deletes only `documents/<created synthetic user ID>/` prefixes, then verifies each prefix is empty. Schema removal accepts only the internally generated QA-name format. It does not run the public-document migration with `--apply` or delete normal user records/files.
+
+## Reports and cleanup
+
+A private temporary directory contains `server.log` and an aggregate `report.json`. A synthetic PDF is also written there for browser upload checks. The log can contain synthetic account details and debugging output and must not be copied unreviewed into docs. Confirmation tokens and session cookies are kept in process memory, rather than written to the public report. The report contains named check results/timing, scope limits and cleanup results. With --keep it also includes synthetic browser fixture identifiers. Publish only a scrubbed aggregate evidence report.
+
+Normal success/failure both attempt cleanup. Interrupted/killed processes can leave resources, so inspect reported cleanup results; never call a run complete merely because assertions passed. If the process is forcibly killed, use its exact QA schema/run identifier and synthetic user IDs to clean up under operator review. Never use broad store deletion or reset the normal schema. Private local logs remain for diagnosis; database/blob resources must be removed after browser checks.
+
+## Custom SMTP configuration
+
+`lib/mailer.ts` now accepts SMTP_HOST, SMTP_PORT (default 587), SMTP_SECURE, SMTP_USER and SMTP_PASSWORD. An explicit SMTP_HOST takes precedence over Resend/Gmail. Remote SMTP requires authentication and STARTTLS unless implicit TLS is enabled; loopback capture may be unauthenticated. EMAIL_FROM remains required. Invalid ports fail before delivery. Existing deployments with no SMTP_HOST retain their existing provider behaviour. Do not configure loopback capture on Vercel; only the isolated child process uses it.
+
+## Acceptance limits
+
+Local SMTP acceptance proves the application submitted the message to the capture transport, not Resend/Gmail delivery or real inbox rendering. Schema isolation does not prove hosted Preview/Production database separation or deployment protection. Browser checks and private Blob operations need their actual recorded results; mocks are not substitutes. Hosted signup/confirmation delivery, monitoring, backup/restore, operational retention and any remaining adverse/interrupted-request cases stay explicit launch gates. Current normal-schema public-document references are a separate read-only inventory; zero references do not establish that no orphan/public copies exist elsewhere.
+
+
+## 19 October 2026 execution evidence
+
+The scripted run passed 18 named HTTP/database/storage steps. An additional live direct-Blob check returned 403 without authentication. Six confirmation/interview messages were captured during the scripted phase; this count excludes later browser scheduling. Browser checks then covered the actual candidate/application/employer/interview/notification/withdrawal screens, and a live follow-up verified withdrawal persisted and revoked the employer grant while preserving owner access. No normal-schema synthetic accounts were created. Cleanup verified seven remaining synthetic private objects removed, all three synthetic user prefixes empty, and the temporary schema absent. The original non-interactive session had closed stdin, so exact-scope operator cleanup was used; --keep now rejects non-TTY execution before creating resources. See [scrubbed evidence](qa/2026-10-19-isolated-acceptance.json).
+
+Read-only normal-schema inventory: zero referenced public objects across two document-bearing accounts; no migration/deletion was performed on those accounts. An unauthenticated request to the testing alias /api/auth/session returned HTTP 302 to vercel.com/sso-api, establishing Vercel SSO protection for that request. Hosted Preview/Production database separation remains unverified. The initial browser file-picker attempt was blocked by the extension permission. After the user enabled Allow access to file URLs, the actual file chooser uploaded a synthetic certificate and the vault displayed Uploaded with View/Delete controls. HTTP upload and storage lifecycle checks also passed.
+
+QA-01 (fixed): direct employer listings depressed personalised score averages and N/A triggered the high-average branch. `lib/match-score-summary.ts` now excludes employer posts and invalid values, preserves real external zero scores, and returns an unavailable average for unscored feeds. Matches displays a dash plus a factual explanation. Tests demonstrate a 90/80 scored pair remains 85 when a direct zero-score post is present; the corrected employer-only browser screen was inspected. No scoring/provider/API contract changed.

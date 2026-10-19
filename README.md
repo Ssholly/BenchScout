@@ -84,3 +84,5 @@ The [BenchScout business and launch proposal](docs/proposals/BenchScout_Business
 - [Application document sharing](docs/APPLICATION-DOCUMENT-SHARING.md): per-application selection, file-version access, migration and retention boundaries.
 
 - [Candidate credential review](docs/CANDIDATE-CREDENTIAL-REVIEW.md): version-bound approval, private evidence access, audit records and stale-write protection.
+
+- [Isolated staging acceptance](docs/STAGING-ACCEPTANCE.md): real HTTP/database/private-file journey, captured mail, browser fixtures and scoped cleanup. Run `npm run acceptance` for preflight.

@@ -1,5 +1,12 @@
 # Change log
 
+## 19 October 2026 — Isolated live-service acceptance workflow
+
+- Added a reusable runner with a separate temporary database schema, real HTTP/private Blob checks, local SMTP capture and scoped cleanup. It covers candidate/employer journeys, document grants, withdrawal, moderation and actual transaction race/rollback assertions.
+- Added explicit custom SMTP configuration for capture and standard SMTP transport; no-provider-setting deployments preserve existing Resend/Gmail behaviour. Remote custom SMTP requires credentials/TLS; invalid ports fail before delivery.
+- Fixed a discovered score-summary defect: employer posts no longer dilute personalised averages; N/A no longer triggers a high-score statement. Added mixed/empty/zero-score regression coverage and verified the corrected browser result.
+- See [Staging acceptance](STAGING-ACCEPTANCE.md) for commands, configuration, safeguards and evidence limits. Lint, TypeScript, 199 tests and production build passed. Eighteen scripted live steps plus an anonymous private-Blob denial passed; actual mobile/browser file-picker checks passed. Seven remaining synthetic files and the temporary schema were removed. --keep now requires a TTY to preserve cleanup input. Exact scope and release evidence are recorded in Staging acceptance and Deployment.
+
 ## 19 October 2026 — Candidate credential review safeguards
 
 - Added credential/review version fields and revision-checked, transactional admin decisions with mandatory approval evidence and SafetyReview auditing. Legacy review flags require a fresh version-bound review to show current.
