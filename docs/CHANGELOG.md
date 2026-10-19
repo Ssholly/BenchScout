@@ -1,5 +1,13 @@
 # Change log
 
+## 19 October 2026 — Selected application documents
+
+- Added CV-required, default-unchecked optional document selection and pre-submit summary for direct applications. Server validates current file revisions and records selected private references per application.
+- Restricted employer file reads and applicant/talent links to still-current selected files; scoped applicant links cannot borrow grants from another application. Replacement/deletion never auto-shares a new file; withdrawal removes that application grant. Avatar grants are excluded.
+- Added selected-kind history to My applications and sharing/access explanations. Added the additive documentSelection migration; legacy applications retain only a rollout-time current private CV grant. No new provider/configuration.
+- Validation: lint, TypeScript, 177 tests, production build and diff checks passed; synthetic mobile selector checked at 320/390px. Migration applied; configured database compatibility passed. Hosted release evidence is tracked in Deployment.
+- See [Application document sharing](APPLICATION-DOCUMENT-SHARING.md) for contracts, migration, retention limits and validation. This is a reference record, not retained immutable file copies.
+
 ## 19 October 2026 — Application Toolkit mobile refinement
 
 - Increased modal clearance to 16px plus device safe-area insets; constrained height to the available backdrop space and unified bottom-corner clipping. Header/footer remain visible while details scroll.

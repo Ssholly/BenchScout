@@ -15,13 +15,13 @@ beforeEach(() => {
 test('pipeline asks only for candidate-owned tracked jobs and their direct applications', async () => {
   let query;
   prisma.notification.findMany = async () => { throw new Error('Pipeline must not query invitations'); };
-  prisma.job.findMany = async input => { query=input; return [{id:'direct',url:'/matches/direct/employer',isDirectPost:true,applied:false,applications:[{status:'pending'}],employer:{isVerified:true}}]; };
+  prisma.job.findMany = async input => { query=input; return [{id:'direct',url:'/matches/direct/employer',isDirectPost:true,applied:false,applications:[{status:'pending',documentSelection:{resume:'https://store.private.blob.vercel-storage.com/cv.pdf'}}],employer:{isVerified:true}}]; };
   const response = await GET(request('/api/jobs?view=pipeline'));
   assert.equal(response.status, 200);
   assert.deepEqual(query.where.OR, [{userId:'owner',applied:true},{isDirectPost:true,applications:{some:{userId:'owner'}}}]);
-  assert.deepEqual(query.include.applications, {where:{userId:'owner'},select:{status:true,interviewDate:true,interviewTime:true,interviewLoc:true}});
+  assert.deepEqual(query.include.applications, {where:{userId:'owner'},select:{documentSelection:true,status:true,interviewDate:true,interviewTime:true,interviewLoc:true}});
   assert.equal(userReads, 1); // Session validation only, no duplicate lookup.
-  assert.equal((await response.json())[0].applied, true);
+  const body=await response.json(); assert.equal(body[0].applied,true); assert.deepEqual(body[0].applications[0].selectedDocumentKinds,['resume']); assert.equal(body[0].applications[0].documentSelection,undefined); assert.ok(!JSON.stringify(body).includes('.blob.vercel-storage.com'));
 });
 test('pipeline database failures are visible as a retryable response rather than an empty board', async () => {
   prisma.job.findMany = async () => { throw {code:'P1001'}; };

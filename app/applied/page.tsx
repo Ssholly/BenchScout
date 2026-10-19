@@ -8,6 +8,7 @@ import PostingDialog from "@/components/PostingDialog";
 
 type Column = { id: string; title: string; color: string; bgColor: string };
 type JobCard = {
+    selectedDocuments?: string[];
 	isDirectPost: boolean;
 	id: string;
 	columnId: string;
@@ -83,7 +84,7 @@ function AppliedPipeline() {
             const data = await response.json();
             if (!response.ok || !Array.isArray(data)) throw new Error(data.error || "Could not load your applications. Please retry.");
             setCards(data.filter((j: ClientJob) => j.applied).map((j: ClientJob) => ({
-                id: j.id,
+                id: j.id, selectedDocuments: j.applications?.[0]?.selectedDocumentKinds,
                 columnId: j.isDirectPost ? ({ pending: "applied", shortlisted: "interviewing", hired: "offer", rejected: "rejected" }[j.applications?.[0]?.status || "pending"] || "applied") : (["saved", "applied", "interviewing", "offer", "rejected"].includes(j.status || "") ? j.status! : "applied"),
                 isDirectPost: j.isDirectPost, role: j.role, company: j.company, loc: j.loc,
                 date: "Recently", salary: j.salary || "Not disclosed", tier: j.tier || 2, url: j.url, desc: j.desc || "",
@@ -537,6 +538,8 @@ function AppliedPipeline() {
 											>
 												{card.company}
 											</p>
+                                        {card.isDirectPost && <p style={{fontSize:12,color:"#475569",lineHeight:1.5,margin:"0 0 12px"}}>Documents selected at submission: {card.selectedDocuments?.map(kind=>({resume:"CV",license:"Practising license",provisional:"Provisional license",degree:"Degree certificate",result:"Statement of result",placement:"Placement letter",certificate:"Additional certificate"} as Record<string,string>)[kind] || kind).join(", ") || "No document record"}. Replaced or deleted files are no longer accessible.</p>}
+
 
 											<div
 												style={{

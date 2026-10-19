@@ -6,8 +6,8 @@ export type ClientJob = Omit<Job, "createdAt" | "updatedAt" | "lastSeenAt"> & {
   applications?: ClientApplication[]; _count?: { applications: number };
 };
 export type ClientEmployer = Pick<Employer, "id" | "companyName" | "email" | "isVerified">;
-export type Candidate = Pick<User, "id" | "name" | "email" | "resumeUrl" | "licenseUrl" | "degreeUrl"> & { careerPhase?: string; placementStage?: "seeking" | "training"; provisionalUrl?: string | null; statementOfResultUrl?: string | null; isLicenseVerified?: boolean; location?: string; professionalSummary?: ProfessionalSummary | null };
-export type ClientApplication = Omit<Application, "createdAt"> & { createdAt: string; user: Candidate };
+export type Candidate = Pick<User, "id" | "name" | "email" | "resumeUrl" | "licenseUrl" | "degreeUrl"> & { careerPhase?: string; placementStage?: "seeking" | "training"; provisionalUrl?: string | null; statementOfResultUrl?: string | null; placementLetterUrl?: string | null; certificateUrl?: string | null; isLicenseVerified?: boolean; location?: string; professionalSummary?: ProfessionalSummary | null };
+export type ClientApplication = Omit<Application, "createdAt" | "documentSelection"> & { createdAt: string; selectedDocumentKinds?: string[]; user: Candidate };
 export type ClientHistory = Omit<RunHistory, "createdAt"> & { createdAt: string };
 export type ClientNotification = Omit<Notification, "createdAt"> & { createdAt: string };
 export type NotificationView = { id: string; title: string; body: string; time: string; isRead: boolean };

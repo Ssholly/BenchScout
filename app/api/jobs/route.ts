@@ -1,3 +1,4 @@
+import { selectedDocumentKinds } from "@/lib/application-documents";
 import { legacyPortalUrls } from "@/lib/job-matching";
 import { opportunityForPhase, opportunityForPreferences, internshipApproval, lastScan, candidateProfile } from "@/lib/candidate-profile";
 import { withApi } from "@/lib/api";
@@ -54,7 +55,7 @@ export const GET = withApi("either", async (request: Request, session: import("@
 				NOT: { status: "cleared" },
 			},
 			include: {
-				applications: { where: { userId }, select: { status: true, interviewDate: true, interviewTime: true, interviewLoc: true } },
+				applications: { where: { userId }, select: { documentSelection: true, status: true, interviewDate: true, interviewTime: true, interviewLoc: true } },
 				employer: { select: { isVerified: true } }, // Check their inbox records
 			},
 			orderBy: { score: "desc" },
@@ -75,6 +76,7 @@ export const GET = withApi("either", async (request: Request, session: import("@
 
 			return {
 				...job,
+                applications: job.applications.map(({documentSelection,...application})=>({...application,selectedDocumentKinds:selectedDocumentKinds(documentSelection)})),
                 isMlscnApproved: internshipApproval(job),
 				applied: job.applied || job.applications.length > 0,
 				isScoutedInvite,

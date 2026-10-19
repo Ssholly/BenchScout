@@ -220,6 +220,8 @@ model JobReport {
 
 // 🚀 NEW: The ATS Junction Table (The Employer's Inbox)
 model Application {
+  // Server-captured private file references. Never expose in JSON responses.
+  documentSelection Json?
   id        String   @id @default(cuid())
   jobId     String
   userId    String

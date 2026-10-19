@@ -45,8 +45,8 @@ export function assertSameOrigin(request: Request) {
   const origin = request.headers.get("origin");
   if (request.headers.get("sec-fetch-site") === "cross-site" || (origin && origin !== applicationOrigin(request))) throw new ApiError(403, "Cross-site request rejected.");
 }
-export function documentUrl(userId: string, kind: string) {
-  return `/api/documents?userId=${encodeURIComponent(userId)}&kind=${encodeURIComponent(kind)}`;
+export function documentUrl(userId: string, kind: string, applicationId?: string) {
+  return `/api/documents?userId=${encodeURIComponent(userId)}&kind=${encodeURIComponent(kind)}${applicationId ? `&applicationId=${encodeURIComponent(applicationId)}` : ""}`;
 }
 const documentFields: Record<string, string> = { resumeUrl: "resume", licenseUrl: "license", provisionalUrl: "provisional", degreeUrl: "degree", statementOfResultUrl: "result", placementLetterUrl: "placement", certificateUrl: "certificate", avatarUrl: "avatar" };
 // Defense in depth: credentials and storage locations never leave a JSON API response.
@@ -56,9 +56,9 @@ export function sanitizeResponse(value: unknown): unknown {
   const record = value as Record<string, unknown>;
   const clean: Record<string, unknown> = {};
   for (const [key, entry] of Object.entries(record)) {
-    if (["password", "passwordHash", "tokenHash", "ownerKey", "cvParsedText"].includes(key)) continue;
+    if (["password", "passwordHash", "tokenHash", "ownerKey", "cvParsedText", "documentSelection"].includes(key)) continue;
     if (key in documentFields && entry) {
-      clean[key] = typeof record.id === "string" ? documentUrl(record.id, documentFields[key]) : null;
+      clean[key] = typeof record.id === "string" ? documentUrl(record.id, documentFields[key], typeof record.documentApplicationId === "string" ? record.documentApplicationId : undefined) : null;
     } else if (key === "isLicenseVerified") {
       clean[key] = currentCredentialReview(record);
     } else clean[key] = sanitizeResponse(entry);

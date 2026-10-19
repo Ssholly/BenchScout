@@ -9,6 +9,7 @@ async function main() {
     Employer: ['verificationReference','verifiedAt','verificationStatus','verificationDetails','verificationRevision','verificationFeedback'],
     SafetyReview: ['id','kind','subjectId','decision','reviewer','evidence','createdAt'],
     JobReport: ['id','jobId','reporterId','reason','details','status','resolution','createdAt','resolvedAt'],
+    Application: ['documentSelection'],
     Job: ['source','lastSeenAt'], SalaryReport: ['ownerKey'],
     AuthSession: ['tokenHash','subjectId','role','expiresAt','createdAt'], RateLimit: ['key','count','expiresAt'],
   };

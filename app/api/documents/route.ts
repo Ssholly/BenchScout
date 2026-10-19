@@ -1,3 +1,4 @@
+import { sharedDocumentKinds } from "@/lib/application-documents";
 import { get } from "@vercel/blob";
 import { withApi } from "@/lib/api";
 import { prisma } from "@/lib/prisma";
@@ -8,12 +9,13 @@ export const GET = withApi("either", async (request, session) => {
   const userId = textField(query.get("userId"), "user ID");
   const kind = documentKind(query.get("kind"));
   if (session!.role === "candidate" && session!.id !== userId) throw new ApiError(403, "Document access denied.");
+  const user = await prisma.user.findUnique({ where: { id: userId } });
   if (session!.role === "employer") {
     if (!session!.verified) throw new ApiError(403, "Employer verification required.");
-    const application = await prisma.application.findFirst({ where: { userId, job: { employerId: session!.id } }, select: { id: true } });
-    if (!application) throw new ApiError(403, "Documents are shared only with employers the candidate has applied to.");
+    const applicationId = query.get("applicationId");
+    const applications = await prisma.application.findMany({ where: { userId, ...(applicationId ? { id: applicationId } : {}), job: { employerId: session!.id } }, select: { documentSelection: true } });
+    if (!user || kind === "avatar" || !applications.some(application => sharedDocumentKinds(application.documentSelection, user).includes(kind))) throw new ApiError(403, "This document is not shared with your organisation for this application, or has been replaced or removed.");
   }
-  const user = await prisma.user.findUnique({ where: { id: userId } });
   const url = user?.[documentFields[kind]];
   if (!url) throw new ApiError(404, "Document not found.");
   // Legacy public files must be migrated before being served through this endpoint.

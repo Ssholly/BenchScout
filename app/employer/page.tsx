@@ -1331,8 +1331,8 @@ export default function EmployerGateway() {
 												const rows = drawer.applicants.map((app) => [
     app.user.name || "Candidate", app.user.email, app.status || "pending",
     app.user.resumeUrl || "None",
-    app.user.isLicenseVerified ? "Reviewed" : (app.user.careerPhase === "internship" ? app.user.provisionalUrl : app.user.licenseUrl) ? "Not reviewed" : "Missing",
-    app.user.degreeUrl ? "Uploaded, not reviewed" : "Missing",
+    app.user.isLicenseVerified ? "Reviewed" : (app.user.careerPhase === "internship" ? app.user.provisionalUrl : app.user.licenseUrl) ? "Not reviewed" : "Not shared / unavailable",
+    app.user.degreeUrl ? "Uploaded, not reviewed" : "Not shared / unavailable",
   ].map(csvCell));
   const csvContent =
 													"data:text/csv;charset=utf-8," +
@@ -1525,7 +1525,7 @@ export default function EmployerGateway() {
 															marginTop: "1px",
 														}}
 													>
-														{app.user.email}<div style={{fontSize:11,color:"#1A8C7A",marginTop:4}}>{careerLabel(app.user.careerPhase,{placementStage:app.user.placementStage})} · {app.user.isLicenseVerified ? "Credentials reviewed" : (app.user.careerPhase === "internship" ? app.user.provisionalUrl : app.user.licenseUrl) ? "Credentials self-reported" : "Credentials not submitted"}</div>
+														{app.user.email}<div style={{fontSize:11,color:"#1A8C7A",marginTop:4}}>{careerLabel(app.user.careerPhase,{placementStage:app.user.placementStage})} · {app.user.isLicenseVerified ? "Credentials reviewed" : (app.user.careerPhase === "internship" ? app.user.provisionalUrl : app.user.licenseUrl) ? "Credentials self-reported" : "Credentials not shared"}</div>
 													</div>
 												</div>
 											</div>
@@ -1552,10 +1552,14 @@ export default function EmployerGateway() {
 														margin: "0 0 4px 0",
 													}}
 												>
-													Vault Documents
+													Shared application documents
 												</h4>
-												{app.user.careerPhase === "internship" && app.user.provisionalUrl && <a href={app.user.provisionalUrl} target="_blank" rel="noopener noreferrer" style={{color:"#1A8C7A",fontSize:13}}>Provisional license ↗</a>}
-{app.user.careerPhase === "internship" && app.user.statementOfResultUrl && <a href={app.user.statementOfResultUrl} target="_blank" rel="noopener noreferrer" style={{color:"#1A8C7A",fontSize:13}}>Statement of result ↗</a>}
+												<p style={{fontSize:12,color:"#64748b",lineHeight:1.5}}>Only documents selected for this application appear here. Replaced or deleted files are unavailable.</p>
+{app.user.degreeUrl && <a href={app.user.degreeUrl} target="_blank" rel="noopener noreferrer">Degree certificate ↗</a>}
+{app.user.placementLetterUrl && <a href={app.user.placementLetterUrl} target="_blank" rel="noopener noreferrer">Placement letter ↗</a>}
+{app.user.certificateUrl && <a href={app.user.certificateUrl} target="_blank" rel="noopener noreferrer">Additional certificate ↗</a>}
+{app.user.provisionalUrl && <a href={app.user.provisionalUrl} target="_blank" rel="noopener noreferrer" style={{color:"#1A8C7A",fontSize:13}}>Provisional license ↗</a>}
+{app.user.statementOfResultUrl && <a href={app.user.statementOfResultUrl} target="_blank" rel="noopener noreferrer" style={{color:"#1A8C7A",fontSize:13}}>Statement of result ↗</a>}
 {app.user.resumeUrl && (
 													<a
 														href={app.user.resumeUrl}
@@ -1606,7 +1610,7 @@ export default function EmployerGateway() {
 														</span>
 													</a>
 												)}
-												{app.user.careerPhase !== "internship" && app.user.licenseUrl && (
+												{app.user.licenseUrl && (
 												<a
 														href={app.user.licenseUrl}
 														target="_blank"
@@ -1750,7 +1754,7 @@ export default function EmployerGateway() {
 																fontWeight: 700,
 															}}
 														>
-															Missing
+															Not shared / unavailable
 														</span>
 													</div>
 												)}

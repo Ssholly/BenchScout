@@ -10,6 +10,7 @@ import type { ClientJob } from "@/lib/types";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useCallback, useEffect, useState, useRef } from "react";
 import ListingEvidence from "@/components/ListingEvidence";
+import ApplicationDocumentSelection from "@/components/ApplicationDocumentSelection";
 import ApplicationSharingNotice from "@/components/ApplicationSharingNotice";
 import type { ProfessionalSummary } from "@/lib/professional-summary";
 import { createPortal } from "react-dom";
@@ -75,6 +76,8 @@ function MatchesPage() {
 	const [vaultDocs, setVaultDocs] = useState<VaultDoc[]>([]);
     const [summaryPreview, setSummaryPreview] = useState<ProfessionalSummary | null | undefined>(undefined);
     const [summaryError, setSummaryError] = useState(false);
+    const [applicationDocuments, setApplicationDocuments] = useState<{kind: string; name: string; available: boolean; revision: string | null}[]>([]);
+    const [selectedDocumentKinds, setSelectedDocumentKinds] = useState<string[]>(["resume"]);
 
 	const [coverLetter, setCoverLetter] = useState("");
 	const [isGeneratingLetter, setIsGeneratingLetter] = useState(false);
@@ -166,6 +169,7 @@ function MatchesPage() {
 
 		if (!activeEmail) {
             setSummaryPreview(undefined);
+            setApplicationDocuments([]);
 			loadedEmail.current = null;
 			setIsRefreshing(false);
 			setIsUserLoggedIn(false);
@@ -180,7 +184,7 @@ function MatchesPage() {
 		const firstLoad = loadedEmail.current !== activeEmail;
 		setIsLoading(firstLoad);
 		setIsRefreshing(!firstLoad);
-		if (firstLoad) { setJobs([]); setAppliedJobs([]); setVaultDocs(initialDocs); setSummaryPreview(undefined); }
+		if (firstLoad) { setJobs([]); setAppliedJobs([]); setVaultDocs(initialDocs); setSummaryPreview(undefined); setApplicationDocuments([]); }
         setSummaryError(false);
 
 		const searchParams = new URLSearchParams(routeQuery);
@@ -229,6 +233,7 @@ function MatchesPage() {
 				if (!isCurrent()) return;
 				if (data.success && data.user) {
                     setSummaryPreview(data.professionalSummary ?? null);
+                    setApplicationDocuments(data.applicationDocuments || []);
 					const updatedDocs = [...initialDocs];
 					if (data.user.resumeUrl)
 						updatedDocs[0] = {
@@ -382,6 +387,7 @@ function MatchesPage() {
 			setShowLinkModal(true);
 			return;
 		}
+		setSelectedDocumentKinds(["resume"]);
 		setToolkitJob(job);
 		setCoverLetter("");
 		setIsGeneratingLetter(false);
@@ -424,12 +430,13 @@ function MatchesPage() {
 				const response = await fetch("/api/apply", {
 					method: "POST",
 					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify({ jobId: toolkitJob.id, email: activeEmail }),
+					body: JSON.stringify({ jobId: toolkitJob.id, email: activeEmail, selectedDocuments: applicationDocuments.filter(doc => selectedDocumentKinds.includes(doc.kind)).map(({kind, revision}) => ({kind, revision})) }),
 				});
                 if (identity !== localStorage.getItem("benchscout_identity")) return;
                 if (!response.ok) {
                     const failure = await response.json().catch(() => ({}));
                     showToast(failure.error || "Your application could not be submitted. Please try again.", "error");
+                    if (response.status === 409) loadData();
                     return;
                 }
                 setAppliedJobs((prev) => [...prev, toolkitJob.id]);
@@ -1804,6 +1811,8 @@ function MatchesPage() {
 
 									<div className="application-dialog-body" tabIndex={0} aria-label="Application details">
                                         {toolkitJob.isDirectPost && <><ApplicationSharingNotice company={toolkitJob.company} summary={summaryPreview} />{summaryError && <div role="alert" style={{padding:"0 24px 16px"}}>Couldn’t load your profile preview. <button onClick={loadData}>Retry profile preview</button></div>}</>}
+                                        {toolkitJob.isDirectPost && <ApplicationDocumentSelection documents={applicationDocuments} selected={selectedDocumentKinds} busy={isSubmitting} onToggle={(kind,checked)=>setSelectedDocumentKinds(current=>checked ? [...current,kind] : current.filter(value=>value !== kind))} onRefresh={loadData} />}
+
 									{/* 🚀 RESTORED: DISPLAY JOB INSTRUCTIONS IF THEY EXIST */}
 									{toolkitJob.desc && (
 										<div
@@ -1859,7 +1868,7 @@ function MatchesPage() {
 										<div
 											style={{
 												flex: 1,
-												display: "flex",
+												display: toolkitJob.isDirectPost ? "none" : "flex",
 												flexDirection: "column",
 												gap: "1rem",
 											}}
@@ -2135,10 +2144,10 @@ function MatchesPage() {
 												fontWeight: 600,
 											}}
 										>
-											{toolkitJob.isDirectPost ? "Submitting shares your vault documents with this employer." : "Downloads will save directly to your device."}
+											{toolkitJob.isDirectPost ? "Submitting shares only the documents selected above." : "Downloads will save directly to your device."}
 										</span>
 										<button
-											disabled={isSubmitting || (toolkitJob.isDirectPost && summaryPreview === undefined)}
+											disabled={isSubmitting || (toolkitJob.isDirectPost && (summaryPreview === undefined || !applicationDocuments.some(doc=>doc.kind === "resume" && doc.available)))}
 											onClick={executeFinalApply}
 											style={{
 												background: "#0B2444",

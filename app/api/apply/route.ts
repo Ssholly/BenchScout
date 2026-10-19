@@ -2,10 +2,11 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { withApi } from "@/lib/api";
 import { ApiError, textField } from "@/lib/security";
+import { captureDocumentSelection } from "@/lib/application-documents";
 import { isPrivateBlob } from "@/lib/documents";
 import { opportunityForPhase, listingDetails } from "@/lib/candidate-profile";
 export const POST = withApi("candidate", async (request, session) => {
-  const { jobId } = await request.json();
+  const { jobId, selectedDocuments } = await request.json();
   const job = await prisma.job.findUniqueOrThrow({ where: { id: jobId } });
   if (!opportunityForPhase(job, session!.careerPhase || "licensed")) throw new ApiError(400, "This opportunity does not match your professional stage.");
   const deadline = listingDetails(job.listingDetails).deadline;
@@ -15,7 +16,8 @@ export const POST = withApi("candidate", async (request, session) => {
     if (job.status !== "active" || !employer?.isVerified) throw new ApiError(403, "This vacancy is unavailable pending safety review.");
     const user = await prisma.user.findUniqueOrThrow({ where: { id: session!.id } });
     if (!user.resumeUrl || !isPrivateBlob(user.resumeUrl)) throw new ApiError(400, "Upload your CV to private storage in Settings before applying.");
-    await prisma.application.upsert({ where: { jobId_userId: { jobId, userId: user.id } }, create: { jobId, userId: user.id }, update: {} });
+    const documentSelection = captureDocumentSelection(selectedDocuments, user);
+    await prisma.application.upsert({ where: { jobId_userId: { jobId, userId: user.id } }, create: { jobId, userId: user.id, documentSelection }, update: {} });
   } else await prisma.job.update({ where: { id: jobId }, data: { applied: true, status: "applied" } });
   return NextResponse.json({ success: true });
 }, { job: "available", limit: 20 });

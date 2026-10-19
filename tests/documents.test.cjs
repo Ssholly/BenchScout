@@ -18,7 +18,7 @@ beforeEach(() => {
   prisma.authSession.findUnique = async () => ({role: subject === 'candidate' ? 'candidate' : 'employer',subjectId: subject,expiresAt:new Date(Date.now()+60000)});
   prisma.user.findUnique = async () => ({id:'candidate',email:'candidate@example.com',name:'Candidate',isVerified:true,resumeUrl:storedUrl});
   prisma.employer.findUnique = async () => ({id:'employer',email:'employer@example.com',companyName:'Lab',isVerified:verified});
-  prisma.application.findFirst = async args => {assert.equal(args.where.job.employerId,'employer');return shared ? {id:'application'} : null;};
+  prisma.application.findMany = async args => {assert.equal(args.where.job.employerId,'employer');return shared ? [{id:'application',documentSelection:{resume:storedUrl}}] : [];};
 });
 after(() => { if(oldToken === undefined) delete process.env.BLOB_PRIVATE_READ_WRITE_TOKEN;else process.env.BLOB_PRIVATE_READ_WRITE_TOKEN=oldToken; });
 function request(user='candidate',download=false) {return new Request(`http://localhost:3000/api/documents?userId=${user}&kind=resume${download?'&download=1':''}`,{headers:{cookie}});}
@@ -58,4 +58,33 @@ test('new result, placement and certificate documents retain owner and employer-
   subject='employer';shared=false;assert.equal((await GET(req('candidate'))).status,403);
  }
  assert.equal(blobCalls,3);
+});
+
+test('unselected, replaced, missing and legacy selection records deny employer downloads before storage', async () => {
+  subject='employer';
+  for(const selection of [null,{}, {license:storedUrl}, {resume:'https://store.private.blob.vercel-storage.com/old.pdf'}]) {
+    prisma.application.findMany=async()=>[{documentSelection:selection}];
+    assert.equal((await GET(request())).status,403);
+  }
+  assert.equal(blobCalls,0);
+});
+
+test('application-specific reads cannot borrow another application grant; generic reads use the remaining grants', async () => {
+  subject='employer';
+  prisma.application.findMany=async ({where}) => {
+    assert.equal(where.userId,'candidate'); assert.equal(where.job.employerId,'employer');
+    return where.id === 'unselected' ? [{documentSelection:{}}] : [{documentSelection:{resume:storedUrl}}];
+  };
+  assert.equal((await GET(new Request('http://localhost:3000/api/documents?userId=candidate&kind=resume&applicationId=unselected',{headers:{cookie}}))).status,403);
+  assert.equal(blobCalls,0);
+  assert.equal((await GET(request())).status,200);
+  assert.equal(blobCalls,1);
+});
+
+test('employers never receive avatar access from an application grant', async () => {
+  subject='employer';
+  prisma.user.findUnique=async()=>({id:'candidate',avatarUrl:storedUrl});
+  prisma.application.findMany=async()=>[{documentSelection:{avatar:storedUrl}}];
+  assert.equal((await GET(new Request('http://localhost:3000/api/documents?userId=candidate&kind=avatar',{headers:{cookie}}))).status,403);
+  assert.equal(blobCalls,0);
 });

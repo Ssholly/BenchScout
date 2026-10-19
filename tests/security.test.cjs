@@ -103,7 +103,7 @@ test('candidate can read only their own document', async () => {
   assert.equal((await require('../app/api/documents/route.ts').GET(request('/api/documents?userId=victim&kind=resume', undefined, true, 'GET'))).status, 403);
 });
 test('employer document access requires an application to that employer', async () => {
-  sessionRecord.role = 'employer'; prisma.application.findFirst = async () => null;
+  sessionRecord.role = 'employer'; prisma.application.findMany = async () => [];
   assert.equal((await require('../app/api/documents/route.ts').GET(request('/api/documents?userId=candidate&kind=resume', undefined, true, 'GET'))).status, 403);
 });
 test('private credential fields and password hashes never leave JSON responses', async () => {
@@ -146,8 +146,8 @@ test('duplicate applications use an idempotent per-candidate upsert', async () =
   prisma.user.findUniqueOrThrow = async () => ({ id: 'owner', resumeUrl: 'https://store.private.blob.vercel-storage.com/cv.pdf' });
   const records = new Set(); prisma.application.upsert = async input => { records.add(`${input.where.jobId_userId.jobId}:${input.where.jobId_userId.userId}`); return {}; };
   const apply = require('../app/api/apply/route.ts').POST;
-  assert.equal((await apply(request('/api/apply', { jobId: 'job' }))).status, 200);
-  assert.equal((await apply(request('/api/apply', { jobId: 'job' }))).status, 200); assert.equal(records.size, 1);
+  assert.equal((await apply(request('/api/apply', { jobId: 'job', selectedDocuments: [{kind:'resume',revision:require('../lib/application-documents.ts').documentRevision('https://store.private.blob.vercel-storage.com/cv.pdf')}] }))).status, 200);
+  assert.equal((await apply(request('/api/apply', { jobId: 'job', selectedDocuments: [{kind:'resume',revision:require('../lib/application-documents.ts').documentRevision('https://store.private.blob.vercel-storage.com/cv.pdf')}] }))).status, 200); assert.equal(records.size, 1);
 });
 test('salary ownership is opaque and edits must match both owner and ID', async () => {
   process.env.SALARY_OWNER_SECRET = 'salary'.repeat(8);

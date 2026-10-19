@@ -1,5 +1,9 @@
 # Launch audit — 19 October 2026
 
+## 19 October 2026 — LA-10 implementation update
+
+Selected application documents and a submission reference record are now implemented. See [Application document sharing](APPLICATION-DOCUMENT-SHARING.md) for exact behaviour, legacy CV-only migration, deletion/replacement rules and limits. The record does not retain immutable file copies; existing attachments cannot yet be changed in place. Full staging/private-store acceptance remains open and pilot status stays HOLD. Deployment evidence is tracked separately in Deployment. The findings below remain historical evidence.
+
 ## Follow-up: professional summary priority
 
 LA-09 is implemented and deployed to testing through explicit, default-off candidate consent, an allowlisted live professional summary, Settings draft preview, saved direct-application preview and employer applicant/previous-applicant views. Seven new tests cover data minimization, consent and access checks; the full suite passes 172 tests. Vercel Preview for `f0d1a67` is Ready, and the hosted Settings controls were checked without saving changes. See [Professional summaries](PROFESSIONAL-SUMMARIES.md) for all contracts and limitations and [Deployment](DEPLOYMENT.md) for exact release evidence. LA-10 remains open: this does not implement selected-document sharing or submission snapshots. The original first-pass findings below remain dated evidence.

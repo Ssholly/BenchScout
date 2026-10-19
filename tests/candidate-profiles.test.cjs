@@ -90,7 +90,7 @@ test('saved locations and role preferences filter discovery without inventing un
 test('employers receive placement stage without a candidate’s private reminder or training notes',async()=>{
  const talent=require('../app/api/employer/talent/route.ts').GET;
  role='employer';
- prisma.user.findMany=async()=>[{id:'intern',name:'Intern',careerPhase:'internship',candidateProfile:{placementStage:'training',nextAction:'Private personal reminder'}}];
+ prisma.user.findMany=async()=>[{id:'intern',name:'Intern',applications:[],careerPhase:'internship',candidateProfile:{placementStage:'training',nextAction:'Private personal reminder'}}];
  const response=await talent(request('/api/employer/talent'));
  assert.equal(response.status,200);const data=await response.json();assert.equal(data.users[0].placementStage,'training');assert.equal(data.users[0].candidateProfile,undefined);
  assert.ok(!JSON.stringify(data).includes('Private personal reminder'));

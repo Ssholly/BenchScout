@@ -21,7 +21,7 @@ beforeEach(() => {
   prisma.user.findFirst = async ({ where }) => { assert.equal(where.email, user.email); return user; };
   prisma.job.findUnique = async () => job;
   prisma.application.findMany = async ({ where }) => { assert.deepEqual(where, { jobId: 'job' }); return [{ id: 'application', user }]; };
-  prisma.user.findMany = async ({ where }) => { assert.equal(where.applications.some.job.employerId, 'employer'); return [user]; };
+  prisma.user.findMany = async ({ where }) => { assert.equal(where.applications.some.job.employerId, 'employer'); return [{...user,applications:[]}]; };
   prisma.rateLimit.upsert = async () => ({ count: 1 });
   prisma.user.update = async ({ where, data }) => { assert.equal(where.id, 'candidate'); Object.assign(user, data); writes++; return user; };
 });

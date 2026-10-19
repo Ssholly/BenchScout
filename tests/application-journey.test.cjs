@@ -6,6 +6,7 @@ const applicants = require('../app/api/jobs/applicants/route.ts');
 const documents = require('../app/api/documents/route.ts');
 const vacancies = require('../app/api/jobs/direct/route.ts');
 const { currentCredentialReview } = require('../lib/credential-review.ts');
+const { documentRevision } = require('../lib/application-documents.ts');
 const { sanitizeResponse } = require('../lib/security.ts');
 let role, user, job, applications, notifications, writes;
 const req = (path, method, body) => new Request(`http://localhost:3000/api/${path}`, {
@@ -33,6 +34,7 @@ beforeEach(() => {
     applications = applications.filter(row => row.jobId !== where.jobId || row.userId !== where.userId);
     return { count: before - applications.length };
   };
+  prisma.application.findMany = async ({ where }) => applications.filter(row=>row.userId === where.userId && (!where.id || row.id === where.id) && job.employerId === where.job.employerId);
   prisma.application.findFirst = async ({ where }) => applications.find(row => row.userId === where.userId && job.employerId === where.job.employerId) || null;
   prisma.application.findUnique = async ({ where }) => {
     const row = applications.find(row => row.id === where.id);
@@ -55,9 +57,9 @@ test('direct application requires a private CV, and duplicate submission preserv
   }
   assert.equal(writes, 0);
   user.resumeUrl = 'https://store.private.blob.vercel-storage.com/cv.pdf';
-  assert.equal((await apply.POST(req('apply', 'POST', { jobId: job.id }))).status, 200);
+  assert.equal((await apply.POST(req('apply', 'POST', { jobId: job.id, selectedDocuments: [{kind:'resume',revision:documentRevision(user.resumeUrl)}] }))).status, 200);
   applications[0].status = 'shortlisted';
-  assert.equal((await apply.POST(req('apply', 'POST', { jobId: job.id }))).status, 200);
+  assert.equal((await apply.POST(req('apply', 'POST', { jobId: job.id, selectedDocuments: [{kind:'resume',revision:documentRevision(user.resumeUrl)}] }))).status, 200);
   assert.equal(applications.length, 1); assert.equal(applications[0].status, 'shortlisted');
 });
 
@@ -65,7 +67,7 @@ test('withdrawal is scoped to the candidate and remains possible after the vacan
   for (const status of ['active', 'closed', 'pending-review', 'cleared']) {
     job.status = status;
     applications = [{ id: 'mine', jobId: job.id, userId: 'candidate' }, { id: 'theirs', jobId: job.id, userId: 'other' }];
-    assert.equal((await apply.DELETE(req('apply', 'DELETE', { jobId: job.id }))).status, 200);
+    assert.equal((await apply.DELETE(req('apply', 'DELETE', { jobId: job.id, selectedDocuments: [{kind:'resume',revision:documentRevision(user.resumeUrl)}] }))).status, 200);
     assert.deepEqual(applications.map(row => row.id), ['theirs']);
   }
   assert.equal((await apply.DELETE(req('apply', 'DELETE', { jobId: job.id }))).status, 404);
@@ -80,7 +82,7 @@ test('withdrawal cannot modify another candidate external listing or accept a ma
 
 test('withdrawing the final employer application revokes document access before storage is called', async () => {
   applications = [{ id: 'mine', jobId: job.id, userId: 'candidate' }]; job.status = 'closed';
-  assert.equal((await apply.DELETE(req('apply', 'DELETE', { jobId: job.id }))).status, 200);
+  assert.equal((await apply.DELETE(req('apply', 'DELETE', { jobId: job.id, selectedDocuments: [{kind:'resume',revision:documentRevision(user.resumeUrl)}] }))).status, 200);
   role = 'employer';
   assert.equal((await documents.GET(req('documents?userId=candidate&kind=resume', 'GET'))).status, 403);
 });
@@ -109,7 +111,7 @@ test('closing a vacancy preserves applications and uses an employer-scoped updat
     assert.deepEqual(where, { id: job.id, employerId: 'employer' });
     Object.assign(job, data); return { count: 1 };
   };
-  assert.equal((await vacancies.DELETE(req('jobs/direct', 'DELETE', { jobId: job.id }))).status, 200);
+  assert.equal((await vacancies.DELETE(req('jobs/direct', 'DELETE', { jobId: job.id, selectedDocuments: [{kind:'resume',revision:documentRevision(user.resumeUrl)}] }))).status, 200);
   assert.equal(job.status, 'closed'); assert.equal(applications.length, 1);
 });
 
@@ -141,4 +143,30 @@ test('provisional review uses provisional validity rather than a past practicing
   user.candidateProfile.provisionalExpiry = '2000-01-01';
   const expired = await (await applicants.GET(req('jobs/applicants?jobId=vacancy', 'GET'))).json();
   assert.equal(expired.applications[0].user.isLicenseVerified, false);
+});
+
+test('submission captures only explicitly selected private files and rejects stale or forged selections', async () => {
+  user.licenseUrl = 'https://store.private.blob.vercel-storage.com/license.pdf';
+  const selectedDocuments = [{kind:'resume',revision:documentRevision(user.resumeUrl)}];
+  for (const invalid of [undefined, [], [{kind:'avatar',revision:'x'}], [...selectedDocuments,...selectedDocuments], [...selectedDocuments,{kind:'degree',revision:'x'}]]) {
+    assert.equal((await apply.POST(req('apply','POST',{jobId:job.id,selectedDocuments:invalid}))).status,400);
+  }
+  assert.equal((await apply.POST(req('apply','POST',{jobId:job.id,selectedDocuments:[{kind:'resume',revision:'stale'}]}))).status,409);
+  assert.equal(writes,0);
+  assert.equal((await apply.POST(req('apply','POST',{jobId:job.id,selectedDocuments}))).status,200);
+  assert.deepEqual(applications[0].documentSelection,{resume:user.resumeUrl});
+  const original = {...applications[0].documentSelection};
+  assert.equal((await apply.POST(req('apply','POST',{jobId:job.id,selectedDocuments:[...selectedDocuments,{kind:'license',revision:documentRevision(user.licenseUrl)}]}))).status,200);
+  assert.deepEqual(applications[0].documentSelection,original);
+});
+
+test('employer responses withhold unselected files and preserve application-specific guarded links', async () => {
+  role='employer'; user.licenseUrl='https://store.private.blob.vercel-storage.com/license.pdf';
+  prisma.application.findMany=async()=>[{id:'application',user,documentSelection:{resume:user.resumeUrl}}];
+  const result=await (await applicants.GET(req('jobs/applicants?jobId=vacancy','GET'))).json();
+  assert.equal(result.applications[0].documentSelection,undefined);
+  assert.equal(result.applications[0].user.licenseUrl,null);
+  assert.match(result.applications[0].user.resumeUrl,/applicationId=application/);
+  assert.ok(!JSON.stringify(result).includes('.blob.vercel-storage.com'));
+  assert.deepEqual(result.applications[0].selectedDocumentKinds,['resume']);
 });
