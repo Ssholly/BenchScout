@@ -2,7 +2,7 @@
 
 ## 19 October 2026 — LA-10 implementation update
 
-Selected application documents and a submission reference record are now implemented. See [Application document sharing](APPLICATION-DOCUMENT-SHARING.md) for exact behaviour, legacy CV-only migration, deletion/replacement rules and limits. The record does not retain immutable file copies; existing attachments cannot yet be changed in place. Full staging/private-store acceptance remains open and pilot status stays HOLD. Deployment evidence is tracked separately in Deployment. The findings below remain historical evidence.
+Selected application documents and a submission reference record are now implemented. See [Application document sharing](APPLICATION-DOCUMENT-SHARING.md) for exact behaviour, legacy CV-only migration, deletion/replacement rules and limits. The record does not retain immutable file copies; existing attachments cannot yet be changed in place. Full staging/private-store acceptance remains open and pilot status stays HOLD. Migration application and configured database compatibility passed; lint, TypeScript, 177 tests, build and 320/390px synthetic component checks passed. Testing deployment for `b02fdaf` succeeded; see Deployment for evidence. LA-11 credential-review concurrency is the next implementation priority. The findings below remain historical evidence.
 
 ## Follow-up: professional summary priority
 
