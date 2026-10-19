@@ -1,5 +1,12 @@
 # Change log
 
+## 19 October 2026 — Testing credential handoff and confirmation email consistency
+
+- Rechecked missing ADMIN_SECRET/SALARY_OWNER_SECRET and shared cron default. Prepared three unsaved Secret rows scoped only to Preview/testing; new values and Save are handed to the operator under the browser credential-entry rule. No credential value was generated/entered by the agent.
+- Candidate signup now uses the shared role-aware confirmation template with canonical app link, navy/teal branding, 24-hour expiry and plain-text alternative. Stored-token hashing, unconfirmed state and delivery-failure retry warning preserved. No schema/configuration contract added.
+- Added registration-route tests for role/origin/token/plaintext/expiry and delivery failure. Lint, TypeScript, 201 tests, production build and diff checks passed.
+- User approved a recipient for test confirmation/reset/interview messages; no message sent yet. Connected Gmail is a different account, so inbox receipt remains a recipient confirmation step. Added Testing credentials runbook; deployment evidence is recorded separately.
+
 ## 19 October 2026 — Hosted testing cutover verified
 
 - Vercel deployment for 699b256 succeeded. Actual hosted fixture login/upload/guarded preview and direct persistence checks verified the dedicated testing database and store, with the fixture absent from the original database.

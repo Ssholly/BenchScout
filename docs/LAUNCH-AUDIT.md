@@ -1,5 +1,9 @@
 # Launch audit — 19 October 2026
 
+## 19 October 2026 — Credential handoff and email preparation
+
+Prepared testing-only administrator/cron/salary Secret configuration for secure operator entry. None is claimed saved/activated yet. Standardised initial candidate confirmation on the shared template (role-specific link, 24-hour expiry, plain text) and retained unconfirmed-state/delivery-failure behaviour. Lint, TypeScript, 201 tests and build passed. Live inbox messages/receipt, hosted secret authentication and recovery remain open. See [Testing credentials](TESTING-CREDENTIALS.md); no real approval or test message was sent in this pass.
+
 ## 19 October 2026 — Hosted testing isolation verified
 
 Successful testing deployment `699b256` was checked through an actual synthetic login, browser certificate upload and guarded preview. Direct persistence checks confirmed the new database/store and absence of the fixture from the normal database. One synthetic object/account/session was removed; zero candidates/employers/jobs/applications remained. See [hosted evidence](qa/2026-10-19-hosted-isolation.json) and Deployment. This closes the current testing database/store cutover verification, not other preview/old-deployment isolation, hosted administrative secrets, inbox delivery or recovery gates. Pilot remains HOLD.

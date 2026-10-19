@@ -106,3 +106,10 @@ Commit `699b2562228773ab1030dfc4e80eafdd02ca961e` was pushed to origin/testing. 
 Scoped cleanup removed the one synthetic private object, verified it no longer readable, removed the fixture session/account and confirmed zero remaining candidates, employers, jobs or applications. Browser logout completed afterwards. No real user/file was copied, no email sent, and no Production binding changed. Existing testing logins no longer apply to the fresh database; new test registrations are required. [Scrubbed hosted evidence](qa/2026-10-19-hosted-isolation.json). Screenshots are private temporary proof files, not repository assets.
 
 This verifies the current testing deployment's database/store boundary through actual writes. It does not certify other preview branches, historical deployments, independent admin/cron/salary secrets, inbox delivery or backup/file restore. No product code changed; documentation diff/JSON validation passed. The deployed build succeeded on Vercel; the earlier 199-test local run was not repeated for configuration/documentation-only changes.
+
+
+## 19 October 2026 — Candidate confirmation template and credential handoff
+
+Candidate registration uses the shared sendVerificationEmail helper, including role=candidate, expiry wording and a text alternative. No new API endpoint, migration or environment variable. Lint, TypeScript, all 201 tests, production build and diff checks passed. Existing auth-flow tests and two new registration-route tests passed; no outbound provider call occurs in these tests. Code release to testing is being published; exact Vercel evidence follows after success.
+
+The three testing Secret rows were prepared without values for operator entry/Save. Credential presence after saving and runtime authentication still require verification/redeployment; no new secret is claimed active. Approved test recipient is recorded privately in the conversation; connected Gmail differs, so receipt is not inferred from that connector. No external test mail sent. See Testing credentials for the operator handoff and remaining checks.

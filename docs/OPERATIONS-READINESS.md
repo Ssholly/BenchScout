@@ -1,5 +1,11 @@
 # Hosted environment and recovery readiness
 
+## Testing credential and email preparation — 19 October 2026
+
+Three Secret rows (ADMIN_SECRET, CRON_SECRET, SALARY_OWNER_SECRET) are prepared but unsaved for Preview/testing only. New authentication credential entry/Save is a required user handoff under the browser tool rules. See [Testing credentials and email acceptance](TESTING-CREDENTIALS.md) for purposes, random generation, secure retention, deployment and read-only validation steps. No credential activation is claimed before the operator saves and the new runtime is checked.
+
+Candidate signup's confirmation now uses the shared template with a role-scoped canonical URL, plain-text alternative and expiry statement; lint/typecheck/201 tests/build passed. The user approved a controlled email recipient, omitted from public docs. No live message sent; the connected Gmail account differs from the authorised recipient, so receipt needs recipient confirmation. Pilot remains HOLD for the earlier gates.
+
 ## Current testing cutover result — 19 October 2026
 
 The dedicated testing database and private-store overrides are now active on successful Vercel deployment `699b256` (full release evidence in [Deployment](DEPLOYMENT.md)). An actual hosted synthetic login and certificate upload persisted to the new database/store; the guarded preview opened, and the fixture was absent from the normal database. Cleanup removed its account/session/file and returned testing account/job/application counts to zero. See [hosted evidence](qa/2026-10-19-hosted-isolation.json). Users of the testing alias must create fresh accounts; prior data stays in the original resources.

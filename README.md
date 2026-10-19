@@ -88,3 +88,5 @@ The [BenchScout business and launch proposal](docs/proposals/BenchScout_Business
 - [Isolated staging acceptance](docs/STAGING-ACCEPTANCE.md): real HTTP/database/private-file journey, captured mail, browser fixtures and scoped cleanup. Run `npm run acceptance` for preflight.
 
 - [Hosted operations readiness](docs/OPERATIONS-READINESS.md): verified environment scopes, dedicated testing setup, inbox acceptance and backup/restore gates.
+
+- [Testing credentials and email acceptance](docs/TESTING-CREDENTIALS.md): secure operator setup, branch scope, deployment checks and controlled inbox tests.
