@@ -86,3 +86,5 @@ The [BenchScout business and launch proposal](docs/proposals/BenchScout_Business
 - [Candidate credential review](docs/CANDIDATE-CREDENTIAL-REVIEW.md): version-bound approval, private evidence access, audit records and stale-write protection.
 
 - [Isolated staging acceptance](docs/STAGING-ACCEPTANCE.md): real HTTP/database/private-file journey, captured mail, browser fixtures and scoped cleanup. Run `npm run acceptance` for preflight.
+
+- [Hosted operations readiness](docs/OPERATIONS-READINESS.md): verified environment scopes, dedicated testing setup, inbox acceptance and backup/restore gates.

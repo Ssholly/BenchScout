@@ -1,5 +1,9 @@
 # Launch audit — 19 October 2026
 
+## 19 October 2026 — Hosted operations audit
+
+Read-only Vercel/Neon checks confirmed a shared Production/Preview DATABASE_URL configuration, a single Neon production branch, a six-hour history window, a Preview-only private Blob token and no visible ADMIN_SECRET/SALARY_OWNER_SECRET or linked Shared variables. This supersedes the earlier unknown database-separation status at configuration level; effective settings of every historical deployment were not inspected. Email aliases are configured, but actual sender/inbox delivery remains unverified. See [Hosted operations readiness](OPERATIONS-READINESS.md) and its scrubbed evidence for findings, a prepared empty testing project, exact cutover sequence, email acceptance and recovery drill. No provider configuration or data changed. Pilot remains HOLD.
+
 ## 19 October 2026 — Isolated live-service acceptance
 
 The isolated-schema HTTP journey passed on real PostgreSQL/private Blob with local SMTP capture, including competing reviews, forced audit rollback, moderation, document grants, closure, withdrawal, file replacement/deletion and suspension. Actual mobile browser checks covered candidate sign-in, CV/degree selection/submission, history, employer receipt and guarded PDF opening, interview scheduling/notification and withdrawal. A match-summary defect found during that journey was fixed: employer posts no longer dilute personalised scores or trigger a false high-score message. See [Staging acceptance](STAGING-ACCEPTANCE.md) for scope and the aggregate evidence report.

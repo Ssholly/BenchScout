@@ -1,5 +1,11 @@
 # Change log
 
+## 19 October 2026 — Hosted environment and recovery audit
+
+- Inspected authenticated Vercel/Neon metadata without revealing secrets or changing provider configuration. Confirmed shared Production/Preview database configuration, only one Neon production branch, six-hour recovery history, Preview-only private storage token and absent visible administrator/salary secrets.
+- Added [Hosted operations readiness](OPERATIONS-READINESS.md), a scrubbed evidence record, a concrete dedicated empty testing-project proposal, branch-scoped cutover sequence, email acceptance steps and database/private-file recovery requirements.
+- Prepared the Neon free-plan project form for review without submitting. No database, migration, secret, storage binding, outbound email or production change was made; pilot remains HOLD. Documentation-only validation uses diff/JSON checks. Prior 199-test/build results are retained as prior evidence.
+
 ## 19 October 2026 — Isolated live-service acceptance workflow
 
 - Added a reusable runner with a separate temporary database schema, real HTTP/private Blob checks, local SMTP capture and scoped cleanup. It covers candidate/employer journeys, document grants, withdrawal, moderation and actual transaction race/rollback assertions.

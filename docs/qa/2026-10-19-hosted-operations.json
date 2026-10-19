@@ -1,0 +1,49 @@
+{
+  "date": "2026-10-19",
+  "scope": "Authenticated Vercel and Neon dashboard metadata; repository configuration consumers",
+  "mode": "read-only audit; unsaved new-project form prepared",
+  "pilotStatus": "HOLD",
+  "vercel": {
+    "databaseUrlScopes": ["Production", "Preview"],
+    "branchSpecificDatabaseOverrideObserved": false,
+    "linkedSharedVariables": 0,
+    "privateBlobTokenScopes": ["Preview"],
+    "legacyBlobTokenScopes": ["Production", "Preview"],
+    "adminSecretObserved": false,
+    "salaryOwnerSecretObserved": false,
+    "cronSecretScopes": ["Production", "Preview"],
+    "emailVariablesObserved": ["RESEND_API_KEY", "EMAIL_USER", "EMAIL_PASS"],
+    "explicitEmailFromObserved": false,
+    "secretValuesRevealed": false,
+    "historicalDeploymentEffectiveValuesInspected": false
+  },
+  "neon": {
+    "existingProjectsObserved": 1,
+    "existingBranchCount": 1,
+    "existingBranchName": "production",
+    "postgresMajor": 17,
+    "planObserved": "Free",
+    "historyRetentionHoursObserved": 6,
+    "restoreDrillPerformed": false
+  },
+  "preparedProject": {
+    "name": "BenchScout Testing",
+    "databaseName": "benchscout_testing",
+    "postgresMajor": 17,
+    "region": "AWS US East 1 (N. Virginia)",
+    "copyRealData": false,
+    "submitted": false
+  },
+  "changesApplied": {
+    "providerConfiguration": false,
+    "databaseOrMigration": false,
+    "emailSent": false,
+    "documentation": true
+  },
+  "limitations": [
+    "Project configuration metadata is not an inspection of every immutable deployment",
+    "Store isolation is not proved by a token name",
+    "Provider configuration does not establish inbox delivery",
+    "History retention does not establish independent backup or file recovery"
+  ]
+}
