@@ -1801,7 +1801,13 @@ a {
   .matches-page .responsive-table .job-score::after { content: "% relevance"; font-weight: 500; font-size: 11px; margin-left: 2px; }
   .matches-page .responsive-table .job-score-direct::after { content: " Employer post"; }
 }
-.application-dialog { max-height: calc(100dvh - 2rem); min-height: 0; overflow: hidden; }
+.application-backdrop { padding: calc(16px + env(safe-area-inset-top, 0px)) calc(16px + env(safe-area-inset-right, 0px)) calc(16px + env(safe-area-inset-bottom, 0px)) calc(16px + env(safe-area-inset-left, 0px)) !important; }
+.application-dialog { max-height: 100%; min-height: 0; overflow: hidden; }
+.application-dialog-footer { border-radius: 0 !important; }
+.cover-letter-heading { flex-wrap: wrap; gap: 8px; }
+.cover-letter-disclosure { font-size: 12px; color: #64748b; line-height: 1.5; }
+.cover-letter-disclosure summary { width: fit-content; min-height: 44px; display: list-item; align-content: center; cursor: pointer; color: #0b2444; font-weight: 600; }
+.cover-letter-disclosure p { margin-top: 4px; }
 .application-dialog-header, .application-dialog-footer { flex-shrink: 0; gap: 16px; }
 .application-dialog-header > div { min-width: 0; }
 .application-dialog-header h3 { flex-wrap: wrap; }
@@ -1810,8 +1816,7 @@ a {
 .application-dialog-body button { min-height: 44px; }
 .application-dialog-footer button { min-height: 44px; flex-shrink: 0; }
 @media (max-width: 600px), (max-height: 480px) {
-  .application-backdrop { padding: 8px !important; }
-  .application-dialog { max-height: calc(100dvh - 16px); border-radius: 16px !important; }
+  .application-dialog { border-radius: 16px !important; }
   .application-dialog-header, .application-dialog-footer { padding: 12px 16px !important; }
   .application-dialog-header h3 { font-size: 17px !important; }
   .application-dialog-header p { font-size: 12px !important; }

@@ -1,5 +1,11 @@
 # Change log
 
+## 19 October 2026 — Application Toolkit mobile refinement
+
+- Increased modal clearance to 16px plus device safe-area insets; constrained height to the available backdrop space and unified bottom-corner clipping. Header/footer remain visible while details scroll.
+- Replaced provider-led cover-letter wording with professional instructions, placeholder and loading/error copy. Added expandable How drafting works with the existing Google processing disclosure, an accessible textarea name and keyboard access to the disclosure.
+- Browser checks passed at 320 × 568 and 390 × 844 with no horizontal overflow; disclosure, scroll-to-editor, Tab and Escape checked. Lint, TypeScript and all 172 tests passed. Production build/deployment evidence is recorded in Deployment. No API, schema, provider or configuration change.
+
 ## 19 October 2026 — Testing deployment confirmed
 
 - Pushed `f0d1a67` to `origin/testing`. Vercel Preview deployment `G8vefGUn9bNV5Sad6Ey8ENUNciiK` is Ready and assigned to the existing testing alias.

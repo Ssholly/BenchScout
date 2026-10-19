@@ -212,3 +212,10 @@ Lint, TypeScript and the existing 75 tests passed for the initial trial. Subsequ
 
 The mobile topbar now uses equal 84px side columns, with Search centered in the remaining space. Menu stays on the left and notification/help actions on the right. At 393px and 320px, measured Search centers exactly match screen centers (196.5px and 160px); no horizontal overflow. The Dashboard mobile header was also checked at 393px. Narrow input padding preserves the full Search placeholder and reserves space for Clear search when present. Desktop layout is unchanged. Lint and TypeScript pass. Proof: `/private/tmp/benchscout-mobile-search-centred.png`.
 
+
+
+## 19 October 2026 — Toolkit corner clearance and cover-letter wording
+
+Application Toolkit now uses 16px clearance plus each device safe-area inset. Its maximum height follows the padded backdrop; the outer dialog alone clips rounded corners, avoiding the previous mobile/footer radius mismatch. The content scrolls independently and the footer action remains visible. Cover-letter heading/actions wrap at narrow widths.
+
+Browser verification at 390 × 844 measured dialog bounds x=16..374, y=16..828; at 320 × 568, x=16..304, y=16..552. Neither viewport had horizontal document overflow. Opened/collapsed How drafting works, reached the editor by keyboard, tabbed to the footer action and closed with Escape. Main copy is professional; Google processing details remain available in the disclosure before generation. No real draft was generated or application submitted. Physical iPhone safe-area rendering and software-keyboard behaviour still require device testing; desktop emulation does not establish those results.

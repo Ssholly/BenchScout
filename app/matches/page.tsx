@@ -64,7 +64,7 @@ function MatchesPage() {
 		const handleKey = (event: KeyboardEvent) => {
 			if (event.key === "Escape") setToolkitJob(null);
 			if (event.key !== "Tab") return;
-			const controls = Array.from(applicationDialogRef.current?.querySelectorAll<HTMLElement>('button:not(:disabled), a[href], textarea, input, [tabindex="0"]') || []).filter(element => element.getClientRects().length > 0);
+			const controls = Array.from(applicationDialogRef.current?.querySelectorAll<HTMLElement>('button:not(:disabled), a[href], textarea, input, summary, [tabindex="0"]') || []).filter(element => element.getClientRects().length > 0);
 			const first = controls[0], last = controls[controls.length - 1];
 			if (event.shiftKey && (document.activeElement === first || document.activeElement === applicationDialogRef.current)) { event.preventDefault(); last?.focus(); }
 			else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
@@ -402,10 +402,10 @@ function MatchesPage() {
 				setCoverLetter(data.letter);
 			} else {
 				setCoverLetter(`Error generating letter: ${data.error}`);
-				showToast("Gemini failed to generate draft.", "error");
+				showToast("Unable to prepare your draft. Please try again.", "error");
 			}
 		} catch {
-			setCoverLetter("Network error. Could not connect to AI Engine.");
+			setCoverLetter("Unable to connect to the drafting service. Please try again.");
 			showToast("Network error.", "error");
 		} finally {
 			setIsGeneratingLetter(false);
@@ -1952,6 +1952,7 @@ function MatchesPage() {
 											}}
 										>
 											<div
+												className="cover-letter-heading"
 												style={{
 													display: "flex",
 													justifyContent: "space-between",
@@ -1967,7 +1968,7 @@ function MatchesPage() {
 														letterSpacing: "0.5px",
 													}}
 												>
-													AI COVER LETTER DRAFT
+													COVER LETTER
 												</h4>
 												<div
 													style={{
@@ -2043,7 +2044,11 @@ function MatchesPage() {
 													</button>
 												</div>
 											</div>
-											<p style={{ fontSize: 12, color: "#64748b", lineHeight: 1.5 }}>Generate draft sends your saved CV text and this listing to Google AI. You can also write your own letter below.</p>
+											<p style={{ fontSize: 12, color: "#64748b", lineHeight: 1.5 }}>Prepare a tailored cover letter for this opportunity. Review and personalise your draft before applying.</p>
+                                            <details className="cover-letter-disclosure">
+                                                <summary>How drafting works</summary>
+                                                <p>Selecting Generate draft sends your saved CV text and this vacancy’s details to Google’s AI service to prepare a suggested letter. Review it for accuracy before use. You can also write your own letter without generating a draft.</p>
+                                            </details>
                                             {isGeneratingLetter ? (
 												<div
 													style={{
@@ -2082,12 +2087,13 @@ function MatchesPage() {
 															fontWeight: 700,
 														}}
 													>
-														Gemini is drafting your letter...
+														Preparing your draft…
 													</span>
 												</div>
 											) : (
 												<textarea
-															placeholder="Write your cover letter here, or generate a draft using Google AI."
+															aria-label="Cover letter"
+													placeholder="Write your cover letter, or select Generate draft for a tailored starting point."
 													value={coverLetter}
 													onChange={(e) => setCoverLetter(e.target.value)}
 													style={{
