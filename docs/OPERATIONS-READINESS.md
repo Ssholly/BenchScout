@@ -1,5 +1,9 @@
 # Hosted environment and recovery readiness
 
+## Testing credential deployment and email request — 19 October 2026
+
+Vercel deployment c050bc5 after the operator save succeeded. Wrong-key administrator access was rejected in the hosted review UI; successful operator queue loading remains pending. One approved recovery-email request was submitted without changing any password. Generic UI acknowledgement is not delivery evidence; recipient confirmation is pending. [Testing credentials evidence](qa/2026-10-19-testing-credentials.json) records the boundaries. Cron/salary checks, confirmation/interview inbox delivery, other-preview isolation and recovery remain open; pilot stays HOLD.
+
 ## Testing credential save confirmed — 19 October 2026
 
 The operator completed entry/Save. Fresh Vercel metadata confirms all three Secret overrides (ADMIN_SECRET, CRON_SECRET, SALARY_OWNER_SECRET) on Preview/testing only. No value was read back. This supersedes the prepared/unsaved state below; credential strength and successful authentication are not inferred from metadata. Redeployment is being triggered from the documentation checkpoint. Email recipient approval is recorded, but no live message/receipt is claimed yet.

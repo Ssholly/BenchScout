@@ -1,5 +1,10 @@
 # Change log
 
+## 19 October 2026 — Testing credential redeployment and controlled email request
+
+- Redeployed after operator save: c050bc5 Vercel status success. Hosted administrator UI rejected an invalid key; successful operator queue read remains pending. No approval decision submitted.
+- Submitted one approved recovery-email request through hosted testing; UI returned to login. Inbox receipt/provider acceptance remains unverified; no password changed or unrelated mailbox searched. Added scrubbed evidence and exact release/check limits.
+
 ## 19 October 2026 — Testing credential save confirmed
 
 - Operator completed secure credential entry/Save. Rechecked Secret ADMIN_SECRET, CRON_SECRET and SALARY_OWNER_SECRET metadata: all scoped to Preview/testing. No value read back and no Production binding changed.

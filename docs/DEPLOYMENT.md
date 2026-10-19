@@ -123,3 +123,10 @@ Commit `da068bec511229a21dbcd05af006bb934118d9f6` was pushed to origin/testing. 
 ### Testing credentials saved by operator
 
 Operator confirmed Save after entering all three new credentials. Fresh Vercel metadata shows Secret ADMIN_SECRET, CRON_SECRET and SALARY_OWNER_SECRET scoped to Preview/testing, retaining the original shared defaults. Values were not read back; presence/scope does not prove strength, independence or successful auth. This documentation checkpoint triggers a new testing deployment after the save; exact deployment status follows. No Production binding changed.
+
+
+### Testing credential redeployment result and acceptance boundary
+
+Commit `c050bc5eaae78e3d6f582d0da2dbdd97ecf79917` was pushed after the operator's credential save. Vercel reports success for [deployment Bs3Z9gmrvbe4S3imQEz6vYe78Gsg](https://vercel.com/sholly/bench-scout/Bs3Z9gmrvbe4S3imQEz6vYe78Gsg), serving the existing testing alias. The hosted review form rejected a deliberately wrong key with Unauthorized.; no review decision submitted. Correct-key read-only queue check is handed to the operator, and cron/salary acceptance remains separate. Presence/scoping is verified; secret values/strength/independence are not read back.
+
+One approved candidate recovery-email request was submitted through the hosted UI, which returned to login. Generic recovery behaviour does not prove account existence or provider/inbox delivery. Recipient Inbox/Spam confirmation is pending, and no password was changed. The unrelated connected Gmail mailbox was not searched. No confirmation/interview message sent in this phase. See [scrubbed evidence](qa/2026-10-19-testing-credentials.json). Documentation-only follow-up records this checkpoint; production unchanged.

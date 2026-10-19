@@ -1,5 +1,13 @@
 # Testing credentials and email acceptance
 
+## 19 October 2026 — Redeployment and live checks
+
+Deployment of commit c050bc5 after the operator's save succeeded on Vercel. The hosted review form rejected a deliberately invalid key with **Unauthorized.**; the field was cleared. A successful queue read with the operator's saved key remains pending. No review/approval decision was submitted, and no key value was read back. Cron authentication/scheduling and salary ownership acceptance remain separate checks.
+
+Submitted one approved candidate recovery-email request through the hosted reset-link interface. It returned to the login view, as the successful generic acknowledgement path does. This does not establish account existence, provider acceptance or delivery: recovery intentionally does not disclose those facts. Inbox/Spam confirmation is pending. No reset link was opened or password changed. Initial confirmation and interview inbox delivery are not yet tested. The browser already had a signed-in user account, which was left intact; no account was created/deleted for this request.
+
+See [scrubbed evidence](qa/2026-10-19-testing-credentials.json) and Deployment. The earlier prepared/unsaved records below are dated history.
+
 ## 19 October 2026 — Operator save confirmed
 
 The operator reported completion. A fresh Vercel metadata check showed Secret ADMIN_SECRET, CRON_SECRET and SALARY_OWNER_SECRET rows scoped to Preview/testing, plus a success notice requiring redeployment. Original broad defaults remained. New values were entered/saved by the operator and were not read back by the agent. This proves presence/scope, not their length/randomness/independence or successful authentication. A fresh deployment and controlled read-only authentication checks remain separate evidence.
