@@ -113,3 +113,8 @@ This verifies the current testing deployment's database/store boundary through a
 Candidate registration uses the shared sendVerificationEmail helper, including role=candidate, expiry wording and a text alternative. No new API endpoint, migration or environment variable. Lint, TypeScript, all 201 tests, production build and diff checks passed. Existing auth-flow tests and two new registration-route tests passed; no outbound provider call occurs in these tests. Code release to testing is being published; exact Vercel evidence follows after success.
 
 The three testing Secret rows were prepared without values for operator entry/Save. Credential presence after saving and runtime authentication still require verification/redeployment; no new secret is claimed active. Approved test recipient is recorded privately in the conversation; connected Gmail differs, so receipt is not inferred from that connector. No external test mail sent. See Testing credentials for the operator handoff and remaining checks.
+
+
+### Confirmation-email release result
+
+Commit `da068bec511229a21dbcd05af006bb934118d9f6` was pushed to origin/testing. Vercel reports success for [deployment 7FLcKgxaV8tWxZUbocxubPyM96Sb](https://vercel.com/sholly/bench-scout/7FLcKgxaV8tWxZUbocxubPyM96Sb), serving the existing testing alias. No production branch was pushed. This verifies deployment of the shared candidate template; no live signup/email or inbox-rendering claim follows. The credential-entry handoff remained pending at this checkpoint; if values are saved later, redeploy again and verify scoped presence/authentication. Documentation-only follow-up records this result.
