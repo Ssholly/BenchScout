@@ -1,5 +1,11 @@
 # Hosted environment and recovery readiness
 
+## Current testing cutover result — 19 October 2026
+
+The dedicated testing database and private-store overrides are now active on successful Vercel deployment `699b256` (full release evidence in [Deployment](DEPLOYMENT.md)). An actual hosted synthetic login and certificate upload persisted to the new database/store; the guarded preview opened, and the fixture was absent from the normal database. Cleanup removed its account/session/file and returned testing account/job/application counts to zero. See [hosted evidence](qa/2026-10-19-hosted-isolation.json). Users of the testing alias must create fresh accounts; prior data stays in the original resources.
+
+Only the current testing deployment is verified. Other preview defaults/old deployments, independent administration/cron/salary secrets, real inbox delivery and recovery drill remain open. No production binding changed and no external email was sent. Pilot remains HOLD. The earlier audit and prepared-form records below are dated history.
+
 ## 19 October 2026 — Dedicated testing database and storage setup
 
 After the user created the prepared project, authenticated dashboard checks confirmed **BenchScout Testing**, database **benchscout_testing**, PostgreSQL 17, AWS US East 1 and the displayed Free plan. Its Neon project/endpoint and owner differ from the original project. The default branch is named production by Neon; this is inside the separate testing project and does not change the original production project.

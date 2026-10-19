@@ -1,5 +1,9 @@
 # Launch audit — 19 October 2026
 
+## 19 October 2026 — Hosted testing isolation verified
+
+Successful testing deployment `699b256` was checked through an actual synthetic login, browser certificate upload and guarded preview. Direct persistence checks confirmed the new database/store and absence of the fixture from the normal database. One synthetic object/account/session was removed; zero candidates/employers/jobs/applications remained. See [hosted evidence](qa/2026-10-19-hosted-isolation.json) and Deployment. This closes the current testing database/store cutover verification, not other preview/old-deployment isolation, hosted administrative secrets, inbox delivery or recovery gates. Pilot remains HOLD.
+
 ## 19 October 2026 — Testing branch isolation setup
 
 The user-created dedicated testing project was verified empty and all seven repository migrations applied with matching completed history/checksums. A separate private testing document store passed write/authenticated read, anonymous 403 and cleanup. Vercel Secret overrides now target Preview/testing only, retaining Production bindings. See [Hosted operations readiness](OPERATIONS-READINESS.md) for exact scope and remaining other-preview/old-deployment isolation, independent secrets, email and recovery gates. Hosted deployment/smoke evidence is recorded in Deployment. Pilot remains HOLD.

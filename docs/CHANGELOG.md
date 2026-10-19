@@ -1,5 +1,11 @@
 # Change log
 
+## 19 October 2026 — Hosted testing cutover verified
+
+- Vercel deployment for 699b256 succeeded. Actual hosted fixture login/upload/guarded preview and direct persistence checks verified the dedicated testing database and store, with the fixture absent from the original database.
+- Scoped cleanup removed one synthetic object, account and session; testing candidate/employer/job/application counts returned to zero. No email sent or Production binding changed. Existing testing accounts stay in the original resources; the fresh testing environment requires new registrations.
+- Added scrubbed hosted evidence and exact deployment record. Remaining independent-secret, other-preview, old-deployment, inbox and recovery gates stay explicit. Documentation diff/JSON checks passed; no new product code/test claim.
+
 ## 19 October 2026 — Dedicated testing database and private store
 
 - Verified the user-created BenchScout Testing PostgreSQL 17 project is separate and initially empty. Applied all seven migrations and checked completed history/checksums; account, vacancy, application and session counts were zero.
