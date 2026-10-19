@@ -2,7 +2,7 @@
 
 ## 19 October 2026 — LA-11 implementation update
 
-Candidate review now uses version-bound private evidence, candidate identity checks and an atomic decision/audit transaction. Credential mutation and older profile JSON writes cannot silently inherit an approval. Historical flags need a fresh review. See [Candidate credential review](CANDIDATE-CREDENTIAL-REVIEW.md) for scope and remaining named-admin/staging/retention limits. Validation and deployment evidence follow separately; historical findings below are preserved. Full staging acceptance and pilot HOLD remain in force.
+Candidate review now uses version-bound private evidence, candidate identity checks and an atomic decision/audit transaction. Credential mutation and older profile JSON writes cannot silently inherit an approval. Historical flags need a fresh review. See [Candidate credential review](CANDIDATE-CREDENTIAL-REVIEW.md) for scope and remaining named-admin/staging/retention limits. Migration applied; configured database compatibility, lint, TypeScript, 192 tests, production build and mobile form checks passed. Testing deployment for `e91a6b3` succeeded; exact evidence is in Deployment. Historical findings below are preserved. Full staging acceptance and pilot HOLD remain in force.
 
 ## 19 October 2026 — LA-10 implementation update
 
