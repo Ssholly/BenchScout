@@ -1,5 +1,9 @@
 # Testing credentials and email acceptance
 
+## 19 October 2026 — Operator save confirmed
+
+The operator reported completion. A fresh Vercel metadata check showed Secret ADMIN_SECRET, CRON_SECRET and SALARY_OWNER_SECRET rows scoped to Preview/testing, plus a success notice requiring redeployment. Original broad defaults remained. New values were entered/saved by the operator and were not read back by the agent. This proves presence/scope, not their length/randomness/independence or successful authentication. A fresh deployment and controlled read-only authentication checks remain separate evidence.
+
 ## 19 October 2026 — Prepared operator setup
 
 Rechecked the Vercel Project variables: ADMIN_SECRET and SALARY_OWNER_SECRET were absent; CRON_SECRET existed as a shared Production/Preview default. The existing testing database/store overrides remain configured. Prepared an unsaved **Secret** form with the three rows below and **Preview / testing branch only** selected. Production is not selected. No new credential value was generated, entered or saved by the agent during this preparation.

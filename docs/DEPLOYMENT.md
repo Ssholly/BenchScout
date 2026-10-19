@@ -118,3 +118,8 @@ The three testing Secret rows were prepared without values for operator entry/Sa
 ### Confirmation-email release result
 
 Commit `da068bec511229a21dbcd05af006bb934118d9f6` was pushed to origin/testing. Vercel reports success for [deployment 7FLcKgxaV8tWxZUbocxubPyM96Sb](https://vercel.com/sholly/bench-scout/7FLcKgxaV8tWxZUbocxubPyM96Sb), serving the existing testing alias. No production branch was pushed. This verifies deployment of the shared candidate template; no live signup/email or inbox-rendering claim follows. The credential-entry handoff remained pending at this checkpoint; if values are saved later, redeploy again and verify scoped presence/authentication. Documentation-only follow-up records this result.
+
+
+### Testing credentials saved by operator
+
+Operator confirmed Save after entering all three new credentials. Fresh Vercel metadata shows Secret ADMIN_SECRET, CRON_SECRET and SALARY_OWNER_SECRET scoped to Preview/testing, retaining the original shared defaults. Values were not read back; presence/scope does not prove strength, independence or successful auth. This documentation checkpoint triggers a new testing deployment after the save; exact deployment status follows. No Production binding changed.

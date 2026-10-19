@@ -1,5 +1,9 @@
 # Hosted environment and recovery readiness
 
+## Testing credential save confirmed — 19 October 2026
+
+The operator completed entry/Save. Fresh Vercel metadata confirms all three Secret overrides (ADMIN_SECRET, CRON_SECRET, SALARY_OWNER_SECRET) on Preview/testing only. No value was read back. This supersedes the prepared/unsaved state below; credential strength and successful authentication are not inferred from metadata. Redeployment is being triggered from the documentation checkpoint. Email recipient approval is recorded, but no live message/receipt is claimed yet.
+
 ## Testing credential and email preparation — 19 October 2026
 
 Three Secret rows (ADMIN_SECRET, CRON_SECRET, SALARY_OWNER_SECRET) are prepared but unsaved for Preview/testing only. New authentication credential entry/Save is a required user handoff under the browser tool rules. See [Testing credentials and email acceptance](TESTING-CREDENTIALS.md) for purposes, random generation, secure retention, deployment and read-only validation steps. No credential activation is claimed before the operator saves and the new runtime is checked.

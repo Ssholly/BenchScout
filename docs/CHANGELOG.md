@@ -1,5 +1,10 @@
 # Change log
 
+## 19 October 2026 — Testing credential save confirmed
+
+- Operator completed secure credential entry/Save. Rechecked Secret ADMIN_SECRET, CRON_SECRET and SALARY_OWNER_SECRET metadata: all scoped to Preview/testing. No value read back and no Production binding changed.
+- Documented presence/scope separately from strength/authentication proof. Triggering a fresh testing deployment after the save; live inbox and successful protected-route checks remain acceptance work.
+
 ## 19 October 2026 — Testing credential handoff and confirmation email consistency
 
 - Rechecked missing ADMIN_SECRET/SALARY_OWNER_SECRET and shared cron default. Prepared three unsaved Secret rows scoped only to Preview/testing; new values and Save are handed to the operator under the browser credential-entry rule. No credential value was generated/entered by the agent.
