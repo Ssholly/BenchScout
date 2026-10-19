@@ -33,7 +33,10 @@ export const POST = withApi("candidate", async (request, session) => {
   const scan = lastScan(current.candidateProfile);
   // Preserve server-owned scan metadata on ordinary edits; clients cannot forge it.
   const saved = { ...profile, ...(!changed && previous.preferredLocations === profile.preferredLocations && scan ? {lastScan:scan} : {}) };
-  const credentialChanged = current.careerPhase === "internship" && (previous.provisionalNumber !== profile.provisionalNumber || previous.provisionalExpiry !== profile.provisionalExpiry);
-  const user = await prisma.user.update({ where: { id: current.id }, data: { careerPhase: body.careerPhase, candidateProfile: saved, ...(changed || credentialChanged ? { isLicenseVerified: false, licenseReviewedAt: null, licenseReviewReference: null } : {}) } });
+  const credentialChanged = (previous.provisionalNumber !== profile.provisionalNumber || previous.provisionalExpiry !== profile.provisionalExpiry);
+  const user = await prisma.user.update({ where: { id: current.id, credentialRevision: current.credentialRevision ?? 0 }, data: { careerPhase: body.careerPhase, candidateProfile: saved, ...(changed || credentialChanged ? { credentialRevision: { increment: 1 }, licenseReviewRevision: null, isLicenseVerified: false, licenseReviewedAt: null, licenseReviewReference: null } : {}) } }).catch((error: unknown) => {
+    if (error && typeof error === "object" && "code" in error && error.code === "P2025") throw new ApiError(409, "Your credential record changed. Refresh your profile before saving again.");
+    throw error;
+  });
   return NextResponse.json({ success: true, user });
 }, { limit: 20 });

@@ -224,3 +224,8 @@ Browser verification at 390 × 844 measured dialog bounds x=16..374, y=16..828; 
 ## 19 October 2026 — Per-application document selection
 
 Rendered the actual ApplicationDocumentSelection and ApplicationSharingNotice components in a temporary local synthetic preview using the application dialog CSS. At 320 × 568 the dialog measured x=16..304, y=16..552 with footer y=492..552; at 390 × 844 the dialog measured x=16..374, y=16..828. No horizontal document overflow. CV was checked/disabled, optional license and certificate initially unchecked, and an unavailable degree remained disabled. Selecting/unselecting the license updated the Selected summary correctly. The temporary QA route was removed before release. This checks the controlled component and mobile layout, not a complete account-to-employer submission or physical iPhone workflow. No real application, draft or file upload was made during browser checks.
+
+
+## 19 October 2026 — Credential-review administrator controls
+
+Checked the actual local /admin/reviews form at 320 × 568 and 390 × 844. Candidate license mode shows Candidate email and Load current candidate evidence. Selecting the approval checkbox reveals both mandatory independent-evidence note fields and reviewer identity/reason inputs. Save remains disabled without administrator authentication and a loaded candidate. Neither width had horizontal document overflow; the scrollable form keeps controls reachable. No secret was entered, no real candidate was loaded, no evidence file was downloaded and no approval/revocation was submitted in the browser. Populated evidence downloads and concurrent real database decisions remain staging acceptance work; API/blob behaviour is covered by isolated tests.

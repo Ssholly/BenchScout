@@ -1,5 +1,7 @@
 type CredentialRecord = {
   isLicenseVerified?: unknown;
+  credentialRevision?: unknown;
+  licenseReviewRevision?: unknown;
   licenseReviewedAt?: unknown;
   careerPhase?: unknown;
   licenseExpiry?: unknown;
@@ -8,6 +10,7 @@ type CredentialRecord = {
 
 // A historical review must not imply that an expired credential is current.
 export function currentCredentialReview(record: CredentialRecord, now = new Date()) {
+  if (!Number.isInteger(record.credentialRevision) || record.licenseReviewRevision !== record.credentialRevision) return false;
   if (record.isLicenseVerified !== true || !record.licenseReviewedAt) return false;
   const reviewedAt = new Date(record.licenseReviewedAt as string | Date);
   if (!Number.isFinite(reviewedAt.getTime()) || reviewedAt > now) return false;

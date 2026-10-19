@@ -29,7 +29,7 @@ async function main() {
     try {
       await prisma.$transaction(async tx => {
         for (const ref of refs) {
-          const changed = await tx.user.updateMany({ where: { id: ref.id, [ref.field]: oldUrl }, data: { [ref.field]: blob.url } });
+          const changed = await tx.user.updateMany({ where: { id: ref.id, [ref.field]: oldUrl }, data: { [ref.field]: blob.url, ...(["licenseUrl","provisionalUrl"].includes(ref.field) ? {credentialRevision:{increment:1},licenseReviewRevision:null,isLicenseVerified:false,licenseReviewedAt:null,licenseReviewReference:null} : {}) } });
           if (changed.count !== 1) throw new Error('Document changed during migration. Retry during maintenance.');
         }
       });

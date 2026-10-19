@@ -70,3 +70,10 @@ test('a refreshed external source cannot reactivate a vacancy removed after a sa
  prisma.job.update=async({data})=>{writes++;assert.equal(data.status,undefined);};
  await runJobScan('owner');assert.equal(writes,1);assert.equal(history[0].matches,0);
 });
+
+test('scan report save cannot restore provisional details after a concurrent credential change',async()=>{
+ prisma.user.findUniqueOrThrow=async()=>({id:'owner',email:'owner@example.com',careerPhase:'internship',credentialRevision:7,candidateProfile:{provisionalNumber:'OLD'},location:'Lagos',keywords:'',minScore:0,strictMls:true,autoSendEmail:false});
+ sources.collectJobs=async()=>({jobs:[],successful:1,warnings:[]});
+ prisma.user.update=async({where,data})=>{if(data.candidateProfile){assert.equal(where.credentialRevision,7);throw {code:'P2025'};}released=true;};
+ await assert.rejects(()=>runJobScan('owner'),error=>error.status===409);assert.equal(released,true);
+});

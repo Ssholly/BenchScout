@@ -18,6 +18,8 @@ model User {
   provisionalUrl    String?      // Provisional license specifically for interns
   degreeUrl         String?      // Link to B.MLS degree
   licenseReviewReference String?
+  credentialRevision Int         @default(0)
+  licenseReviewRevision Int?
   licenseReviewedAt DateTime?
   licenseNumber     String?
   mlscnNumber       String?      // Extracted RA/Intern Number

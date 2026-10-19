@@ -70,9 +70,10 @@ export const POST = withApi("candidate", async (request: Request) => {
 
 		// 2. Update ONLY that specific user in the database
 		await prisma.user.update({
-			where: { id: user.id },
+			where: { id: user.id, credentialRevision: user.credentialRevision ?? 0 },
 			data: {
 				name: name,
+                ...(user.name !== name ? {credentialRevision:{increment:1},licenseReviewRevision:null,isLicenseVerified:false,licenseReviewedAt:null,licenseReviewReference:null} : {}),
 				location: location,
                 ...(user.location !== location ? {candidateProfile:candidateProfile(user.candidateProfile)} : {}),
 				// Safely handle keywords whether they arrive as an array or a string
@@ -81,7 +82,10 @@ export const POST = withApi("candidate", async (request: Request) => {
 				// 🚀 Added avatarUrl mapping here
 
 			},
-		});
+		}).catch((error: unknown) => {
+            if (error && typeof error === "object" && "code" in error && error.code === "P2025") throw new ApiError(409, "Your credential record changed. Refresh before saving your profile again.");
+            throw error;
+        });
 
 		console.log("Successfully updated profile for:", email);
 		return NextResponse.json({ success: true });

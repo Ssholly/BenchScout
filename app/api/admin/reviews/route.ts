@@ -1,12 +1,31 @@
+import { get } from "@vercel/blob";
+import { isPrivateBlob, privateBlobToken } from "@/lib/documents";
+import { candidateChecks, candidateReviewEvidence, candidateReviewSnapshot, candidateEvidenceComplete } from "@/lib/candidate-review";
 import { NextResponse } from "next/server";
 import { withApi } from "@/lib/api";
 import { prisma } from "@/lib/prisma";
 import { ApiError, emailField, textField } from "@/lib/security";
-import { candidateProfile, listingDetails, opportunityType } from "@/lib/candidate-profile";
+import { listingDetails, opportunityType } from "@/lib/candidate-profile";
 import { companyChecks, vacancyChecks, reviewEvidence } from "@/lib/employer-safety";
 
 export const GET = withApi("admin", async request => {
-  const email = new URL(request.url).searchParams.get("account");
+  const query = new URL(request.url).searchParams;
+  if (query.has("candidate")) {
+    const user = await prisma.user.findUnique({ where: { email: emailField(query.get("candidate")) } });
+    if (!user) throw new ApiError(404, "Candidate not found.");
+    if (query.get("document") === "1") {
+      if (query.get("revision") !== String(user.credentialRevision)) throw new ApiError(409, "Evidence changed. Reload the candidate before opening the document.");
+      const { url, kind } = candidateReviewEvidence(user);
+      if (!url || !isPrivateBlob(url)) throw new ApiError(404, "A current private credential document is required.");
+      const blob = await get(url, { access: "private", token: privateBlobToken(), useCache: false });
+      if (!blob || blob.statusCode !== 200) throw new ApiError(404, "Credential document not found.");
+      if (!["application/pdf", "image/png", "image/jpeg"].includes(blob.blob.contentType)) throw new ApiError(415, "Unsupported document type.");
+      const extension = blob.blob.contentType === "application/pdf" ? "pdf" : blob.blob.contentType === "image/png" ? "png" : "jpg";
+      return new Response(blob.stream, { headers: { "Content-Type": blob.blob.contentType, "Content-Disposition": `attachment; filename="${kind}-review.${extension}"`, "Cache-Control": "private, no-store", "X-Content-Type-Options": "nosniff", "Content-Security-Policy": "sandbox; frame-ancestors 'none'" } });
+    }
+    return NextResponse.json({ candidate: candidateReviewSnapshot(user) });
+  }
+  const email = query.get("account");
   const [employers, vacancies, reports, history] = await Promise.all([
     prisma.employer.findMany({ where: email ? { email: emailField(email) } : { verificationStatus: "pending" }, select: { id: true, email: true, companyName: true, verificationStatus: true, verificationRevision: true, verificationDetails: true, verificationFeedback: true }, take: 50, orderBy: { createdAt: "asc" } }),
     prisma.job.findMany({ where: { isDirectPost: true, status: "pending-review" }, select: { id: true, role: true, company: true, loc: true, skills: true, salary: true, updatedAt: true, employerId: true, listingDetails: true }, take: 50, orderBy: { updatedAt: "asc" } }),
@@ -74,12 +93,22 @@ export const POST = withApi("admin", async request => {
       await tx.safetyReview.create({ data: { kind: "report", subjectId: reportId, decision: body.decision, reviewer, evidence: { reference, jobId: report.jobId } } });
     });
   } else if (body.kind === "candidate") {
-    const user = await prisma.user.findUnique({ where: { email } });
-    if (!user) throw new ApiError(404, "Candidate not found.");
-    const profile = candidateProfile(user.candidateProfile);
-    const complete = user.careerPhase === "internship" ? user.provisionalUrl && profile.provisionalNumber && (!profile.provisionalExpiry || new Date(profile.provisionalExpiry) >= new Date()) : user.licenseNumber && user.licenseUrl && user.licenseExpiry && user.licenseExpiry > new Date();
-    if (body.approved && !complete) throw new ApiError(400, "Record the candidate’s relevant license document and valid registration details before approval.");
-    await prisma.user.update({ where: { id: user.id }, data: { isLicenseVerified: body.approved, licenseReviewedAt: body.approved ? new Date() : null, licenseReviewReference: reference } });
+    const reviewer = textField(body.reviewer, "reviewer name");
+    const candidateId = textField(body.candidateId, "candidate ID");
+    if (!Number.isInteger(body.revision) || body.revision < 0) throw new ApiError(400, "Load the latest candidate record first.");
+    const checks = body.approved ? reviewEvidence(body, candidateChecks) : {};
+    await prisma.$transaction(async tx => {
+      const user = await tx.user.findUnique({ where: { email } });
+      if (!user) throw new ApiError(404, "Candidate not found.");
+      if (user.id !== candidateId || user.credentialRevision !== body.revision) throw new ApiError(409, "Candidate evidence changed. Reload before reviewing.");
+      if (body.approved && !candidateEvidenceComplete(user)) throw new ApiError(400, "A current private license document and valid registration details are required before approval.");
+      const result = await tx.user.updateMany({ where: { id: user.id, credentialRevision: body.revision }, data: {
+        credentialRevision: { increment: 1 }, licenseReviewRevision: body.approved ? body.revision + 1 : null,
+        isLicenseVerified: body.approved, licenseReviewedAt: body.approved ? new Date() : null, licenseReviewReference: reference,
+      } });
+      if (!result.count) throw new ApiError(409, "Candidate evidence changed. Reload before reviewing.");
+      await tx.safetyReview.create({ data: { kind: "candidate", subjectId: user.id, decision: body.approved ? "approved" : "revoked", reviewer, evidence: { reference, checks, candidate: candidateReviewSnapshot(user), revision: body.revision, decidedRevision: body.revision + 1 } } });
+    });
   } else throw new ApiError(400, "Choose a supported review type.");
   return NextResponse.json({ success: true });
 }, { limit: 20 });

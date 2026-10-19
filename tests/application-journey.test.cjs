@@ -124,7 +124,7 @@ test('bulk applicant deletion is disabled even for the owning employer', async (
 
 test('expired and undated practicing licenses cannot retain a current reviewed badge', () => {
   const now = new Date('2026-10-19T12:00:00Z');
-  const reviewed = { isLicenseVerified: true, licenseReviewedAt: '2026-10-01', careerPhase: 'licensed', licenseExpiry: '2030-01-01' };
+  const reviewed = { isLicenseVerified: true, credentialRevision: 1, licenseReviewRevision: 1, licenseReviewedAt: '2026-10-01', careerPhase: 'licensed', licenseExpiry: '2030-01-01' };
   assert.equal(currentCredentialReview(reviewed, now), true);
   for (const expiry of [null, 'invalid', '2026-10-18', '2026-10-19T12:00:00Z']) assert.equal(currentCredentialReview({ ...reviewed, licenseExpiry: expiry }, now), false);
   assert.equal(currentCredentialReview({ ...reviewed, licenseReviewedAt: 'invalid' }, now), false);
@@ -132,7 +132,7 @@ test('expired and undated practicing licenses cannot retain a current reviewed b
 });
 
 test('provisional review uses provisional validity rather than a past practicing license', async () => {
-  user = { ...user, careerPhase: 'internship', isLicenseVerified: true, licenseReviewedAt: new Date('2026-01-01'), licenseExpiry: new Date('2000-01-01'), candidateProfile: { provisionalExpiry: '2030-01-01', nextAction: 'Private reminder' } };
+  user = { ...user, careerPhase: 'internship', isLicenseVerified: true, credentialRevision: 1, licenseReviewRevision: 1, licenseReviewedAt: new Date('2026-01-01'), licenseExpiry: new Date('2000-01-01'), candidateProfile: { provisionalExpiry: '2030-01-01', nextAction: 'Private reminder' } };
   assert.equal(currentCredentialReview(user), true);
   role = 'employer';
   prisma.application.findMany = async () => [{ id: 'application', user }];

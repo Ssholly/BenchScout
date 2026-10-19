@@ -15,7 +15,7 @@ export const POST = withApi("candidate", async (request, session) => {
     updated = await prisma.user.update({ where: { id: user.id }, data: {
       [documentFields[kind]]: blob.url,
       ...(kind === "license" ? { licenseNumber: null, licenseExpiry: null } : {}),
-      ...((kind === "license" && user.careerPhase !== "internship") || (kind === "provisional" && user.careerPhase === "internship") ? { isLicenseVerified: false, licenseReviewedAt: null, licenseReviewReference: null } : {}),
+      ...(["license", "provisional"].includes(kind) ? { credentialRevision: { increment: 1 }, licenseReviewRevision: null, isLicenseVerified: false, licenseReviewedAt: null, licenseReviewReference: null } : {}),
       ...(kind === "resume" ? { cvParsedText: await resumeText(blob.buffer) } : {}),
     } });
   } catch (error) { await removeDocument(blob.url); throw error; }
@@ -33,7 +33,7 @@ export const DELETE = withApi("candidate", async (request, session) => {
   await prisma.user.update({ where: { id: user.id }, data: {
     [documentFields[kind]]: null,
     ...(kind === "license" ? { licenseNumber: null, licenseExpiry: null } : {}),
-    ...((kind === "license" && user.careerPhase !== "internship") || (kind === "provisional" && user.careerPhase === "internship") ? { isLicenseVerified: false, licenseReviewedAt: null, licenseReviewReference: null } : {}),
+    ...(["license", "provisional"].includes(kind) ? { credentialRevision: { increment: 1 }, licenseReviewRevision: null, isLicenseVerified: false, licenseReviewedAt: null, licenseReviewReference: null } : {}),
     ...(kind === "resume" ? { cvParsedText: null } : {}),
   } });
   return NextResponse.json({ success: true });

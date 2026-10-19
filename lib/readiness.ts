@@ -5,6 +5,7 @@ export type ReadinessProfile = {
   isVerified: boolean; resumeUrl: string | null; keywords: string | null;
   careerPhase: string; licenseUrl: string | null; provisionalUrl: string | null;
   licenseNumber: string | null; licenseExpiry: Date | null;
+  credentialRevision?: number; licenseReviewRevision?: number | null;
   isLicenseVerified: boolean; licenseReviewedAt: Date | null;
   candidateProfile?: unknown; degreeUrl?: string | null; statementOfResultUrl?: string | null;
 };

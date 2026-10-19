@@ -37,6 +37,8 @@ export const POST = withApi("candidate", async (request: Request) => {
 				isLicenseVerified: false,
 				licenseReviewedAt: null,
 				licenseReviewReference: null,
+                licenseReviewRevision: null,
+                credentialRevision: { increment: 1 },
 			},
 		});
 
@@ -56,7 +58,7 @@ export const POST = withApi("candidate", async (request: Request) => {
 }, {});
 
 // 🚀 GET HANDLER: Calculates dates and tracks parameters for the frontend dashboard
-export const GET = withApi("candidate", async (request: Request, session) => {
+export const GET = withApi("candidate", async (request: Request) => {
 	try {
 		const { searchParams } = new URL(request.url);
 		const email = searchParams.get("email");
@@ -76,6 +78,7 @@ export const GET = withApi("candidate", async (request: Request, session) => {
 				cpdPoints: true,
 				isLicenseVerified: true,
 				licenseReviewedAt: true,
+                credentialRevision: true, licenseReviewRevision: true, careerPhase: true, candidateProfile: true,
 				name: true,
 			},
 		});
@@ -111,8 +114,8 @@ export const GET = withApi("candidate", async (request: Request, session) => {
 			licenseNumber: user.licenseNumber,
 			cpdPoints: user.cpdPoints,
 			cpdPercent: cpdProgress,
-			isVerified: currentCredentialReview({ ...user, careerPhase: session!.careerPhase, candidateProfile: session!.candidateProfile }),
-			verificationStatus: currentCredentialReview({ ...user, careerPhase: session!.careerPhase, candidateProfile: session!.candidateProfile }) ? "reviewed" : "self_reported",
+			isVerified: currentCredentialReview(user),
+			verificationStatus: currentCredentialReview(user) ? "reviewed" : "self_reported",
 			name: user.name,
 		});
 	} catch (error: unknown) {

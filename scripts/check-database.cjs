@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 async function main() {
   const columns = await prisma.$queryRaw`SELECT table_name, column_name FROM information_schema.columns WHERE table_schema = 'public'`;
   const needed = {
-    User: ['licenseReviewedAt','licenseReviewReference','scanTime','scanDays','scanTimezone','lastScheduledAt','scanLeaseUntil'],
+    User: ['credentialRevision','licenseReviewRevision','licenseReviewedAt','licenseReviewReference','scanTime','scanDays','scanTimezone','lastScheduledAt','scanLeaseUntil'],
     Employer: ['verificationReference','verifiedAt','verificationStatus','verificationDetails','verificationRevision','verificationFeedback'],
     SafetyReview: ['id','kind','subjectId','decision','reviewer','evidence','createdAt'],
     JobReport: ['id','jobId','reporterId','reason','details','status','resolution','createdAt','resolvedAt'],

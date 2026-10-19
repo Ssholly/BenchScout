@@ -1,5 +1,9 @@
 # Launch audit — 19 October 2026
 
+## 19 October 2026 — LA-11 implementation update
+
+Candidate review now uses version-bound private evidence, candidate identity checks and an atomic decision/audit transaction. Credential mutation and older profile JSON writes cannot silently inherit an approval. Historical flags need a fresh review. See [Candidate credential review](CANDIDATE-CREDENTIAL-REVIEW.md) for scope and remaining named-admin/staging/retention limits. Validation and deployment evidence follow separately; historical findings below are preserved. Full staging acceptance and pilot HOLD remain in force.
+
 ## 19 October 2026 — LA-10 implementation update
 
 Selected application documents and a submission reference record are now implemented. See [Application document sharing](APPLICATION-DOCUMENT-SHARING.md) for exact behaviour, legacy CV-only migration, deletion/replacement rules and limits. The record does not retain immutable file copies; existing attachments cannot yet be changed in place. Full staging/private-store acceptance remains open and pilot status stays HOLD. Migration application and configured database compatibility passed; lint, TypeScript, 177 tests, build and 320/390px synthetic component checks passed. Testing deployment for `b02fdaf` succeeded; see Deployment for evidence. LA-11 credential-review concurrency is the next implementation priority. The findings below remain historical evidence.

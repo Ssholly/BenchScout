@@ -1,5 +1,12 @@
 # Change log
 
+## 19 October 2026 — Candidate credential review safeguards
+
+- Added credential/review version fields and revision-checked, transactional admin decisions with mandatory approval evidence and SafetyReview auditing. Legacy review flags require a fresh version-bound review to show current.
+- Added current-candidate lookup/private evidence download controls. Stale/wrong-candidate decisions fail closed; file/metadata/stage/name changes invalidate approval. Unrelated JSON profile writers now guard the revision to avoid restoring stale provisional details.
+- Validation: lint, TypeScript and 192 tests passed; local mobile controls checked at 320/390px without a real decision. Migration applied and configured database compatibility passed. Build/hosted release evidence is tracked in Deployment.
+- Updated credential badge consumers and the legacy private-migration script. See [Candidate credential review](CANDIDATE-CREDENTIAL-REVIEW.md) for contracts, migration, operator responsibilities and validation limits. No new provider/configuration or automatic registry verification.
+
 ## 19 October 2026 — Selected application documents
 
 - Added CV-required, default-unchecked optional document selection and pre-submit summary for direct applications. Server validates current file revisions and records selected private references per application.

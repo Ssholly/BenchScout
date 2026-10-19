@@ -42,7 +42,10 @@ export async function runJobScan(userId: string, overrides: Partial<MatchPrefere
     }
     await prisma.runHistory.create({ data: { userId, matches: newMatches.length, t1Count: newMatches.filter(job => job.tier === 1).length, trigger, status: emailStatus } });
     const report = {location:preferences.location,careerPhase:preferences.careerPhase,scannedAt:now.toISOString(),retrieved:result.jobs.length,matched:matches.length,added:newMatches.length,warnings:result.warnings};
-    await prisma.user.update({where:{id:userId},data:{candidateProfile:{...profileFrom(current.candidateProfile),lastScan:report}}});
+    await prisma.user.update({where:{id:userId,credentialRevision:current.credentialRevision ?? 0},data:{candidateProfile:{...profileFrom(current.candidateProfile),lastScan:report}}}).catch((error: unknown) => {
+      if (error && typeof error === "object" && "code" in error && error.code === "P2025") throw new ApiError(409,"Your credential record changed during the scan. Matches were saved; rerun the scan for your current profile.");
+      throw error;
+    });
     const label = preferences.careerPhase === "internship" ? "placements" : "matches";
     return { success:true, message:`Scan complete for ${preferences.location}: ${matches.length} ${label} matched (${newMatches.length} new) from ${result.jobs.length} retrieved listings.${!matches.length ? " No listings met your professional stage, location and minimum score." : ""}${emailStatus === "email failed" ? " Matches were saved, but the email could not be delivered." : ""}`, warnings:result.warnings, report };
   } catch (error) {

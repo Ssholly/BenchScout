@@ -31,7 +31,7 @@ test('scheduled scans use the configured timezone and run once per local day', (
   assert.equal(scheduleDue(user, new Date('2026-10-10T08:00:00Z')), false);
 });
 test('readiness does not turn self-reported license data into verification', () => {
-  const user = { isVerified: true, resumeUrl: 'https://test.private.blob.vercel-storage.com/cv.pdf', keywords: 'Blood bank', careerPhase: 'licensed', licenseUrl: 'https://test.private.blob.vercel-storage.com/license.pdf', provisionalUrl: null, licenseNumber: '123', licenseExpiry: new Date('2030-01-01'), isLicenseVerified: true, licenseReviewedAt: null };
+  const user = { isVerified: true, resumeUrl: 'https://test.private.blob.vercel-storage.com/cv.pdf', keywords: 'Blood bank', careerPhase: 'licensed', licenseUrl: 'https://test.private.blob.vercel-storage.com/license.pdf', provisionalUrl: null, licenseNumber: '123', licenseExpiry: new Date('2030-01-01'), isLicenseVerified: true, credentialRevision: 1, licenseReviewRevision: 1, licenseReviewedAt: null };
   const result = applicationReadiness(user, new Date('2026-10-09'));
   assert.equal(result.complete, 5); assert.equal(result.credentialStatus, 'Self-reported');
   assert.equal(applicationReadiness({ ...user, licenseReviewedAt: new Date() }).credentialStatus, 'Reviewed');

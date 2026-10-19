@@ -15,7 +15,7 @@ export const POST = withApi("candidate", async (request, session) => {
   const zone = typeof body.scanTimezone === "string" ? zones[body.scanTimezone] || body.scanTimezone : undefined;
   if (zone) { try { new Intl.DateTimeFormat("en", { timeZone: zone }); } catch { throw new ApiError(400, "Invalid timezone."); } }
   if (body.alertTier !== undefined && !["Tier 1 Only", "Tier 1 & Tier 2", "All Tiers"].includes(body.alertTier)) throw new ApiError(400, "Invalid alert tier.");
-  const user = await prisma.user.update({ where: { id: session!.id }, data: {
+  const user = await prisma.user.update({ where: { id: session!.id, credentialRevision: session!.credentialRevision ?? 0 }, data: {
     ...(typeof body.jobAlertsEnabled === "boolean" ? { alertsActive: body.jobAlertsEnabled } : {}),
     ...(typeof body.autoSendEmail === "boolean" ? { autoSendEmail: body.autoSendEmail } : {}),
     ...(typeof body.targetLocation === "string" ? { location: body.targetLocation.slice(0,250) } : {}),
@@ -25,6 +25,9 @@ export const POST = withApi("candidate", async (request, session) => {
     ...(body.scanTime !== undefined ? { scanTime: body.scanTime } : {}),
     ...(body.scanDays !== undefined ? { scanDays: [...new Set(body.scanDays as string[])].join(",") } : {}),
     ...(zone ? { scanTimezone: zone } : {}),
-  } });
+  } }).catch((error: unknown) => {
+    if (error && typeof error === "object" && "code" in error && error.code === "P2025") throw new ApiError(409, "Your profile changed. Refresh before saving preferences again.");
+    throw error;
+  });
   return NextResponse.json({ success: true, user });
 });

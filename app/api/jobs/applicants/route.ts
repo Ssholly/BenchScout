@@ -11,7 +11,7 @@ import { sharedProfessionalSummary } from "@/lib/professional-summary";
 export const GET = withApi("employer", async request => {
   const jobId = new URL(request.url).searchParams.get("jobId")!;
   const applications = await prisma.application.findMany({ where: { jobId }, include: { user: { select: {
-    id: true, name: true, email: true, location: true, careerPhase: true, candidateProfile: true, licenseUrl: true, provisionalUrl: true, degreeUrl: true, statementOfResultUrl: true, resumeUrl: true, placementLetterUrl: true, certificateUrl: true, isLicenseVerified: true, licenseReviewedAt: true, licenseExpiry: true,
+    id: true, name: true, email: true, location: true, careerPhase: true, candidateProfile: true, licenseUrl: true, provisionalUrl: true, degreeUrl: true, statementOfResultUrl: true, resumeUrl: true, placementLetterUrl: true, certificateUrl: true, isLicenseVerified: true, licenseReviewedAt: true, credentialRevision: true, licenseReviewRevision: true, licenseExpiry: true,
   } } }, orderBy: { createdAt: "desc" } });
   return NextResponse.json({ success: true, applications: applications.map(application=>{const {candidateProfile:profile,location,...user}=application.user;const {documentSelection,...record}=application;return {...record,selectedDocumentKinds:selectedDocumentKinds(documentSelection),user:{...restrictApplicantDocuments(user,[documentSelection],application.id),professionalSummary:sharedProfessionalSummary({...user,location,candidateProfile:profile}),isLicenseVerified:currentCredentialReview(application.user),placementStage:user.careerPhase === "internship" ? candidateProfile(profile).placementStage : undefined}};}) });
 }, { job: "employer", verifiedEmployer: true });

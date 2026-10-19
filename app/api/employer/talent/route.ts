@@ -11,7 +11,7 @@ export const GET = withApi("employer", async (request, session) => {
   const location = new URL(request.url).searchParams.get("location") || "";
   const users = await prisma.user.findMany({
     where: { applications: { some: { job: { employerId: session!.id } } }, ...(location ? { location: { contains: location, mode: "insensitive" as const } } : {}) },
-    select: { id: true, name: true, email: true, location: true, careerPhase: true, candidateProfile: true, applications: { where: { job: { employerId: session!.id } }, select: { documentSelection: true } }, provisionalUrl: true, licenseUrl: true, degreeUrl: true, resumeUrl: true, isLicenseVerified: true, licenseReviewedAt: true, licenseExpiry: true },
+    select: { id: true, name: true, email: true, location: true, careerPhase: true, candidateProfile: true, applications: { where: { job: { employerId: session!.id } }, select: { documentSelection: true } }, provisionalUrl: true, licenseUrl: true, degreeUrl: true, resumeUrl: true, isLicenseVerified: true, licenseReviewedAt: true, credentialRevision: true, licenseReviewRevision: true, licenseExpiry: true },
     orderBy: { name: "asc" }, take: 100,
   });
   return NextResponse.json({ success: true, users: users.map(({candidateProfile: profile,applications,...user})=>({...restrictApplicantDocuments(user,applications.map(application=>application.documentSelection)),professionalSummary:sharedProfessionalSummary({...user,candidateProfile:profile}),isLicenseVerified:currentCredentialReview({...user,candidateProfile:profile}),placementStage: user.careerPhase === "internship" ? candidateProfile(profile).placementStage : undefined})) });
