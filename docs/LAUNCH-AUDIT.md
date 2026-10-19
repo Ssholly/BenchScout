@@ -2,7 +2,7 @@
 
 ## Follow-up: professional summary priority
 
-LA-09 is implemented locally through explicit, default-off candidate consent, an allowlisted live professional summary, Settings draft preview, saved direct-application preview and employer applicant/previous-applicant views. Seven new tests cover data minimization, consent and access checks. See [Professional summaries](PROFESSIONAL-SUMMARIES.md) for all contracts and limitations. LA-10 remains open: this does not implement selected-document sharing or submission snapshots. The original first-pass findings below remain dated evidence; release status is recorded in Deployment.
+LA-09 is implemented and deployed to testing through explicit, default-off candidate consent, an allowlisted live professional summary, Settings draft preview, saved direct-application preview and employer applicant/previous-applicant views. Seven new tests cover data minimization, consent and access checks; the full suite passes 172 tests. Vercel Preview for `f0d1a67` is Ready, and the hosted Settings controls were checked without saving changes. See [Professional summaries](PROFESSIONAL-SUMMARIES.md) for all contracts and limitations and [Deployment](DEPLOYMENT.md) for exact release evidence. LA-10 remains open: this does not implement selected-document sharing or submission snapshots. The original first-pass findings below remain dated evidence.
 
 ## Decision and scope
 

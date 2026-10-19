@@ -1,5 +1,11 @@
 # Change log
 
+## 19 October 2026 — Testing deployment confirmed
+
+- Pushed `f0d1a67` to `origin/testing`. Vercel Preview deployment `G8vefGUn9bNV5Sad6Ey8ENUNciiK` is Ready and assigned to the existing testing alias.
+- Confirmed the hosted Settings summary-sharing controls and employer preview render with sharing off. No real consent change or applicant decision was saved.
+- Recorded exact deployment/source links in Deployment. Local validation passed lint, TypeScript, 172 tests, build and diff checks; configured migration status is up to date. Full staging acceptance and remaining audit priorities are still open; no production push.
+
 ## 19 October 2026 — Opt-in professional summaries and candidate preview
 
 - Added saved default-off consent in existing candidateProfile JSON, strict API validation and compatibility for older profile clients.
