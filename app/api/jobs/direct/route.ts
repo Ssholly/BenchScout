@@ -10,6 +10,7 @@ export const POST = withApi("employer", async (request: Request, session: import
 	try {
 		const body = await request.json();
 		const { role, company, loc, salary, skills, jobType, employerId } = body;
+        if (body.noFees !== true) throw new ApiError(400, "Confirm that applicants will not be charged any recruitment fees.");
         if (jobType && !["full-time", "internship", "locum", "contract", "part-time"].includes(jobType)) throw new ApiError(400, "Choose a valid vacancy type.");
         const deadline = typeof body.deadline === "string" ? body.deadline : "";
         if (deadline && (!/^\d{4}-\d{2}-\d{2}$/.test(deadline) || !Number.isFinite(Date.parse(deadline)) || new Date(deadline).toISOString().slice(0,10) !== deadline)) throw new ApiError(400, "Enter a valid application deadline.");
@@ -35,11 +36,11 @@ export const POST = withApi("employer", async (request: Request, session: import
 				url: `/matches/direct/${employerId}`, // Required field restored!
 				score: 0,
 				tier: jobType === "internship" ? 2 : 1,
-				status: "active",
+				status: "pending-review",
 				applied: false,
 				jobType: jobType || "full-time",
 				isMlscnApproved: false,
-                listingDetails: { deadline, requiredDocuments },
+                listingDetails: { deadline, requiredDocuments, noFees: true },
 				isDirectPost: true,
 				employerId,
 			},
@@ -48,7 +49,7 @@ export const POST = withApi("employer", async (request: Request, session: import
 		return NextResponse.json({
 			success: true,
 			job: directJob,
-			message: "Global broadcast successfully deployed.",
+			message: "Vacancy submitted for review. It will appear in matches after approval.",
 		});
 	} catch (error: unknown) {
     if (error instanceof ApiError) throw error;
@@ -92,6 +93,7 @@ export const PATCH = withApi("employer", async (request: Request) => {
 				salary: salary || "Competitive",
 				skills,
                 listingDetails: { ...details },
+                status: "pending-review",
 			},
 		});
 
@@ -118,17 +120,18 @@ export const DELETE = withApi("employer", async (request: Request) => {
 			);
 		}
 
-		// Securely delete the job only if it belongs to this employer
-		await prisma.job.deleteMany({
+		// Close discovery without cascading deletion of candidate applications/reports.
+		await prisma.job.updateMany({
 			where: {
 				id: jobId,
 				employerId: employerId,
 			},
+			data: { status: "closed" },
 		});
 
 		return NextResponse.json({
 			success: true,
-			message: "Broadcast terminated.",
+			message: "Vacancy closed. Application history preserved.",
 		});
 	} catch (error: unknown) {
     if (error instanceof ApiError) throw error;

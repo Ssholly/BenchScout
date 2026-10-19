@@ -1,5 +1,9 @@
 # Intern and licensed scientist profiles — review proposal
 
+19 October follow-up: [Professional summaries](PROFESSIONAL-SUMMARIES.md) adds default-off sharing consent and previews for interns and licensed scientists, with an explicit employer-facing field list. Private reminders, registration identifiers, salary preferences and training notes are excluded; existing document sharing is separate.
+
+19 October 2026: see [Launch audit](LAUNCH-AUDIT.md) for application readiness, current credential-review expiry checks, employer-response fixes and the professional-summary work still required before pilot acceptance. Earlier validation below is dated history.
+
 Status: integrated locally, 12 October 2026. Both Seeking placement and In training stages are implemented. Licensed-scientist profile, vault, matches and dashboard were checked in the browser. Employer UI, physical-device and production release checks remain pending.
 
 ## Product direction

@@ -23,7 +23,7 @@ npm run check
 npm run build -- --webpack
 ```
 
-Tests run against isolated mocks and never connect to `.env`'s database. They cover session expiry/revocation, cross-account access, applicant ownership, private documents, destructive endpoint removal, rate limits, password rules, salary ownership, application idempotency, matching, scheduling, and profile readiness. A staging database and configured services are still required for full end-to-end delivery testing.
+Tests run against isolated mocks and never connect to `.env`'s database. They cover session expiry/revocation, cross-account access, applicant ownership, private documents, destructive endpoint removal, rate limits, password rules, salary ownership, application idempotency, matching, scheduling, profile readiness, employer evidence/revision checks, vacancy moderation, suspension, scam reporting and removed-listing refreshes. A staging database and configured services are still required for full end-to-end delivery testing.
 
 ## Accounts and documents
 
@@ -31,7 +31,7 @@ Login creates a seven-day HttpOnly cookie containing an opaque random token. Onl
 
 Files are private. `/api/documents` checks ownership on every download. Verified employers may access documents only from candidates who applied to their jobs. Salary contributions use a keyed pseudonymous owner identifier so contributors can edit their own entry; these identifiers are never returned publicly. Keep `SALARY_OWNER_SECRET` stable or existing contributions will need a migration to remain editable.
 
-Employer publication and applicant access require review. `/admin/reviews` records approval/revocation and evidence references using `ADMIN_SECRET`. License review requires a document, registration number, and future expiry. This records a human review; it is not an integration with the regulator's registry.
+Employer publication and applicant access require review. Company submissions, CAC/contact evidence checks, per-vacancy moderation, candidate scam reports and suspension decisions are described in [the employer verification workflow](docs/EMPLOYER-VERIFICATION.md). `/admin/reviews` records approval/revocation and evidence references using `ADMIN_SECRET`. License review requires a document, registration number, and future expiry. This records a human review; it is not an integration with the regulator's registry.
 
 ## Existing deployment upgrade
 
@@ -62,3 +62,21 @@ Rate limits are stored in PostgreSQL. On Vercel the app uses the platform-contro
 ## Product direction
 
 Implemented improvements include an application-readiness checklist, source and relevance explanations, independent review status, honest empty states, idempotent applications, and month-aware interview dates. See [the product roadmap](docs/ROADMAP.md) for the next focused improvements.
+
+
+## Documentation and release records
+
+- [Professional summaries](docs/PROFESSIONAL-SUMMARIES.md): candidate consent, preview, allowlisted fields, employer access, API contracts and limitations.
+
+- [Launch audit](docs/LAUNCH-AUDIT.md): dated findings, local fixes, regression evidence, remaining pilot blockers and release status.
+
+- [Candidate readiness and brand review](docs/CANDIDATE-AND-BRAND-REVIEW.md): profile separation, pilot gaps, focused tests and preliminary CAC/domain checks.
+
+- [Employer and vacancy verification](docs/EMPLOYER-VERIFICATION.md): workflows, every affected screen/component, API payloads, data models, states, access controls, integrations, migration results, tests and remaining checks.
+- [Deployment](docs/DEPLOYMENT.md): database/code rollout sequence and operational checks.
+- [API review](docs/API-REVIEW.md): provider decisions and dated integration updates.
+- [Change log](docs/CHANGELOG.md): additions, changes and deployment status by release.
+
+Update the relevant docs whenever adding or changing features, integrations, API contracts, schema, permissions, configuration or operational behaviour. Record what was actually verified and distinguish local code, applied database changes and hosted deployment status. Do not copy credentials, private submissions or real candidate/report data into documentation.
+
+The [BenchScout business and launch proposal](docs/proposals/BenchScout_Business_and_Launch_Proposal.docx) presents the employer-funded recruitment strategy, controlled pilot and phased launch roadmap. Its [editable text source](docs/proposals/BenchScout_Business_and_Launch_Proposal.md) is retained for future updates. Targets and commercial terms in the proposal are planning assumptions, not reported traction or approved commitments.

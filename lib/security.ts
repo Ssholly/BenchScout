@@ -1,4 +1,5 @@
 import { createHash, createHmac, timingSafeEqual } from "node:crypto";
+import { currentCredentialReview } from "@/lib/credential-review";
 
 export class ApiError extends Error {
   constructor(public status: number, message: string) { super(message); }
@@ -59,7 +60,7 @@ export function sanitizeResponse(value: unknown): unknown {
     if (key in documentFields && entry) {
       clean[key] = typeof record.id === "string" ? documentUrl(record.id, documentFields[key]) : null;
     } else if (key === "isLicenseVerified") {
-      clean[key] = entry === true && Boolean(record.licenseReviewedAt);
+      clean[key] = currentCredentialReview(record);
     } else clean[key] = sanitizeResponse(entry);
   }
   if (typeof record.id === "string" && Object.keys(documentFields).some(field => field in record)) {

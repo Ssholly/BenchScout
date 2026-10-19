@@ -1321,7 +1321,7 @@ export default function SettingsPage() {
 								width: "100%",
 							}}
 						>
-							<CandidateCareerProfile key={JSON.stringify(career)} phase={career.phase} initial={career.profile} onSaved={()=>showToast("Career profile saved.")} />
+							<CandidateCareerProfile key={JSON.stringify(career)} phase={career.phase} initial={career.profile} primaryLocation={userData.location} onSaved={()=>showToast("Career profile saved.")} />
 <div>
 								<h2
 									style={{

@@ -175,6 +175,10 @@ model MlscnNews {
 // ==========================================
 model Employer {
   id            String   @id @default(cuid())
+  verificationStatus String @default("unsubmitted")
+  verificationDetails Json @default("{}")
+  verificationRevision Int @default(0)
+  verificationFeedback String?
   verificationReference String?
   verifiedAt DateTime?
   companyName   String   @unique
@@ -186,6 +190,32 @@ model Employer {
   emailVerifiedAt DateTime?
   jobs          Job[]    // A hospital can have many direct job postings
   createdAt     DateTime @default(now())
+}
+
+// Append-only decisions retain the evidence even after a submission is replaced.
+model SafetyReview {
+  id String @id @default(cuid())
+  kind String
+  subjectId String
+  decision String
+  reviewer String
+  evidence Json
+  createdAt DateTime @default(now())
+  @@index([kind, subjectId, createdAt])
+}
+
+model JobReport {
+  id String @id @default(cuid())
+  jobId String
+  reporterId String
+  reason String
+  details String
+  status String @default("open")
+  resolution String?
+  createdAt DateTime @default(now())
+  resolvedAt DateTime?
+  @@unique([jobId, reporterId])
+  @@index([status, createdAt])
 }
 
 // 🚀 NEW: The ATS Junction Table (The Employer's Inbox)

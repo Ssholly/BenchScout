@@ -1,7 +1,10 @@
 "use client";
 import { setClientIdentity } from "@/lib/client-identity";
 import { signOutToHome } from "@/lib/client-logout";
+import EmployerVerification from "@/components/EmployerVerification";
+import ProfessionalSummary from "@/components/ProfessionalSummary";
 import Toast from "@/components/Toast";
+import { updateApplicant } from "@/lib/applicant-update";
 import { useCallback } from "react";
 import { csvCell } from "@/lib/csv";
 import { startTransition } from "react";
@@ -27,6 +30,7 @@ export default function EmployerGateway() {
 	const mounted = useMounted();
 	const [view, setView] = useState<"login" | "register" | "dashboard">("login");
 	const [employer, setEmployer] = useState<ClientEmployer | null>(null);
+	const handleVerificationStatus = useCallback((verified: boolean) => setEmployer(current => current && current.isVerified !== verified ? { ...current, isVerified: verified } : current), []);
 
 	// ACTIVE PANEL SUB-TAB STATE
 	const [activeTab, setActiveTab] = useState<"broadcasts" | "crm" | "invites">(
@@ -40,6 +44,7 @@ export default function EmployerGateway() {
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState("");
 
+	const [noFees, setNoFees] = useState(false);
 	const [role, setRole] = useState("");
 	const [loc, setLoc] = useState("");
 	const [salary, setSalary] = useState("");
@@ -58,6 +63,7 @@ export default function EmployerGateway() {
 
 	// TALENT SOURCING CRM DIRECTORY STATE
 	const [talentPool, setTalentPool] = useState<Candidate[]>([]);
+	const [updatingApplicant, setUpdatingApplicant] = useState<string | null>(null);
 	const [crmLoading, setCrmLoading] = useState(false);
 	const [filterLocation, setFilterLocation] = useState("");
 	const [invitingId, setInvitingId] = useState<string | null>(null);
@@ -248,78 +254,38 @@ export default function EmployerGateway() {
 	};
 
 	const handleRejectApplicant = async (applicationId: string) => {
-		setDrawer((prev) => ({
-			...prev,
-			applicants: prev.applicants.map((app) =>
-				app.id === applicationId ? { ...app, status: "rejected" } : app,
-			),
-		}));
+        if (updatingApplicant) return;
+        const identity = localStorage.getItem("benchscout_identity");
+        setUpdatingApplicant(applicationId);
+        try {
+            const { application } = await updateApplicant({ applicationId, status: "rejected" });
+            if (identity !== localStorage.getItem("benchscout_identity")) return;
+            setDrawer(previous => ({ ...previous, applicants: previous.applicants.map(app => app.id === applicationId ? { ...app, status: application.status } : app) }));
+            showToast("Application marked as rejected. The candidate was notified in the app.", "warning");
+        } catch (error) {
+            if (identity === localStorage.getItem("benchscout_identity")) showToast(error instanceof Error ? error.message : "Could not update this application. Please retry.", "error");
+        } finally { setUpdatingApplicant(null); }
+    };
 
-		try {
-			await fetch("/api/jobs/applicants", {
-				method: "PATCH",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ applicationId, status: "rejected" }),
-			});
-			showToast("Candidate rejected.", "warning");
-		} catch {
-			showToast("Network error while updating status.", "error");
-		}
-	};
-
-	const submitInterviewSchedule = async (e: React.FormEvent) => {
-		e.preventDefault();
-		setLoading(true);
-
-		const updatedAppStatus = {
-			status: "shortlisted",
-			interviewDate: interviewModal.date,
-			interviewTime: interviewModal.time,
-			interviewLoc: interviewModal.location,
-		};
-
-		setDrawer((prev) => ({
-			...prev,
-			applicants: prev.applicants.map((app) =>
-				app.id === interviewModal.applicationId
-					? { ...app, ...updatedAppStatus }
-					: app,
-			),
-		}));
-
-		try {
-			const res = await fetch("/api/jobs/applicants", {
-				method: "PATCH",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({
-					applicationId: interviewModal.applicationId,
-					...updatedAppStatus,
-				}),
-			});
-			const data = await res.json();
-
-			if (data.success) {
-				showToast(
-					"Interview Locked! Priority email and notification dispatched.",
-					"success",
-				);
-				setInterviewModal({
-					isOpen: false,
-					applicationId: "",
-					date: "",
-					time: "",
-					location: "",
-					candidateName: "",
-				});
-			} else {
-				showToast("Failed to schedule interview.", "error");
-			}
-		} catch {
-			showToast("Network error while scheduling.", "error");
-		} finally {
-			setLoading(false);
-		}
-	};
+    const submitInterviewSchedule = async (event: React.FormEvent) => {
+        event.preventDefault();
+        if (updatingApplicant) return;
+        const identity = localStorage.getItem("benchscout_identity");
+        setUpdatingApplicant(interviewModal.applicationId);
+        setLoading(true);
+        try {
+            const { application, emailDelivered } = await updateApplicant({
+                applicationId: interviewModal.applicationId, status: "shortlisted",
+                interviewDate: interviewModal.date, interviewTime: interviewModal.time, interviewLoc: interviewModal.location,
+            });
+            if (identity !== localStorage.getItem("benchscout_identity")) return;
+            setDrawer(previous => ({ ...previous, applicants: previous.applicants.map(app => app.id === application.id ? { ...app, status: application.status, interviewDate: application.interviewDate, interviewTime: application.interviewTime, interviewLoc: application.interviewLoc } : app) }));
+            showToast(emailDelivered ? "Interview saved. In-app notification created and email sent." : "Interview saved and candidate notified in the app. Email delivery failed; contact the candidate directly.", emailDelivered ? "success" : "warning");
+            setInterviewModal({ isOpen: false, applicationId: "", date: "", time: "", location: "", candidateName: "" });
+        } catch (error) {
+            if (identity === localStorage.getItem("benchscout_identity")) showToast(error instanceof Error ? error.message : "Could not schedule this interview. Please retry.", "error");
+        } finally { setLoading(false); setUpdatingApplicant(null); }
+    };
 
 	useEffect(() => {
 		let cancelled = false;
@@ -404,7 +370,7 @@ export default function EmployerGateway() {
 					salary,
 					skills,
 					jobType,
-                    deadline, requiredDocuments,
+                    deadline, requiredDocuments, noFees,
 
 					employerId: employer!.id,
 				}),
@@ -413,7 +379,7 @@ export default function EmployerGateway() {
 
 			if (data.success) {
 				showToast(
-					"Recruitment listing published directly to matches catalog!",
+					"Vacancy submitted for review. It will appear in matches after approval.",
 					"success",
 				);
 				setRole("");
@@ -422,7 +388,7 @@ export default function EmployerGateway() {
 				setSkills("");
 				fetchEmployerJobs(employer!.id);
 			} else {
-				showToast("Failed to sync listing to platform network.", "error");
+				showToast(data.error || "Could not submit vacancy.", "error");
 			}
 		} catch {
 			showToast("Network error processing request.", "error");
@@ -451,7 +417,7 @@ export default function EmployerGateway() {
 			const data = await res.json();
 
 			if (data.success) {
-				showToast("Broadcast updated successfully!", "success");
+				showToast("Vacancy updated and sent for review.", "success");
 				setEditModal((prev) => ({ ...prev, isOpen: false }));
 				fetchEmployerJobs(employer!.id);
 			} else {
@@ -476,14 +442,14 @@ export default function EmployerGateway() {
 				}),
 			});
 			if (res.ok) {
-				showToast("Broadcast terminated successfully.", "success");
+				showToast("Vacancy closed. Application history preserved.", "success");
 				setDeleteModal({ isOpen: false, jobId: null });
 				fetchEmployerJobs(employer!.id);
 			} else {
-				showToast("Failed to terminate broadcast.", "error");
+				showToast("Failed to close vacancy.", "error");
 			}
 		} catch {
-			showToast("Network error terminating broadcast.", "error");
+			showToast("Network error closing vacancy.", "error");
 		}
 	};
 
@@ -1211,7 +1177,7 @@ export default function EmployerGateway() {
 									letterSpacing: "-0.2px",
 								}}
 							>
-								Terminate Broadcast?
+								Close vacancy?
 							</h3>
 							<p
 								style={{
@@ -1222,8 +1188,7 @@ export default function EmployerGateway() {
 									fontWeight: 550,
 								}}
 							>
-								This action removes the job listing across the scientist
-								matching network. This cannot be undone.
+								This stops new applications and removes the vacancy from discovery. Existing applications and their history are preserved.
 							</p>
 							<div style={{ display: "flex", gap: "10px" }}>
 								<button
@@ -1259,7 +1224,7 @@ export default function EmployerGateway() {
 										transition: "0.2s",
 									}}
 								>
-									Terminate
+									Close vacancy
 								</button>
 							</div>
 						</div>
@@ -1576,7 +1541,8 @@ export default function EmployerGateway() {
 													gap: "10px",
 												}}
 											>
-												<h4
+												<ProfessionalSummary summary={app.user.professionalSummary ?? null} />
+<h4
 													style={{
 														fontSize: "11px",
 														fontWeight: 800,
@@ -1801,7 +1767,8 @@ export default function EmployerGateway() {
 												{app.status === "pending" || !app.status ? (
 													<div style={{ display: "flex", gap: "10px" }}>
 														<button
-															onClick={() => handleRejectApplicant(app.id)}
+															disabled={updatingApplicant !== null}
+														onClick={() => handleRejectApplicant(app.id)}
 															style={{
 																flex: 1,
 																padding: "12px",
@@ -1959,6 +1926,7 @@ export default function EmployerGateway() {
 						</button>
 					</div>
 
+					<EmployerVerification key={employer.id} onStatusChange={handleVerificationStatus} />
 					{/* GLASS NAVIGATION SWITCHER FOR TAB MODE */}
 					<div
 						className="employer-tabs"
@@ -2109,6 +2077,7 @@ export default function EmployerGateway() {
 </select></label>
 											{jobType === "internship" && <p style={{fontSize:11,color:"#64748b",lineHeight:1.6,margin:0}}>Internship-site approval is shown only after independent review of official MLSCN evidence.</p>}
 										</div>
+										<label style={{display:"flex",gap:8,fontSize:12,lineHeight:1.6,marginBottom:14}}><input type="checkbox" required checked={noFees} onChange={event => setNoFees(event.target.checked)} />I am authorised to recruit for this role. Applicants will not be charged application, interview, placement or processing fees.</label>
 										<button
 											type="submit"
 											disabled={loading}
@@ -2126,8 +2095,8 @@ export default function EmployerGateway() {
 											}}
 										>
 											{loading
-												? "Publishing…"
-												: "Publish vacancy"}
+												? "Submitting…"
+												: "Submit for review"}
 										</button>
 									</form>
 								</div>
@@ -2427,7 +2396,7 @@ export default function EmployerGateway() {
 																			display: "block",
 																		}}
 																	></span>{" "}
-																	{job.status === "active" ? "Active" : (job.status || "Unknown").replaceAll("_", " ")}
+																	{job.status === "active" ? "Active" : (job.status === "pending-review" ? "Awaiting review" : (job.status || "Unknown").replaceAll("_", " "))}
 																</span>
 																<button
 																	onClick={() =>
@@ -2530,7 +2499,7 @@ export default function EmployerGateway() {
 																		transition: "0.2s",
 																	}}
 																>
-																	Terminate
+																	Close vacancy
 																</button>
 															</div>
 														</td>
@@ -2800,6 +2769,7 @@ export default function EmployerGateway() {
 															: "Invite to Placement"}
 													</button>
 												</div>
+<div style={{flexBasis:"100%",minWidth:0}}><ProfessionalSummary summary={user.professionalSummary ?? null} /></div>
 											</div>
 										);
 									})}

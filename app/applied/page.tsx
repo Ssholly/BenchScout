@@ -121,11 +121,11 @@ function AppliedPipeline() {
                 method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ jobId }),
             });
             const result = await response.json();
-            if (!response.ok) throw new Error(result.error || "Could not return this job to Matches. Please retry.");
+            if (!response.ok) throw new Error(result.error || "Could not remove this application. Please retry.");
             setCards(previous => previous.filter(card => card.id !== jobId));
             window.dispatchEvent(new Event("jobsUpdated"));
         } catch (error) {
-            setPipelineError(error instanceof Error ? error.message : "Could not return this job to Matches. Please retry.");
+            setPipelineError(error instanceof Error ? error.message : "Could not remove this application. Please retry.");
         } finally { setUpdatingId(null); }
 
 	};
@@ -439,7 +439,7 @@ function AppliedPipeline() {
 										>
 											<button
 												onClick={(e) => handleRemoveApplication(e, card.id)}
-												title="Return job to Matches" aria-label="Return job to Matches" disabled={updatingId !== null}
+												title={card.isDirectPost ? "Withdraw application" : "Return job to Matches"} aria-label={card.isDirectPost ? "Withdraw application" : "Return job to Matches"} disabled={updatingId !== null}
 												style={{
 													position: "absolute",
 													top: "12px",

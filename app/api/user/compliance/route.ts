@@ -1,3 +1,4 @@
+import { currentCredentialReview } from "@/lib/credential-review";
 import { ApiError, textField } from "@/lib/security";
 import { withApi } from "@/lib/api";
 import { NextResponse } from "next/server";
@@ -55,7 +56,7 @@ export const POST = withApi("candidate", async (request: Request) => {
 }, {});
 
 // 🚀 GET HANDLER: Calculates dates and tracks parameters for the frontend dashboard
-export const GET = withApi("candidate", async (request: Request) => {
+export const GET = withApi("candidate", async (request: Request, session) => {
 	try {
 		const { searchParams } = new URL(request.url);
 		const email = searchParams.get("email");
@@ -110,8 +111,8 @@ export const GET = withApi("candidate", async (request: Request) => {
 			licenseNumber: user.licenseNumber,
 			cpdPoints: user.cpdPoints,
 			cpdPercent: cpdProgress,
-			isVerified: user.isLicenseVerified && Boolean(user.licenseReviewedAt),
-			verificationStatus: user.isLicenseVerified && user.licenseReviewedAt ? "reviewed" : "self_reported",
+			isVerified: currentCredentialReview({ ...user, careerPhase: session!.careerPhase, candidateProfile: session!.candidateProfile }),
+			verificationStatus: currentCredentialReview({ ...user, careerPhase: session!.careerPhase, candidateProfile: session!.candidateProfile }) ? "reviewed" : "self_reported",
 			name: user.name,
 		});
 	} catch (error: unknown) {

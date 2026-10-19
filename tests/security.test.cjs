@@ -143,7 +143,7 @@ test('logout deletes the persisted session and clears the cookie', async () => {
 test('duplicate applications use an idempotent per-candidate upsert', async () => {
   currentJob = { id: 'job', jobType:'full-time', userId: null, employerId: 'employer', isDirectPost: true, status: 'active' };
   prisma.job.findUniqueOrThrow = async () => currentJob;
-  prisma.user.findUniqueOrThrow = async () => ({ id: 'owner', resumeUrl: 'private' });
+  prisma.user.findUniqueOrThrow = async () => ({ id: 'owner', resumeUrl: 'https://store.private.blob.vercel-storage.com/cv.pdf' });
   const records = new Set(); prisma.application.upsert = async input => { records.add(`${input.where.jobId_userId.jobId}:${input.where.jobId_userId.userId}`); return {}; };
   const apply = require('../app/api/apply/route.ts').POST;
   assert.equal((await apply(request('/api/apply', { jobId: 'job' }))).status, 200);

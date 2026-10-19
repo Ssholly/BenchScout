@@ -3,8 +3,10 @@ import { useState } from "react";
 import { candidateProfile, type CandidateProfile } from "@/lib/candidate-profile";
 import styles from "./CandidateCareer.module.css";
 import { invalidateSharedPageRequests } from "@/lib/shared-page-request";
+import { professionalSummary } from "@/lib/professional-summary";
+import ProfessionalSummary from "@/components/ProfessionalSummary";
 
-export default function CandidateCareerProfile({ phase, initial, onSaved }: { phase: string; initial: unknown; onSaved?: () => void }) {
+export default function CandidateCareerProfile({ phase, initial, primaryLocation, onSaved }: { phase: string; initial: unknown; primaryLocation?: string; onSaved?: () => void }) {
   const [careerPhase, setPhase] = useState(phase);
   const [profile, setProfile] = useState(candidateProfile(initial));
   const [confirmed, setConfirmed] = useState(false);
@@ -12,7 +14,7 @@ export default function CandidateCareerProfile({ phase, initial, onSaved }: { ph
   const [message, setMessage] = useState("");
   const intern = careerPhase === "internship";
   const changed = phase !== careerPhase;
-  function field(key: keyof Omit<CandidateProfile, "placementStage" | "relocation">, label: string, type = "text", help?: string) {
+  function field(key: keyof Omit<CandidateProfile, "placementStage" | "relocation" | "shareProfessionalSummary">, label: string, type = "text", help?: string) {
     return <label className={`${styles.field} ${["institution", "specialties", "preferredLocations", "provisionalNumber", "placementInstitution", "nextAction"].includes(key) ? styles.wideField : ""}`} key={key}>{label}<input type={type} value={profile[key]} maxLength={500} disabled={busy} onChange={event => setProfile(value => ({ ...value, [key]: event.target.value }))} />{help && <small>{help}</small>}</label>;
   }
   async function save(event: React.FormEvent) {
@@ -47,6 +49,13 @@ export default function CandidateCareerProfile({ phase, initial, onSaved }: { ph
       <label className={styles.check}><input disabled={busy} type="checkbox" checked={profile.relocation} onChange={event => setProfile(value => ({ ...value, relocation: event.target.checked }))} />Open to relocation</label>
       {intern && profile.placementStage === "training" && <div className={styles.subsection}><h3>Current placement</h3><p>Record your institution and start date. Dates describe your own record, not verified completion.</p><div className={styles.grid}>{field("placementInstitution", "Placement institution")}{field("placementStart", "Start date", "date")}{field("placementEnd", "Expected completion date", "date")}</div></div>}
       <details className={styles.subsection}><summary className={styles.reminderToggle}>Optional reminder</summary><div className={styles.grid}>{field("nextAction", "Reminder (optional)", "text", "For example: prepare interview documents")}{field("nextActionDate", "Reminder date (optional)", "date")}</div></details>
+      <div className={styles.subsection}>
+        <h3>Professional summary sharing</h3>
+        <label className={styles.check}><input disabled={busy} type="checkbox" checked={profile.shareProfessionalSummary} onChange={event => setProfile(value => ({ ...value, shareProfessionalSummary: event.target.checked }))} />Share my professional summary with verified employers I apply to</label>
+        <p>This applies to existing and future applications. Sharing is {profile.shareProfessionalSummary ? "on" : "off"} in this draft; save your career profile to apply changes. You can switch it off later. Previously downloaded copies cannot be recalled.</p>
+        <ProfessionalSummary preview summary={professionalSummary({ careerPhase, candidateProfile: profile, location: primaryLocation })} />
+        <p>Only the details shown above are included in this optional summary. Registration numbers, salary preferences, current training details and personal reminders stay out of it. Document sharing follows the separate application rules.</p>
+      </div>
       {changed && <div className={styles.notice}><p>{intern ? "Changing to Intern preserves your documents and past applications." : "Upload a practicing license and record its registration number and valid expiry in the vault before changing to Licensed scientist."} A stage change does not grant reviewed credentials.</p><label className={styles.check}><input disabled={busy} type="checkbox" checked={confirmed} onChange={event => setConfirmed(event.target.checked)} />I confirm this professional-stage change.</label></div>}
       <div className={styles.footer}><p role="status">{message || "Profile details are self-reported; credentials need independent review."}</p><button disabled={busy || (changed && !confirmed)} className={styles.primary}>{busy ? "Saving…" : "Save career profile"}</button></div>
     </form>

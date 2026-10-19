@@ -5,17 +5,17 @@ import { prisma } from "@/lib/prisma";
 import { withApi } from "@/lib/api";
 import { ApiError, textField } from "@/lib/security";
 import { candidateProfile } from "@/lib/candidate-profile";
+import { currentCredentialReview } from "@/lib/credential-review";
+import { sharedProfessionalSummary } from "@/lib/professional-summary";
 export const GET = withApi("employer", async request => {
   const jobId = new URL(request.url).searchParams.get("jobId")!;
   const applications = await prisma.application.findMany({ where: { jobId }, include: { user: { select: {
-    id: true, name: true, email: true, careerPhase: true, candidateProfile: true, licenseUrl: true, provisionalUrl: true, degreeUrl: true, statementOfResultUrl: true, resumeUrl: true, isLicenseVerified: true, licenseReviewedAt: true,
+    id: true, name: true, email: true, location: true, careerPhase: true, candidateProfile: true, licenseUrl: true, provisionalUrl: true, degreeUrl: true, statementOfResultUrl: true, resumeUrl: true, isLicenseVerified: true, licenseReviewedAt: true, licenseExpiry: true,
   } } }, orderBy: { createdAt: "desc" } });
-  return NextResponse.json({ success: true, applications: applications.map(application=>{const {candidateProfile:profile,...user}=application.user;return {...application,user:{...user,placementStage:user.careerPhase === "internship" ? candidateProfile(profile).placementStage : undefined}};}) });
+  return NextResponse.json({ success: true, applications: applications.map(application=>{const {candidateProfile:profile,location,...user}=application.user;return {...application,user:{...user,professionalSummary:sharedProfessionalSummary({...user,location,candidateProfile:profile}),isLicenseVerified:currentCredentialReview(application.user),placementStage:user.careerPhase === "internship" ? candidateProfile(profile).placementStage : undefined}};}) });
 }, { job: "employer", verifiedEmployer: true });
-export const DELETE = withApi("employer", async request => {
-  const { jobId } = await request.json();
-  await prisma.application.deleteMany({ where: { jobId } });
-  return NextResponse.json({ success: true });
+export const DELETE = withApi("employer", async () => {
+  throw new ApiError(409, "Application history cannot be cleared here. Close the vacancy or update individual application statuses.");
 }, { job: "employer", verifiedEmployer: true });
 export const PATCH = withApi("employer", async request => {
   const { applicationId, status, interviewDate, interviewTime, interviewLoc } = await request.json();

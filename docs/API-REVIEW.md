@@ -29,3 +29,12 @@ This is a code and configuration review, not a penetration-test certification or
 - [Apify API authentication and integrations](https://docs.apify.com/integrations/api)
 - [SmartRecruiters posting API](https://developers.smartrecruiters.com/docs/posting-api)
 - [Resend sending-domain verification](https://resend.com/docs/dashboard/domains/introduction)
+
+
+## Employer safety integration — 16 October 2026
+
+Employer verification now includes private company submissions, independent evidence checks, per-vacancy moderation, candidate reports, suspension and an audit history. See [the employer verification reference](EMPLOYER-VERIFICATION.md#api-contracts) for all routes, payloads, limits, status transitions and privacy controls.
+
+This extends the existing PostgreSQL/Prisma, server-session, administrator-secret and API-wrapper integrations. There is no new external provider, API key, environment variable, automated CAC lookup, regulator verification integration or moderation notification service. The official CAC public search is linked for human review; supplied company websites are stored as references and are not fetched by these routes.
+
+The additive migration has been applied to the configured database, and an authenticated local queue read returned 200. Lint, TypeScript, all 153 tests and the production build passed. Hosted application deployment and complete populated staging flows remain outstanding. Earlier sections above record the 9 October review; their configuration observations are historical, not a replacement for this dated release record or the newer private-storage audit.

@@ -29,7 +29,7 @@ export async function runJobScan(userId: string, overrides: Partial<MatchPrefere
     await prisma.$transaction(matches.map(job => {
       const previous = existing.find(previous => previous.url === job.url);
       const data = { role: job.title, company: job.company, loc: job.loc, desc: job.desc, url: job.url, score: job.score, tier: job.tier, skills: job.skills, source: job.source, lastSeenAt: now, ...(job.deadline ? {listingDetails:{...listingDetails(previous?.listingDetails),deadline:job.deadline}} : {}), jobType: preferences.careerPhase === "internship" ? "internship" : /\blocum\b/i.test(job.title) ? "locum" : /\bcontract\b/i.test(job.title) ? "contract" : /part[- ]time/i.test(job.title) ? "part-time" : "full-time" };
-      return previous ? prisma.job.update({ where: { id: previous.id }, data: { ...data, ...(!previous.applied && previous.status !== "declined" ? { status: "active" } : {}) } }) : prisma.job.create({ data: { ...data, userId, salary: "Not disclosed", status: "active" } });
+      return previous ? prisma.job.update({ where: { id: previous.id }, data: { ...data, ...(!previous.applied && !["declined", "removed"].includes(previous.status || "") ? { status: "active" } : {}) } }) : prisma.job.create({ data: { ...data, userId, salary: "Not disclosed", status: "active" } });
     }));
     let emailStatus = "run only";
     const emailJobs = priorityAlertMatches(newMatches,user);

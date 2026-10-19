@@ -1,3 +1,4 @@
+import JobReport from "@/components/JobReport";
 import type { ClientJob } from "@/lib/types";
 import { internshipApproval, opportunityType, listingDetails } from "@/lib/candidate-profile";
 export default function ListingEvidence({ job }: { job: ClientJob }) {
@@ -10,5 +11,6 @@ export default function ListingEvidence({ job }: { job: ClientJob }) {
     <p style={{ maxWidth: 320, lineHeight: 1.5 }}>{job.matchExplanation || "Check the vacancy requirements before applying."}{seen ? ` Last recorded ${seen}.` : ""} Confirm availability with the employer. Never pay to apply.</p>
     {opportunityType(job) === "internship" && <p style={{lineHeight:1.6}}>{internshipApproval(job) ? <>Internship approval evidence reviewed. <a href={details.approvalSource} target="_blank" rel="noopener noreferrer">MLSCN source ↗</a> · Reviewed {new Date(details.approvalReviewedAt).toLocaleDateString("en-GB")}</> : "Internship-site approval unconfirmed. Company review is a separate check."}</p>}
     {details.deadline && <p>Deadline: {details.deadline}</p>}{details.requiredDocuments && <p>Required documents: {details.requiredDocuments}</p>}
+    <JobReport jobId={job.id} />
   </details>;
 }

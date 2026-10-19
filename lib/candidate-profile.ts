@@ -1,8 +1,8 @@
 export const profileFields = ["institution", "graduationYear", "provisionalNumber", "provisionalExpiry", "preferredLocations", "availabilityDate", "placementInstitution", "placementStart", "placementEnd", "experienceYears", "specialties", "rolePreferences", "salaryPreference", "nextAction", "nextActionDate"] as const;
-export type CandidateProfile = Record<typeof profileFields[number], string> & { placementStage: "seeking" | "training"; relocation: boolean };
+export type CandidateProfile = Record<typeof profileFields[number], string> & { placementStage: "seeking" | "training"; relocation: boolean; shareProfessionalSummary: boolean };
 export function candidateProfile(value: unknown): CandidateProfile {
   const record = value && typeof value === "object" && !Array.isArray(value) ? value as Record<string, unknown> : {};
-  return { ...Object.fromEntries(profileFields.map(key => [key, typeof record[key] === "string" ? record[key] : ""])), placementStage: record.placementStage === "training" ? "training" : "seeking", relocation: record.relocation === true } as CandidateProfile;
+  return { ...Object.fromEntries(profileFields.map(key => [key, typeof record[key] === "string" ? record[key] : ""])), placementStage: record.placementStage === "training" ? "training" : "seeking", relocation: record.relocation === true, shareProfessionalSummary: record.shareProfessionalSummary === true } as CandidateProfile;
 }
 export function careerLabel(phase?: string, profile?: unknown) {
   return phase === "internship" ? candidateProfile(profile).placementStage === "training" ? "Intern · In training" : "Intern · Seeking placement" : "Licensed scientist";

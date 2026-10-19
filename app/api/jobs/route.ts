@@ -29,7 +29,7 @@ export const GET = withApi("either", async (request: Request, session: import("@
 		// Legacy Global Fetch
 		if (!email) {
 			const globalJobs = await prisma.job.findMany({
-				where: { isDirectPost: true, NOT: { status: "cleared" } },
+				where: { isDirectPost: true, employer: { isVerified: true }, status: "active" },
 				orderBy: { score: "desc" },
 			});
 			return NextResponse.json(globalJobs);
@@ -66,7 +66,7 @@ export const GET = withApi("either", async (request: Request, session: import("@
         // A completed manual scan has its own scope; saved profile preferences must not hide it.
         if (scan && scan.careerPhase === session!.careerPhase) discoveryProfile.preferredLocations = scan.location;
 		// Merge standard applied status with B2B ATS applied status + VIP Scout flag
-		const formattedJobs = jobs.filter(job => job.applied || job.applications.length > 0 || (!legacyPortalUrls.includes(job.url) && opportunityForPhase(job, session!.careerPhase || "licensed") && opportunityForPreferences(job, session!.careerPhase || "licensed", discoveryProfile, session!.location) && job.status === "active")).map((job) => {
+		const formattedJobs = jobs.filter(job => job.applied || job.applications.length > 0 || ((!job.isDirectPost || job.employer?.isVerified === true) && !legacyPortalUrls.includes(job.url) && opportunityForPhase(job, session!.careerPhase || "licensed") && opportunityForPreferences(job, session!.careerPhase || "licensed", discoveryProfile, session!.location) && job.status === "active")).map((job) => {
 			// If the system finds a notification message containing this specific job's details, flag it as a VIP invite
 			const isScoutedInvite = invites.some(
 				(inv) =>

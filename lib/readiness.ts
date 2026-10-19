@@ -1,5 +1,6 @@
 import { isPrivateBlob } from "@/lib/documents";
 import { candidateProfile } from "@/lib/candidate-profile";
+import { currentCredentialReview } from "@/lib/credential-review";
 export type ReadinessProfile = {
   isVerified: boolean; resumeUrl: string | null; keywords: string | null;
   careerPhase: string; licenseUrl: string | null; provisionalUrl: string | null;
@@ -26,6 +27,6 @@ export function applicationReadiness(user: ReadinessProfile, now = new Date()) {
   return { checks: relevantChecks, complete: relevantChecks.filter(check => check.done).length, total: relevantChecks.length,
     careerPhase: user.careerPhase,
     placementStage: intern ? profile.placementStage : undefined,
-    credentialStatus: user.isLicenseVerified && user.licenseReviewedAt ? "Reviewed" : (intern ? profile.provisionalNumber : user.licenseNumber) ? "Self-reported" : "Not submitted",
+    credentialStatus: currentCredentialReview(user, now) ? "Reviewed" : (intern ? profile.provisionalNumber : user.licenseNumber) ? "Self-reported" : "Not submitted",
     note: "This checklist tracks profile completeness. It does not certify professional eligibility." };
 }

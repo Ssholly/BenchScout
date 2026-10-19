@@ -7,7 +7,7 @@ const protectedRoutes = [
     ['upload','POST','candidate'],['upload','DELETE','candidate'],['extract-license','POST','candidate'],['generate-letter','POST','candidate'],['scrape','POST','candidate'],
     ['readiness','GET','candidate'],['send-digest','POST','candidate'],['apply','POST','candidate'],['apply','DELETE','candidate'],['jobs/status','PUT','candidate'],
     ['salary','POST','candidate'],['salary','PUT','candidate'],['salary','DELETE','candidate'],
-    ['jobs/direct','POST','employer'],['jobs/direct','PATCH','employer'],['jobs/direct','DELETE','employer'],
+    ['employer/verification','GET','employer'],['employer/verification','POST','employer'],['jobs/report','POST','candidate'],['jobs/direct','POST','employer'],['jobs/direct','PATCH','employer'],['jobs/direct','DELETE','employer'],
     ['jobs/applicants','GET','employer'],['jobs/applicants','PATCH','employer'],['jobs/applicants','DELETE','employer'],['employer/talent','GET','employer'],['employer/talent','POST','employer'],['user/career','POST','candidate'],
     ['documents','GET','either'],['jobs','GET','either'],['auth/session','GET','either'],
 ];

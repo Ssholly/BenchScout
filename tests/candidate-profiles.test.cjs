@@ -44,7 +44,7 @@ test('changing provisional registration details clears previous review, and empl
 });
 test('intern feed separates direct vacancies while retaining historic applications',async()=>{
  prisma.notification.findMany=async()=>[];
- const jobs=[{id:'placement',role:'Laboratory intern',jobType:'internship',status:'active',isDirectPost:true,applications:[],url:'/matches/direct/lab'}, {id:'licensed',role:'Scientist',jobType:'full-time',status:'active',isDirectPost:true,applications:[],url:'/matches/direct/lab'}, {id:'historic',role:'Scientist',jobType:'full-time',status:'closed',isDirectPost:true,applications:[{status:'pending'}],url:'/matches/direct/lab'}];
+ const jobs=[{id:'placement',role:'Laboratory intern',jobType:'internship',status:'active',isDirectPost:true,employer:{isVerified:true},applications:[],url:'/matches/direct/lab'}, {id:'licensed',role:'Scientist',jobType:'full-time',status:'active',isDirectPost:true,employer:{isVerified:true},applications:[],url:'/matches/direct/lab'}, {id:'historic',role:'Scientist',jobType:'full-time',status:'closed',isDirectPost:true,applications:[{status:'pending'}],url:'/matches/direct/lab'}];
  prisma.job.findMany=async()=>jobs;
  const result=await feed(request('/api/jobs'));assert.equal(result.status,200);assert.deepEqual((await result.json()).map(job=>job.id),['placement','historic']);
 });

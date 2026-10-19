@@ -50,3 +50,7 @@ References: [Vercel private storage](https://vercel.com/docs/vercel-blob/private
 ## Testing preview connection — 14 October 2026
 
 The Vercel project was missing `BLOB_PRIVATE_READ_WRITE_TOKEN`, causing Settings to report uploads unavailable on the testing deployment. With explicit user approval, the existing local private-store token was saved as a Secret for Preview deployments only. The next testing deployment activates it. Production is unchanged. No existing documents were migrated or deleted. The Settings warning now appears only after a confirmed unavailable response, rather than during initial loading.
+## 19 October 2026 — Application sharing audit update
+
+Direct applications now require a private CV. The application dialog explains that the current relationship grants access to current vault documents, that replacements change later downloads and that withdrawing the final application to an employer revokes further application-based document reads. It does not revoke copies already downloaded. The notice appears in the scrollable body, including narrow mobile layouts. Selective per-application sharing/snapshots and retention policy remain open launch work; see [Launch audit](LAUNCH-AUDIT.md).
+19 October summary follow-up: optional [professional-summary consent](PROFESSIONAL-SUMMARIES.md) is independent of document access. Turning summary sharing off does not withdraw applications or revoke current document access. Selected-document sharing and immutable application submissions remain open audit work.

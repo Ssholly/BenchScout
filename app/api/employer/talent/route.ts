@@ -3,15 +3,17 @@ import { prisma } from "@/lib/prisma";
 import { withApi } from "@/lib/api";
 import { ApiError, textField } from "@/lib/security";
 import { opportunityForPhase, candidateProfile } from "@/lib/candidate-profile";
+import { currentCredentialReview } from "@/lib/credential-review";
+import { sharedProfessionalSummary } from "@/lib/professional-summary";
 // Candidate documents and contact details are visible only after an application.
 export const GET = withApi("employer", async (request, session) => {
   const location = new URL(request.url).searchParams.get("location") || "";
   const users = await prisma.user.findMany({
     where: { applications: { some: { job: { employerId: session!.id } } }, ...(location ? { location: { contains: location, mode: "insensitive" as const } } : {}) },
-    select: { id: true, name: true, email: true, location: true, careerPhase: true, candidateProfile: true, provisionalUrl: true, licenseUrl: true, degreeUrl: true, resumeUrl: true, isLicenseVerified: true, licenseReviewedAt: true },
+    select: { id: true, name: true, email: true, location: true, careerPhase: true, candidateProfile: true, provisionalUrl: true, licenseUrl: true, degreeUrl: true, resumeUrl: true, isLicenseVerified: true, licenseReviewedAt: true, licenseExpiry: true },
     orderBy: { name: "asc" }, take: 100,
   });
-  return NextResponse.json({ success: true, users: users.map(({candidateProfile: profile,...user})=>({...user,placementStage: user.careerPhase === "internship" ? candidateProfile(profile).placementStage : undefined})) });
+  return NextResponse.json({ success: true, users: users.map(({candidateProfile: profile,...user})=>({...user,professionalSummary:sharedProfessionalSummary({...user,candidateProfile:profile}),isLicenseVerified:currentCredentialReview({...user,candidateProfile:profile}),placementStage: user.careerPhase === "internship" ? candidateProfile(profile).placementStage : undefined})) });
 }, { verifiedEmployer: true });
 export const POST = withApi("employer", async (request, session) => {
   const body = await request.json();

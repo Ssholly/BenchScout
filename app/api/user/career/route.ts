@@ -14,7 +14,9 @@ export const POST = withApi("candidate", async (request, session) => {
     if (body.profile[key] != null && (typeof body.profile[key] !== "string" || body.profile[key].length > 500)) throw new ApiError(400, "Profile details are too long or invalid.");
   }
   if (!["seeking", "training"].includes(body.profile.placementStage) || typeof body.profile.relocation !== "boolean") throw new ApiError(400, "Choose a placement stage and relocation preference.");
+  if (body.profile.shareProfessionalSummary !== undefined && typeof body.profile.shareProfessionalSummary !== "boolean") throw new ApiError(400, "Choose whether to share your professional summary.");
   const profile = candidateProfile(body.profile);
+  if (body.profile.shareProfessionalSummary === undefined) profile.shareProfessionalSummary = candidateProfile(current.candidateProfile).shareProfessionalSummary;
   for (const key of profileFields) profile[key] = profile[key].trim();
   for (const key of ["provisionalExpiry", "availabilityDate", "placementStart", "placementEnd", "nextActionDate"] as const) {
     const value = profile[key];

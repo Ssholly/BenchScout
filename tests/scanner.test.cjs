@@ -62,3 +62,11 @@ test('email failure preserves saved matches and records a visible failure status
  sources.collectJobs=async()=>({successful:1,warnings:[],jobs:[{title:'Medical Laboratory Scientist',company:'Lab',loc:'Lagos',desc:'Testing',url:'https://example.com/job',source:'Test'}]});
  const result=await runJobScan('owner');assert.equal(result.success,true);assert.equal(writes,1);assert.equal(history[0].status,'email failed');assert.ok(result.warnings.some(w=>w.includes('email')));
 });
+
+test('a refreshed external source cannot reactivate a vacancy removed after a safety report', async () => {
+ const url='https://example.com/removed-vacancy';
+ sources.collectJobs=async()=>({jobs:[{title:'Medical Laboratory Scientist',company:'Lab',loc:'Lagos',url,desc:'Laboratory work',source:'Test'}],successful:1,warnings:[]});
+ prisma.job.findMany=async()=>[{id:'removed',url,applied:false,status:'removed'}];
+ prisma.job.update=async({data})=>{writes++;assert.equal(data.status,undefined);};
+ await runJobScan('owner');assert.equal(writes,1);assert.equal(history[0].matches,0);
+});

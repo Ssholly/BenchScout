@@ -3,6 +3,7 @@ import { ApiError, textField } from "@/lib/security";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { candidateProfile } from "@/lib/candidate-profile";
+import { sharedProfessionalSummary } from "@/lib/professional-summary";
 
 
 
@@ -25,7 +26,7 @@ export const GET = withApi("candidate", async (request: Request) => {
 			return NextResponse.json({ error: "No user found" }, { status: 404 });
 		}
 
-		return NextResponse.json({ success: true, user, uploadsAvailable: Boolean(process.env.BLOB_PRIVATE_READ_WRITE_TOKEN) });
+		return NextResponse.json({ success: true, user, professionalSummary: sharedProfessionalSummary(user), uploadsAvailable: Boolean(process.env.BLOB_PRIVATE_READ_WRITE_TOKEN) });
 	} catch (error: unknown) {
     if (error instanceof ApiError) throw error;
 		console.error("Failed to fetch user:", error);

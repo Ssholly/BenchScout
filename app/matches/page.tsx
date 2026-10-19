@@ -10,6 +10,8 @@ import type { ClientJob } from "@/lib/types";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useCallback, useEffect, useState, useRef } from "react";
 import ListingEvidence from "@/components/ListingEvidence";
+import ApplicationSharingNotice from "@/components/ApplicationSharingNotice";
+import type { ProfessionalSummary } from "@/lib/professional-summary";
 import { createPortal } from "react-dom";
 
 const getAvatarStyle = (companyName: string) => {
@@ -32,6 +34,7 @@ type VaultDoc = {
 	size: string;
 	uploadedAt: string | null;
 	base64: string | null;
+    storageStatus?: string;
 };
 
 function MatchesPage() {
@@ -48,6 +51,7 @@ function MatchesPage() {
 	const loadSequence = useRef(0);
 	const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 	const [appliedJobs, setAppliedJobs] = useState<string[]>([]);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
 	const [activeFilter, setActiveFilter] = useState<string | null>(null);
 	const [showLinkModal, setShowLinkModal] = useState(false);
@@ -69,6 +73,8 @@ function MatchesPage() {
 		return () => { document.removeEventListener("keydown", handleKey); previousFocus?.focus(); };
 	}, [toolkitJob]);
 	const [vaultDocs, setVaultDocs] = useState<VaultDoc[]>([]);
+    const [summaryPreview, setSummaryPreview] = useState<ProfessionalSummary | null | undefined>(undefined);
+    const [summaryError, setSummaryError] = useState(false);
 
 	const [coverLetter, setCoverLetter] = useState("");
 	const [isGeneratingLetter, setIsGeneratingLetter] = useState(false);
@@ -159,6 +165,7 @@ function MatchesPage() {
 					];
 
 		if (!activeEmail) {
+            setSummaryPreview(undefined);
 			loadedEmail.current = null;
 			setIsRefreshing(false);
 			setIsUserLoggedIn(false);
@@ -173,7 +180,8 @@ function MatchesPage() {
 		const firstLoad = loadedEmail.current !== activeEmail;
 		setIsLoading(firstLoad);
 		setIsRefreshing(!firstLoad);
-		if (firstLoad) { setJobs([]); setAppliedJobs([]); setVaultDocs(initialDocs); }
+		if (firstLoad) { setJobs([]); setAppliedJobs([]); setVaultDocs(initialDocs); setSummaryPreview(undefined); }
+        setSummaryError(false);
 
 		const searchParams = new URLSearchParams(routeQuery);
 		const employerParam = searchParams.get("employer");
@@ -216,10 +224,11 @@ function MatchesPage() {
 			});
 
 		sharedPageRequest(`/api/user?email=${encodeURIComponent(activeEmail)}`)
-			.then((res) => res.json())
+			.then((res) => { if (!res.ok) throw new Error("Profile unavailable"); return res.json(); })
 			.then((data) => {
 				if (!isCurrent()) return;
 				if (data.success && data.user) {
+                    setSummaryPreview(data.professionalSummary ?? null);
 					const updatedDocs = [...initialDocs];
 					if (data.user.resumeUrl)
 						updatedDocs[0] = {
@@ -260,10 +269,10 @@ function MatchesPage() {
 								uploadedAt: "Cloud",
 							};
 					}
-					setVaultDocs(updatedDocs);
-				}
+					setVaultDocs(updatedDocs.map(doc => ({ ...doc, storageStatus: data.user.documentStatus?.[doc.id === "cv" ? "resume" : doc.id] || "missing" })));
+				} else throw new Error("Profile unavailable");
 			})
-			.catch(() => console.error("Failed to load user vault URLs"));
+			.catch(() => { if (isCurrent()) { setSummaryPreview(undefined); setSummaryError(true); } });
 	}, [routeQuery]);
 
 	useEffect(() => {
@@ -404,17 +413,20 @@ function MatchesPage() {
 	};
 
 	const executeFinalApply = async () => {
-		if (!toolkitJob) return;
+		if (!toolkitJob || isSubmitting || (toolkitJob.isDirectPost && summaryPreview === undefined)) return;
 
 		const activeEmail = localStorage.getItem("labpro_active_user");
 
 		if (!appliedJobs.includes(toolkitJob.id)) {
+			const identity = localStorage.getItem("benchscout_identity");
+			setIsSubmitting(true);
 			try {
 				const response = await fetch("/api/apply", {
 					method: "POST",
 					headers: { "Content-Type": "application/json" },
 					body: JSON.stringify({ jobId: toolkitJob.id, email: activeEmail }),
 				});
+                if (identity !== localStorage.getItem("benchscout_identity")) return;
                 if (!response.ok) {
                     const failure = await response.json().catch(() => ({}));
                     showToast(failure.error || "Your application could not be submitted. Please try again.", "error");
@@ -423,9 +435,9 @@ function MatchesPage() {
                 setAppliedJobs((prev) => [...prev, toolkitJob.id]);
 				window.dispatchEvent(new Event("jobsUpdated"));
 			} catch {
-				showToast("Your application could not be submitted. Please try again.", "error");
+				if (identity === localStorage.getItem("benchscout_identity")) showToast("Your application could not be submitted. Please try again.", "error");
                 return;
-			}
+			} finally { setIsSubmitting(false); }
 		}
 
 		if (toolkitJob.isDirectPost) {
@@ -1791,6 +1803,7 @@ function MatchesPage() {
 									</div>
 
 									<div className="application-dialog-body" tabIndex={0} aria-label="Application details">
+                                        {toolkitJob.isDirectPost && <><ApplicationSharingNotice company={toolkitJob.company} summary={summaryPreview} />{summaryError && <div role="alert" style={{padding:"0 24px 16px"}}>Couldn’t load your profile preview. <button onClick={loadData}>Retry profile preview</button></div>}</>}
 									{/* 🚀 RESTORED: DISPLAY JOB INSTRUCTIONS IF THEY EXIST */}
 									{toolkitJob.desc && (
 										<div
@@ -1919,11 +1932,11 @@ function MatchesPage() {
 															<div
 																style={{
 																	fontSize: "11px",
-																	color: doc.base64 ? "#1A8C7A" : "#ef4444",
+																color: doc.storageStatus === "private" ? "#1A8C7A" : "#b45309",
 																	fontWeight: 600,
 																}}
 															>
-																{doc.base64 ? "Ready" : "Missing in Vault"}
+																{doc.storageStatus === "private" ? "Private upload ready" : doc.base64 ? "Re-upload privately in Settings" : "Missing in Vault"}
 															</div>
 														</div>
 													</div>
@@ -2109,7 +2122,7 @@ function MatchesPage() {
 										}}
 									>
 										<span
-											className="hide-mobile"
+											className="application-sharing-note"
 											style={{
 												fontSize: "12px",
 												color: "#64748b",
@@ -2119,6 +2132,7 @@ function MatchesPage() {
 											{toolkitJob.isDirectPost ? "Submitting shares your vault documents with this employer." : "Downloads will save directly to your device."}
 										</span>
 										<button
+											disabled={isSubmitting || (toolkitJob.isDirectPost && summaryPreview === undefined)}
 											onClick={executeFinalApply}
 											style={{
 												background: "#0B2444",
@@ -2135,7 +2149,7 @@ function MatchesPage() {
 												boxShadow: "0 4px 12px rgba(11, 36, 68, 0.2)",
 											}}
 										>
-											{toolkitJob.isDirectPost
+											{isSubmitting ? "Submitting…" : toolkitJob.isDirectPost
 												? "Submit Application Now"
 												: "Proceed to Job Board"}{" "}
 											<svg
