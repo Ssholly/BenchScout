@@ -1,5 +1,9 @@
 # Launch audit — 19 October 2026
 
+## 19 October 2026 — Testing branch isolation setup
+
+The user-created dedicated testing project was verified empty and all seven repository migrations applied with matching completed history/checksums. A separate private testing document store passed write/authenticated read, anonymous 403 and cleanup. Vercel Secret overrides now target Preview/testing only, retaining Production bindings. See [Hosted operations readiness](OPERATIONS-READINESS.md) for exact scope and remaining other-preview/old-deployment isolation, independent secrets, email and recovery gates. Hosted deployment/smoke evidence is recorded in Deployment. Pilot remains HOLD.
+
 ## 19 October 2026 — Hosted operations audit
 
 Read-only Vercel/Neon checks confirmed a shared Production/Preview DATABASE_URL configuration, a single Neon production branch, a six-hour history window, a Preview-only private Blob token and no visible ADMIN_SECRET/SALARY_OWNER_SECRET or linked Shared variables. This supersedes the earlier unknown database-separation status at configuration level; effective settings of every historical deployment were not inspected. Email aliases are configured, but actual sender/inbox delivery remains unverified. See [Hosted operations readiness](OPERATIONS-READINESS.md) and its scrubbed evidence for findings, a prepared empty testing project, exact cutover sequence, email acceptance and recovery drill. No provider configuration or data changed. Pilot remains HOLD.

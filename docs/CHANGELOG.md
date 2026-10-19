@@ -1,5 +1,12 @@
 # Change log
 
+## 19 October 2026 — Dedicated testing database and private store
+
+- Verified the user-created BenchScout Testing PostgreSQL 17 project is separate and initially empty. Applied all seven migrations and checked completed history/checksums; account, vacancy, application and session counts were zero.
+- Created benchscout-testing-documents as a private Blob store. Synthetic write/authenticated read, anonymous 403 and deletion/empty cleanup passed. Retained existing stores/files.
+- Added Secret DATABASE_URL and BLOB_PRIVATE_READ_WRITE_TOKEN overrides for Preview/testing only. Production bindings and local .env unchanged. Other preview defaults, historical deployments, independent administrative secrets and recovery/inbox gates remain open.
+- No application code/schema change or new migration. Deployment and disposable hosted smoke-check evidence are recorded separately in Deployment; no mail-delivery claim follows from fixture login.
+
 ## 19 October 2026 — Hosted environment and recovery audit
 
 - Inspected authenticated Vercel/Neon metadata without revealing secrets or changing provider configuration. Confirmed shared Production/Preview database configuration, only one Neon production branch, six-hour recovery history, Preview-only private storage token and absent visible administrator/salary secrets.

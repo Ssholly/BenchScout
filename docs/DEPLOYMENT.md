@@ -90,3 +90,10 @@ Code commit `689476b31f968eb7de4a9c5c33d11103499b7c6b` was pushed to `origin/tes
 ## 19 October 2026 — Hosted environment metadata refresh
 
 Read-only authenticated dashboard audit found DATABASE_URL scoped to Production and Preview with no testing override or linked Shared variables. Neon shows a single production branch and six-hour history retention. Private Blob token is Preview-only; administrator/salary secrets are absent from the visible configuration. See [Hosted operations readiness](OPERATIONS-READINESS.md) for evidence limits and the prepared empty BenchScout Testing project proposal. No provider value was revealed or configuration saved. No new database, credential, migration, email or recovery action occurred. Documentation-only update; actual environment separation and recovery acceptance remain open.
+
+
+## 19 October 2026 — Dedicated testing database/store cutover
+
+User created the prepared BenchScout Testing project. Verified distinct database endpoint/owner and zero initial public tables. Applied all seven migrations and independently matched their completed history/checksums. Initial candidate/employer/job/application/session counts were zero. Dedicated private benchscout-testing-documents store passed synthetic write/read, anonymous 403 and cleanup to empty. Secret DATABASE_URL and BLOB_PRIVATE_READ_WRITE_TOKEN overrides saved for Preview/testing only; Production bindings and normal local .env unchanged. No new application migration/code. See Operations readiness for retained shared defaults, independent-secret and recovery limitations.
+
+New testing deployment is being published. A disposable fixture (no real data, no mail) is reserved for a hosted login/upload smoke check; exact deployment and cleanup results follow after verification.

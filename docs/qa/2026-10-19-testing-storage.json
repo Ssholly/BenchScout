@@ -1,0 +1,8 @@
+{
+  "dedicatedCredential": true,
+  "initialEmpty": true,
+  "authenticatedRead": "passed",
+  "anonymousStatus": 403,
+  "cleanupEmpty": true,
+  "status": "passed"
+}

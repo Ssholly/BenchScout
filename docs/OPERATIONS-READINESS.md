@@ -1,5 +1,17 @@
 # Hosted environment and recovery readiness
 
+## 19 October 2026 — Dedicated testing database and storage setup
+
+After the user created the prepared project, authenticated dashboard checks confirmed **BenchScout Testing**, database **benchscout_testing**, PostgreSQL 17, AWS US East 1 and the displayed Free plan. Its Neon project/endpoint and owner differ from the original project. The default branch is named production by Neon; this is inside the separate testing project and does not change the original production project.
+
+The target initially had zero public tables. All seven repository migrations were applied only to this new database; each completed history entry and SQL checksum matched the repository. Candidate/employer/job/application/session counts were all zero afterwards. No existing account/session/document reference was copied and the normal local .env was unchanged. See [initialisation evidence](qa/2026-10-19-testing-initialization.json).
+
+Created a dedicated **benchscout-testing-documents** Blob store in IAD1 with immutable Private access. A synthetic object write/authenticated byte read passed; anonymous URL access returned 403; deletion and empty-store verification passed. See [storage evidence](qa/2026-10-19-testing-storage.json). Existing stores and files were retained. The optional Blob firewall/project association has not been configured; private token enforcement was actually tested.
+
+Added Secret overrides for DATABASE_URL and BLOB_PRIVATE_READ_WRITE_TOKEN targeting **Preview / testing branch only**. The original Production/Preview defaults and other provider settings were retained. These overrides apply to new testing deployments; other preview branches and older immutable deployments remain an open isolation task. Do not claim all Preview environments are isolated. The automatic project-store connection was not used because it includes Production by default; the dedicated token was bound manually. No production branch or environment binding was changed.
+
+A disposable synthetic candidate is being used for a hosted login/upload smoke check after redeployment; it is explicitly fixture-confirmed, not an email-delivery acceptance result. Exact deployment, hosted evidence and cleanup are recorded in Deployment after completion. No external mail is authorised/sent in this step. Independent admin/cron/salary secrets, other-preview isolation, real inbox acceptance, older-deployment retirement and recovery drill remain open; pilot stays HOLD.
+
 ## 19 October 2026 — Read-only hosting audit
 
 Status: **HOLD before employer pilot onboarding**. This refreshes the hosted configuration gates in LA-12 through LA-15; earlier local acceptance remains valid within its recorded scope. The observations below came from authenticated Vercel and Neon dashboards. No secret value was revealed, account record inspected, test email sent, database created/restored, or hosting setting saved during this audit.
