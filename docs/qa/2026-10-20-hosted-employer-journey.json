@@ -3,7 +3,7 @@
   "scope": "hosted synthetic employer recruitment journey",
   "target": "https://bench-scout-git-testing-sholly.vercel.app/",
   "applicationBaseline": "e17170d",
-  "status": "in-progress: interview saved and correct email receipt confirmed; adaptive mobile form repair locally validated",
+  "status": "in-progress: future-time and mobile-grid releases deployed; interview persisted and correct email received; candidate checks next",
   "recipientAliasesApproved": true,
   "checks": [
     {
@@ -113,8 +113,8 @@
     },
     {
       "name": "synthetic future interview",
-      "status": "saved; persisted reload check pending",
-      "observation": "21 October 2026 at 10:00 Africa/Lagos, QA-only location/no attendance; roster showed Interview Confirmed"
+      "status": "passed: persisted after full reload",
+      "observation": "fresh employer roster fetch preserved Interview Confirmed, 21 October 2026 10:00 Africa/Lagos, QA-only no-attendance location"
     },
     {
       "name": "interview email receipt",
@@ -123,12 +123,12 @@
     },
     {
       "name": "narrow interview form",
-      "status": "repair locally validated; hosted verification pending",
-      "observation": "at 320px original time input ended at x361.8; changed row to adaptive grid; lint, TypeScript, 220 tests and build passed; saved fixture has no reschedule UI so a pending application is needed for fresh form checks"
+      "status": "deployed; fresh hosted responsive form check pending",
+      "observation": "87bebfd deployed via Vercel HpTxd6mR2biKSpbs5UGhBn6838Ak; lint/TypeScript/220 tests/build passed; original 320px overflow recorded, pending fixture needed to reopen scheduling form"
     }
   ],
   "prepared": [
-    "sequential switch to synthetic candidate to check persisted interview, notification and scheduler"
+    "Scientist login populated with synthetic candidate alias; password blank; employer signed out"
   ],
   "pending": [
     "operator privately signs in to synthetic candidate for in-app notification/scheduler checks",
@@ -138,7 +138,7 @@
     "candidate interview status, in-app notification and calendar; email receipt passed",
     "closure/suspension and scoped cleanup",
     "posting form option-row compression: repair and desktop/320px/390px checks",
-    "adaptive interview grid deployment and fresh 320px/390px hosted form verification"
+    "fresh 320px/390px hosted scheduling-form verification"
   ],
   "productCodeChanged": true,
   "schemaChanged": false,

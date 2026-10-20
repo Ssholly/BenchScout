@@ -161,3 +161,10 @@ Lint, TypeScript, 211 tests, production build, 18 isolated live acceptance check
 ### 20 October 2026 — Employer directory denial visibility
 
 Commit `4857fb1` reached the protected testing alias through successful Vercel deployment `5yC26qaDDXZo2LYgAbw6U2PgaQUY`. Hosted pending-employer denial and Retry passed. No migration, environment or permission change. The follow-up stable cleanup callback passed lint without warnings, TypeScript, all 216 tests and webpack build; commit `5320bda` deployed successfully as Vercel `82nRy8RF1e6dR9hxb69zHFyaR649`. Synthetic company approval persisted, and one synthetic vacancy remains pending review with zero published. The remaining hosted hiring journey is incomplete.
+
+
+### 20 October 2026 — Future interview validation and adaptive date/time row
+
+`49e5108` deployed successfully as Vercel `6ThBhP6CvRi9H6qkbpLzckENZqoC`. Hosted past-time form rejection passed; a valid synthetic future interview persisted after full reload, and the approved recipient confirmed correct inbox details. Shared client/API validation uses Africa/Lagos.
+
+Adaptive-grid follow-up `87bebfd` deployed successfully as Vercel `HpTxd6mR2biKSpbs5UGhBn6838Ak`. Lint, TypeScript, 220 tests and build passed. The original 320px overflow is recorded; fresh 320/390px scheduling-form verification remains pending because the scheduled fixture no longer offers the form. No schema/migration/configuration change or production branch update. Candidate in-app/scheduler and remaining hosted gates are still open.

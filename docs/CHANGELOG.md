@@ -2,7 +2,7 @@
 
 ## 20 October 2026 — Narrow interview form layout
 
-- Hosted future-time rejection passed after `49e5108` deployed. A 320px check found the time field outside the viewport; changed date/time to an adaptive grid that stacks on narrow screens. Lint, TypeScript, 220 tests and build passed. Deployment and fresh responsive form acceptance remain pending. The valid synthetic interview saved, and its approved recipient confirmed receipt with correct details; candidate in-app/calendar checks remain open. [Hosted acceptance](HOSTED-EMPLOYER-ACCEPTANCE.md).
+- Hosted future-time rejection passed after `49e5108` deployed. A 320px check found the time field outside the viewport; changed date/time to an adaptive grid that stacks on narrow screens. Lint, TypeScript, 220 tests and build passed. `87bebfd` deployed successfully to testing; fresh responsive form acceptance remains pending. The valid synthetic interview saved, and its approved recipient confirmed receipt with correct details; candidate in-app/calendar checks remain open. [Hosted acceptance](HOSTED-EMPLOYER-ACCEPTANCE.md).
 
 ## 20 October 2026 — Future interview schedules in Africa/Lagos
 
