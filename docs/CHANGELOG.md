@@ -1,5 +1,10 @@
 # Change log
 
+## 20 October 2026 — Hosted match wrapping verified
+
+- `e0d9e35` deployed to testing. Long synthetic match content fit phone and desktop checks; 320/390/1440px cell/chip geometry found no overflow. Final control/badge CSS preserves whole button/label text.
+- Compact employer posting/roster and pending-applicant interview checks await the private employer sign-in. [Layout evidence](RECRUITMENT-LAYOUT.md) records what passed and remains open.
+
 ## 20 October 2026 — Compact recruitment layouts and authorised reapplication
 
 - Repaired competing posting fields, long salary overlap and applicant drawer wrapping/spacing. Consolidated duplicate employer information into a compact access card while preserving safety explanations. Lint, TypeScript, 220 tests and build passed; [Recruitment layout](RECRUITMENT-LAYOUT.md) tracks deployment and fresh visual checks. No API/schema/configuration or permission change.

@@ -2605,3 +2605,11 @@ body.walkthrough-open { overflow: hidden !important; }
   .employer-roster-header button { min-height: 44px; }
   .employer-roster-body { padding: 12px !important; }
 }
+
+/* Keep desktop vacancy controls readable instead of shrinking words into columns. */
+.employer-jobs-table th, .employer-jobs-table td { padding: 12px 14px !important; vertical-align: middle; }
+.vacancy-actions > div { flex-wrap: wrap; gap: 6px !important; }
+.vacancy-actions button { white-space: nowrap; flex: 0 0 auto; min-height: 36px; }
+@media (max-width:768px) { .employer-jobs-table td { padding: 0 !important; } .vacancy-actions button { min-height: 44px; } }
+
+.matches-page h3 > span:first-child { white-space: nowrap; flex-shrink: 0; }
