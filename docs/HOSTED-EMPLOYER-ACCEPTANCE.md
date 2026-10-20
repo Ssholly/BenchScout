@@ -101,3 +101,14 @@ Observed the exact synthetic candidate profile after the operator's private sign
 After full reload, Job Matches excluded the submitted role and Applied showed exactly one Application Sent card for that role. The card explicitly listed CV as the document selected at submission. The posting viewer offered Back to pipeline without another Apply action. This verifies normal UI repeat prevention and one persisted record; a second hosted POST/idempotency assertion was not performed.
 
 Uploaded the same explicitly synthetic PDF into the optional certificate vault slot after applying, without any AI request or claim of real certification. It persisted after a settings reload. Returning to Applied still showed only CV selected. Employer-side denial of the later-uploaded optional file, selected CV download, roster count and status/interview remain pending. No real profile/document, schema, configuration or product code changed. Synthetic application and both private fixture documents remain for continuation.
+
+
+### 20 October 2026 — Employer roster and selected CV; future-time repair
+
+The authenticated synthetic employer showed one applicant. Its roster displayed the exact synthetic identity, professional summary unshared, and only the selected CV link. Opening that application-scoped link rendered the known one-page synthetic PDF successfully. No optional-file link was offered. A direct same-application request with the optional certificate kind was blocked by the browser client (`ERR_BLOCKED_BY_CLIENT`), so this is **not** counted as an API denial pass; no workaround around the browser block was attempted.
+
+Before sending an interview, source inspection confirmed that the existing PATCH handler checked only date/time formats, permitting past schedules. Added shared calendar/time/future validation, used by both the employer form and PATCH before database, notification or email writes. Interview inputs are interpreted in Africa/Lagos (UTC+01:00), independent of browser/server timezone; the current or any earlier instant is rejected with HTTP 400 by the API. Existing stored schedules and non-interview status updates are unchanged. Form labels now explicitly name Africa/Lagos and are associated with their date/time inputs. No schema/configuration change.
+
+New regression cases cover previous dates, elapsed/current minutes and exact-now boundary, future same-day dates, UTC/Lagos midnight crossover, invalid/non-string dates/times and leap days. Local checks, deployment and hosted past-rejection/future invitation acceptance are tracked below; no interview email has yet been sent in this hosted run.
+
+Local validation: lint without warnings, TypeScript, all 220 tests, final-source webpack production build and diff check passed. Testing deployment and hosted schedule checks remain pending.

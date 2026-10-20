@@ -1,5 +1,10 @@
 # Change log
 
+## 20 October 2026 — Future interview schedules in Africa/Lagos
+
+- Added shared client/API validation rejecting invalid or non-future interview times before saving or notifying. Date/time inputs explicitly name Africa/Lagos and have associated labels. Existing schedules and non-interview updates are unchanged; no schema/configuration change. Lint, TypeScript, all 220 tests, build and diff check passed, including new boundary/calendar tests; testing deployment and hosted scheduling checks pending.
+- Hosted employer roster showed one synthetic applicant and opened its selected CV; professional summary remained unshared. The browser blocked the direct unselected-file request, so no server denial pass is claimed. [Hosted acceptance](HOSTED-EMPLOYER-ACCEPTANCE.md), [launch audit](LAUNCH-AUDIT.md).
+
 ## 20 October 2026 — Hosted candidate discovery and CV-only application
 
 - Confirmed the synthetic candidate discovered the approved QA vacancy and submitted only its synthetic CV, with professional-summary sharing off. Reload showed one Application Sent record; the role left matches and offered no repeat Apply action in its posting viewer. Repeated hosted POST remains untested.

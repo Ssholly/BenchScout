@@ -3,7 +3,7 @@
   "scope": "hosted synthetic employer recruitment journey",
   "target": "https://bench-scout-git-testing-sholly.vercel.app/",
   "applicationBaseline": "e17170d",
-  "status": "in-progress: candidate discovery and CV-only application persisted; employer document/roster checks next",
+  "status": "in-progress: employer roster and selected CV passed; future-time repair locally validated",
   "recipientAliasesApproved": true,
   "checks": [
     {
@@ -90,15 +90,35 @@
       "name": "later optional vault upload",
       "status": "candidate side passed; employer denial pending",
       "observation": "synthetic PDF uploaded to optional certificate slot after application and persisted after reload; application still lists only CV"
+    },
+    {
+      "name": "employer applicant roster",
+      "status": "passed",
+      "observation": "exact synthetic employer authenticated; 1 Applicant and one exact synthetic candidate record; summary unshared, only selected CV link"
+    },
+    {
+      "name": "selected synthetic CV access",
+      "status": "passed",
+      "observation": "application-scoped link rendered the known one-page synthetic PDF in browser"
+    },
+    {
+      "name": "unselected optional file access",
+      "status": "not verified at API level",
+      "observation": "no optional file offered in roster; direct kind=certificate request blocked by browser client; no workaround attempted"
+    },
+    {
+      "name": "future interview constraint",
+      "status": "local checks passed; deployment pending",
+      "observation": "shared client/API validation before mutations; explicit associated Africa/Lagos labels; lint, TypeScript, 220 tests, final build and diff check passed"
     }
   ],
   "prepared": [
-    "sequential switch from synthetic candidate to existing synthetic employer"
+    "employer roster open; no interview saved or email sent"
   ],
   "pending": [
-    "operator privately signs in to existing synthetic employer",
+    "future-time repair deployment, hosted past rejection and future interview",
     "confirmation inbox appearance and role-correct links",
-    "employer roster count and selected CV download; later-uploaded optional file must remain unshared",
+    "document-scope direct request denial under browser restriction remains unverified",
     "hosted document access denials, replacement/withdrawal and repeated-request idempotency",
     "interview and in-app/inbox notifications",
     "closure/suspension and scoped cleanup",

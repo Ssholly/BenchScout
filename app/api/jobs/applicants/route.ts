@@ -8,6 +8,7 @@ import { ApiError, textField } from "@/lib/security";
 import { candidateProfile } from "@/lib/candidate-profile";
 import { currentCredentialReview } from "@/lib/credential-review";
 import { sharedProfessionalSummary } from "@/lib/professional-summary";
+import { interviewScheduleError } from "@/lib/interview-schedule";
 export const GET = withApi("employer", async request => {
   const jobId = new URL(request.url).searchParams.get("jobId")!;
   const applications = await prisma.application.findMany({ where: { jobId }, include: { user: { select: {
@@ -22,8 +23,8 @@ export const PATCH = withApi("employer", async request => {
   const { applicationId, status, interviewDate, interviewTime, interviewLoc } = await request.json();
   if (!["pending", "shortlisted", "rejected", "hired"].includes(status)) throw new ApiError(400, "Invalid application status.");
   if (status === "shortlisted") {
-    if (typeof interviewDate !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(interviewDate) || !Number.isFinite(Date.parse(interviewDate)) || new Date(interviewDate).toISOString().slice(0,10) !== interviewDate) throw new ApiError(400, "Choose a valid interview date.");
-    if (typeof interviewTime !== "string" || !/^([01]\d|2[0-3]):[0-5]\d$/.test(interviewTime)) throw new ApiError(400, "Choose a valid interview time.");
+    const scheduleError = interviewScheduleError(interviewDate, interviewTime);
+    if (scheduleError) throw new ApiError(400, scheduleError);
     textField(interviewLoc, "interview location", 1000);
   }
   const application = await prisma.$transaction(async tx => {

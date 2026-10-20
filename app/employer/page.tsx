@@ -6,6 +6,7 @@ import ProfessionalSummary from "@/components/ProfessionalSummary";
 import Toast from "@/components/Toast";
 import { updateApplicant } from "@/lib/applicant-update";
 import { loadEmployerTalent } from "@/lib/employer-talent";
+import { interviewScheduleError } from "@/lib/interview-schedule";
 import { useCallback } from "react";
 import { csvCell } from "@/lib/csv";
 import { startTransition } from "react";
@@ -276,6 +277,8 @@ export default function EmployerGateway() {
     const submitInterviewSchedule = async (event: React.FormEvent) => {
         event.preventDefault();
         if (updatingApplicant) return;
+        const scheduleError = interviewScheduleError(interviewModal.date, interviewModal.time);
+        if (scheduleError) { showToast(scheduleError, "error"); return; }
         const identity = localStorage.getItem("benchscout_identity");
         setUpdatingApplicant(interviewModal.applicationId);
         setLoading(true);
@@ -783,7 +786,7 @@ export default function EmployerGateway() {
 							<form onSubmit={submitInterviewSchedule}>
 								<div style={{ display: "flex", gap: "12px" }}>
 									<div style={{ flex: 1 }}>
-										<label
+										<label htmlFor="interview-date"
 											style={{
 												fontSize: "11px",
 												fontWeight: 800,
@@ -792,10 +795,11 @@ export default function EmployerGateway() {
 												textTransform: "uppercase",
 											}}
 										>
-											Date
+											Date (Africa/Lagos)
 										</label>
 										<input
-											type="date"
+											id="interview-date"
+                                            type="date"
 											required
 											value={interviewModal.date}
 											onChange={(e) =>
@@ -808,7 +812,7 @@ export default function EmployerGateway() {
 										/>
 									</div>
 									<div style={{ flex: 1 }}>
-										<label
+										<label htmlFor="interview-time"
 											style={{
 												fontSize: "11px",
 												fontWeight: 800,
@@ -817,10 +821,11 @@ export default function EmployerGateway() {
 												textTransform: "uppercase",
 											}}
 										>
-											Time
+											Time (Africa/Lagos)
 										</label>
 										<input
-											type="time"
+											id="interview-time"
+                                            type="time"
 											required
 											value={interviewModal.time}
 											onChange={(e) =>

@@ -103,3 +103,10 @@ Baseline: 153/153 tests passed before this audit's edits. Final validation after
 Browser: /matches loaded locally; guest state provided no signed-in test identity. No application, rejection, hire, credential approval or interview was submitted against real records. An isolated fixture rendered the actual ApplicationSharingNotice and app CSS with synthetic text. Width/scrollWidth pairs were 320/320, 390/390 and 800/800, and fixture submit controls remained inside the 720px viewport. This establishes notice layout only; full authenticated dialog interactions remain LA-12/LA-16.
 
 Next implementation milestone: LA-09 and LA-10, followed by the LA-11 credential-review race check and the complete staging acceptance journey. The pitch deck and pilot pack must use confirmed behaviour and must not describe these open capabilities as shipped.
+
+
+### 20 October 2026 — Interview future-time constraint (LA-16 partial)
+
+The hosted synthetic employer roster showed one applicant and rendered only its selected synthetic CV; the unselected-file direct request was blocked by the browser client and does not establish a server denial. See [hosted evidence](HOSTED-EMPLOYER-ACCEPTANCE.md).
+
+Implemented shared Africa/Lagos date/time validation in the interview form and `PATCH /api/jobs/applicants`. Invalid or non-future schedules return HTTP 400 before transaction/notification/email; current-minute times are rejected once their minute has begun. The form explicitly labels and associates Nigeria-time inputs. Existing schedules, status values, ownership/review checks, transaction and email delivery reporting are unchanged. No schema/migration/configuration. New boundary/calendar tests passed: lint, TypeScript, 220 tests, production build and diff check. Testing deployment and hosted scheduling acceptance remain pending. This does not close the remaining LA-16 stale-read/repetition/device checks.
