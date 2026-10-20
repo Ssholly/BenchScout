@@ -1,5 +1,10 @@
 # Change log
 
+## 20 October 2026 — Compact recruitment layouts and authorised reapplication
+
+- Repaired competing posting fields, long salary overlap and applicant drawer wrapping/spacing. Consolidated duplicate employer information into a compact access card while preserving safety explanations. Lint, TypeScript, 220 tests and build passed; [Recruitment layout](RECRUITMENT-LAYOUT.md) tracks deployment and fresh visual checks. No API/schema/configuration or permission change.
+- Completed the newly authorised synthetic withdrawal: Applied and the synced interview cleared. Submitted one fresh CV-only application with the available optional file unchecked; it appears once as Application Sent. Employer/grant and responsive checks remain pending. [Hosted acceptance](HOSTED-EMPLOYER-ACCEPTANCE.md).
+
 ## 20 October 2026 — Hosted candidate interview notification and calendar
 
 - Verified the synthetic application in Interviewing, its matching in-app notification and a single October 21 calendar interview at 10:00 AM. Attempting to save the employer-managed event from the candidate editor was rejected. Correct inbox receipt was already confirmed.

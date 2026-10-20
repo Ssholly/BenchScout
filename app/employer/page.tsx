@@ -1293,7 +1293,7 @@ export default function EmployerGateway() {
 							}}
 						>
 							<div
-								className="employer-panel"
+								className="employer-panel employer-roster-header"
 								style={{
 									padding: "2rem",
 									display: "flex",
@@ -1394,7 +1394,7 @@ export default function EmployerGateway() {
 											Export CSV
 										</button>
 									)}
-									<button
+									<button aria-label="Close applicant roster"
 										onClick={() =>
 											setDrawer((prev) => ({ ...prev, isOpen: false }))
 										}
@@ -1427,7 +1427,7 @@ export default function EmployerGateway() {
 								</div>
 							</div>
 							<div
-								className="employer-panel"
+								className="employer-panel employer-roster-body"
 								style={{
 									padding: "0 2rem 2rem 2rem",
 									flex: 1,
@@ -1481,7 +1481,7 @@ export default function EmployerGateway() {
 								) : (
 									drawer.applicants.map((app) => (
 										<div
-											key={app.id}
+											key={app.id} className="employer-applicant"
 											style={{
 												display: "flex",
 												flexDirection: "column",
@@ -2073,8 +2073,8 @@ export default function EmployerGateway() {
 										</div>
 										<div className="employer-post-options"
 											style={{
-												display: "flex",
-												gap: "1.5rem",
+												display: "grid",
+												gap: "12px",
 												marginBottom: "1.5rem",
 												background: "#f8fafc",
 												padding: "12px",
@@ -2082,17 +2082,17 @@ export default function EmployerGateway() {
 												border: "1px solid #e2e8f0",
 											}}
 										>
-											<div className="employer-vacancy-extra" style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:12,marginBottom:14}}>
+											<div className="employer-vacancy-extra" style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(min(100%,160px),1fr))",gap:12,marginBottom:0}}>
 <label style={{fontSize:12,color:"#64748b",minWidth:0}}>Deadline (optional)<input type="date" value={deadline} onChange={event=>setDeadline(event.target.value)} style={{display:"block",boxSizing:"border-box",width:"100%",minWidth:0,padding:10,border:"1px solid #e2e8f0",borderRadius:10,marginTop:6,font:"inherit"}} /></label>
 <label style={{fontSize:12,color:"#64748b",minWidth:0}}>Required documents<input value={requiredDocuments} maxLength={500} onChange={event=>setRequiredDocuments(event.target.value)} placeholder="CV, provisional license…" style={{display:"block",boxSizing:"border-box",width:"100%",minWidth:0,padding:10,border:"1px solid #e2e8f0",borderRadius:10,marginTop:6,font:"inherit"}} /></label>
 </div>
-<label style={{display:"flex",alignItems:"center",gap:10,fontSize:12,color:"#64748b"}}>Vacancy type
+<label style={{display:"grid",gap:6,fontSize:12,color:"#64748b"}}>Vacancy type
 <select value={jobType} onChange={event=>setJobType(event.target.value)} style={{minWidth:0,padding:"9px 12px",border:"1px solid #e2e8f0",borderRadius:10,background:"#f8fafc",color:"#0b2444",font:"inherit"}}>
 <option value="full-time">Licensed scientist · Permanent</option><option value="internship">Internship placement</option><option value="locum">Licensed scientist · Locum</option><option value="contract">Licensed scientist · Contract</option><option value="part-time">Licensed scientist · Part-time</option>
 </select></label>
 											{jobType === "internship" && <p style={{fontSize:11,color:"#64748b",lineHeight:1.6,margin:0}}>Internship-site approval is shown only after independent review of official MLSCN evidence.</p>}
 										</div>
-										<label style={{display:"flex",gap:8,fontSize:12,lineHeight:1.6,marginBottom:14}}><input type="checkbox" required checked={noFees} onChange={event => setNoFees(event.target.checked)} />I am authorised to recruit for this role. Applicants will not be charged application, interview, placement or processing fees.</label>
+										<label className="employer-no-fees" style={{display:"flex",gap:8,fontSize:12,lineHeight:1.6,marginBottom:14}}><input type="checkbox" required checked={noFees} onChange={event => setNoFees(event.target.checked)} />I am authorised to recruit for this role. Applicants will not be charged application, interview, placement or processing fees.</label>
 										<button
 											type="submit"
 											disabled={loading}
@@ -2115,77 +2115,14 @@ export default function EmployerGateway() {
 										</button>
 									</form>
 								</div>
-								<div
-									style={{
-										display: "flex",
-										flexDirection: "column",
-										gap: "1.5rem",
-									}}
-								>
-									<div
-										style={{
-											background: "rgba(26,140,122,0.04)",
-											border: "1px solid rgba(26,140,122,0.2)",
-											borderRadius: "16px",
-											padding: "1.5rem",
-										}}
-									>
-										<h3
-											style={{
-												fontSize: "14px",
-												fontWeight: 800,
-												color: "#0B2444",
-												margin: "0 0 6px 0",
-											}}
-										>
-											B2B Talent Visibility Monitor
-										</h3>
-										<p
-											style={{
-												margin: 0,
-												fontSize: "13px",
-												color: "#475569",
-												lineHeight: "1.6",
-											}}
-										>
-											Only reviewed employers can publish listings and access applicants. Uploaded credentials are shown separately from independently reviewed licenses.
-										</p>
-									</div>
-									<div
-										style={{
-											background: "#0f172a",
-											borderRadius: "16px",
-											padding: "1.5rem",
-											fontFamily: "monospace",
-											fontSize: "12px",
-											color: "#e2e8f0",
-										}}
-									>
-										<div
-											style={{
-												color: "#1A8C7A",
-												fontWeight: 700,
-												marginBottom: "8px",
-											}}
-										>
-											Employer workspace
-										</div>
-										<div>
-											Manage your vacancies and applicant updates here.
-										</div>
-										<div>
-											Credential uploads do not establish independent verification.
-										</div>
-										{postedJobs.length > 0 && (
-											<div style={{ color: "#fbbf24", marginTop: "8px" }}>
-												Active vacancies: {postedJobs.filter(job => job.status === "active").length}{" "}
-												published.
-											</div>
-										)}
-									</div>
-								</div>
-							</div>
-							<div className="employer-vacancy-section" style={{ marginTop: "4rem" }}>
+								<aside className="employer-workspace-notes">
+  <h3>Recruitment access</h3>
+  <p>Company approval is required to publish vacancies and access applicants. Every new or edited vacancy also needs review.</p>
+  <div className="employer-published-count"><strong>{postedJobs.filter(job => job.status === "active").length}</strong> published vacancies</div>
+  <p>Only documents selected by the applicant are shared. Uploaded credentials are separate from independently reviewed qualifications.</p>
+</aside>
+</div>
+<div className="employer-vacancy-section" style={{ marginTop: "4rem" }}>
 								<h2 className="employer-vacancy-heading"
 									style={{
 										fontSize: "20px",

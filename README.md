@@ -94,3 +94,5 @@ The [BenchScout business and launch proposal](docs/proposals/BenchScout_Business
 - [Account email branding](docs/ACCOUNT-EMAILS.md): shared confirmation/reset design, embedded logo, role-specific links, validation and inbox-rendering limits.
 
 - [Hosted employer acceptance](docs/HOSTED-EMPLOYER-ACCEPTANCE.md): synthetic testing-site recruitment journey, operator handoffs, evidence and remaining gates.
+
+Recruitment screens and responsive layout: [compact employer workspace and matches](docs/RECRUITMENT-LAYOUT.md).

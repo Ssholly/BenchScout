@@ -1,0 +1,25 @@
+{
+  "date": "2026-10-20",
+  "scope": "compact recruitment workspace, applicant drawer and candidate match layouts",
+  "localChecks": {
+    "lint": "passed",
+    "typescript": "passed",
+    "tests": 220,
+    "productionBuild": "passed",
+    "diffCheck": "passed"
+  },
+  "deployment": "pending",
+  "hostedGeometryAndVisualChecks": "pending",
+  "widthsPlanned": [
+    320,
+    390,
+    1200,
+    1440
+  ],
+  "schemaOrConfigurationChanged": false,
+  "accessControlsChanged": false,
+  "limitations": [
+    "private endpoint denial must not be inferred from browser-client blocking",
+    "fresh responsive interview-form verification still required"
+  ]
+}
