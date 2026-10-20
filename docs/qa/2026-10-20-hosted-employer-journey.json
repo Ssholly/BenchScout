@@ -3,7 +3,7 @@
   "scope": "hosted synthetic employer recruitment journey",
   "target": "https://bench-scout-git-testing-sholly.vercel.app/",
   "applicationBaseline": "e17170d",
-  "status": "in-progress: authorised synthetic withdrawal/calendar removal and fresh CV-only application passed; recruitment layout repair in validation",
+  "status": "in-progress: withdrawal/reapplication UI and fresh CV grant passed; compact recruitment layouts verified; final posting-column release pending",
   "recipientAliasesApproved": true,
   "checks": [
     {
@@ -155,20 +155,34 @@
       "name": "fresh CV-only reapplication",
       "status": "passed in candidate UI",
       "observation": "one Application Sent card, zero Interviewing; available synthetic optional certificate left unchecked; CV only selected"
+    },
+    {
+      "name": "fresh employer application roster",
+      "status": "passed",
+      "observation": "exactly one pending applicant, new application-specific CV link rendered synthetic PDF; optional certificate absent; summary unshared"
+    },
+    {
+      "name": "withdrawn application CV link",
+      "status": "not verified at API level",
+      "observation": "old application-specific URL blocked by browser client; targeted log exposed no HTTP status; no bypass attempted"
+    },
+    {
+      "name": "fresh responsive interview form",
+      "status": "passed",
+      "observation": "320/390px inputs stayed within viewport at 254/324px widths; 320px visually reviewed; form closed without saving or emailing"
     }
   ],
   "prepared": [
-    "candidate session retained until deployed match layout checks; employer login required for new roster/grant checks"
+    "employer session authenticated; new application stays pending; unsaved interview and roster dialogs closed"
   ],
   "pending": [
-    "compact recruitment layout deployment and desktop/mobile visual checks",
+    "final posting-column CSS deployment and recheck",
     "confirmation inbox appearance and role-correct links",
     "document-scope direct request denial under browser restriction remains unverified",
     "hosted document access denials, replacement/withdrawal and repeated-request idempotency",
     "positive interview stage/notification/calendar/email checks passed; fresh responsive scheduling form still pending",
     "closure/suspension and scoped cleanup",
-    "posting form option-row compression: repair and desktop/320px/390px checks",
-    "fresh 320px/390px hosted scheduling-form verification"
+    "posting form option-row compression: repair and desktop/320px/390px checks"
   ],
   "productCodeChanged": true,
   "schemaChanged": false,
@@ -184,6 +198,6 @@
     "freshFallbackMessage": "one approved resend; operator reported successful confirmation",
     "receivedMimeAndRendering": "not inspected"
   },
-  "syntheticEmployerState": "approved QA simulation; one active synthetic vacancy; no real accreditation claimed",
+  "syntheticEmployerState": "reviewed QA simulation; one active QA vacancy and one fresh pending CV-only applicant",
   "cleanup": "partial: original synthetic application withdrawn; new application, accounts, two private documents, review evidence and active vacancy retained"
 }

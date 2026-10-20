@@ -139,3 +139,12 @@ The operator subsequently authorised the previously declined withdrawal/reapplic
 Opened a fresh toolkit for the same active synthetic vacancy. CV was selected; the synthetic optional certificate was now available but explicitly left unchecked. Submitted once. Applied showed exactly one Application Sent card, zero Interviewing, with CV as the sole selected document. Employer confirmation of the new application ID/count, old-grant revocation and fresh responsive interview-form checks remain pending.
 
 Started the operator-requested compact layout repair across employer posting, applicant roster and candidate match cards. Details and local/deployment/visual status: [Recruitment layout](RECRUITMENT-LAYOUT.md). No further interview has been saved or email requested in this step.
+
+
+### 20 October 2026 — Fresh employer roster and responsive forms verified
+
+After the operator's private employer login, the vacancy still had exactly one applicant. The fresh roster was pending (Shortlist & Schedule available), showed only the selected CV, kept summary sharing off and did not offer the available but unselected certificate. Its application-specific CV link had a new application ID and rendered the known synthetic PDF. Requesting the withdrawn application's original CV URL was blocked by the browser client; no 403/HTTP status was exposed in the targeted browser log. Record old-grant rejection as unverified at API level, not a proven pass. No workaround was attempted.
+
+Compact posting-form bounds passed at 320/390/1200/1440px; roster/card/control bounds passed at 320/390/1200px with no horizontal or content overflow. Visually reviewed the desktop posting options/roster and 320px roster. Opened the pending application's interview form without saving: date/time fields were each 254px wide at 320px and 324px at 390px, all within viewport. The 320px screenshot showed both fields and the submit control fitting. Closed both dialogs; no new interview/email was created. This closes the previously pending responsive interview-grid check. Final equal-width primary field columns and whole-label control styles are tracked in [layout evidence](RECRUITMENT-LAYOUT.md).
+
+Current synthetic state: reviewed company, one active QA vacancy, one fresh pending CV-only application, two private synthetic documents. The earlier interviewed application is withdrawn; its synced calendar event cleared. No real candidate/employer data changed. Remaining broader audit cases (closure, suspension, replacement and direct denial/idempotency HTTP checks) remain open.

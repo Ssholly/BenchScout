@@ -1,5 +1,10 @@
 # Change log
 
+## 20 October 2026 — Employer responsive layout and fresh application verified
+
+- Hosted posting, drawer and card bounds fit phone/desktop checks. The previously outstanding interview-grid check passed at 320/390px, with no second interview or email. Final equal-width primary posting columns build passed; release/recheck pending. [Layout evidence](RECRUITMENT-LAYOUT.md).
+- Employer roster confirmed one fresh pending CV-only application; its new document link opened. The old application URL was browser-blocked, so server-side revocation status remains unverified. [Hosted acceptance](HOSTED-EMPLOYER-ACCEPTANCE.md).
+
 ## 20 October 2026 — Hosted match wrapping verified
 
 - `e0d9e35` deployed to testing. Long synthetic match content fit phone and desktop checks; 320/390/1440px cell/chip geometry found no overflow. Final control/badge CSS preserves whole button/label text.

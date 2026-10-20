@@ -8,7 +8,7 @@
     "productionBuild": "passed",
     "diffCheck": "passed"
   },
-  "deployment": "e0d9e35 passed: Vercel 5zsmCk98kgzs9JUja3BLqTXdZWfn; final control/badge CSS follow-up pending",
+  "deployment": "e0d9e35 and 5e96bbb passed; final equal-width posting-field columns pending deployment",
   "hostedGeometryAndVisualChecks": {
     "matches": {
       "widths": [
@@ -21,8 +21,33 @@
       "visualInspection": "passed 320/1200/1440; 390 geometry passed",
       "fixture": "long synthetic role/company/salary/skill labels; Applied disabled after fresh submission"
     },
-    "employer": "awaiting existing private password sign-in",
-    "interviewForm": "awaiting pending applicant form"
+    "employer": {
+      "formWidths": [
+        320,
+        390,
+        1200,
+        1440
+      ],
+      "rosterWidths": [
+        320,
+        390,
+        1200
+      ],
+      "measuredOverflow": [],
+      "visualInspection": "desktop posting options and roster, plus 320px roster passed; new application CV opens; old URL browser-blocked"
+    },
+    "interviewForm": {
+      "widths": [
+        320,
+        390
+      ],
+      "measuredOverflow": [],
+      "fieldWidths": {
+        "320": 254,
+        "390": 324
+      },
+      "visualInspection": "320px passed; no save or new email"
+    }
   },
   "widthsPlanned": [
     320,
@@ -33,7 +58,92 @@
   "schemaOrConfigurationChanged": false,
   "accessControlsChanged": false,
   "limitations": [
-    "private endpoint denial must not be inferred from browser-client blocking",
-    "fresh responsive interview-form verification still required"
-  ]
+    "old/unselected document API denial status not verified because browser client blocks the request; no bypass attempted"
+  ],
+  "geometry": {
+    "matches": [
+      {
+        "overflow": [],
+        "width": 320
+      },
+      {
+        "overflow": [],
+        "width": 390
+      },
+      {
+        "overflow": [],
+        "width": 1440
+      }
+    ],
+    "employerForm": [
+      {
+        "overflow": [],
+        "width": 320
+      },
+      {
+        "overflow": [],
+        "width": 390
+      },
+      {
+        "overflow": [],
+        "width": 1200
+      },
+      {
+        "overflow": [],
+        "width": 1440
+      }
+    ],
+    "roster": [
+      {
+        "overflow": [],
+        "width": 320
+      },
+      {
+        "overflow": [],
+        "width": 390
+      },
+      {
+        "overflow": [],
+        "width": 1200
+      }
+    ],
+    "interview": [
+      {
+        "fields": [
+          {
+            "id": "interview-date",
+            "left": 33,
+            "right": 287,
+            "width": 254
+          },
+          {
+            "id": "interview-time",
+            "left": 33,
+            "right": 287,
+            "width": 254
+          }
+        ],
+        "overflow": [],
+        "width": 320
+      },
+      {
+        "fields": [
+          {
+            "id": "interview-date",
+            "left": 33,
+            "right": 357,
+            "width": 324
+          },
+          {
+            "id": "interview-time",
+            "left": 33,
+            "right": 357,
+            "width": 324
+          }
+        ],
+        "overflow": [],
+        "width": 390
+      }
+    ]
+  }
 }
