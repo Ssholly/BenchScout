@@ -1,5 +1,9 @@
 # Testing credentials and email acceptance
 
+## 20 October 2026 — Approved recipient replaced
+
+The operator supplied a different controlled inbox for testing. Updated only the email field in the prepared candidate signup; the address is omitted from repository documentation. Password entry and submission remain with the operator. No account was created or test message sent by this change. The earlier absent-account SQL result applies to the previous exact address only and must not be reused as evidence about the replacement inbox. Test confirmation/recovery/interview messages should use the newly approved recipient going forward.
+
 ## 20 October 2026 — Administrator accepted; recovery no-send diagnosed
 
 The operator's saved administrator key loaded the actual hosted review queues successfully: zero companies, zero vacancies awaiting review and zero open candidate reports. A deliberately wrong key had already been rejected. No approval/rejection decision was submitted; the secret field was cleared without reading back the key. This closes the administrator queue authentication check for the current testing deployment. Cron caller/scheduler and salary ownership checks remain separate.

@@ -1,5 +1,9 @@
 # Change log
 
+## 20 October 2026 — Test email recipient replaced
+
+- Updated the prepared signup to the operator's replacement approved inbox, leaving password entry/submission to the operator. Address omitted from docs; no account/message created or sent. Prior absent-account results apply only to the earlier recipient. No product/provider/schema or production change.
+
 ## 20 October 2026 — Administrator check accepted and missing-email cause identified
 
 - Verified correct-key loading of the hosted administrator company/vacancy/report queues (all empty), alongside the previous incorrect-key denial. Cleared the key field; no review decision submitted or key read back.
