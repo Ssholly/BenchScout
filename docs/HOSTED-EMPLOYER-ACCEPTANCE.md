@@ -151,3 +151,12 @@ Current synthetic state: reviewed company, one active QA vacancy, one fresh pend
 
 
 Final compact-layout release: `7aaabef` deployed successfully as Vercel `HMr8UtkBPqP2cdAVKZoVtmurbhiC`. Final 320/390/1200/1440px posting/control measurements found no overflow; location/salary columns are equal on desktop and stacked on mobile. Final desktop form and 320px options screenshots passed visual review. The testing employer page remains available for operator review, viewport reset, with one fresh pending application and no replacement interview. All code/layout/evidence updates were pushed to testing; no production release or migration occurred.
+
+
+### 20 October 2026 — Closure/suspension/replacement phase prepared
+
+The operator authorised continuation of remaining safety checks. Browser inspection found the synthetic candidate session active, so prepared its CV replacement first to avoid an unnecessary role switch. Confirmed the exact synthetic identity, one retained application and the existing private CV/optional certificate. Generated a distinct one-page PDF labelled QA ONLY - Replacement CV version 2, containing no real personal data; the replacement has not been uploaded.
+
+Source inspection confirms upload replacement saves the new object/metadata before permanently removing the old stored object. Prepared the candidate profile Update control and requested action-time confirmation for this old-file removal, as required by the browser tool's permanent-deletion policy. The application and optional certificate are outside this replacement action. No file, vacancy or review changed yet.
+
+Read-only preparation also confirmed vacancy closure updates status to closed without cascading application deletion, and employer authentication re-reads current database verification for existing sessions before verified-employer routes/document grants. These are source observations; fresh hosted closure/suspension/replacement outcomes remain pending. No product code/schema/configuration change.

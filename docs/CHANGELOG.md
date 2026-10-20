@@ -1,5 +1,10 @@
 # Change log
 
+## 20 October 2026 — Remaining safety phase prepared
+
+- Confirmed the active synthetic candidate and prepared a distinct QA-only CV replacement. Upload code removes the old stored file, so action-time confirmation is pending; no replacement has occurred.
+- Inspected closure/history and current-session employer approval guards before hosted closure/suspension checks. No code, schema, configuration, vacancy or review change. [Hosted acceptance](HOSTED-EMPLOYER-ACCEPTANCE.md).
+
 ## 20 October 2026 — Employer responsive layout and fresh application verified
 
 - Hosted posting, drawer and card bounds fit phone/desktop checks. The previously outstanding interview-grid check passed at 320/390px, with no second interview or email. Final equal-width primary posting columns deployed as `7aaabef`; reloaded 320/390/1200/1440px checks passed with no measured overflow. [Layout evidence](RECRUITMENT-LAYOUT.md).

@@ -3,7 +3,7 @@
   "scope": "hosted synthetic employer recruitment journey",
   "target": "https://bench-scout-git-testing-sholly.vercel.app/",
   "applicationBaseline": "e17170d",
-  "status": "scoped withdrawal/reapplication UI and compact layout checks passed; broader hosted launch audit remains in-progress",
+  "status": "remaining safety phase: synthetic CV replacement prepared; action-time old-file-removal confirmation pending",
   "recipientAliasesApproved": true,
   "checks": [
     {
@@ -173,10 +173,12 @@
     }
   ],
   "prepared": [
-    "compact testing employer page retained for review; one fresh application pending; viewport reset"
+    "synthetic candidate profile Update control ready",
+    "distinct QA-only replacement PDF generated locally, not uploaded",
+    "closure/suspension source gates inspected; no new hosted outcome claimed"
   ],
   "pending": [
-    "broader audit: closure, suspension, file replacement and direct HTTP denial/idempotency checks",
+    "operator confirms permanent replacement of only current synthetic CV; then employer closure/suspension checks",
     "confirmation inbox appearance and role-correct links",
     "document-scope direct request denial under browser restriction remains unverified",
     "hosted document access denials, replacement/withdrawal and repeated-request idempotency",
