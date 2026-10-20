@@ -3,7 +3,7 @@
   "scope": "hosted synthetic employer recruitment journey",
   "target": "https://bench-scout-git-testing-sholly.vercel.app/",
   "applicationBaseline": "e17170d",
-  "status": "in-progress: withdrawal/reapplication UI and fresh CV grant passed; compact recruitment layouts verified; final posting-column release pending",
+  "status": "scoped withdrawal/reapplication UI and compact layout checks passed; broader hosted launch audit remains in-progress",
   "recipientAliasesApproved": true,
   "checks": [
     {
@@ -173,16 +173,15 @@
     }
   ],
   "prepared": [
-    "employer session authenticated; new application stays pending; unsaved interview and roster dialogs closed"
+    "compact testing employer page retained for review; one fresh application pending; viewport reset"
   ],
   "pending": [
-    "final posting-column CSS deployment and recheck",
+    "broader audit: closure, suspension, file replacement and direct HTTP denial/idempotency checks",
     "confirmation inbox appearance and role-correct links",
     "document-scope direct request denial under browser restriction remains unverified",
     "hosted document access denials, replacement/withdrawal and repeated-request idempotency",
     "positive interview stage/notification/calendar/email checks passed; fresh responsive scheduling form still pending",
-    "closure/suspension and scoped cleanup",
-    "posting form option-row compression: repair and desktop/320px/390px checks"
+    "closure/suspension and scoped cleanup"
   ],
   "productCodeChanged": true,
   "schemaChanged": false,
@@ -199,5 +198,17 @@
     "receivedMimeAndRendering": "not inspected"
   },
   "syntheticEmployerState": "reviewed QA simulation; one active QA vacancy and one fresh pending CV-only applicant",
-  "cleanup": "partial: original synthetic application withdrawn; new application, accounts, two private documents, review evidence and active vacancy retained"
+  "cleanup": "partial: original synthetic application withdrawn; new application, accounts, two private documents, review evidence and active vacancy retained",
+  "layoutRelease": {
+    "commit": "7aaabef",
+    "vercel": "HMr8UtkBPqP2cdAVKZoVtmurbhiC",
+    "state": "success",
+    "finalWidths": [
+      320,
+      390,
+      1200,
+      1440
+    ],
+    "overflow": []
+  }
 }

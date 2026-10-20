@@ -168,3 +168,8 @@ Commit `4857fb1` reached the protected testing alias through successful Vercel d
 `49e5108` deployed successfully as Vercel `6ThBhP6CvRi9H6qkbpLzckENZqoC`. Hosted past-time form rejection passed; a valid synthetic future interview persisted after full reload, and the approved recipient confirmed correct inbox details. Shared client/API validation uses Africa/Lagos.
 
 Adaptive-grid follow-up `87bebfd` deployed successfully as Vercel `HpTxd6mR2biKSpbs5UGhBn6838Ak`. Lint, TypeScript, 220 tests and build passed. The original 320px overflow is recorded; fresh 320/390px scheduling-form verification remains pending because the scheduled fixture no longer offers the form. No schema/migration/configuration change or production branch update. Candidate in-app/scheduler and remaining hosted gates are still open.
+
+
+### 20 October 2026 — Compact recruitment workspace
+
+Application `7aaabef` reached the testing alias through successful Vercel deployment `HMr8UtkBPqP2cdAVKZoVtmurbhiC`, following `e0d9e35` and `5e96bbb`. Compact posting, drawer and match layouts were verified with long synthetic content on phone/desktop widths; final posting/control bounds passed 320/390/1200/1440px. The pending-applicant interview form passed 320/390px without a new save/email. Lint, TypeScript, 220 tests and production builds passed. No API/schema/configuration/permission change or production branch release. [Layout evidence](RECRUITMENT-LAYOUT.md) and [hosted acceptance](HOSTED-EMPLOYER-ACCEPTANCE.md) distinguish completed UI checks from the browser-blocked direct-denial check.
