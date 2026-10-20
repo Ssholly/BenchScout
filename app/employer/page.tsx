@@ -5,13 +5,14 @@ import EmployerVerification from "@/components/EmployerVerification";
 import ProfessionalSummary from "@/components/ProfessionalSummary";
 import Toast from "@/components/Toast";
 import { updateApplicant } from "@/lib/applicant-update";
+import { loadEmployerTalent } from "@/lib/employer-talent";
 import { useCallback } from "react";
 import { csvCell } from "@/lib/csv";
 import { startTransition } from "react";
 import { useMounted } from "@/lib/use-mounted";
 import { careerLabel, listingDetails } from "@/lib/candidate-profile";
 import type { Candidate, ClientApplication, ClientEmployer, ClientJob } from "@/lib/types";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 
 type InvitedRecord = {
@@ -65,6 +66,8 @@ export default function EmployerGateway() {
 	const [talentPool, setTalentPool] = useState<Candidate[]>([]);
 	const [updatingApplicant, setUpdatingApplicant] = useState<string | null>(null);
 	const [crmLoading, setCrmLoading] = useState(false);
+	const [crmError, setCrmError] = useState("");
+	const talentRequest = useRef(0);
 	const [filterLocation, setFilterLocation] = useState("");
 	const [invitingId, setInvitingId] = useState<string | null>(null);
 
@@ -140,19 +143,19 @@ export default function EmployerGateway() {
 	};
 
 	const fetchTalentDirectory = useCallback(async () => {
+		const sequence = ++talentRequest.current;
+		const identity = localStorage.getItem("benchscout_identity");
+		const isCurrent = () => sequence === talentRequest.current && identity === localStorage.getItem("benchscout_identity");
 		setCrmLoading(true);
+		setCrmError("");
+		setTalentPool([]);
 		try {
-			const res = await fetch(
-				`/api/employer/talent?location=${encodeURIComponent(filterLocation)}`,
-			);
-			const data = await res.json();
-			if (data.success) {
-				setTalentPool(data.users || []);
-			}
-		} catch (err) {
-			console.error("CRM talent scan issue:", err);
+			const users = await loadEmployerTalent(filterLocation);
+			if (isCurrent()) setTalentPool(users);
+		} catch (error) {
+			if (isCurrent()) setCrmError(error instanceof Error ? error.message : "Could not load previous applicants. Please retry.");
 		} finally {
-			setCrmLoading(false);
+			if (isCurrent()) setCrmLoading(false);
 		}
 	}, [filterLocation]);
 
@@ -228,6 +231,7 @@ export default function EmployerGateway() {
 		if ((activeTab === "crm" || activeTab === "invites") && employer) {
 			startTransition(() => { fetchTalentDirectory(); });
 		}
+		return () => { talentRequest.current++; };
 	}, [activeTab, employer, fetchTalentDirectory]);
 
 	const openApplicantDrawer = async (jobId: string, jobTitle: string) => {
@@ -2614,7 +2618,12 @@ export default function EmployerGateway() {
 								>
 									Loading your applicant directory...
 								</div>
-							) : talentPool.length === 0 ? (
+							) : crmError ? (
+                                <div role="alert" style={{padding:"1.25rem",background:"#fff7ed",border:"1px solid #fed7aa",borderRadius:12,color:"#9a3412"}}>
+                                  <p style={{margin:"0 0 12px",lineHeight:1.5}}>{crmError}</p>
+                                  <button type="button" onClick={fetchTalentDirectory} style={{padding:"8px 14px",border:"1px solid #fdba74",borderRadius:8,background:"white",color:"#9a3412",fontWeight:700,cursor:"pointer"}}>Retry loading applicants</button>
+                                </div>
+                            ) : talentPool.length === 0 ? (
 								<div
 									className="employer-panel"
 									style={{

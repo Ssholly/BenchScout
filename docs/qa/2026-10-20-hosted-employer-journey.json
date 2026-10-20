@@ -3,7 +3,7 @@
   "scope": "hosted synthetic employer recruitment journey",
   "target": "https://bench-scout-git-testing-sholly.vercel.app/",
   "applicationBaseline": "e17170d",
-  "status": "in-progress: unconfirmed employer denied; received confirmation lacks visible button per recipient",
+  "status": "in-progress: employer confirmed, pending company submitted; directory error repair locally validated",
   "recipientAliasesApproved": true,
   "checks": [
     {
@@ -30,14 +30,33 @@
       "name": "employer unconfirmed login gate",
       "status": "passed",
       "observation": "hosted employer login displays specific confirm-email rejection"
+    },
+    {
+      "name": "confirmed employer login",
+      "status": "passed",
+      "observation": "operator confirmed newest email; normal employer login succeeded"
+    },
+    {
+      "name": "unapproved posting gate",
+      "status": "passed",
+      "observation": "explicit review-required error; no vacancy created"
+    },
+    {
+      "name": "company submission and admin queue",
+      "status": "passed",
+      "observation": "synthetic evidence persisted as pending; user unlocked queue showing one company and zero vacancies"
+    },
+    {
+      "name": "directory error handling",
+      "status": "local checks passed; hosted verification pending",
+      "observation": "old UI misreported failed load as no applicants; repaired persistent error/retry, cleared results and ignored abandoned responses; 216 tests and build passed"
     }
   ],
   "prepared": [
-    "employer signup restored with blank password",
-    "administrator lookup restored with blank key; credential entry deferred until employer login"
+    "administrator queue unlocked; pending synthetic company selected; no decision saved"
   ],
   "pending": [
-    "employer confirmation action-link repair deployment/resend and fresh recipient review",
+    "directory repair deployment and hosted denial/retry verification",
     "confirmation inbox appearance and role-correct links",
     "company and vacancy review gates",
     "application selection, private document downloads/denials and duplicate handling",
@@ -47,15 +66,15 @@
   "productCodeChanged": true,
   "schemaChanged": false,
   "accountCreatedByAgent": false,
-  "emailSentByAgent": false,
+  "emailSentByAgent": true,
   "reviewDecisionSubmitted": false,
   "realCandidateProfileOrDocumentsChanged": false,
   "existingTestingCandidateSession": "signed out to prepare synthetic accounts",
-  "accountCreatedByOperator": "candidate observed authenticated; employer unconfirmed login rejection observed",
+  "accountCreatedByOperator": "candidate and confirmed employer observed authenticated",
   "syntheticCandidateState": "account and uploaded synthetic CV retained; signed out for sequential employer testing",
   "emailReceipt": {
     "employer": "operator confirmed receipt; reported action button absent",
-    "freshFallbackMessage": "pending deployment and approved resend",
+    "freshFallbackMessage": "one approved resend; operator reported successful confirmation",
     "receivedMimeAndRendering": "not inspected"
   }
 }

@@ -1,5 +1,11 @@
 # Change log
 
+## 20 October 2026 — Previous-applicant errors and hosted employer gates
+
+- Fixed failed previous-applicant requests appearing as an empty directory. The client now clears old results, preserves access-denial messages, rejects malformed responses, provides Retry and ignores abandoned/account-changed responses. Existing server permissions are unchanged.
+- Lint, TypeScript, all 216 tests and production build passed; no migration/configuration change. Deployment and hosted error/retry acceptance are pending.
+- Confirmed the email fallback deployment, operator-confirmed employer email, normal login, pending synthetic company submission and pre-review posting denial. [Hosted acceptance](HOSTED-EMPLOYER-ACCEPTANCE.md) records remaining review/application/interview checks.
+
 ## 20 October 2026 — Visible account-email action fallback
 
 - Hosted employer login correctly rejected the newly created unconfirmed account. Recipient reported receiving its confirmation email without a visible button; actual received rendering/MIME and root cause remain unverified.
