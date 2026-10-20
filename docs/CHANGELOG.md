@@ -1,5 +1,10 @@
 # Change log
 
+## 20 October 2026 — Reset branding accepted; initial confirmation path verified
+
+- Recipient confirmed the latest reset email looks right and clarified the original issue was account-creation confirmation.
+- Traced actual signup UI to /api/auth/register and its shared branded confirmation helper; employer signup and resends use the same inline-logo layout. Recorded that this fix is deployed while fresh confirmation inbox rendering remains pending. No additional code/provider/account/email/password change.
+
 ## 20 October 2026 — Shared account email branding and confirmed reset receipt
 
 - Recipient confirmed receipt of the existing-account reset link. Kept this separate from link/reset completion and new-design inbox rendering; no password changed.

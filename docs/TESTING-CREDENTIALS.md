@@ -1,5 +1,9 @@
 # Testing credentials and email acceptance
 
+## 20 October 2026 — Reset appearance accepted; confirmation remains the target
+
+Recipient confirmed the latest reset email branding is correct and clarified that account-creation confirmation was the original concern. Verified the actual signup UI endpoint /api/auth/register calls the shared confirmation helper/layout with the inline logo; employer signup and resend do too. The confirmation fix is included in the deployed code. Fresh confirmation inbox appearance is not yet verified; no further account or message was created/sent during this clarification. See Account emails and the updated scrubbed branding record.
+
 ## 20 October 2026 — Shared design deployed and new review request submitted
 
 Vercel deployment 0653bcb succeeded after 203 tests/build and mobile previews. Requested one additional reset email at the approved existing-account inbox to review the deployed design; hosted UI returned to login. New-message receipt/appearance is awaiting recipient confirmation, distinct from the earlier confirmed receipt. No password changed and no further confirmation message sent. Exact release and request boundaries are in Deployment and Account emails.

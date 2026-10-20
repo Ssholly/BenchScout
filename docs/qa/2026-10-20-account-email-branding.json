@@ -36,7 +36,10 @@
     ],
     "horizontalOverflow": false,
     "syntheticLinksOnly": true,
-    "newDesignLiveInboxRendering": "not yet verified"
+    "newDesignLiveInboxRendering": {
+      "passwordReset": "recipient confirmed branding looks right",
+      "accountCreationConfirmation": "pending fresh live inbox check"
+    }
   },
   "recipientAddressPublished": false,
   "deployment": {
@@ -49,8 +52,14 @@
     "approvedRecipient": true,
     "submittedAfterDeployment": true,
     "uiReturnedToLogin": true,
-    "receiptAndRendering": "awaiting recipient confirmation",
+    "receiptAndRendering": "Recipient confirmed latest reset email branding looks right",
     "passwordChangedByAgent": false,
     "additionalConfirmationEmailSent": false
+  },
+  "signupPathVerified": {
+    "uiEndpoint": "/api/auth/register",
+    "initialCandidateSignupUsesBrandedHelper": true,
+    "employerSignupUsesBrandedHelper": true,
+    "resendUsesBrandedHelper": true
   }
 }

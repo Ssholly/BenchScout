@@ -32,3 +32,8 @@ This establishes shared layout and browser geometry, not universal email-client/
 ## Testing release and live review checkpoint
 
 Vercel deployment for 0653bcb succeeded; exact release is in Deployment. After release, one approved candidate reset request was submitted through the hosted UI for a visual review of the newest design. UI returned to login. Recipient confirmation of that new message's delivery/appearance is pending; no new confirmation message or password change was performed. Use the newest reset link if completing recovery, because each candidate request replaces its preceding reset token.
+
+
+## Recipient clarification and signup-path verification — 20 October 2026
+
+The recipient confirmed that the latest reset email's branding looks right and clarified that the original concern was the account-creation confirmation. Source verification traced the real signup UI to /api/auth/register, which calls sendVerificationEmail and the shared branded layout, including its PNG attachment. Employer signup and resend confirmation use that same helper. The fix therefore covers initial confirmation as well as reset. This is deployed-source/automated evidence; a fresh account-creation confirmation inbox render is still pending. No additional account/message/password action or code/provider change was made for this clarification.
