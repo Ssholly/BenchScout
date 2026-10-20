@@ -90,3 +90,5 @@ The [BenchScout business and launch proposal](docs/proposals/BenchScout_Business
 - [Hosted operations readiness](docs/OPERATIONS-READINESS.md): verified environment scopes, dedicated testing setup, inbox acceptance and backup/restore gates.
 
 - [Testing credentials and email acceptance](docs/TESTING-CREDENTIALS.md): secure operator setup, branch scope, deployment checks and controlled inbox tests.
+
+- [Account email branding](docs/ACCOUNT-EMAILS.md): shared confirmation/reset design, embedded logo, role-specific links, validation and inbox-rendering limits.

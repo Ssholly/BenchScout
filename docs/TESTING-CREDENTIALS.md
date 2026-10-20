@@ -1,5 +1,9 @@
 # Testing credentials and email acceptance
 
+## 20 October 2026 — Reset receipt confirmed; account email design unified
+
+The recipient confirmed receipt of the reset link for the existing replacement account. No password was changed and link/reset completion remains untested. The provided confirmation screenshot labelled Oct 19 shows the historical blue B design. On request, both confirmation and recovery now use the same laboratory logo, BenchScout wordmark, navy/teal layout and inline image; their instructions/expiry remain distinct. Lint/typecheck/203 tests/build and synthetic 320/390px browser previews passed. This receipt predates the new shared design; fresh inbox rendering of that design remains separate evidence. See [Account emails](ACCOUNT-EMAILS.md) and [scrubbed evidence](qa/2026-10-20-account-email-branding.json).
+
 ## 20 October 2026 — Existing-account reset test resumed
 
 The operator clarified that the replacement approved address already has an account and requested password-reset testing, not signup. The earlier signup preparation was not submitted. Switched the same hosted dialog back to candidate recovery, entered the newly approved address and submitted exactly one Send Reset Link request. The UI progressed through Sending and returned to Welcome Back, the generic success path. No new account was created and no password was entered or changed. Provider acceptance/inbox receipt remain unverified until the recipient confirms. Do not infer account existence or successful delivery solely from this generic response, and do not ask the operator to create another account for this request.

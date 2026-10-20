@@ -245,3 +245,8 @@ Found/fixed an actual match summary error during the journey: direct posts with 
 ## 19 October 2026 — Hosted isolated testing smoke check
 
 On the existing Vercel testing alias after deployment 699b256, the fresh database presented a guest session. A disposable fixture login succeeded. In Settings, the real file chooser uploaded a synthetic optional certificate; Uploaded/View/Delete appeared and the guarded Cloud Vault Preview opened. Persistence checks verified the dedicated database/private store. Scoped cleanup removed the file/account/session and browser logout completed. This was a hosted connection/upload smoke check, not a rerun of the full 320/390px employer journey, email confirmation, or a physical iPhone test. No real documents/messages used. Temporary proof: /private/tmp/benchscout-hosted-isolation-upload.jpg and /private/tmp/benchscout-testing-isolated-scopes.jpg.
+
+
+## 20 October 2026 — Consistent account-email previews
+
+Generated confirmation/reset HTML from the actual shared layout using synthetic links and the app laboratory logo. The preview alone substitutes an embedded PNG data URL for the real transport's CID image. At 320px, both document widths were 320 and button right edges 275px; at 390px, widths were 390 and right edges 345px. Both logos rendered; no horizontal clipping. Shared header/button/card visually compared side by side. Overrides reset and loopback server stopped. Proof: /private/tmp/benchscout-consistent-account-emails.jpg. These browser previews do not establish Gmail/iPhone dark-mode or actual MIME rendering; recipient-confirmed reset receipt predates this styling update. No live token/account data used.

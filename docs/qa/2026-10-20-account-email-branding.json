@@ -1,0 +1,42 @@
+{
+  "date": "2026-10-20",
+  "resetEmailReceipt": {
+    "recipientConfirmed": true,
+    "folder": "not specified",
+    "mailboxReadByAgent": false,
+    "passwordChanged": false,
+    "resetCompleted": false,
+    "brandingVersion": "before shared-layout update"
+  },
+  "confirmationScreenshot": {
+    "messageType": "account confirmation",
+    "displayedDate": "Oct 19",
+    "historicalBlueBDesign": true,
+    "proofOfCurrentSharedLayout": false
+  },
+  "newSharedBranding": {
+    "logo": "existing BenchScout laboratory PNG",
+    "inlineContentId": "benchscout-logo",
+    "appliesTo": [
+      "candidate confirmation",
+      "employer confirmation",
+      "password reset"
+    ],
+    "providerConfigurationChanged": false,
+    "schemaChanged": false
+  },
+  "validation": {
+    "lint": "passed",
+    "typecheck": "passed",
+    "testsPassed": 203,
+    "build": "passed",
+    "browserWidths": [
+      320,
+      390
+    ],
+    "horizontalOverflow": false,
+    "syntheticLinksOnly": true,
+    "newDesignLiveInboxRendering": "not yet verified"
+  },
+  "recipientAddressPublished": false
+}

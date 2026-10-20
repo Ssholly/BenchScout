@@ -1,5 +1,9 @@
 # Hosted environment and recovery readiness
 
+## Recipient reset receipt and shared email design — 20 October 2026
+
+The approved recipient confirmed reset-link receipt for the existing replacement account, closing the receipt check for that request. It does not certify confirmation/interview delivery, link completion, SPF/DKIM or the rendering of the subsequently changed template. Shared account-email branding now covers confirmations and recovery; 203 tests/build and synthetic 320/390px previews passed. See [Account emails](ACCOUNT-EMAILS.md). Deployment and new-template inbox evidence are tracked separately; other operational gates stay open.
+
 ## Administrator authentication and recovery diagnosis — 20 October 2026
 
 The correct testing administrator key successfully loaded the three hosted review queues (all zero); the prior incorrect-key test was rejected. No review decision changed. A read-only testing-database check found no candidate/employer or candidate reset token for the exact approved mail recipient. Password recovery intentionally does not send for a missing account, so provider/inbox delivery remains untested. Prepared an unsubmitted test signup with its password left for operator entry. See [Testing credentials](TESTING-CREDENTIALS.md) and [scrubbed diagnostic evidence](qa/2026-10-20-admin-and-email-diagnosis.json). Other credentials/operational gates stay open; pilot remains HOLD.

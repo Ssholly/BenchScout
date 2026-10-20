@@ -1,5 +1,11 @@
 # Change log
 
+## 20 October 2026 — Shared account email branding and confirmed reset receipt
+
+- Recipient confirmed receipt of the existing-account reset link. Kept this separate from link/reset completion and new-design inbox rendering; no password changed.
+- Added one shared email layout for candidate/employer confirmation and password reset: existing laboratory PNG logo/CID, navy/teal wordmark, matching card/button/footer, escaped content and plain text. Preserved role-specific instructions, expiry and company-review separation.
+- Lint, TypeScript, 203 tests, production build and diff checks passed. Real-helper synthetic previews fit 320/390px with no horizontal clipping. No schema/API/provider/sender-profile change. See Account emails and Deployment for contracts, evidence and release status.
+
 ## 20 October 2026 — Existing-account recovery test resumed
 
 - Corrected the signup assumption after the operator confirmed the replacement recipient already has an account. Prepared signup was not submitted.
