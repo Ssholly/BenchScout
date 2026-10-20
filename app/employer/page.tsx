@@ -227,12 +227,14 @@ export default function EmployerGateway() {
 		}
 	};
 
+	const invalidateTalentRequest = useCallback(() => { talentRequest.current++; }, []);
+
 	useEffect(() => {
 		if ((activeTab === "crm" || activeTab === "invites") && employer) {
 			startTransition(() => { fetchTalentDirectory(); });
 		}
-		return () => { talentRequest.current++; };
-	}, [activeTab, employer, fetchTalentDirectory]);
+		return invalidateTalentRequest;
+	}, [activeTab, employer, fetchTalentDirectory, invalidateTalentRequest]);
 
 	const openApplicantDrawer = async (jobId: string, jobTitle: string) => {
 		setDrawer({ isOpen: true, jobTitle, applicants: [], loading: true, error: "" });

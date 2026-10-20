@@ -156,3 +156,8 @@ After deployment, requested one additional candidate reset email at the approved
 Released core commit `70faf55` and final application commit `e17170d` to `origin/testing`. Vercel Preview deployment [CD1zsnx7QrajbGB5shy1s3sXCwdB](https://vercel.com/sholly/bench-scout/CD1zsnx7QrajbGB5shy1s3sXCwdB) reports success. The existing testing alias serves the consent-based extraction controls, normalized removable chips and corrected profile label/shortcut. Hosted read-only/UI navigation verified the new controls and saved chips; no real preferences or CV-to-AI request was submitted. Documentation-only follow-ups may advance the branch without changing application code.
 
 Lint, TypeScript, 211 tests, production build, 18 isolated live acceptance checks, targeted browser persistence/mobile checks and a synthetic live Gemini request passed. The isolated schema and five remaining synthetic private files were removed. No new migration/configuration and no production branch update. Full details, API contracts, evidence and operator extraction steps: [CV skills and role keywords](RESUME-KEYWORDS.md).
+
+
+### 20 October 2026 — Employer directory denial visibility
+
+Commit `4857fb1` reached the protected testing alias through successful Vercel deployment `5yC26qaDDXZo2LYgAbw6U2PgaQUY`. Hosted pending-employer denial and Retry passed. No migration, environment or permission change. The follow-up stable cleanup callback passed lint without warnings, TypeScript, all 216 tests and webpack build; its deployment is tracked by the testing-branch commit status. Company approval and the remaining hosted hiring journey are still incomplete.

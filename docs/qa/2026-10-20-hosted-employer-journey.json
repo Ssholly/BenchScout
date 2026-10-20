@@ -3,7 +3,7 @@
   "scope": "hosted synthetic employer recruitment journey",
   "target": "https://bench-scout-git-testing-sholly.vercel.app/",
   "applicationBaseline": "e17170d",
-  "status": "in-progress: employer confirmed, pending company submitted; directory error repair locally validated",
+  "status": "in-progress: hosted directory denial/retry passed; synthetic company approval draft awaiting action-time confirmation",
   "recipientAliasesApproved": true,
   "checks": [
     {
@@ -48,15 +48,15 @@
     },
     {
       "name": "directory error handling",
-      "status": "local checks passed; hosted verification pending",
-      "observation": "old UI misreported failed load as no applicants; repaired persistent error/retry, cleared results and ignored abandoned responses; 216 tests and build passed"
+      "status": "passed on hosted testing",
+      "observation": "4857fb1 deployed; pending employer sees review-required denial; Retry returns same denial with no empty-list/candidate display"
     }
   ],
   "prepared": [
-    "administrator queue unlocked; pending synthetic company selected; no decision saved"
+    "administrator queue unlocked; synthetic-only company approval evidence filled; no decision saved"
   ],
   "pending": [
-    "directory repair deployment and hosted denial/retry verification",
+    "action-time confirmation before granting synthetic employer recruitment access",
     "confirmation inbox appearance and role-correct links",
     "company and vacancy review gates",
     "application selection, private document downloads/denials and duplicate handling",
