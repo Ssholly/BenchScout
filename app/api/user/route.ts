@@ -5,6 +5,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { candidateProfile } from "@/lib/candidate-profile";
 import { sharedProfessionalSummary } from "@/lib/professional-summary";
+import { roleKeywords, validRoleKeywords } from "@/lib/role-keywords";
 
 
 
@@ -48,6 +49,8 @@ export const POST = withApi("candidate", async (request: Request) => {
 		textField(location, "location");
 		if (!Number.isInteger(minScore) || minScore < 0 || minScore > 100) throw new ApiError(400, "Match score must be between 0 and 100.");
 		if (keywords != null && !(typeof keywords === "string" || (Array.isArray(keywords) && keywords.every(value => typeof value === "string")))) throw new ApiError(400, "Invalid keywords.");
+        const normalizedKeywords = keywords == null ? undefined : roleKeywords(keywords);
+        if (normalizedKeywords && !validRoleKeywords(normalizedKeywords)) throw new ApiError(400, "Use at most 60 keywords, each 100 characters or fewer.");
 
 		if (!email) {
 			return NextResponse.json(
@@ -77,7 +80,7 @@ export const POST = withApi("candidate", async (request: Request) => {
 				location: location,
                 ...(user.location !== location ? {candidateProfile:candidateProfile(user.candidateProfile)} : {}),
 				// Safely handle keywords whether they arrive as an array or a string
-				keywords: Array.isArray(keywords) ? keywords.join(", ") : keywords,
+				keywords: normalizedKeywords?.join(", "),
 				minScore: minScore,
 				// 🚀 Added avatarUrl mapping here
 
@@ -87,7 +90,6 @@ export const POST = withApi("candidate", async (request: Request) => {
             throw error;
         });
 
-		console.log("Successfully updated profile for:", email);
 		return NextResponse.json({ success: true });
 	} catch (error: unknown) {
     if (error instanceof ApiError) throw error;

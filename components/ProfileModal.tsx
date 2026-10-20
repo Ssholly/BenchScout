@@ -1,6 +1,7 @@
 "use client";
 import { setClientIdentity } from "@/lib/client-identity";
 import { signOutToHome } from "@/lib/client-logout";
+import { roleKeywords } from "@/lib/role-keywords";
 import Toast from "@/components/Toast";
 import Image from "next/image";
 import { useMounted } from "@/lib/use-mounted";
@@ -77,6 +78,7 @@ export default function ProfileModal() {
 			}
 
 			const activeEmail = localStorage.getItem("labpro_active_user");
+			setActiveUser(null);
 			const savedPhase = localStorage.getItem("labpro_career_phase") as
 				| "licensed"
 				| "internship"
@@ -132,8 +134,6 @@ export default function ProfileModal() {
 	const handleUpdateCv = async (e: React.ChangeEvent<HTMLInputElement>) => {
 		if (e.target.files && e.target.files.length > 0 && email) {
 			const newFile = e.target.files[0];
-			setResumeName(newFile.name);
-			localStorage.setItem(`labpro_resume_name_${email}`, newFile.name);
 			setIsUploadingResume(true);
 
 			const formData = new FormData();
@@ -148,8 +148,12 @@ export default function ProfileModal() {
 				});
 				const data = await res.json();
 
+				if (localStorage.getItem("labpro_active_user") !== email) return;
 				if (data.success) {
-					showToast("Resume updated! AI skills recalibrated.");
+					setActiveUser(data.user);
+                    setResumeName(newFile.name);
+                    localStorage.setItem(`labpro_resume_name_${email}`, newFile.name);
+                    showToast(data.resumeTextReady ? "Resume saved. Extract skills in Profile & documents." : "Resume saved. No readable text found; use a PDF with selectable text or add keywords manually.", data.resumeTextReady ? "success" : "warning");
 					window.dispatchEvent(new Event("userStateChanged"));
 				} else {
 					showToast(data.error || "Failed to upload resume.", "error");
@@ -672,7 +676,7 @@ export default function ProfileModal() {
 									}}
 								>
 									{view === "profile"
-										? "Manage your AI-extracted career data."
+										? "Manage your career profile and role keywords."
 										: view === "forgot"
 											? "Enter your email to receive a reset link."
 											: "Join BenchScout, your MLS Career Hub."}
@@ -1469,7 +1473,7 @@ export default function ProfileModal() {
 													flexShrink: 0,
 												}}
 											>
-												{isUploadingResume ? "Scanning..." : "Update"}
+												{isUploadingResume ? "Uploading..." : "Update"}
 											</button>
 										</div>
 									</div>
@@ -1493,7 +1497,7 @@ export default function ProfileModal() {
 												textTransform: "uppercase",
 											}}
 										>
-											AI EXTRACTED SKILLS & ROLES
+											SKILLS & ROLE KEYWORDS
 										</div>
 										<div
 											className="profile-keywords"
@@ -1501,8 +1505,7 @@ export default function ProfileModal() {
 										>
 											{activeUser?.keywords &&
 											activeUser.keywords.length > 0 ? (
-												activeUser.keywords
-													.split(",")
+												roleKeywords(activeUser.keywords)
 													.map((kw: string, idx: number) => (
 														<span
 															key={idx}
@@ -1528,14 +1531,15 @@ export default function ProfileModal() {
 														fontStyle: "italic",
 													}}
 												>
-													No skills found. Update in Settings.
+													No keywords saved yet. Extract skills from your CV or add them in Profile & documents.
 												</span>
 											)}
-										</div>
-									</div>
+                                        </div>
+                                        <a href="/settings#role-keywords" style={{display:"inline-block", marginTop:12, fontSize:13, color:"#176e61", fontWeight:700}}>Edit keywords / Extract CV skills</a>
+                                    </div>
 
-									<button
-										onClick={handleLogout}
+                                    <button
+                                        onClick={handleLogout}
 										style={{
 											width: "100%",
 											background: "#fef2f2",

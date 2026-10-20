@@ -14,7 +14,7 @@ npm run dev
 
 Generate independent `ADMIN_SECRET`, `CRON_SECRET`, and `SALARY_OWNER_SECRET` values with `openssl rand -hex 32`. A private Vercel Blob store is required for document uploads. Accounts can be created before adding a CV. Use its token as `BLOB_PRIVATE_READ_WRITE_TOKEN`; a public store token cannot substitute for it. Configure `EMAIL_FROM` with a verified sender and either Resend or Gmail SMTP. Set `NEXT_PUBLIC_APP_URL` to the actual app origin.
 
-External listings work through source adapters in `lib/job-sources.ts`. Apify and Gemini are optional; without Gemini, automatic extraction and letter generation are unavailable. AI-extracted license details are self-reported until independently reviewed. Job source layouts and third-party APIs require ongoing monitoring; a successful build does not validate live feeds.
+External listings work through source adapters in `lib/job-sources.ts`. Apify and Gemini are optional; without Gemini, AI skills suggestions, license extraction and letter generation are unavailable. CV skill suggestions require explicit consent and review before saving; see [CV skills and role keywords](docs/RESUME-KEYWORDS.md). AI-extracted license details are self-reported until independently reviewed. Job source layouts and third-party APIs require ongoing monitoring; a successful build does not validate live feeds.
 
 ## Checks
 

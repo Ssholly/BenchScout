@@ -2235,6 +2235,15 @@ body.walkthrough-open { overflow: hidden !important; }
 .loading-spinner { width: 24px; height: 24px; border: 2px solid #dbe7e3; border-top-color: #1a8c7a; border-radius: 50%; animation: spin 1s linear infinite; }
 .settings-keywords > div { background: #edf7f4 !important; border: 1px solid #cfe6df; color: #176e61 !important; font-weight: 600 !important; }
 .settings-keywords button:hover, .settings-keywords button:focus-visible { background: #d6eee6; }
+.keyword-editor-actions { display:flex; align-items:center; flex-wrap:wrap; gap:8px; margin-top:8px; }
+.keyword-editor-actions p { flex:1; min-width:160px; margin:0; font-size:12px; color:#64748b; }
+.keyword-editor-actions button, .resume-keyword-extraction button { border:1px solid #cfe6df; border-radius:8px; padding:8px 12px; background:#edf7f4; color:#176e61; font-size:12px; font-weight:700; cursor:pointer; }
+.keyword-editor-actions button:disabled, .resume-keyword-extraction button:disabled { opacity:.55; cursor:not-allowed; }
+.resume-keyword-extraction { margin-top:14px; padding:12px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; }
+.resume-keyword-extraction label { display:flex; align-items:flex-start; gap:8px; font-size:12px; line-height:1.5; color:#475569; margin-bottom:10px; }
+.resume-keyword-extraction input { width:16px; height:16px; margin-top:2px; flex-shrink:0; accent-color:#1a8c7a; }
+.resume-keyword-extraction p { font-size:12px; line-height:1.5; color:#64748b; margin:8px 0 0; }
+.settings-keywords > div > span, .profile-keywords > span { overflow-wrap:anywhere; }
 @media (max-width: 600px) {
  .dashboard-metrics { display: grid !important; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px !important; margin-bottom: 16px !important; }
  .dashboard-metrics > div { padding: 12px !important; min-width: 0; border-radius: 10px !important; }

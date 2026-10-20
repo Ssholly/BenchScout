@@ -250,3 +250,8 @@ On the existing Vercel testing alias after deployment 699b256, the fresh databas
 ## 20 October 2026 — Consistent account-email previews
 
 Generated confirmation/reset HTML from the actual shared layout using synthetic links and the app laboratory logo. The preview alone substitutes an embedded PNG data URL for the real transport's CID image. At 320px, both document widths were 320 and button right edges 275px; at 390px, widths were 390 and right edges 345px. Both logos rendered; no horizontal clipping. Shared header/button/card visually compared side by side. Overrides reset and loopback server stopped. Proof: /private/tmp/benchscout-consistent-account-emails.jpg. These browser previews do not establish Gmail/iPhone dark-mode or actual MIME rendering; recipient-confirmed reset receipt predates this styling update. No live token/account data used.
+
+
+## 20 October 2026 — CV keywords and extraction controls
+
+Checked the repaired Settings chip editor at 390×844 and 320×740 using a synthetic account in an isolated schema. Document widths equalled their viewports. Editor bounds were x25–365 at 390px and x25–295 at 320px; chips and action/consent text fit without horizontal clipping. At 320px chips use one column. Verified save without Enter and reload, Add, Enter, remove/Cancel and provider-unavailable feedback retaining manual edits. Temporary viewport overrides were reset. See [the repair record](RESUME-KEYWORDS.md) for API/data/release scope. This does not certify all physical devices.

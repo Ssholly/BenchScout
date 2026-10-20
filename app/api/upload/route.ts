@@ -21,7 +21,9 @@ export const POST = withApi("candidate", async (request, session) => {
   } catch (error) { await removeDocument(blob.url); throw error; }
   // Replacements are committed before removing the old object.
   await removeDocument(user[documentFields[kind]]).catch(error => console.error("Old document cleanup failed", error));
-  return NextResponse.json({ success: true, url: documentUrl(user.id, kind), user: updated });
+  return NextResponse.json({ success: true, url: documentUrl(user.id, kind), user: updated,
+    ...(kind === "resume" ? { resumeTextReady: Boolean(updated.cvParsedText?.trim()) } : {}),
+  });
 }, { limit: 10 });
 
 export const DELETE = withApi("candidate", async (request, session) => {

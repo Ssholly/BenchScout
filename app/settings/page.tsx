@@ -1,5 +1,7 @@
 "use client";
-import { sharedPageRequest } from "@/lib/shared-page-request";
+import { sharedPageRequest, invalidateSharedPageRequests } from "@/lib/shared-page-request";
+import { roleKeywords, validRoleKeywords } from "@/lib/role-keywords";
+import ResumeKeywordExtraction from "@/components/ResumeKeywordExtraction";
 import Toast from "@/components/Toast";
 import CandidateCareerProfile from "@/components/CandidateCareerProfile";
 import DocumentPreview from "@/components/DocumentPreview";
@@ -101,6 +103,11 @@ export default function SettingsPage() {
 		minScore: 85,
 	});
 
+	const [keywordDraft, setKeywordDraft] = useState("");
+    const [resumeGeneration, setResumeGeneration] = useState(0);
+    const preferencesDirty = useRef(false);
+    const editGeneration = useRef(0);
+    const markEdited = () => { preferencesDirty.current = true; editGeneration.current++; };
 	const [career, setCareer] = useState<{phase:string; profile:unknown}>({phase:"licensed",profile:{}});
 	const [checkingAuth, setCheckingAuth] = useState(true);
 	const [isSaving, setIsSaving] = useState(false);
@@ -142,7 +149,7 @@ export default function SettingsPage() {
 		const sequence = ++settingsSequence.current;
 		const activeEmail = localStorage.getItem("labpro_active_user");
 		const isCurrent = () => sequence === settingsSequence.current && activeEmail === localStorage.getItem("labpro_active_user");
-		if (settingsIdentity.current !== activeEmail) { settingsLoaded.current = false; setHasSettings(false); }
+		if (settingsIdentity.current !== activeEmail) { settingsLoaded.current = false; setHasSettings(false); preferencesDirty.current = false; setKeywordDraft(""); setResumeGeneration(value => value + 1); }
 		settingsIdentity.current = activeEmail;
 		if (!settingsLoaded.current) setCheckingAuth(true);
 		setSettingsError(null);
@@ -171,11 +178,11 @@ export default function SettingsPage() {
 			if (data.success && data.user) {
                 setUploadsAvailable(data.uploadsAvailable === true);
 				setExtractedData({ fullName: data.user.name || "", licenseNumber: data.user.licenseNumber || "", expiryDate: data.user.licenseExpiry ? String(data.user.licenseExpiry).slice(0, 10) : "" });
-				setUserData({
+				if (!preferencesDirty.current) setUserData({
 					name: data.user.name || "",
 					email: data.user.email || "",
 					keywords: data.user.keywords
-						? data.user.keywords.split(",").map((k: string) => k.trim())
+						? roleKeywords(data.user.keywords)
 						: [],
 					location: data.user.location || "All Nigeria",
 					minScore: data.user.minScore ?? 85,
@@ -224,48 +231,37 @@ export default function SettingsPage() {
       return () => cancelAnimationFrame(frame);
     }, [hasSettings]);
 
-	const handleAddKeyword = (e: React.KeyboardEvent<HTMLInputElement>) => {
-		if (e.key === "Enter") {
-			e.preventDefault();
-			const newKeyword = e.currentTarget.value.trim();
-			if (newKeyword && !userData.keywords.includes(newKeyword)) {
-				setUserData({
-					...userData,
-					keywords: [...userData.keywords, newKeyword],
-				});
-				e.currentTarget.value = "";
-			}
-		}
-	};
-
-	const removeKeyword = (indexToRemove: number) => {
-		setUserData({
-			...userData,
-			keywords: userData.keywords.filter((_, idx) => idx !== indexToRemove),
-		});
-	};
-
-	const handleUpdateProfile = async () => {
-		setIsSaving(true);
-		try {
-			const payload = { ...userData, keywords: userData.keywords.join(", ") };
-			const res = await fetch("/api/user", {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify(payload),
-			});
-			const data = await res.json();
-			if (data.success) {
-				showToast("Profile updated successfully!");
-				window.dispatchEvent(new Event("userStateChanged"));
-			} else {
-				showToast("Failed to update profile.", "error");
-			}
-		} catch {
-			showToast("Network error.", "error");
-		}
-		setIsSaving(false);
-	};
+    const addKeywordDraft = () => {
+      const keywords = roleKeywords([...userData.keywords, keywordDraft]);
+      if (!validRoleKeywords(keywords)) return showToast("Use at most 60 keywords, each 100 characters or fewer.", "error");
+      markEdited(); setUserData(previous => ({...previous, keywords})); setKeywordDraft("");
+    };
+    const handleAddKeyword = (event: React.KeyboardEvent<HTMLInputElement>) => {
+      if (!event.nativeEvent.isComposing && ["Enter", ",", ";"].includes(event.key)) { event.preventDefault(); addKeywordDraft(); }
+    };
+    const removeKeyword = (indexToRemove: number) => {
+      markEdited(); setUserData(previous => ({...previous, keywords: previous.keywords.filter((_, index) => index !== indexToRemove)}));
+    };
+    const handleUpdateProfile = async () => {
+      const keywords = roleKeywords([...userData.keywords, keywordDraft]);
+      if (!validRoleKeywords(keywords)) return showToast("Use at most 60 keywords, each 100 characters or fewer.", "error");
+      const identity = userData.email, generation = editGeneration.current;
+      setIsSaving(true);
+      try {
+        const res = await fetch("/api/user", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({...userData, keywords})});
+        const data = await res.json();
+        if (localStorage.getItem("labpro_active_user") !== identity) return;
+        if (!res.ok || !data.success) throw new Error(data.error || "Failed to update profile.");
+        if (generation === editGeneration.current) {
+          setUserData(previous => ({...previous, keywords})); setKeywordDraft(""); preferencesDirty.current = false;
+        }
+        invalidateSharedPageRequests();
+        showToast(generation === editGeneration.current ? "Profile updated successfully!" : "Profile saved. Your newer edits still need saving.");
+        window.dispatchEvent(new Event("userStateChanged"));
+      } catch (error) {
+        if (localStorage.getItem("labpro_active_user") === identity) showToast(error instanceof Error ? error.message : "Network error.", "error");
+      } finally { setIsSaving(false); }
+    };
 
 	const triggerUpload = (id: string) => {
 		setActiveUploadId(id);
@@ -274,6 +270,7 @@ export default function SettingsPage() {
 
 	const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
 		const file = e.target.files?.[0];
+        const uploadIdentity = userData.email;
 		if (!file || !activeUploadId) return;
 
 		if (file.size > 4 * 1024 * 1024) {
@@ -323,6 +320,7 @@ export default function SettingsPage() {
 				aiPromise,
 			]));
 
+			if (localStorage.getItem("labpro_active_user") !== uploadIdentity) return;
 			if (uploadData.success) {
 				const updatedDocs = documents.map((doc) => {
 					if (doc.id === activeUploadId) {
@@ -345,7 +343,11 @@ export default function SettingsPage() {
 					`labpro_vault_${userData.email}`,
 					JSON.stringify(updatedDocs),
 				);
-				showToast("Document secured in Vault!");
+				if (activeUploadId === "cv") {
+                  setResumeGeneration(value => value + 1);
+                  localStorage.setItem(`labpro_resume_name_${userData.email}`, file.name);
+                  showToast(uploadData.resumeTextReady ? "CV saved. Use Extract skills from CV to add suggested keywords." : "CV saved, but no readable text was found. Use a PDF with selectable text or add keywords manually.");
+                } else showToast("Document secured in Vault!");
 			} else {
 				throw new Error(uploadData.error || "Database update failed");
 			}
@@ -381,6 +383,7 @@ export default function SettingsPage() {
 	const handleDeleteDoc = async (id: string) => {
 		const docToDelete = documents.find((d) => d.id === id);
 		if (!docToDelete || !docToDelete.url || !userData.email) return;
+        if (id === "cv") setResumeGeneration(value => value + 1);
 
 		const updatedDocs = documents.map((doc) =>
 			doc.id === id ? { ...doc, size: "-", uploadedAt: null, url: null } : doc,
@@ -1049,7 +1052,7 @@ export default function SettingsPage() {
 								</p>
 							</div>
 						</div>
-						<div className="settings-preferences-body" style={{ padding: "1.5rem" }}>
+						<div className="settings-preferences-body" onChangeCapture={markEdited} style={{ padding: "1.5rem" }}>
 							<div
 								className="mobile-grid"
 								style={{
@@ -1092,7 +1095,7 @@ export default function SettingsPage() {
 								</div>
 							</div>
 							<div style={{ marginBottom: "1.5rem" }}>
-								<label style={labelStyle}>ROLE KEYWORDS</label>
+								<label id="role-keywords" htmlFor="role-keyword-input" style={labelStyle}>ROLE KEYWORDS</label>
 								<div className="settings-keywords"
 									style={{
 										border: "1px solid rgba(0,0,0,0.1)",
@@ -1140,7 +1143,20 @@ export default function SettingsPage() {
 										placeholder={
 											userData.email ? "Add keyword…" : ""
 										}
-										onKeyDown={handleAddKeyword}
+										id="role-keyword-input"
+                                        aria-describedby="role-keyword-hint"
+                                        value={keywordDraft}
+                                        onChange={event => setKeywordDraft(event.target.value)}
+                                        onPaste={event => {
+                                          const pasted = event.clipboardData.getData("text");
+                                          if (/[\r\n]/.test(pasted)) {
+                                            event.preventDefault();
+                                            const input = event.currentTarget;
+                                            setKeywordDraft((input.value.slice(0, input.selectionStart ?? input.value.length) + pasted + input.value.slice(input.selectionEnd ?? input.value.length)).replace(/[\r\n]+/g, ", "));
+                                            markEdited();
+                                          }
+                                        }}
+                                        onKeyDown={handleAddKeyword}
 										disabled={!userData.email}
 										style={{
 											border: "none",
@@ -1154,10 +1170,14 @@ export default function SettingsPage() {
 											cursor: !userData.email ? "not-allowed" : "text",
 										}}
 									/>
-								</div>
-							</div>
-							<div
-								className="mobile-grid"
+                                </div>
+                                <div className="keyword-editor-actions"><p id="role-keyword-hint">Press Enter, use commas, or select Add. Update Profile also saves text still in the input.</p><button type="button" onClick={addKeywordDraft} disabled={!userData.email || !keywordDraft.trim()}>Add keyword</button></div>
+                                <ResumeKeywordExtraction key={`${userData.email}:${resumeGeneration}`} disabled={!userData.email || !documents.find(doc => doc.id === "cv")?.url} onSuggestions={keywords => {
+                                  markEdited(); setUserData(previous => ({...previous, keywords: roleKeywords([...previous.keywords, ...keywords])}));
+                                }} />
+                            </div>
+                            <div
+                                className="mobile-grid"
 								style={{
 									display: "grid",
 									gridTemplateColumns: "1fr 1fr",
@@ -1266,7 +1286,8 @@ export default function SettingsPage() {
 								}}
 							>
 								<button
-									disabled={!userData.email}
+                                    onClick={() => { preferencesDirty.current = false; setKeywordDraft(""); setResumeGeneration(value => value + 1); invalidateSharedPageRequests(); void loadSettings(); }}
+									disabled={!userData.email || isSaving}
 									style={{
 										background: "rgba(255,255,255,0.8)",
 										border: "1px solid rgba(0,0,0,0.1)",

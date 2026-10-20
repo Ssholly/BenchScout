@@ -38,3 +38,8 @@ Employer verification now includes private company submissions, independent evid
 This extends the existing PostgreSQL/Prisma, server-session, administrator-secret and API-wrapper integrations. There is no new external provider, API key, environment variable, automated CAC lookup, regulator verification integration or moderation notification service. The official CAC public search is linked for human review; supplied company websites are stored as references and are not fetched by these routes.
 
 The additive migration has been applied to the configured database, and an authenticated local queue read returned 200. Lint, TypeScript, all 153 tests and the production build passed. Hosted application deployment and complete populated staging flows remain outstanding. Earlier sections above record the 9 October review; their configuration observations are historical, not a replacement for this dated release record or the newer private-storage audit.
+
+
+## 20 October 2026 — CV keyword extraction and normalized preferences
+
+Added authenticated `POST /api/extract-resume` for explicit-consent, review-before-save CV suggestions using the existing Gemini integration. Added readable-text metadata to resume upload responses and normalized string/array keywords in `POST /api/user`. No new provider, key, migration or automatic consent. See [CV skills and role keywords](RESUME-KEYWORDS.md) for payloads, limits, privacy, races, tests and release boundaries.
