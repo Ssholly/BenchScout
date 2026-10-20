@@ -1,5 +1,10 @@
 # Change log
 
+## 20 October 2026 — Hosted separate vacancy approval verified
+
+- Reviewed the queued synthetic vacancy independently of company approval and saved explicit QA-only moderation evidence. A full employer reload showed Active, one published and zero applicants.
+- Candidate discovery/application and notifications remain pending. Recorded a posting form layout issue for responsive repair. No product code, schema or configuration changed. [Hosted acceptance](HOSTED-EMPLOYER-ACCEPTANCE.md).
+
 ## 20 October 2026 — Hosted company approval and separate vacancy gate
 
 - Saved the explicitly authorised synthetic company approval; Company reviewed and QA-only feedback persisted after a full reload. This is software acceptance evidence, not real CAC or facility clearance.

@@ -27,7 +27,7 @@ The operator authorised a synthetic employer/candidate recruitment journey and a
 | Employer and candidate confirmation emails | Original employer button reported missing; fallback deployed and one resend completed. Operator confirmed successful email confirmation and normal employer login succeeded. Fresh branding and candidate inbox appearance remain unverified. |
 | Confirmed employer still needs company review | Passed before approval: confirmed employer was denied posting and directory access; Retry preserved denial. |
 | Company submission/review and evidence persistence | Passed: synthetic submission, authorised approval, feedback/status refresh and full employer reload persisted Company reviewed. |
-| Vacancy pending moderation then discovery | Synthetic posting persisted as Awaiting review after reload, with 1 vacancy and 0 published. Independent vacancy approval and candidate feed check remain pending. |
+| Vacancy pending moderation then discovery | Passed pending-to-active moderation transition: one pending vacancy with zero published; separate current-revision QA-only review saved, then full reload showed Active and one published. Candidate discovery remains pending. |
 | Candidate private upload, selected application and duplicate handling | Synthetic PDF CV uploaded through the hosted profile file chooser; successful response displayed the fixture filename. Application/selection, reload, employer roster and document download/denial checks remain pending. |
 | Document permissions and employer scope | Pending selection-only access, unrelated-role/ID denial, replacement and withdrawal checks on hosted deployment. |
 | Employer shortlist/interview and candidate notification | Pending date/time validation, persisted status, in-app notification and approved inbox receipt. |
@@ -83,3 +83,12 @@ After explicit action-time operator approval, saved the prepared company decisio
 Submitted one clearly labelled QA-only licensed-scientist vacancy with CV required and the no-fee declaration. It persisted after reload as Awaiting review: one vacancy, zero published, zero applicants. Company approval therefore did not automatically publish this vacancy. Candidate-feed exclusion has not yet been checked independently.
 
 The existing admin client intentionally clears its secret and loaded queue after each successful review (`app/admin/reviews/page.tsx`). Retained this behaviour. The next vacancy review is prepared with Review type Vacancy; the operator must privately re-enter the existing key and load the queue. No vacancy decision, application, interview or cleanup has yet occurred. No product code/schema/configuration changed during these checks.
+
+
+### 20 October 2026 — Separate vacancy approval persisted
+
+The operator privately loaded the next queue, which showed zero pending companies and exactly one pending synthetic vacancy. Selected that current vacancy revision and inspected the role, location, terms, required CV and no-fee declaration. Saved a separate QA-only approval with explicit synthetic authority/authenticity/no-fee evidence; no real hiring opening or professional accreditation was claimed. The console confirmed Decision saved and cleared the key/queue again.
+
+After a full employer reload, the same fixture showed Active and the monitor showed one published vacancy, zero applicants. This establishes the pending-to-active transition through independent vacancy review. Candidate discovery, application/document scope and notifications remain pending. The next step switches sequentially to the operator-created synthetic candidate account; existing credentials stay private.
+
+Additional UI finding: at the observed desktop portal width, the posting form's flex options row compressed deadline/required-document labels into narrow columns. Repair and responsive validation remain pending; this does not close the UI audit.
