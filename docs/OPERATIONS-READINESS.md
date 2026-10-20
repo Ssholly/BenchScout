@@ -1,5 +1,9 @@
 # Hosted environment and recovery readiness
 
+## Administrator authentication and recovery diagnosis — 20 October 2026
+
+The correct testing administrator key successfully loaded the three hosted review queues (all zero); the prior incorrect-key test was rejected. No review decision changed. A read-only testing-database check found no candidate/employer or candidate reset token for the exact approved mail recipient. Password recovery intentionally does not send for a missing account, so provider/inbox delivery remains untested. Prepared an unsubmitted test signup with its password left for operator entry. See [Testing credentials](TESTING-CREDENTIALS.md) and [scrubbed diagnostic evidence](qa/2026-10-20-admin-and-email-diagnosis.json). Other credentials/operational gates stay open; pilot remains HOLD.
+
 ## Testing credential deployment and email request — 19 October 2026
 
 Vercel deployment c050bc5 after the operator save succeeded. Wrong-key administrator access was rejected in the hosted review UI; successful operator queue loading remains pending. One approved recovery-email request was submitted without changing any password. Generic UI acknowledgement is not delivery evidence; recipient confirmation is pending. [Testing credentials evidence](qa/2026-10-19-testing-credentials.json) records the boundaries. Cron/salary checks, confirmation/interview inbox delivery, other-preview isolation and recovery remain open; pilot stays HOLD.

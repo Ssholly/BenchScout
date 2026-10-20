@@ -130,3 +130,10 @@ Operator confirmed Save after entering all three new credentials. Fresh Vercel m
 Commit `c050bc5eaae78e3d6f582d0da2dbdd97ecf79917` was pushed after the operator's credential save. Vercel reports success for [deployment Bs3Z9gmrvbe4S3imQEz6vYe78Gsg](https://vercel.com/sholly/bench-scout/Bs3Z9gmrvbe4S3imQEz6vYe78Gsg), serving the existing testing alias. The hosted review form rejected a deliberately wrong key with Unauthorized.; no review decision submitted. Correct-key read-only queue check is handed to the operator, and cron/salary acceptance remains separate. Presence/scoping is verified; secret values/strength/independence are not read back.
 
 One approved candidate recovery-email request was submitted through the hosted UI, which returned to login. Generic recovery behaviour does not prove account existence or provider/inbox delivery. Recipient Inbox/Spam confirmation is pending, and no password was changed. The unrelated connected Gmail mailbox was not searched. No confirmation/interview message sent in this phase. See [scrubbed evidence](qa/2026-10-19-testing-credentials.json). Documentation-only follow-up records this checkpoint; production unchanged.
+
+
+## 20 October 2026 — Administrator queue acceptance and recovery diagnosis
+
+The operator's correct testing key loaded all three hosted review queues (company/vacancy/report counts zero). Prior deliberately incorrect key was denied; no review decision submitted. A read-only query on the dedicated testing database found no candidate/employer or candidate reset token for the approved exact recipient. Thus recovery's intentional absent-account/no-send path applies; no provider delivery result is inferred. Prepared an unsubmitted signup with password left to the user.
+
+No application/provider/schema/migration or production change in this pass. Documentation diff/JSON validation passed; prior 201-test/build results remain prior evidence. [Scrubbed diagnostic record](qa/2026-10-20-admin-and-email-diagnosis.json). No recipient address, credential or token value is included. Documentation-only update to testing; no new functional deployment claim is required.

@@ -1,5 +1,15 @@
 # Testing credentials and email acceptance
 
+## 20 October 2026 — Administrator accepted; recovery no-send diagnosed
+
+The operator's saved administrator key loaded the actual hosted review queues successfully: zero companies, zero vacancies awaiting review and zero open candidate reports. A deliberately wrong key had already been rejected. No approval/rejection decision was submitted; the secret field was cleared without reading back the key. This closes the administrator queue authentication check for the current testing deployment. Cron caller/scheduler and salary ownership checks remain separate.
+
+The approved recipient reported no recovery email. A targeted read-only SQL check on benchscout_testing returned false for candidate existence, employer existence and candidate reset-token existence for the exact approved address. No account rows, token values or credentials were retrieved. The source route returns its generic acknowledgement before creating a token or sending mail when the selected account is absent. The missing-account condition explains the observed no-email result; it is not evidence that a delivery provider rejected a message. Preserve this account-enumeration protection.
+
+Prepared a BenchScout Email QA candidate signup for the approved exact address, leaving the password blank and not submitting. The user must choose/enter the new password (at least 12 characters) and click Create Account. This is required browser credential handoff. Submission will exercise the actual confirmation-delivery path; do not claim delivery before sender/inbox/link checks. The already signed-in account was not modified, logged out or deleted. Keep recipient/account identifiers and confirmation tokens out of published evidence. The connected Gmail account still differs from the approved inbox; receipt requires the recipient's confirmation.
+
+See [scrubbed evidence](qa/2026-10-20-admin-and-email-diagnosis.json). No new application code, schema/migration, provider setting or outbound email was changed/sent during this diagnosis. Documentation diff/JSON checks are sufficient for this pass; prior 201-test/build evidence is unchanged. Earlier records below are dated history.
+
 ## 19 October 2026 — Redeployment and live checks
 
 Deployment of commit c050bc5 after the operator's save succeeded on Vercel. The hosted review form rejected a deliberately invalid key with **Unauthorized.**; the field was cleared. A successful queue read with the operator's saved key remains pending. No review/approval decision was submitted, and no key value was read back. Cron authentication/scheduling and salary ownership acceptance remain separate checks.

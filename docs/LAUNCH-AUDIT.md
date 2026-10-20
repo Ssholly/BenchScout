@@ -1,5 +1,9 @@
 # Launch audit — 19 October 2026
 
+## 20 October 2026 — Administrator queue authentication accepted
+
+Operator correct-key loading of the hosted company/vacancy/report queues succeeded (all empty); prior wrong-key access was denied. No review decision submitted. Recovery-email absence was traced through a targeted read-only query to an unregistered exact recipient address; this exercises the intentional generic/no-send path, not provider delivery. Test signup is prepared and awaits user password entry/submission. See Testing credentials and its 20 October scrubbed evidence. No product code or production state changed; live inbox and remaining operational gates stay open.
+
 ## 19 October 2026 — Credential handoff and email preparation
 
 Prepared testing-only administrator/cron/salary Secret configuration for secure operator entry. None is claimed saved/activated yet. Standardised initial candidate confirmation on the shared template (role-specific link, 24-hour expiry, plain text) and retained unconfirmed-state/delivery-failure behaviour. Lint, TypeScript, 201 tests and build passed. Live inbox messages/receipt, hosted secret authentication and recovery remain open. See [Testing credentials](TESTING-CREDENTIALS.md); no real approval or test message was sent in this pass.

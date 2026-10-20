@@ -1,5 +1,11 @@
 # Change log
 
+## 20 October 2026 — Administrator check accepted and missing-email cause identified
+
+- Verified correct-key loading of the hosted administrator company/vacancy/report queues (all empty), alongside the previous incorrect-key denial. Cleared the key field; no review decision submitted or key read back.
+- Targeted read-only SQL found no candidate/employer/reset token for the exact approved recipient in testing. Recorded the intentional generic/no-send recovery behaviour rather than treating the missing message as proven provider failure.
+- Prepared an unsubmitted test signup with a blank password for operator entry. Updated the runbooks and scrubbed evidence; no new code, migration, provider setting, external email or production change. Diff/JSON checks passed.
+
 ## 19 October 2026 — Testing credential redeployment and controlled email request
 
 - Redeployed after operator save: c050bc5 Vercel status success. Hosted administrator UI rejected an invalid key; successful operator queue read remains pending. No approval decision submitted.
