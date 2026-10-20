@@ -1,5 +1,11 @@
 # Change log
 
+## 20 October 2026 — Historical recovery copy verified
+
+- Created the approved disposable testing copy from 21:00 Africa/Lagos. Restored application, closure, suspension, review revision/audit, document-sharing metadata and seven completed migration rows matched expected results.
+- Expired both copied sessions only in the recovery branch; re-query confirmed zero active restored sessions. Source testing/production, app bindings and email/cron were untouched.
+- Recorded measured provider fork duration, next-day expiry and limits in [operations readiness](OPERATIONS-READINESS.md) and [JSON evidence](qa/2026-10-20-recovery-drill.json). File recovery and complete service recovery remain open. No product code/schema change.
+
 ## 20 October 2026 — Recovery drill preparation
 
 - Rechecked the separate testing project: PostgreSQL 17, Free plan, six-hour history and no snapshots/schedule displayed. Prepared an unsubmitted historical child copy with one-day expiry; action-time approval is required for the new database copy.

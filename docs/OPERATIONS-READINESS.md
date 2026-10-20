@@ -113,3 +113,14 @@ This pass changes documentation only. No application screen/API/schema, migratio
 - [Vercel sensitive variables](https://vercel.com/docs/environment-variables/sensitive-environment-variables): sensitive values cannot be read back.
 - [Neon schema-only branches](https://neon.com/docs/guides/branching-schema-only): schema-only copying excludes rows; it does not constitute an independent backup.
 - [Neon instant restore](https://neon.com/docs/postgres/backup-restore/branch-restore): recovery within retained history. The dashboard's actual six-hour setting above takes precedence over assumptions about plan defaults.
+
+
+## 20 October 2026 — Approved historical copy and record verification completed
+
+The operator explicitly approved creation. Neon created `qa-recovery-20261020` inside BenchScout Testing from the prepared **21:00 Africa/Lagos** historical target. Its overview showed creation at **21:03:05**, parent `production` in that testing project and expiry **21 October 2026, 21:03:05 Africa/Lagos**. Neon reported a **0.53-second fork**. Record validation finished by 21:04:22; this is not a measured service recovery time because no app cutover occurred. No connection password was revealed, production/source branch reset, billing upgrade or Vercel binding changed.
+
+Ran a SELECT through Neon's SQL editor on the recovery branch, returning counts/booleans rather than credentials or document URLs. Observed one pending fixture application; closed vacancy; suspended, unverified employer; review revision 3; one suspension audit; seven completed migration rows. Both synthetic vault references remained present. The application's selected CV reference differed from the replacement vault CV, and its optional certificate remained unselected. This validates preserved record relationships and sharing metadata, not recovery of file contents or a full integrity/constraint audit.
+
+The copy contained two AuthSession rows. Expired both **only in the recovery copy**, then independently queried zero active restored sessions and rechecked the fixture results. The application source rejects expired sessions before subject access. No browser cookie was reused against this copy; no live app, email or cron was connected. The source testing branch and its active candidate session were untouched.
+
+**Outcome: historical database-copy record verification passed; full recovery acceptance remains incomplete.** File recovery, independent backups, restored-app HTTP acceptance, detailed integrity checks and end-to-end recovery objectives are still open. A post-target canary mutation was not introduced, so this does not independently prove exclusion of later writes. The one-day auto-delete is configured; actual expiry/cleanup has not yet been observed. Retain the copy until its approved expiry, rather than deleting it without action-time confirmation. [Scrubbed results](qa/2026-10-20-recovery-drill.json).

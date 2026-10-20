@@ -1,0 +1,46 @@
+{
+  "date": "2026-10-20",
+  "scope": "historical database copy in dedicated BenchScout Testing only",
+  "approval": "operator explicitly approved named historical copy and one-day expiry",
+  "branch": "qa-recovery-20261020",
+  "recoveryTarget": "2026-10-20T21:00:00+01:00",
+  "createdAt": "2026-10-20T21:03:05+01:00",
+  "expiresAt": "2026-10-21T21:03:05+01:00",
+  "providerReportedForkSeconds": 0.53,
+  "validationCompletedBy": "2026-10-20T21:04:22+01:00",
+  "timingLimit": "provider fork duration is not end-to-end service recovery time; no application cutover performed",
+  "results": {
+    "applications": 1,
+    "suspensionPreserved": true,
+    "closurePreserved": true,
+    "pendingPreserved": true,
+    "replacementUnshared": true,
+    "certificateUnshared": true,
+    "vaultReferencesPreserved": true,
+    "reviewRevision": 3,
+    "suspensionAuditRows": 1,
+    "completedMigrations": 7,
+    "copiedSessions": 2,
+    "sessionsExpiredInRecoveryCopy": 2,
+    "activeRestoredSessionsAfterExpiry": 0
+  },
+  "mutations": [
+    "created approved historical child branch",
+    "set existing AuthSession expiresAt to past in recovery copy only"
+  ],
+  "productionChanged": false,
+  "sourceTestingBranchChanged": false,
+  "applicationConnected": false,
+  "emailCronConnected": false,
+  "credentialsRevealed": false,
+  "status": "database historical-copy record verification passed; full recovery acceptance incomplete",
+  "limitations": [
+    "no app cutover or restored-session HTTP check",
+    "migration completion count checked, not fresh checksum comparison or complete constraint validation",
+    "private Blob references preserved but deleted object contents not restored",
+    "no independently verified encrypted document backup or logical database export",
+    "no independent historical canary write/delete after target to prove time boundary",
+    "auto-delete configured, expiry execution not yet observed"
+  ],
+  "cleanup": "recovery branch retained under approved one-day auto-delete; original testing fixtures untouched"
+}

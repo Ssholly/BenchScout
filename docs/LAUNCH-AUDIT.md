@@ -1,5 +1,10 @@
 # Launch audit — 19 October 2026
 
+## 20 October 2026 — Historical database recovery copy verified
+
+An approved historical child copy of the dedicated testing database preserved the expected synthetic application, closed vacancy, suspended employer, review audit/revision and file-sharing metadata. Seven completed migration rows were present; both copied sessions were expired and zero active sessions rechecked. No app/email/cron connection or production/source reset occurred. See [operations readiness](OPERATIONS-READINESS.md) and its scrubbed recovery evidence. This advances LA-14 at database-record level; file recovery, independent backups, full restored-app acceptance and recovery objectives remain open. Pilot remains HOLD.
+
+
 ## 20 October 2026 — Hosted safety journey update
 
 The protected testing journey now verifies replacement CV withholding in the employer roster, soft closure with one retained application, and roster/directory revocation for an already authenticated employer after QA-only suspension. Candidate history remained accessible and the historical viewer offered no Apply action; Matches was empty in the combined applied/closed/suspended state. See [hosted acceptance](HOSTED-EMPLOYER-ACCEPTANCE.md) for evidence and attribution limits. LA-12/LA-13 advance but remain incomplete: direct hosted denial/idempotency, independent old-object cleanup and broader operational recovery checks are still open. Pilot remains HOLD. No product code, schema or configuration change.
