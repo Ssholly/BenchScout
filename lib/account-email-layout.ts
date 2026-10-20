@@ -31,6 +31,8 @@ export async function accountEmailLayout(options: AccountEmailOptions) {
         <h1 style="font-size:22px;line-height:1.3;font-weight:600;margin:18px 0 10px">${escapeHtml(title)}</h1>
         ${paragraphs.map(paragraph => `<p style="font-size:14px;line-height:1.7;color:#64748b;margin:0 0 22px">${escapeHtml(paragraph)}</p>`).join("")}
         <table role="presentation" cellspacing="0" cellpadding="0" width="100%"><tr><td bgcolor="#0b2444" style="border-radius:12px;text-align:center"><a href="${escapeHtml(actionUrl)}" style="display:block;padding:14px 20px;font-size:14px;font-weight:bold;color:#ffffff;text-decoration:none">${escapeHtml(actionLabel)} &rarr;</a></td></tr></table>
+        <p style="font-size:12px;line-height:1.6;color:#64748b;margin:18px 0 6px">If the button is missing or does not work, open this link:</p>
+        <p style="font-size:12px;line-height:1.6;margin:0;word-break:break-all;overflow-wrap:anywhere"><a href="${escapeHtml(actionUrl)}" style="color:#176e61;text-decoration:underline;word-break:break-all;overflow-wrap:anywhere">${escapeHtml(actionUrl)}</a></p>
         <p style="font-size:12px;line-height:1.6;color:#46766c;margin:16px 0">${escapeHtml(expiry)}</p>
         <p style="font-size:12px;line-height:1.7;color:#94a3b8;margin:20px 0 0;padding-top:18px;border-top:1px solid #e5edf1">${escapeHtml(footer)}</p>
       </td></tr></table></td></tr></table></body></html>`,

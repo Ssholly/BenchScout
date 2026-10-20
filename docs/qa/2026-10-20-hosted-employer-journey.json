@@ -3,7 +3,7 @@
   "scope": "hosted synthetic employer recruitment journey",
   "target": "https://bench-scout-git-testing-sholly.vercel.app/",
   "applicationBaseline": "e17170d",
-  "status": "in-progress: employer signup restored after shared-session role change",
+  "status": "in-progress: unconfirmed employer denied; received confirmation lacks visible button per recipient",
   "recipientAliasesApproved": true,
   "checks": [
     {
@@ -25,6 +25,11 @@
       "name": "cross-tab identity changes",
       "status": "observed",
       "observation": "tabs returned home; existing SessionGate storage/focus safeguard confirmed; retained unchanged"
+    },
+    {
+      "name": "employer unconfirmed login gate",
+      "status": "passed",
+      "observation": "hosted employer login displays specific confirm-email rejection"
     }
   ],
   "prepared": [
@@ -32,20 +37,25 @@
     "administrator lookup restored with blank key; credential entry deferred until employer login"
   ],
   "pending": [
-    "employer creation and unconfirmed-login negative checks",
+    "employer confirmation action-link repair deployment/resend and fresh recipient review",
     "confirmation inbox appearance and role-correct links",
     "company and vacancy review gates",
     "application selection, private document downloads/denials and duplicate handling",
     "interview and in-app/inbox notifications",
     "closure/suspension and scoped cleanup"
   ],
-  "productCodeChanged": false,
+  "productCodeChanged": true,
   "schemaChanged": false,
   "accountCreatedByAgent": false,
   "emailSentByAgent": false,
   "reviewDecisionSubmitted": false,
   "realCandidateProfileOrDocumentsChanged": false,
   "existingTestingCandidateSession": "signed out to prepare synthetic accounts",
-  "accountCreatedByOperator": "synthetic candidate observed authenticated",
-  "syntheticCandidateState": "account and uploaded synthetic CV retained; signed out for sequential employer testing"
+  "accountCreatedByOperator": "candidate observed authenticated; employer unconfirmed login rejection observed",
+  "syntheticCandidateState": "account and uploaded synthetic CV retained; signed out for sequential employer testing",
+  "emailReceipt": {
+    "employer": "operator confirmed receipt; reported action button absent",
+    "freshFallbackMessage": "pending deployment and approved resend",
+    "receivedMimeAndRendering": "not inspected"
+  }
 }

@@ -37,3 +37,14 @@ Vercel deployment for 0653bcb succeeded; exact release is in Deployment. After r
 ## Recipient clarification and signup-path verification — 20 October 2026
 
 The recipient confirmed that the latest reset email's branding looks right and clarified that the original concern was the account-creation confirmation. Source verification traced the real signup UI to /api/auth/register, which calls sendVerificationEmail and the shared branded layout, including its PNG attachment. Employer signup and resend confirmation use that same helper. The fix therefore covers initial confirmation as well as reset. This is deployed-source/automated evidence; a fresh account-creation confirmation inbox render is still pending. No additional account/message/password action or code/provider change was made for this clarification.
+
+
+## 20 October 2026 — Employer action-link fallback
+
+During hosted employer acceptance, the operator received the confirmation message but reported that no confirmation button was visible. The hosted login screen correctly rejected the unconfirmed employer with “Confirm your email before signing in.” Receipt is operator-confirmed; the actual received MIME/rendering was not inspected because the connected mailbox differs from the approved recipient. The template already contained the button, so the rendering cause is **not established**. Do not describe this as a proven provider stripping or Gmail-clipping defect.
+
+The shared layout now includes a second, visibly underlined full action URL below the button, with “If the button is missing or does not work, open this link”. Long URLs use break-all/overflow wrapping. This applies to candidate confirmation, employer confirmation and password reset; their existing button, text alternative, role, expiry, tokens and branding remain unchanged. The fallback is the exact same escaped URL, not another token or service. Previously received messages are unchanged; a new confirmation resend is required to review it.
+
+Validation: lint, TypeScript, 212 tests and production build passed. Regression assertions check that button and visible fallback share the complete role-specific URL for both confirmation roles and reset. An offline Nodemailer stream-transport test confirms multipart plain text/HTML, both employer HTML anchors and the inline logo CID survive MIME generation without sending any message. Local HTML-file browser preview was blocked by the browser URL policy; no alternate route around that block was attempted. No new browser/client-rendering pass is claimed. Recipient review of the fresh delivered email remains required.
+
+No provider/configuration/schema/password change. Testing deployment and a single approved employer resend are pending. The original message's rendering cause and full hosted employer journey remain open.

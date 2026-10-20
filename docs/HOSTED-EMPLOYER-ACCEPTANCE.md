@@ -23,8 +23,8 @@ The operator authorised a synthetic employer/candidate recruitment journey and a
 | Signed-out employer signup | Passed entry point: employer portal displayed login and Create employer account; synthetic company/contact/approved alias prepared. No password entered by agent or signup submitted. |
 | Separate synthetic candidate signup | Operator reported creation. Fresh hosted profile showed the exact synthetic candidate name/approved alias in an authenticated session; no agent password entry. This does not independently verify inbox appearance. |
 | Administrator authentication | Form prepared, fixture employer lookup populated, key blank. Earlier successful queue check remains historical evidence; this run has not loaded it yet. |
-| Account creation / unconfirmed login denial | Synthetic candidate creation/authenticated session observed. Employer creation and the unconfirmed-account negative checks remain pending; do not recreate the candidate. |
-| Employer and candidate confirmation emails | Pending send, receipt, branding/mobile display and role-correct testing link confirmation. Request success, provider acceptance and recipient receipt must be recorded separately. |
+| Account creation / unconfirmed login denial | Synthetic candidate authenticated session observed. Operator completed employer creation; hosted employer login displayed the specific confirm-email rejection. The employer unconfirmed-account gate passed; candidate negative check was not performed. |
+| Employer and candidate confirmation emails | Employer receipt operator-confirmed, but its confirmation button was reported missing. Shared-template backup action URL added; deployment/resend and fresh inbox review pending. Candidate inbox appearance remains unverified. |
 | Confirmed employer still needs company review | Pending confirmed login and blocked publication/applicant access checks. |
 | Company submission/review and evidence persistence | Pending synthetic submission, review through current revision and feedback/status refresh. |
 | Vacancy pending moderation then discovery | Pending synthetic posting, independent vacancy review and candidate feed check. |
@@ -56,3 +56,10 @@ Restored `/employer` in signup mode with the same synthetic company/contact and 
 ### Release and limits
 
 No product code, schema, provider setting or hosted review changed during preparation. Full hosted acceptance and pilot readiness remain pending. Confirmation links and new credential entry are operator steps; a successful isolated runner or build does not close these gates.
+
+
+### 20 October 2026 — Employer created; confirmation action reported missing
+
+Operator completed the employer credential step. The prepared login displayed the server's specific unconfirmed-email rejection; no credential value was read or changed. Employer account confirmation receipt is operator-confirmed, but the user reported no visible action button. No company approval or verified login is claimed.
+
+The shared email helper already included the expected button. Added a second visible, underlined full action URL to confirmation/reset layouts and verified identical URLs and offline SMTP MIME preservation. This improves action-link resilience while leaving the unobserved inbox rendering cause unresolved. [Account emails](ACCOUNT-EMAILS.md) and [scrubbed action-link evidence](qa/2026-10-20-account-email-action-links.json) record the checks. Publishing the patch and requesting one fresh confirmation to the already-approved employer alias precede further company-review testing. The login tab is retained without refreshing so the operator-entered credential stays private and available for the normal login action after confirmation.

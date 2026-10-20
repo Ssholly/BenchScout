@@ -1,0 +1,13 @@
+{
+  "date": "2026-10-20",
+  "scope": "shared account-email visible backup link",
+  "trigger": "recipient received employer confirmation but reported no visible action button",
+  "rootCause": "unverified: received MIME/rendering not inspected",
+  "code": "button retained; identical full action URL visible beneath it for both confirmation roles and password reset",
+  "checks": {"lint":"passed","typescript":"passed","tests":212,"productionBuild":"passed","identicalRoleScopedLinks":"passed","offlineSmtpMimePreservation":"passed","newBrowserRendering":"not performed; local file protocol blocked by browser URL policy"},
+  "hostedDeployment": "pending",
+  "freshEmployerResend": "pending",
+  "freshRecipientAcceptance": "pending",
+  "configurationOrSchemaChanged": false,
+  "passwordChanged": false
+}

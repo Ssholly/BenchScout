@@ -1,5 +1,11 @@
 # Change log
 
+## 20 October 2026 — Visible account-email action fallback
+
+- Hosted employer login correctly rejected the newly created unconfirmed account. Recipient reported receiving its confirmation email without a visible button; actual received rendering/MIME and root cause remain unverified.
+- Added a visible full backup URL beneath the existing action button in the shared candidate/employer confirmation and reset layout. Preserved role-scoped links, text alternatives, logo, expiry and token behaviour.
+- Lint, TypeScript, 212 tests and build passed, including identical-button/fallback URL assertions and offline SMTP MIME coverage. Testing deployment, approved employer resend and fresh recipient acceptance are recorded in [Account emails](ACCOUNT-EMAILS.md). No schema/configuration/password change.
+
 ## 20 October 2026 — Hosted candidate fixture confirmed; employer pages restored
 
 - Observed the operator-created synthetic candidate in an authenticated profile and completed its synthetic PDF CV upload. Signed that fixture out and restored employer signup and administrator lookup after the shared-session change redirected all tabs home. Candidate data is retained for the remaining journey.
