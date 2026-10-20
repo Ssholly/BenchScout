@@ -2,6 +2,7 @@
 import { setClientIdentity } from "@/lib/client-identity";
 import { signOutToHome } from "@/lib/client-logout";
 import { roleKeywords } from "@/lib/role-keywords";
+import { invalidateSharedPageRequests } from "@/lib/shared-page-request";
 import Toast from "@/components/Toast";
 import Image from "next/image";
 import { useMounted } from "@/lib/use-mounted";
@@ -154,6 +155,7 @@ export default function ProfileModal() {
                     setResumeName(newFile.name);
                     localStorage.setItem(`labpro_resume_name_${email}`, newFile.name);
                     showToast(data.resumeTextReady ? "Resume saved. Extract skills in Profile & documents." : "Resume saved. No readable text found; use a PDF with selectable text or add keywords manually.", data.resumeTextReady ? "success" : "warning");
+					invalidateSharedPageRequests();
 					window.dispatchEvent(new Event("userStateChanged"));
 				} else {
 					showToast(data.error || "Failed to upload resume.", "error");
@@ -1535,7 +1537,7 @@ export default function ProfileModal() {
 												</span>
 											)}
                                         </div>
-                                        <a href="/settings#role-keywords" style={{display:"inline-block", marginTop:12, fontSize:13, color:"#176e61", fontWeight:700}}>Edit keywords / Extract CV skills</a>
+                                        <a href="/settings#role-keywords" onClick={() => setIsOpen(false)} style={{display:"inline-block", marginTop:12, fontSize:13, color:"#176e61", fontWeight:700}}>Edit keywords / Extract CV skills</a>
                                     </div>
 
                                     <button
