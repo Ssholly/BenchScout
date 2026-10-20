@@ -1,5 +1,10 @@
 # Launch audit — 19 October 2026
 
+## 20 October 2026 — Hosted safety journey update
+
+The protected testing journey now verifies replacement CV withholding in the employer roster, soft closure with one retained application, and roster/directory revocation for an already authenticated employer after QA-only suspension. Candidate history remained accessible and the historical viewer offered no Apply action; Matches was empty in the combined applied/closed/suspended state. See [hosted acceptance](HOSTED-EMPLOYER-ACCEPTANCE.md) for evidence and attribution limits. LA-12/LA-13 advance but remain incomplete: direct hosted denial/idempotency, independent old-object cleanup and broader operational recovery checks are still open. Pilot remains HOLD. No product code, schema or configuration change.
+
+
 ## 20 October 2026 — Administrator queue authentication accepted
 
 Operator correct-key loading of the hosted company/vacancy/report queues succeeded (all empty); prior wrong-key access was denied. No review decision submitted. Recovery-email absence was traced through a targeted read-only query to an unregistered exact recipient address; this exercises the intentional generic/no-send path, not provider delivery. Test signup is prepared and awaits user password entry/submission. See Testing credentials and its 20 October scrubbed evidence. No product code or production state changed; live inbox and remaining operational gates stay open.

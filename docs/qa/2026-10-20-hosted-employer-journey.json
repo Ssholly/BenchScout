@@ -3,7 +3,7 @@
   "scope": "hosted synthetic employer recruitment journey",
   "target": "https://bench-scout-git-testing-sholly.vercel.app/",
   "applicationBaseline": "e17170d",
-  "status": "remaining safety phase: authorised synthetic CV replaced and owner preview passed; employer sharing/closure checks await private sign-in",
+  "status": "hosted UI replacement withholding, closure/history and existing-session suspension gates passed; direct HTTP and operational gates remain open",
   "recipientAliasesApproved": true,
   "checks": [
     {
@@ -180,18 +180,46 @@
       "name": "replacement owner retrieval",
       "status": "passed",
       "observation": "private vault PDF preview rendered clearly labelled QA-only version-two text; no real data; one application retained"
+    },
+    {
+      "name": "replacement withheld from employer",
+      "status": "passed in hosted roster",
+      "observation": "retained applicant has no CV link after replacement; optional certificate and summary still unshared"
+    },
+    {
+      "name": "closed vacancy history",
+      "status": "passed",
+      "observation": "full reload shows closed, zero published and one applicant; approved employer could retrieve retained roster before suspension"
+    },
+    {
+      "name": "existing-session employer suspension",
+      "status": "passed in hosted UI",
+      "observation": "QA-only administrator suspension saved; existing employer session reloaded to Account suspended without another sign-in; closed status and applicant count preserved"
+    },
+    {
+      "name": "suspended roster and directory",
+      "status": "passed in hosted UI",
+      "observation": "roster and previous applicants returned explicit review-required denial with no candidate details; directory Retry preserved denial"
+    },
+    {
+      "name": "candidate history after closure and suspension",
+      "status": "passed",
+      "observation": "one Application Sent card persists; historical posting has Back to pipeline without Apply"
+    },
+    {
+      "name": "combined-state discovery exclusion",
+      "status": "observed; independent predicates not isolated",
+      "observation": "Matches loaded empty for already-applied candidate after role closure and employer suspension; no new application POST attempted"
     }
   ],
-  "prepared": [
-    "existing synthetic employer login populated; password blank; candidate signed out"
-  ],
+  "prepared": [],
   "pending": [
-    "operator privately signs into synthetic employer; check replacement withheld, closure/history, then suspension",
-    "confirmation inbox appearance and role-correct links",
-    "document-scope direct request denial under browser restriction remains unverified",
-    "hosted document access denials, replacement/withdrawal and repeated-request idempotency",
-    "positive interview stage/notification/calendar/email checks passed; fresh responsive scheduling form still pending",
-    "closure/suspension and scoped cleanup"
+    "candidate confirmation inbox branding and role-correct links not independently inspected",
+    "direct hosted HTTP document denials and repeated-request idempotency remain unverified under browser restriction",
+    "independent posting denial after suspension and new-application rejection after closure not exercised in this phase",
+    "physical old Blob cleanup not independently inventoried",
+    "interrupted-request acceptance and operational recovery gates",
+    "scoped fixture cleanup or continued retention decision"
   ],
   "productCodeChanged": true,
   "schemaChanged": false,
@@ -199,7 +227,7 @@
   "emailSentByAgent": true,
   "reviewDecisionSubmitted": true,
   "realCandidateProfileOrDocumentsChanged": false,
-  "existingTestingCandidateSession": "signed out to prepare synthetic accounts",
+  "existingTestingCandidateSession": "synthetic candidate authenticated after operator private login",
   "accountCreatedByOperator": "candidate and confirmed employer observed authenticated",
   "syntheticCandidateState": "one pending application selected the previous CV version; current vault CV is synthetic version two; optional synthetic certificate retained; no new consent to share replacement",
   "emailReceipt": {
@@ -207,8 +235,8 @@
     "freshFallbackMessage": "one approved resend; operator reported successful confirmation",
     "receivedMimeAndRendering": "not inspected"
   },
-  "syntheticEmployerState": "reviewed QA simulation; one active QA vacancy and one fresh pending CV-only applicant",
-  "cleanup": "partial: original synthetic application withdrawn; new application, accounts, two private documents, review evidence and active vacancy retained",
+  "syntheticEmployerState": "suspended QA simulation; one closed QA vacancy with one pending application retained",
+  "cleanup": "partial: original application withdrawn; current application, synthetic accounts, replacement CV, optional certificate, review history and closed vacancy retained; employer left suspended",
   "layoutRelease": {
     "commit": "7aaabef",
     "vercel": "HMr8UtkBPqP2cdAVKZoVtmurbhiC",

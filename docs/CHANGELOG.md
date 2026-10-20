@@ -1,5 +1,11 @@
 # Change log
 
+## 20 October 2026 — Hosted replacement, closure and suspension checks
+
+- Employer roster withheld the replacement CV. Closing the synthetic vacancy preserved its one application after reload and reduced published vacancies to zero.
+- QA-only suspension revoked roster/directory access for the existing employer session, including directory Retry. Candidate application history persisted; the historical viewer offered no Apply action and Matches was empty. Combined-state discovery does not isolate each exclusion predicate.
+- Updated [hosted acceptance](HOSTED-EMPLOYER-ACCEPTANCE.md) and its JSON evidence. Direct HTTP document/posting denials and physical old-object cleanup remain unverified. No product code, schema, configuration or production change.
+
 ## 20 October 2026 — Synthetic CV replacement and owner preview passed
 
 - After explicit approval, replaced only the test candidate CV and verified the new QA-only version in the private owner preview. One existing application remains; no new document-sharing consent, AI request or email was submitted.
