@@ -3,16 +3,49 @@
   "scope": "hosted synthetic employer recruitment journey",
   "target": "https://bench-scout-git-testing-sholly.vercel.app/",
   "applicationBaseline": "e17170d",
-  "status": "in-progress: operator credential entry required",
+  "status": "in-progress: employer signup restored after shared-session role change",
   "recipientAliasesApproved": true,
-  "checks": [{"name":"candidate role cannot enter employer portal","status":"passed","observation":"/employer redirected to /home while signed in as candidate"}],
-  "prepared": ["synthetic employer signup with blank password", "separate synthetic candidate signup with blank password", "administrator form with fixture email lookup and blank key"],
-  "pending": ["operator account creation", "unconfirmed login denial", "confirmation send/receipt/branding/links", "company and vacancy review gates", "candidate upload/application and document permissions", "interview and in-app/inbox notifications", "closure/suspension and scoped cleanup"],
+  "checks": [
+    {
+      "name": "candidate role cannot enter employer portal",
+      "status": "passed",
+      "observation": "/employer redirected to /home while signed in as candidate"
+    },
+    {
+      "name": "synthetic candidate profile",
+      "status": "passed",
+      "observation": "exact fixture identity displayed in authenticated hosted profile"
+    },
+    {
+      "name": "synthetic CV upload",
+      "status": "passed",
+      "observation": "hosted file chooser upload completed and displayed synthetic PDF filename"
+    },
+    {
+      "name": "cross-tab identity changes",
+      "status": "observed",
+      "observation": "tabs returned home; existing SessionGate storage/focus safeguard confirmed; retained unchanged"
+    }
+  ],
+  "prepared": [
+    "employer signup restored with blank password",
+    "administrator lookup restored with blank key; credential entry deferred until employer login"
+  ],
+  "pending": [
+    "employer creation and unconfirmed-login negative checks",
+    "confirmation inbox appearance and role-correct links",
+    "company and vacancy review gates",
+    "application selection, private document downloads/denials and duplicate handling",
+    "interview and in-app/inbox notifications",
+    "closure/suspension and scoped cleanup"
+  ],
   "productCodeChanged": false,
   "schemaChanged": false,
   "accountCreatedByAgent": false,
   "emailSentByAgent": false,
   "reviewDecisionSubmitted": false,
   "realCandidateProfileOrDocumentsChanged": false,
-  "existingTestingCandidateSession": "signed out to prepare synthetic accounts"
+  "existingTestingCandidateSession": "signed out to prepare synthetic accounts",
+  "accountCreatedByOperator": "synthetic candidate observed authenticated",
+  "syntheticCandidateState": "account and uploaded synthetic CV retained; signed out for sequential employer testing"
 }

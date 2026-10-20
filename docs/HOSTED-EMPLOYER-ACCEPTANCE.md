@@ -21,14 +21,14 @@ The operator authorised a synthetic employer/candidate recruitment journey and a
 | --- | --- |
 | Candidate session cannot enter employer portal | Passed: visiting `/employer` while signed in as candidate redirected to `/home`. |
 | Signed-out employer signup | Passed entry point: employer portal displayed login and Create employer account; synthetic company/contact/approved alias prepared. No password entered by agent or signup submitted. |
-| Separate synthetic candidate signup | Prepared in a separate tab with licensed stage/name/approved alias. No password entered by agent or signup submitted. |
+| Separate synthetic candidate signup | Operator reported creation. Fresh hosted profile showed the exact synthetic candidate name/approved alias in an authenticated session; no agent password entry. This does not independently verify inbox appearance. |
 | Administrator authentication | Form prepared, fixture employer lookup populated, key blank. Earlier successful queue check remains historical evidence; this run has not loaded it yet. |
-| Account creation / unconfirmed login denial | Pending operator credential entry/submission and hosted result. |
+| Account creation / unconfirmed login denial | Synthetic candidate creation/authenticated session observed. Employer creation and the unconfirmed-account negative checks remain pending; do not recreate the candidate. |
 | Employer and candidate confirmation emails | Pending send, receipt, branding/mobile display and role-correct testing link confirmation. Request success, provider acceptance and recipient receipt must be recorded separately. |
 | Confirmed employer still needs company review | Pending confirmed login and blocked publication/applicant access checks. |
 | Company submission/review and evidence persistence | Pending synthetic submission, review through current revision and feedback/status refresh. |
 | Vacancy pending moderation then discovery | Pending synthetic posting, independent vacancy review and candidate feed check. |
-| Candidate private upload, selected application and duplicate handling | Pending synthetic CV/attachment selection, save/reload and employer roster checks. |
+| Candidate private upload, selected application and duplicate handling | Synthetic PDF CV uploaded through the hosted profile file chooser; successful response displayed the fixture filename. Application/selection, reload, employer roster and document download/denial checks remain pending. |
 | Document permissions and employer scope | Pending selection-only access, unrelated-role/ID denial, replacement and withdrawal checks on hosted deployment. |
 | Employer shortlist/interview and candidate notification | Pending date/time validation, persisted status, in-app notification and approved inbox receipt. |
 | Closure, suspension and cleanup | Pending. Record exact surviving fixtures and cleanup outcome; do not imply cleanup before verifying it. |
@@ -38,6 +38,15 @@ The operator authorised a synthetic employer/candidate recruitment journey and a
 The browser tool requires the operator to enter new account passwords and submit the creation forms. The prepared employer and candidate forms have blank password fields. The administrator's existing key is retained only by the operator and must be entered privately in the prepared review console. The agent does not retrieve it from provider settings or publish it.
 
 Prepared request: create both accounts with separate passwords of at least 12 characters; re-enter the employer password in its returned login form without submitting; load the admin queues with the existing key without saving any decision; leave confirmation links unopened until the unconfirmed login check. No completed signup/email receipt/review is claimed merely from preparation.
+
+
+### 20 October 2026 — Candidate created; sequential role handoff
+
+The operator reported creating the candidate and seeing every prepared tab return to the candidate/home view. Browser inspection confirmed the named synthetic candidate was authenticated. Source inspection of `components/SessionGate.tsx` confirms that a `benchscout_identity` storage change sends other tabs to `/home`; focus restoration also redirects stale identities. The same browser profile shares the session cookie and account cache. Separate tabs therefore do not isolate candidate/employer sessions. This safeguard was retained, not bypassed or disabled.
+
+While that synthetic candidate was signed in, the agent uploaded the generated `benchscout-synthetic-skills.pdf` through the profile modal. The upload completed and the displayed filename changed only on success. No real CV was used and no AI request was made. The synthetic candidate was then signed out so the employer form could be restored. The new candidate account and CV are intentionally retained for the remaining application journey; cleanup is not complete.
+
+Restored `/employer` in signup mode with the same synthetic company/contact and approved employer alias, password blank. Reopened `/admin/reviews`, restored the fixture lookup and left the key blank. Revised the handoff to **employer signup only**, with account roles tested sequentially; the administrator credential will be entered after the employer login so another identity change does not discard the prepared secret. No additional account, review decision or email was submitted by the agent.
 
 ### Findings to verify during the journey
 

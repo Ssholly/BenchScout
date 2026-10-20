@@ -1,5 +1,10 @@
 # Change log
 
+## 20 October 2026 — Hosted candidate fixture confirmed; employer pages restored
+
+- Observed the operator-created synthetic candidate in an authenticated profile and completed its synthetic PDF CV upload. Signed that fixture out and restored employer signup and administrator lookup after the shared-session change redirected all tabs home. Candidate data is retained for the remaining journey.
+- Confirmed the existing cross-tab identity safeguard in SessionGate and changed the test handoff to sequential roles. No protection was disabled, no real CV used, no agent email/review decision submitted and no new product code or migration. [Hosted acceptance](HOSTED-EMPLOYER-ACCEPTANCE.md) records the evidence and remaining gates.
+
 ## 20 October 2026 — Hosted employer journey started
 
 - Started the operator-authorised synthetic employer/candidate journey on the existing protected testing alias. Candidate-to-employer route denial was observed; separate employer/candidate signups and the administrator form were prepared. Approved role-specific test inbox aliases are omitted from docs.
