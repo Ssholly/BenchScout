@@ -3,7 +3,7 @@
   "scope": "hosted synthetic employer recruitment journey",
   "target": "https://bench-scout-git-testing-sholly.vercel.app/",
   "applicationBaseline": "e17170d",
-  "status": "in-progress: employer roster and selected CV passed; future-time repair locally validated",
+  "status": "in-progress: interview saved and correct email receipt confirmed; adaptive mobile form repair locally validated",
   "recipientAliasesApproved": true,
   "checks": [
     {
@@ -108,21 +108,37 @@
     },
     {
       "name": "future interview constraint",
-      "status": "local checks passed; deployment pending",
-      "observation": "shared client/API validation before mutations; explicit associated Africa/Lagos labels; lint, TypeScript, 220 tests, final build and diff check passed"
+      "status": "deployed; hosted client past rejection passed",
+      "observation": "49e5108 deployed via Vercel 6ThBhP6CvRi9H6qkbpLzckENZqoC; populated past schedule displayed future-time error and remained unsaved"
+    },
+    {
+      "name": "synthetic future interview",
+      "status": "saved; persisted reload check pending",
+      "observation": "21 October 2026 at 10:00 Africa/Lagos, QA-only location/no attendance; roster showed Interview Confirmed"
+    },
+    {
+      "name": "interview email receipt",
+      "status": "passed: operator confirmed",
+      "observation": "approved candidate alias received interview email with correct details"
+    },
+    {
+      "name": "narrow interview form",
+      "status": "repair locally validated; hosted verification pending",
+      "observation": "at 320px original time input ended at x361.8; changed row to adaptive grid; lint, TypeScript, 220 tests and build passed; saved fixture has no reschedule UI so a pending application is needed for fresh form checks"
     }
   ],
   "prepared": [
-    "employer roster open; no interview saved or email sent"
+    "sequential switch to synthetic candidate to check persisted interview, notification and scheduler"
   ],
   "pending": [
-    "future-time repair deployment, hosted past rejection and future interview",
+    "operator privately signs in to synthetic candidate for in-app notification/scheduler checks",
     "confirmation inbox appearance and role-correct links",
     "document-scope direct request denial under browser restriction remains unverified",
     "hosted document access denials, replacement/withdrawal and repeated-request idempotency",
-    "interview and in-app/inbox notifications",
+    "candidate interview status, in-app notification and calendar; email receipt passed",
     "closure/suspension and scoped cleanup",
-    "posting form option-row compression: repair and desktop/320px/390px checks"
+    "posting form option-row compression: repair and desktop/320px/390px checks",
+    "adaptive interview grid deployment and fresh 320px/390px hosted form verification"
   ],
   "productCodeChanged": true,
   "schemaChanged": false,
@@ -132,7 +148,7 @@
   "realCandidateProfileOrDocumentsChanged": false,
   "existingTestingCandidateSession": "signed out to prepare synthetic accounts",
   "accountCreatedByOperator": "candidate and confirmed employer observed authenticated",
-  "syntheticCandidateState": "one CV-only application sent; private CV and later optional synthetic PDF retained; summary sharing off",
+  "syntheticCandidateState": "CV-only application shortlisted for future synthetic interview; CV and unshared optional PDF retained",
   "emailReceipt": {
     "employer": "operator confirmed receipt; reported action button absent",
     "freshFallbackMessage": "one approved resend; operator reported successful confirmation",

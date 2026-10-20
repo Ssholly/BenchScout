@@ -784,8 +784,8 @@ export default function EmployerGateway() {
 								</button>
 							</div>
 							<form onSubmit={submitInterviewSchedule}>
-								<div style={{ display: "flex", gap: "12px" }}>
-									<div style={{ flex: 1 }}>
+								<div className="employer-interview-fields" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 160px), 1fr))", gap: "12px" }}>
+									<div style={{ minWidth: 0 }}>
 										<label htmlFor="interview-date"
 											style={{
 												fontSize: "11px",
@@ -811,7 +811,7 @@ export default function EmployerGateway() {
 											style={inputStyle}
 										/>
 									</div>
-									<div style={{ flex: 1 }}>
+									<div style={{ minWidth: 0 }}>
 										<label htmlFor="interview-time"
 											style={{
 												fontSize: "11px",

@@ -112,3 +112,11 @@ Before sending an interview, source inspection confirmed that the existing PATCH
 New regression cases cover previous dates, elapsed/current minutes and exact-now boundary, future same-day dates, UTC/Lagos midnight crossover, invalid/non-string dates/times and leap days. Local checks, deployment and hosted past-rejection/future invitation acceptance are tracked below; no interview email has yet been sent in this hosted run.
 
 Local validation: lint without warnings, TypeScript, all 220 tests, final-source webpack production build and diff check passed. Testing deployment and hosted schedule checks remain pending.
+
+
+Hosted schedule follow-up: `49e5108` deployed successfully as Vercel `6ThBhP6CvRi9H6qkbpLzckENZqoC`. A populated past schedule displayed “Choose a future interview date and time (Africa/Lagos)” and remained unsaved. At 320px, responsive inspection found the time input ending at x=361.8, beyond the viewport. Replaced the inflexible date/time flex row with an adaptive grid and zero-minimum-width cells, stacking when two usable columns cannot fit. Local rechecks, deployment and 320/390px hosted verification of this layout follow-up are pending. No interview email has yet been sent.
+
+
+Interview delivery follow-up: saved one valid future synthetic interview for 21 October 2026, 10:00 Africa/Lagos, with a QA-only location saying no real interview/attendance is required. The employer roster showed Interview Confirmed. The operator confirmed receiving the test email with correct details. This is recipient-confirmed delivery, not merely a server send result. Candidate in-app notification, scheduler and persisted status after role-switch remain pending.
+
+The adaptive interview-grid follow-up passed lint, TypeScript, all 220 tests, production build and diff check. It adds no new API/schema/configuration or test email. Hosted 320/390px form verification remains open: the fixture has already been shortlisted, and the existing roster currently offers no reschedule control to reopen its form. Do not claim a post-fix hosted layout pass from the earlier failing measurement. Keep this checkpoint for a pending synthetic application later in the journey; no extra feature or fabricated test state was introduced solely to reopen the form.
