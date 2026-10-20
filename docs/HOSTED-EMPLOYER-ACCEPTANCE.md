@@ -30,7 +30,7 @@ The operator authorised a synthetic employer/candidate recruitment journey and a
 | Vacancy pending moderation then discovery | Passed pending-to-active moderation transition: one pending vacancy with zero published; separate current-revision QA-only review saved, then full reload showed Active and one published. Candidate discovery passed; the approved synthetic role appeared in Job Matches. |
 | Candidate private upload, selected application and duplicate handling | Synthetic PDF CV uploaded through the hosted profile file chooser; successful response displayed the fixture filename. CV-only application and full reload passed; Applied shows one Application Sent card. Later synthetic optional upload persisted without changing the displayed submission selection. Employer roster/download/denial checks remain pending. |
 | Document permissions and employer scope | Pending selection-only access, unrelated-role/ID denial, replacement and withdrawal checks on hosted deployment. |
-| Employer shortlist/interview and candidate notification | Pending date/time validation, persisted status, in-app notification and approved inbox receipt. |
+| Employer shortlist/interview and candidate notification | Passed positive hosted path: future-time validation deployed, employer/candidate interview state persisted, matching in-app notification/calendar and approved inbox receipt confirmed. Fresh mobile form checks remain open. |
 | Closure, suspension and cleanup | Pending. Record exact surviving fixtures and cleanup outcome; do not imply cleanup before verifying it. |
 
 ### Operator credential handoff
@@ -123,3 +123,10 @@ The adaptive interview-grid follow-up passed lint, TypeScript, all 220 tests, pr
 
 
 Release/persistence: adaptive-grid commit `87bebfd` reached the testing alias through successful Vercel deployment `HpTxd6mR2biKSpbs5UGhBn6838Ak`. Before switching roles, a full employer reload and fresh roster fetch preserved Interview Confirmed, 21 October 2026 at 10:00. Signed the synthetic employer out and prepared Scientist login for the synthetic candidate. Operator entry of its existing private password is required for the next in-app/scheduler checks. Mobile form recheck, direct unselected-file server denial and remaining closure/withdrawal/suspension acceptance remain open.
+
+
+### 20 October 2026 — Candidate interview, notification and calendar passed
+
+Observed the authenticated synthetic candidate's one application in Interviewing, with only CV selected. Its in-app Interview scheduled notification matched the QA-only company/role, 21 October 2026, 10:00 Africa/Lagos and no-attendance test location. On Master Scheduler, October 21 showed exactly one Confirmed Interview event at 10:00 AM for the same role/company. Opened the event editor and selected Save without changing fields; the app rejected this with “Action events are managed by the employer.” No candidate override or manual event was saved.
+
+Email receipt was already operator-confirmed in the prior step; the candidate UI observations now complete the positive hosted notification/calendar check. Source inspection shows withdrawal currently deletes the application row (including its stored interview fields) rather than a reversible withdrawn status. Prepared the exact synthetic application for action-time operator confirmation before that deletion. Planned next: withdraw this test application, verify its removal/calendar/grant revocation where observable, then submit a fresh CV-only application to the still-active QA vacancy so the pending-applicant interview form can receive fresh 320/390px checks. No withdrawal/reapplication has yet occurred, and no real data is involved. No product code/schema/configuration changed in this step.

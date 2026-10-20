@@ -3,7 +3,7 @@
   "scope": "hosted synthetic employer recruitment journey",
   "target": "https://bench-scout-git-testing-sholly.vercel.app/",
   "applicationBaseline": "e17170d",
-  "status": "in-progress: future-time and mobile-grid releases deployed; interview persisted and correct email received; candidate checks next",
+  "status": "in-progress: candidate interview stage, matching notification and calendar passed; synthetic withdrawal confirmation next",
   "recipientAliasesApproved": true,
   "checks": [
     {
@@ -125,17 +125,37 @@
       "name": "narrow interview form",
       "status": "deployed; fresh hosted responsive form check pending",
       "observation": "87bebfd deployed via Vercel HpTxd6mR2biKSpbs5UGhBn6838Ak; lint/TypeScript/220 tests/build passed; original 320px overflow recorded, pending fixture needed to reopen scheduling form"
+    },
+    {
+      "name": "candidate interview pipeline",
+      "status": "passed",
+      "observation": "one application persisted in Interviewing with only CV selected"
+    },
+    {
+      "name": "candidate in-app interview notification",
+      "status": "passed",
+      "observation": "exact synthetic role/company, 21 October 2026 10:00 Africa/Lagos and no-attendance test location matched"
+    },
+    {
+      "name": "candidate interview calendar",
+      "status": "passed",
+      "observation": "October 21 had one matching Confirmed Interview event at 10:00 AM"
+    },
+    {
+      "name": "candidate cannot override employer calendar event",
+      "status": "passed in UI",
+      "observation": "opening synced event and saving unchanged returned Action events are managed by the employer; no edit saved"
     }
   ],
   "prepared": [
-    "Scientist login populated with synthetic candidate alias; password blank; employer signed out"
+    "synthetic candidate Applied screen ready for withdrawal; confirmation required because current API deletes the application row"
   ],
   "pending": [
-    "operator privately signs in to synthetic candidate for in-app notification/scheduler checks",
+    "action-time confirmation for synthetic withdrawal, followed by fresh CV-only reapplication",
     "confirmation inbox appearance and role-correct links",
     "document-scope direct request denial under browser restriction remains unverified",
     "hosted document access denials, replacement/withdrawal and repeated-request idempotency",
-    "candidate interview status, in-app notification and calendar; email receipt passed",
+    "positive interview stage/notification/calendar/email checks passed; fresh responsive scheduling form still pending",
     "closure/suspension and scoped cleanup",
     "posting form option-row compression: repair and desktop/320px/390px checks",
     "fresh 320px/390px hosted scheduling-form verification"
@@ -148,7 +168,7 @@
   "realCandidateProfileOrDocumentsChanged": false,
   "existingTestingCandidateSession": "signed out to prepare synthetic accounts",
   "accountCreatedByOperator": "candidate and confirmed employer observed authenticated",
-  "syntheticCandidateState": "CV-only application shortlisted for future synthetic interview; CV and unshared optional PDF retained",
+  "syntheticCandidateState": "signed in; one Interviewing CV-only application; matching synced event and notification; two private synthetic files retained",
   "emailReceipt": {
     "employer": "operator confirmed receipt; reported action button absent",
     "freshFallbackMessage": "one approved resend; operator reported successful confirmation",
