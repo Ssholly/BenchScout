@@ -1,5 +1,10 @@
 # Change log
 
+## 20 October 2026 — Hosted candidate discovery and CV-only application
+
+- Confirmed the synthetic candidate discovered the approved QA vacancy and submitted only its synthetic CV, with professional-summary sharing off. Reload showed one Application Sent record; the role left matches and offered no repeat Apply action in its posting viewer. Repeated hosted POST remains untested.
+- Added a synthetic optional file after submission; it persisted privately while the application still listed only CV. Employer download/denial and interview checks remain pending. No product code, schema or configuration change. [Hosted acceptance](HOSTED-EMPLOYER-ACCEPTANCE.md).
+
 ## 20 October 2026 — Hosted separate vacancy approval verified
 
 - Reviewed the queued synthetic vacancy independently of company approval and saved explicit QA-only moderation evidence. A full employer reload showed Active, one published and zero applicants.

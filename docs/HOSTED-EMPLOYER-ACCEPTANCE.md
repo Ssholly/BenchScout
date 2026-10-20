@@ -27,8 +27,8 @@ The operator authorised a synthetic employer/candidate recruitment journey and a
 | Employer and candidate confirmation emails | Original employer button reported missing; fallback deployed and one resend completed. Operator confirmed successful email confirmation and normal employer login succeeded. Fresh branding and candidate inbox appearance remain unverified. |
 | Confirmed employer still needs company review | Passed before approval: confirmed employer was denied posting and directory access; Retry preserved denial. |
 | Company submission/review and evidence persistence | Passed: synthetic submission, authorised approval, feedback/status refresh and full employer reload persisted Company reviewed. |
-| Vacancy pending moderation then discovery | Passed pending-to-active moderation transition: one pending vacancy with zero published; separate current-revision QA-only review saved, then full reload showed Active and one published. Candidate discovery remains pending. |
-| Candidate private upload, selected application and duplicate handling | Synthetic PDF CV uploaded through the hosted profile file chooser; successful response displayed the fixture filename. Application/selection, reload, employer roster and document download/denial checks remain pending. |
+| Vacancy pending moderation then discovery | Passed pending-to-active moderation transition: one pending vacancy with zero published; separate current-revision QA-only review saved, then full reload showed Active and one published. Candidate discovery passed; the approved synthetic role appeared in Job Matches. |
+| Candidate private upload, selected application and duplicate handling | Synthetic PDF CV uploaded through the hosted profile file chooser; successful response displayed the fixture filename. CV-only application and full reload passed; Applied shows one Application Sent card. Later synthetic optional upload persisted without changing the displayed submission selection. Employer roster/download/denial checks remain pending. |
 | Document permissions and employer scope | Pending selection-only access, unrelated-role/ID denial, replacement and withdrawal checks on hosted deployment. |
 | Employer shortlist/interview and candidate notification | Pending date/time validation, persisted status, in-app notification and approved inbox receipt. |
 | Closure, suspension and cleanup | Pending. Record exact surviving fixtures and cleanup outcome; do not imply cleanup before verifying it. |
@@ -92,3 +92,12 @@ The operator privately loaded the next queue, which showed zero pending companie
 After a full employer reload, the same fixture showed Active and the monitor showed one published vacancy, zero applicants. This establishes the pending-to-active transition through independent vacancy review. Candidate discovery, application/document scope and notifications remain pending. The next step switches sequentially to the operator-created synthetic candidate account; existing credentials stay private.
 
 Additional UI finding: at the observed desktop portal width, the posting form's flex options row compressed deadline/required-document labels into narrow columns. Repair and responsive validation remain pending; this does not close the UI audit.
+
+
+### 20 October 2026 — Candidate discovery and CV-only application persisted
+
+Observed the exact synthetic candidate profile after the operator's private sign-in, including the retained CV and licensed phase. Job Matches displayed the active QA-only employer vacancy with Employer reviewed provenance and no personalised score. Opened the Application Toolkit: required CV was selected, missing optional documents disabled, professional-summary sharing off, and the employer/document-access disclosure visible. Submitted only that synthetic CV.
+
+After full reload, Job Matches excluded the submitted role and Applied showed exactly one Application Sent card for that role. The card explicitly listed CV as the document selected at submission. The posting viewer offered Back to pipeline without another Apply action. This verifies normal UI repeat prevention and one persisted record; a second hosted POST/idempotency assertion was not performed.
+
+Uploaded the same explicitly synthetic PDF into the optional certificate vault slot after applying, without any AI request or claim of real certification. It persisted after a settings reload. Returning to Applied still showed only CV selected. Employer-side denial of the later-uploaded optional file, selected CV download, roster count and status/interview remain pending. No real profile/document, schema, configuration or product code changed. Synthetic application and both private fixture documents remain for continuation.
