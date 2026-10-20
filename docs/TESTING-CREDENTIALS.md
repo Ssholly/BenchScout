@@ -1,5 +1,11 @@
 # Testing credentials and email acceptance
 
+## 20 October 2026 — Existing-account reset test resumed
+
+The operator clarified that the replacement approved address already has an account and requested password-reset testing, not signup. The earlier signup preparation was not submitted. Switched the same hosted dialog back to candidate recovery, entered the newly approved address and submitted exactly one Send Reset Link request. The UI progressed through Sending and returned to Welcome Back, the generic success path. No new account was created and no password was entered or changed. Provider acceptance/inbox receipt remain unverified until the recipient confirms. Do not infer account existence or successful delivery solely from this generic response, and do not ask the operator to create another account for this request.
+
+The prior missing-account SQL result applies only to the first recipient, not the replacement. Recipient addresses/tokens are omitted from public documentation. No code/configuration/schema or production change; documentation diff validation passed.
+
 ## 20 October 2026 — Approved recipient replaced
 
 The operator supplied a different controlled inbox for testing. Updated only the email field in the prepared candidate signup; the address is omitted from repository documentation. Password entry and submission remain with the operator. No account was created or test message sent by this change. The earlier absent-account SQL result applies to the previous exact address only and must not be reused as evidence about the replacement inbox. Test confirmation/recovery/interview messages should use the newly approved recipient going forward.

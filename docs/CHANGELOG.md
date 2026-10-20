@@ -1,5 +1,10 @@
 # Change log
 
+## 20 October 2026 — Existing-account recovery test resumed
+
+- Corrected the signup assumption after the operator confirmed the replacement recipient already has an account. Prepared signup was not submitted.
+- Submitted one hosted candidate password-reset request to the approved replacement recipient; Sending returned to the generic login view. No account created or password changed; provider acceptance/inbox receipt remains unverified. No code/configuration/schema/production change.
+
 ## 20 October 2026 — Test email recipient replaced
 
 - Updated the prepared signup to the operator's replacement approved inbox, leaving password entry/submission to the operator. Address omitted from docs; no account/message created or sent. Prior absent-account results apply only to the earlier recipient. No product/provider/schema or production change.
