@@ -1,5 +1,11 @@
 # Change log
 
+## 20 October 2026 — Hosted company approval and separate vacancy gate
+
+- Saved the explicitly authorised synthetic company approval; Company reviewed and QA-only feedback persisted after a full reload. This is software acceptance evidence, not real CAC or facility clearance.
+- Submitted one labelled synthetic vacancy; reload showed Awaiting review, one vacancy and zero published. Vacancy approval, discovery and the application/interview journey remain pending.
+- Recorded the existing admin key/queue clearing after save and prepared the next private credential handoff. No product code, migration or configuration change. [Hosted acceptance](HOSTED-EMPLOYER-ACCEPTANCE.md).
+
 ## 20 October 2026 — Previous-applicant errors and hosted employer gates
 
 - Fixed failed previous-applicant requests appearing as an empty directory. The client now clears old results, preserves access-denial messages, rejects malformed responses, provides Retry and ignores abandoned/account-changed responses. Existing server permissions are unchanged.

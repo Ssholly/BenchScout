@@ -22,12 +22,12 @@ The operator authorised a synthetic employer/candidate recruitment journey and a
 | Candidate session cannot enter employer portal | Passed: visiting `/employer` while signed in as candidate redirected to `/home`. |
 | Signed-out employer signup | Passed entry point: employer portal displayed login and Create employer account; synthetic company/contact/approved alias prepared. No password entered by agent or signup submitted. |
 | Separate synthetic candidate signup | Operator reported creation. Fresh hosted profile showed the exact synthetic candidate name/approved alias in an authenticated session; no agent password entry. This does not independently verify inbox appearance. |
-| Administrator authentication | Form prepared, fixture employer lookup populated, key blank. Earlier successful queue check remains historical evidence; this run has not loaded it yet. |
+| Administrator authentication | Passed: operator loaded the queue; one authorised synthetic company approval saved. Key cleared after successful save by existing UI design; next queue load needs operator entry. |
 | Account creation / unconfirmed login denial | Synthetic candidate authenticated session observed. Operator completed employer creation; hosted employer login displayed the specific confirm-email rejection. The employer unconfirmed-account gate passed; candidate negative check was not performed. |
-| Employer and candidate confirmation emails | Employer receipt operator-confirmed, but its confirmation button was reported missing. Shared-template backup action URL added; deployment/resend and fresh inbox review pending. Candidate inbox appearance remains unverified. |
-| Confirmed employer still needs company review | Pending confirmed login and blocked publication/applicant access checks. |
-| Company submission/review and evidence persistence | Pending synthetic submission, review through current revision and feedback/status refresh. |
-| Vacancy pending moderation then discovery | Pending synthetic posting, independent vacancy review and candidate feed check. |
+| Employer and candidate confirmation emails | Original employer button reported missing; fallback deployed and one resend completed. Operator confirmed successful email confirmation and normal employer login succeeded. Fresh branding and candidate inbox appearance remain unverified. |
+| Confirmed employer still needs company review | Passed before approval: confirmed employer was denied posting and directory access; Retry preserved denial. |
+| Company submission/review and evidence persistence | Passed: synthetic submission, authorised approval, feedback/status refresh and full employer reload persisted Company reviewed. |
+| Vacancy pending moderation then discovery | Synthetic posting persisted as Awaiting review after reload, with 1 vacancy and 0 published. Independent vacancy approval and candidate feed check remain pending. |
 | Candidate private upload, selected application and duplicate handling | Synthetic PDF CV uploaded through the hosted profile file chooser; successful response displayed the fixture filename. Application/selection, reload, employer roster and document download/denial checks remain pending. |
 | Document permissions and employer scope | Pending selection-only access, unrelated-role/ID denial, replacement and withdrawal checks on hosted deployment. |
 | Employer shortlist/interview and candidate notification | Pending date/time validation, persisted status, in-app notification and approved inbox receipt. |
@@ -74,3 +74,12 @@ While still unapproved, the employer attempted posting and received “Your empl
 Validation: `npm run check` passed lint, TypeScript and all 216 tests; webpack production build passed. Four new client tests cover review denial, server/invalid responses, real empty versus populated success, location encoding and network failure. No migration or configuration change. This directory repair is locally validated; deployment and hosted denial/retry verification remain pending. Application, review approval, interview, document-scope and cleanup acceptance remain incomplete.
 
 Hosted follow-up: `4857fb1` deployed successfully as Vercel `5yC26qaDDXZo2LYgAbw6U2PgaQUY`. Reloading only the employer portal preserved the unlocked admin draft. Previous applicants showed the exact review-required denial; Retry returned to the same denial without showing an empty list or candidates. The company remains pending. A synthetic-only approval draft is prepared; saving would grant recruitment/applicant access and therefore requires action-time browser confirmation. No decision has been saved. A stable invalidation callback also removes the effect-cleanup lint warning; lint, TypeScript, 216 tests and build passed again.
+
+
+### 20 October 2026 — Synthetic company approved; vacancy still moderated
+
+After explicit action-time operator approval, saved the prepared company decision. The console returned “Decision saved. Reload the queue before the next review.” Refresh status showed Company reviewed and the exact synthetic-only reviewer feedback. A full employer-page reload preserved that state. This simulates the software approval path only; no real CAC, recruiter or regulator validation is asserted.
+
+Submitted one clearly labelled QA-only licensed-scientist vacancy with CV required and the no-fee declaration. It persisted after reload as Awaiting review: one vacancy, zero published, zero applicants. Company approval therefore did not automatically publish this vacancy. Candidate-feed exclusion has not yet been checked independently.
+
+The existing admin client intentionally clears its secret and loaded queue after each successful review (`app/admin/reviews/page.tsx`). Retained this behaviour. The next vacancy review is prepared with Review type Vacancy; the operator must privately re-enter the existing key and load the queue. No vacancy decision, application, interview or cleanup has yet occurred. No product code/schema/configuration changed during these checks.

@@ -3,7 +3,7 @@
   "scope": "hosted synthetic employer recruitment journey",
   "target": "https://bench-scout-git-testing-sholly.vercel.app/",
   "applicationBaseline": "e17170d",
-  "status": "in-progress: hosted directory denial/retry passed; synthetic company approval draft awaiting action-time confirmation",
+  "status": "in-progress: synthetic company approved and persisted; synthetic vacancy pending independent review",
   "recipientAliasesApproved": true,
   "checks": [
     {
@@ -50,15 +50,30 @@
       "name": "directory error handling",
       "status": "passed on hosted testing",
       "observation": "4857fb1 deployed; pending employer sees review-required denial; Retry returns same denial with no empty-list/candidate display"
+    },
+    {
+      "name": "synthetic company approval",
+      "status": "passed",
+      "observation": "explicit operator approval; decision saved; Company reviewed and synthetic-only feedback persisted after full employer reload"
+    },
+    {
+      "name": "vacancy moderation separation",
+      "status": "partially passed",
+      "observation": "one synthetic vacancy submitted; reload shows Awaiting review, 1 vacancy, 0 published and 0 applicants; independent feed exclusion and approval pending"
+    },
+    {
+      "name": "administrator secret lifecycle",
+      "status": "observed",
+      "observation": "successful save clears secret and queue by existing UI design; retained unchanged"
     }
   ],
   "prepared": [
-    "administrator queue unlocked; synthetic-only company approval evidence filled; no decision saved"
+    "administrator Review type Vacancy; key empty after intentional clearing; operator must reload queue"
   ],
   "pending": [
-    "action-time confirmation before granting synthetic employer recruitment access",
+    "operator privately enters existing administrator key and loads vacancy queue",
     "confirmation inbox appearance and role-correct links",
-    "company and vacancy review gates",
+    "independent vacancy moderation, discovery and candidate application",
     "application selection, private document downloads/denials and duplicate handling",
     "interview and in-app/inbox notifications",
     "closure/suspension and scoped cleanup"
@@ -67,7 +82,7 @@
   "schemaChanged": false,
   "accountCreatedByAgent": false,
   "emailSentByAgent": true,
-  "reviewDecisionSubmitted": false,
+  "reviewDecisionSubmitted": true,
   "realCandidateProfileOrDocumentsChanged": false,
   "existingTestingCandidateSession": "signed out to prepare synthetic accounts",
   "accountCreatedByOperator": "candidate and confirmed employer observed authenticated",
@@ -76,5 +91,7 @@
     "employer": "operator confirmed receipt; reported action button absent",
     "freshFallbackMessage": "one approved resend; operator reported successful confirmation",
     "receivedMimeAndRendering": "not inspected"
-  }
+  },
+  "syntheticEmployerState": "approved QA simulation; one pending vacancy; no real accreditation claimed",
+  "cleanup": "not performed; synthetic accounts, CV, company decision and pending vacancy retained for continuing acceptance"
 }
