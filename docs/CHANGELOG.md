@@ -4,7 +4,7 @@
 
 - Restored a consent-based CV skills suggestion action for current private CVs, with review before save, bounded AI responses, changed-CV protection and useful unreadable/configuration failure messages. Uploads preserve keywords and no longer falsely claim extraction.
 - Fixed Update Profile dropping unfinished keyword input; normalized list delimiters/duplicates on client and server, retained removable chips, protected unsaved preferences from refresh/save races and wired Cancel. Corrected the profile modal label and successful-upload refresh/filename handling.
-- Added eight regression tests; lint, TypeScript, all 211 tests, production build, 18 isolated acceptance checks, targeted browser persistence/mobile checks and a synthetic live-provider call passed. No schema/migration/new configuration. Detailed evidence and testing release status are recorded in [CV skills and keywords](RESUME-KEYWORDS.md). No real CV was sent to AI during this repair.
+- Added eight regression tests; lint, TypeScript, all 211 tests, production build, 18 isolated acceptance checks, targeted browser persistence/mobile checks and a synthetic live-provider call passed. No schema/migration/new configuration. Final application commit `e17170d` is deployed to testing with Vercel success and hosted controls/shortcut verification. Detailed evidence is recorded in [CV skills and keywords](RESUME-KEYWORDS.md). No real CV was sent to AI during this repair.
 
 ## 20 October 2026 — Reset branding accepted; initial confirmation path verified
 

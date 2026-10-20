@@ -4,15 +4,61 @@
   "checks": {
     "lint": "passed",
     "typescript": "passed",
-    "unitTests": { "passed": 211, "new": 8 },
+    "unitTests": {
+      "passed": 211,
+      "new": 8
+    },
     "productionBuild": "passed",
-    "isolatedLiveAcceptance": { "passed": 18, "schema": "temporary", "mail": "local capture only" },
-    "browser": ["save without Enter and reload", "normalized deduplicated chips", "Add then save", "Enter and removal then Cancel", "AI unavailable preserves edits", "profile CV replacement preserves keywords and updates filename"],
-    "responsive": [{"width":390,"documentWidth":390,"editorLeft":25,"editorRight":365},{"width":320,"documentWidth":320,"editorLeft":25,"editorRight":295}],
-    "liveAI": {"syntheticOnly":true,"keywordCount":5,"scope":"standalone configured Gemini generation; hosted extraction not exercised"}
+    "isolatedLiveAcceptance": {
+      "passed": 18,
+      "schema": "temporary",
+      "mail": "local capture only"
+    },
+    "browser": [
+      "save without Enter and reload",
+      "normalized deduplicated chips",
+      "Add then save",
+      "Enter and removal then Cancel",
+      "AI unavailable preserves edits",
+      "profile CV replacement preserves keywords and updates filename"
+    ],
+    "responsive": [
+      {
+        "width": 390,
+        "documentWidth": 390,
+        "editorLeft": 25,
+        "editorRight": 365
+      },
+      {
+        "width": 320,
+        "documentWidth": 320,
+        "editorLeft": 25,
+        "editorRight": 295
+      }
+    ],
+    "liveAI": {
+      "syntheticOnly": true,
+      "keywordCount": 5,
+      "scope": "standalone configured Gemini generation; hosted extraction not exercised"
+    }
   },
   "schemaChanges": false,
   "realCandidateCvSentToAi": false,
-  "hostedDeployment": "pending",
-  "limitations": ["AI suggestions require candidate review and Update Profile", "image-only CVs require a text PDF or manual keywords", "real-candidate hosted AI extraction not performed"]
+  "hostedDeployment": {
+    "status": "Vercel success",
+    "applicationCommit": "e17170d",
+    "deployment": "CD1zsnx7QrajbGB5shy1s3sXCwdB",
+    "alias": "https://bench-scout-git-testing-sholly.vercel.app/",
+    "browser": "new controls, saved chips and modal-to-editor shortcut verified; no preferences saved and no real CV sent"
+  },
+  "limitations": [
+    "AI suggestions require candidate review and Update Profile",
+    "image-only CVs require a text PDF or manual keywords",
+    "real-candidate hosted AI extraction not performed"
+  ],
+  "cleanup": {
+    "isolatedSchema": "removed",
+    "remainingSyntheticPrivateFilesRemoved": 5,
+    "normalSchemaSyntheticAccounts": 0
+  }
 }
