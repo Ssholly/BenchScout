@@ -1,5 +1,14 @@
 # Hosted environment and recovery readiness
 
+## 20 October 2026 — Recovery drill prepared, not executed
+
+Fresh Neon console inspection of **BenchScout Testing** showed PostgreSQL 17, Free plan, one branch named `production`, and six-hour history retention. This is the dedicated testing project's default branch, separate from the normal BenchScout project. Backup & Restore showed no snapshots or schedule. These settings do not establish a completed restore or independent document backup.
+
+Prepared, but did not submit, a child-branch form: `qa-recovery-20261020`, parent `production` within BenchScout Testing, data and schema from **20 October 2026, 21:00 Africa/Lagos (20:00 UTC)**, automatic deletion after one day. This target follows the hosted synthetic closure/suspension checks. Creation requires action-time confirmation because it creates another accessible database copy, including stored sessions and private file references. No new branch, credential, restore/reset, billing upgrade, Vercel binding or production change has occurred. If approval arrives after the target leaves retained history, prepare a new in-window target and record it before submission.
+
+After approval, measure creation/recovery duration and inspect only scrubbed fixture results: suspended synthetic employer, closed QA vacancy, one retained application, CV revision/selection mismatch, review revision/audit and migration history. A branch-created banner alone is insufficient. Do not connect this copy to Vercel, email or cron; do not reuse restored sessions. Verify session invalidation and later revocations before any future cutover. Document recovery remains a separate gate: no protected backup of deleted Blob contents has been verified. Automatic branch expiry is a planned lifecycle setting, not evidence of completed cleanup.
+
+
 ## Recipient reset receipt and shared email design — 20 October 2026
 
 The approved recipient confirmed reset-link receipt for the existing replacement account, closing the receipt check for that request. It does not certify confirmation/interview delivery, link completion, SPF/DKIM or the rendering of the subsequently changed template. Shared account-email branding now covers confirmations and recovery; 203 tests/build and synthetic 320/390px previews passed. See [Account emails](ACCOUNT-EMAILS.md). Deployment and new-template inbox evidence are tracked separately; other operational gates stay open.

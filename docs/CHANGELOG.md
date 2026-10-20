@@ -1,5 +1,10 @@
 # Change log
 
+## 20 October 2026 — Recovery drill preparation
+
+- Rechecked the separate testing project: PostgreSQL 17, Free plan, six-hour history and no snapshots/schedule displayed. Prepared an unsubmitted historical child copy with one-day expiry; action-time approval is required for the new database copy.
+- Recorded target time, expected synthetic checks and session/document recovery limits in [operations readiness](OPERATIONS-READINESS.md). No branch, restore, credential, billing, app configuration or production change occurred.
+
 ## 20 October 2026 — Hosted replacement, closure and suspension checks
 
 - Employer roster withheld the replacement CV. Closing the synthetic vacancy preserved its one application after reload and reduced published vacancies to zero.
