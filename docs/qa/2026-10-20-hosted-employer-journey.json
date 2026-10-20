@@ -3,7 +3,7 @@
   "scope": "hosted synthetic employer recruitment journey",
   "target": "https://bench-scout-git-testing-sholly.vercel.app/",
   "applicationBaseline": "e17170d",
-  "status": "remaining safety phase: synthetic CV replacement prepared; action-time old-file-removal confirmation pending",
+  "status": "remaining safety phase: authorised synthetic CV replaced and owner preview passed; employer sharing/closure checks await private sign-in",
   "recipientAliasesApproved": true,
   "checks": [
     {
@@ -170,15 +170,23 @@
       "name": "fresh responsive interview form",
       "status": "passed",
       "observation": "320/390px inputs stayed within viewport at 254/324px widths; 320px visually reviewed; form closed without saving or emailing"
+    },
+    {
+      "name": "synthetic CV replacement upload",
+      "status": "passed after explicit operator approval",
+      "observation": "profile displayed replacement PDF filename; only synthetic CV replacement authorised"
+    },
+    {
+      "name": "replacement owner retrieval",
+      "status": "passed",
+      "observation": "private vault PDF preview rendered clearly labelled QA-only version-two text; no real data; one application retained"
     }
   ],
   "prepared": [
-    "synthetic candidate profile Update control ready",
-    "distinct QA-only replacement PDF generated locally, not uploaded",
-    "closure/suspension source gates inspected; no new hosted outcome claimed"
+    "existing synthetic employer login populated; password blank; candidate signed out"
   ],
   "pending": [
-    "operator confirms permanent replacement of only current synthetic CV; then employer closure/suspension checks",
+    "operator privately signs into synthetic employer; check replacement withheld, closure/history, then suspension",
     "confirmation inbox appearance and role-correct links",
     "document-scope direct request denial under browser restriction remains unverified",
     "hosted document access denials, replacement/withdrawal and repeated-request idempotency",
@@ -193,7 +201,7 @@
   "realCandidateProfileOrDocumentsChanged": false,
   "existingTestingCandidateSession": "signed out to prepare synthetic accounts",
   "accountCreatedByOperator": "candidate and confirmed employer observed authenticated",
-  "syntheticCandidateState": "one fresh pending CV-only application; old interviewed application withdrawn; no synced interview; two private synthetic files retained",
+  "syntheticCandidateState": "one pending application selected the previous CV version; current vault CV is synthetic version two; optional synthetic certificate retained; no new consent to share replacement",
   "emailReceipt": {
     "employer": "operator confirmed receipt; reported action button absent",
     "freshFallbackMessage": "one approved resend; operator reported successful confirmation",
@@ -212,5 +220,6 @@
       1440
     ],
     "overflow": []
-  }
+  },
+  "replacementStorageCleanup": "upload success observed; prior Blob deletion not independently inventoried"
 }

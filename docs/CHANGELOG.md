@@ -1,5 +1,10 @@
 # Change log
 
+## 20 October 2026 — Synthetic CV replacement and owner preview passed
+
+- After explicit approval, replaced only the test candidate CV and verified the new QA-only version in the private owner preview. One existing application remains; no new document-sharing consent, AI request or email was submitted.
+- Employer-side replacement withholding, vacancy closure/history and suspension checks await the private employer sign-in. Prior Blob deletion was not independently inventoried. No product code, schema or configuration change. [Hosted acceptance](HOSTED-EMPLOYER-ACCEPTANCE.md).
+
 ## 20 October 2026 — Remaining safety phase prepared
 
 - Confirmed the active synthetic candidate and prepared a distinct QA-only CV replacement. Upload code removes the old stored file, so action-time confirmation is pending; no replacement has occurred.
