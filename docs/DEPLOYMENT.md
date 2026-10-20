@@ -142,3 +142,10 @@ No application/provider/schema/migration or production change in this pass. Docu
 ## 20 October 2026 — Shared account-email branding
 
 The recipient confirmed the prior reset link arrived; no password changed. New shared body layout now unifies initial/resend candidate and employer confirmation with password reset using the existing embedded laboratory PNG, BenchScout wordmark, navy/teal card/button/footer, escaping, UTF-8 metadata and text alternative. Distinct token roles, expiry and company-review notice remain. No migration, environment/provider or sender-profile change. Lint, TypeScript, 203 tests, production build and diff checks passed; synthetic browser previews passed 320/390px. See Account emails and its scrubbed evidence. Testing release is being published; exact commit/Vercel status follows. New-design live inbox rendering is not established by the earlier receipt.
+
+
+### Shared account-email release and new-design review request
+
+Commit `0653bcb74d06e8a03bb09b699bedbf14c4ecf6c6` was pushed to origin/testing. Vercel reports success for [deployment 4xsY5fvTDEDgZyJdWNY3rpWFQesh](https://vercel.com/sholly/bench-scout/4xsY5fvTDEDgZyJdWNY3rpWFQesh), serving the existing testing alias. No production branch or provider configuration changed. Local lint/typecheck/203 tests/build and synthetic mobile previews passed before release.
+
+After deployment, requested one additional candidate reset email at the approved replacement inbox for visual review. The actual hosted UI returned to login. Generic acknowledgement is not receipt/rendering proof; recipient confirmation of this newest design is pending. The prior reset receipt is already confirmed and is recorded separately. No confirmation email was sent and no password changed by the agent. A subsequent reset request replaces the previous candidate reset token; the newest link is the relevant one. Documentation-only follow-up records the release/request without addresses or token values.

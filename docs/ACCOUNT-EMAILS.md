@@ -27,3 +27,8 @@ Tests compare the actual logo bytes, CID, common header/button layout, complete 
 Browser previews were generated from the real helpers using synthetic example.invalid links. Only the preview replaces CID with an embedded data URL so the browser can display the same PNG; actual email transport keeps its inline attachment. Confirmation and reset were checked at 320px and 390px. Document widths matched the viewports, logos rendered, and buttons remained within bounds (right edge 275px at width 320, 345px at width 390). Temporary viewport overrides were reset and the local preview server stopped. Side-by-side proof: /private/tmp/benchscout-consistent-account-emails.jpg.
 
 This establishes shared layout and browser geometry, not universal email-client/dark-mode rendering. The user's received reset link predates this branding change. A fresh Gmail/iPhone check of the deployed design remains distinct from these previews; successful deployment alone is not inbox evidence. Record any later live test separately without recipient addresses, credentials or tokens. Exact testing commit and Vercel status are recorded in Deployment.
+
+
+## Testing release and live review checkpoint
+
+Vercel deployment for 0653bcb succeeded; exact release is in Deployment. After release, one approved candidate reset request was submitted through the hosted UI for a visual review of the newest design. UI returned to login. Recipient confirmation of that new message's delivery/appearance is pending; no new confirmation message or password change was performed. Use the newest reset link if completing recovery, because each candidate request replaces its preceding reset token.

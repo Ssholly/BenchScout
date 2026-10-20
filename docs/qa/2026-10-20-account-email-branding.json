@@ -38,5 +38,19 @@
     "syntheticLinksOnly": true,
     "newDesignLiveInboxRendering": "not yet verified"
   },
-  "recipientAddressPublished": false
+  "recipientAddressPublished": false,
+  "deployment": {
+    "commit": "0653bcb74d06e8a03bb09b699bedbf14c4ecf6c6",
+    "status": "success",
+    "url": "https://vercel.com/sholly/bench-scout/4xsY5fvTDEDgZyJdWNY3rpWFQesh"
+  },
+  "updatedDesignLiveRequest": {
+    "type": "candidate recovery",
+    "approvedRecipient": true,
+    "submittedAfterDeployment": true,
+    "uiReturnedToLogin": true,
+    "receiptAndRendering": "awaiting recipient confirmation",
+    "passwordChangedByAgent": false,
+    "additionalConfirmationEmailSent": false
+  }
 }

@@ -1,5 +1,9 @@
 # Testing credentials and email acceptance
 
+## 20 October 2026 — Shared design deployed and new review request submitted
+
+Vercel deployment 0653bcb succeeded after 203 tests/build and mobile previews. Requested one additional reset email at the approved existing-account inbox to review the deployed design; hosted UI returned to login. New-message receipt/appearance is awaiting recipient confirmation, distinct from the earlier confirmed receipt. No password changed and no further confirmation message sent. Exact release and request boundaries are in Deployment and Account emails.
+
 ## 20 October 2026 — Reset receipt confirmed; account email design unified
 
 The recipient confirmed receipt of the reset link for the existing replacement account. No password was changed and link/reset completion remains untested. The provided confirmation screenshot labelled Oct 19 shows the historical blue B design. On request, both confirmation and recovery now use the same laboratory logo, BenchScout wordmark, navy/teal layout and inline image; their instructions/expiry remain distinct. Lint/typecheck/203 tests/build and synthetic 320/390px browser previews passed. This receipt predates the new shared design; fresh inbox rendering of that design remains separate evidence. See [Account emails](ACCOUNT-EMAILS.md) and [scrubbed evidence](qa/2026-10-20-account-email-branding.json).
