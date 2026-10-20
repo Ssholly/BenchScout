@@ -1,5 +1,10 @@
 # Change log
 
+## 20 October 2026 — Hosted employer journey started
+
+- Started the operator-authorised synthetic employer/candidate journey on the existing protected testing alias. Candidate-to-employer route denial was observed; separate employer/candidate signups and the administrator form were prepared. Approved role-specific test inbox aliases are omitted from docs.
+- New password entry/account submission and the existing administrator key are handed to the operator under the browser credential rule. No account creation, email delivery, company/vacancy approval or full hosted pass is claimed. Added [the hosted acceptance record](HOSTED-EMPLOYER-ACCEPTANCE.md), fixture boundaries and remaining checkpoints.
+
 ## 20 October 2026 — CV skills extraction and role keyword persistence
 
 - Restored a consent-based CV skills suggestion action for current private CVs, with review before save, bounded AI responses, changed-CV protection and useful unreadable/configuration failure messages. Uploads preserve keywords and no longer falsely claim extraction.
