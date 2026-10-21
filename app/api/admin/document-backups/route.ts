@@ -4,7 +4,8 @@ import { put, get, del, BlobNotFoundError } from "@vercel/blob";
 import { withApi } from "@/lib/api";
 import { ApiError } from "@/lib/security";
 import { privateBlobToken } from "@/lib/documents";
-import { backupEnabled, backupConfiguration, backupDocument, purgeDocumentBackup, readPrivateBytes, restoreDocumentBytes } from "@/lib/document-backup";
+import { backupEnabled, backupConfiguration, backupDocument, purgeDocumentBackup, readPrivateBytes, restoreDocumentBytes, sendBackupAlert } from "@/lib/document-backup";
+import { backfillSyntheticDocuments } from "@/lib/synthetic-document-backfill";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -15,10 +16,16 @@ export const POST = withApi("admin", async request => {
     try { backupConfiguration(); configured = true; } catch { /* Presence check only. */ }
     return NextResponse.json({ enabled: backupEnabled(), configured, alertConfigured: Boolean(process.env.DOCUMENT_BACKUP_ALERT_EMAIL), syntheticToolEnabled: process.env.DOCUMENT_BACKUP_TEST_MODE === "true" && process.env.VERCEL_ENV !== "production" }, { headers: { "Cache-Control": "no-store" } });
   }
-  if (body.action !== "synthetic-restore" || body.confirm !== "DELETE QA ONLY") throw new ApiError(400, "Choose and confirm the synthetic recovery check.");
+  if (!["synthetic-restore", "synthetic-backfill", "test-alert"].includes(body.action)) throw new ApiError(400, "Choose a supported backup check.");
   if (process.env.DOCUMENT_BACKUP_TEST_MODE !== "true" || process.env.VERCEL_ENV === "production") throw new ApiError(403, "Synthetic recovery is disabled here.");
+  if (body.action === "test-alert") {
+    await sendBackupAlert("synthetic-test", true);
+    return NextResponse.json({ alertSubmitted: true, inboxReceipt: "Await recipient confirmation", documentDataIncluded: false }, { headers: { "Cache-Control": "no-store" } });
+  }
   if (!backupEnabled()) throw new ApiError(503, "Enable testing document backups before this check.");
   backupConfiguration();
+  if (body.action === "synthetic-backfill") return NextResponse.json(await backfillSyntheticDocuments(), { headers: { "Cache-Control": "no-store" } });
+  if (body.confirm !== "DELETE QA ONLY") throw new ApiError(400, "Confirm the synthetic recovery check.");
   try {
   const token = privateBlobToken();
   const id = randomUUID();

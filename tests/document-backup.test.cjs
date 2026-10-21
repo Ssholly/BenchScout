@@ -3,7 +3,7 @@ const Module = require('node:module');
 const { test, beforeEach, after } = require('node:test');
 const assert = require('node:assert/strict');
 const { randomBytes } = require('node:crypto');
-const map = new Map(); let writes=0, failWrites=0, alerts=0, deleted=[];
+const map = new Map(); let writes=0, failWrites=0, alerts=0, deleted=[], lastAlert;
 const load=Module._load;
 Module._load=function(name,parent,main) {
  if(name==='@vercel/blob') return {
@@ -19,7 +19,7 @@ const { storeDocument, removeDocument }=require('../lib/documents.ts');
 const { POST }=require('../app/api/admin/document-backups/route.ts');
 const names=['DOCUMENT_BACKUP_ENABLED','BLOB_BACKUP_READ_WRITE_TOKEN','DOCUMENT_BACKUP_ENCRYPTION_KEY','BLOB_PRIVATE_READ_WRITE_TOKEN','DOCUMENT_BACKUP_ALERT_EMAIL','DOCUMENT_BACKUP_TEST_MODE','VERCEL_ENV','ADMIN_SECRET'];
 const previous=Object.fromEntries(names.map(k=>[k,process.env[k]]));
-beforeEach(()=>{map.clear();writes=0;failWrites=0;alerts=0;deleted=[];Object.assign(process.env,{DOCUMENT_BACKUP_ENABLED:'true',BLOB_BACKUP_READ_WRITE_TOKEN:'backup',DOCUMENT_BACKUP_ENCRYPTION_KEY:'ab'.repeat(32),BLOB_PRIVATE_READ_WRITE_TOKEN:'live',DOCUMENT_BACKUP_ALERT_EMAIL:'operator@example.com',DOCUMENT_BACKUP_TEST_MODE:'true',VERCEL_ENV:'preview',ADMIN_SECRET:'s'.repeat(40)});prisma.rateLimit.upsert=async()=>({count:1});mailer.sendEmail=async()=>{alerts++;};});
+beforeEach(()=>{map.clear();writes=0;failWrites=0;alerts=0;deleted=[];lastAlert=null;Object.assign(process.env,{DOCUMENT_BACKUP_ENABLED:'true',BLOB_BACKUP_READ_WRITE_TOKEN:'backup',DOCUMENT_BACKUP_ENCRYPTION_KEY:'ab'.repeat(32),BLOB_PRIVATE_READ_WRITE_TOKEN:'live',DOCUMENT_BACKUP_ALERT_EMAIL:'operator@example.com',DOCUMENT_BACKUP_TEST_MODE:'true',VERCEL_ENV:'preview',ADMIN_SECRET:'s'.repeat(40)});prisma.rateLimit.upsert=async()=>({count:1});mailer.sendEmail=async(...args)=>{alerts++;lastAlert=args;};});
 after(()=>{for(const k of names){if(previous[k]===undefined)delete process.env[k];else process.env[k]=previous[k];}});
 const source='https://live.private.blob.vercel-storage.com/documents/qa/resume/v1.pdf';
 test('binary backup authenticates bytes, identity and key; ciphertext is randomized',()=>{
@@ -66,4 +66,29 @@ test('synthetic loss-and-restore removes source, decrypts exact bytes and reads 
 test('confirmation is mandatory for synthetic loss test; status contains no credentials',async()=>{
  assert.equal((await POST(request({action:'synthetic-restore'}))).status,400);assert.equal(writes,0);
  const response=await POST(request({action:'status'}));const text=await response.text();assert.equal(text.includes('ab'.repeat(32)),false);assert.match(text,/"configured":true/);
+});
+test('older QA backfill copies only current fixture vault fields and decrypt-verifies both files',async()=>{
+ const certificate=source.replace('v1.pdf','certificate.pdf');
+ map.set(source,Buffer.from('%PDF-qa-cv\0binary'));map.set(certificate,Buffer.from('%PDF-qa-certificate'));
+ prisma.user.findMany=async args=>{assert.equal(args.where.id,'2b0901c4-bbcc-4e55-b61d-8fe598e1f465');assert.equal(args.where.name,'QA ONLY - Synthetic Candidate 20261020');return [{id:'qa',resumeUrl:source,certificateUrl:certificate}];};
+ prisma.user.findUnique=async args=>({[Object.keys(args.select)[0]]:Object.keys(args.select)[0]==='resumeUrl'?source:certificate});
+ const response=await POST(request({action:'synthetic-backfill',userId:'a-real-account',url:'https://attacker.invalid'}));
+ assert.equal(response.status,200);const data=await response.json();assert.equal(data.passed,true);assert.equal(data.eligible,2);assert.equal(data.verified,2);assert.equal(data.databaseChanged,false);assert.equal(data.applicationGrantsChanged,false);assert.equal(map.size,4);assert.equal(JSON.stringify(data).includes('blob.vercel-storage.com'),false);
+});
+test('backfill purges a file reference replaced concurrently instead of counting it protected',async()=>{
+ map.set(source,Buffer.from('QA original'));
+ prisma.user.findMany=async()=>[{id:'qa',resumeUrl:source}];prisma.user.findUnique=async()=>({resumeUrl:source+'new'});
+ const response=await POST(request({action:'synthetic-backfill'}));const data=await response.json();assert.equal(data.stalePurged,1);assert.equal(data.verified,0);assert.equal(data.passed,false);assert.equal(map.size,1);
+});
+test('ambiguous/missing QA fixture and disabled/production backfill never copy files',async()=>{
+ prisma.user.findMany=async()=>[];assert.equal((await POST(request({action:'synthetic-backfill'}))).status,409);
+ process.env.DOCUMENT_BACKUP_ENABLED='false';assert.equal((await POST(request({action:'synthetic-backfill'}))).status,503);
+ process.env.VERCEL_ENV='production';for(const action of ['synthetic-backfill','test-alert'])assert.equal((await POST(request({action}))).status,403);assert.equal(writes,0);assert.equal(alerts,0);
+});
+test('alert test uses the configured recipient and shared mail path without inducing a failure',async()=>{
+ const response=await POST(request({action:'test-alert',to:'attacker@example.com'}));const data=await response.json();assert.equal(response.status,200);assert.equal(data.alertSubmitted,true);assert.match(data.inboxReceipt,/confirmation/);assert.equal(alerts,1);assert.equal(lastAlert[0],'operator@example.com');assert.match(lastAlert[1],/^QA ONLY/);assert.match(lastAlert[3],/No backup failure has been induced/);assert.equal(writes,0);
+});
+test('missing recipient or rejected mail transport cannot return alert submission success',async()=>{
+ delete process.env.DOCUMENT_BACKUP_ALERT_EMAIL;assert.equal((await POST(request({action:'test-alert'}))).status,503);assert.equal(alerts,0);
+ process.env.DOCUMENT_BACKUP_ALERT_EMAIL='operator@example.com';mailer.sendEmail=async()=>{throw new Error('private provider details');};const response=await POST(request({action:'test-alert'}));assert.equal(response.status,503);assert.equal((await response.text()).includes('private provider details'),false);
 });

@@ -67,13 +67,20 @@ async function retry<T>(action: () => Promise<T>): Promise<T> {
 async function failure(operation: string): Promise<never> {
   // Deliberately omit provider errors: they may contain private URLs/tokens.
   console.error(JSON.stringify({ event: "document_backup_failure", operation }));
-  const recipient = process.env.DOCUMENT_BACKUP_ALERT_EMAIL;
-  if (recipient) {
-    const message = `BenchScout document backup operation failed: ${operation}. Review protected deployment logs. No document data is included. The operation did not establish successful backup or recovery.`;
-    await sendEmail(recipient, "BenchScout document backup needs attention", `<p>${message}</p>`, message)
-      .catch(() => console.error(JSON.stringify({ event: "document_backup_alert_failed" })));
-  }
+  await sendBackupAlert(operation).catch(() => console.error(JSON.stringify({ event: "document_backup_alert_failed" })));
   throw new ApiError(503, "Document protection is temporarily unavailable. Please try again.");
+}
+export async function sendBackupAlert(operation: string, test = false) {
+  const recipient = process.env.DOCUMENT_BACKUP_ALERT_EMAIL;
+  if (!recipient) {
+    if (test) throw new ApiError(503, "Configure an approved backup alert inbox first.");
+    return;
+  }
+  const message = test
+    ? "QA ONLY - BenchScout backup alert delivery test. No backup failure has been induced. This checks the same notification transport used for operational backup failures. No document or account data is included. No action is required."
+    : `BenchScout document backup operation failed: ${operation}. Review protected deployment logs. No document data is included. The operation did not establish successful backup or recovery.`;
+  try { await sendEmail(recipient, test ? "QA ONLY - BenchScout backup alert delivery test" : "BenchScout document backup needs attention", `<p>${message}</p>`, message); }
+  catch { throw new ApiError(503, "Backup alert could not be submitted. No inbox delivery is established."); }
 }
 export async function backupDocument(source: string, bytes: Buffer) {
   if (!backupEnabled()) return;

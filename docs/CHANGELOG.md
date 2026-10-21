@@ -1,5 +1,10 @@
 # Change log
 
+## 21 October 2026 — Scoped QA backfill and alert delivery controls
+
+- Added operator actions to backfill/decrypt-verify only the known synthetic candidate’s current vault files and send a labelled test through the shared backup-alert mail path. Arbitrary accounts/URLs/recipients are not accepted; database records and sharing grants stay unchanged.
+- Improved the compact responsive operator screen and collapsed the repeat destructive drill. Lint, TypeScript, 235 tests and production build passed; hosted execution and inbox confirmation remain pending. [Document recovery](DOCUMENT-RECOVERY.md). No schema, environment or production change.
+
 ## 21 October 2026 — Hosted encrypted loss-and-restore passed
 
 - Operator ran the provider-backed QA test; the hosted result independently confirmed source loss, decryption and exact restored private read-back (85 bytes). Database records and application grants were unchanged; cleanup calls were accepted.
