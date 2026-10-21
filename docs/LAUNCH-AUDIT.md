@@ -1,5 +1,10 @@
 # Launch audit — 19 October 2026
 
+## 21 October 2026 — Normal upload/access checks and current release handover
+
+A normal candidate upload into an empty synthetic vault slot persisted, rendered privately and created the expected encrypted archive. An unsigned request to that observed archive returned HTTP 403. Application sharing stayed CV-only. Fresh Production metadata has no live-scoped private-upload/admin/salary/backup bindings and no linked Shared variables. The configured normal local database compatibility check passed, but effective Production mapping/history still needs verification. [Current main-release readiness](MAIN-RELEASE-READINESS.md) consolidates completed evidence and remaining blockers; older tables below are dated history. No Production change or merge occurred.
+
+
 ## 21 October 2026 — Testing backfill and alert acceptance passed
 
 The two older current QA files completed encrypted backfill and decryption verification, with zero failures/skips/stale purges. The approved operator inbox also received the shared-path labelled alert test. Database rows and application grants were unchanged. These close the requested synthetic backfill/mail acceptance checks under LA-13/LA-14; real-account/Production backfill, normal hosted upload acceptance, anonymous backup denial and wider recovery/promotion gates remain separate. [Recovery evidence](DOCUMENT-RECOVERY.md).

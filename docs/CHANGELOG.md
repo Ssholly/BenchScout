@@ -1,5 +1,10 @@
 # Change log
 
+## 21 October 2026 — Normal automatic upload and release readiness review
+
+- A new 659-byte synthetic vault upload passed the enabled automatic-backup path, persisted and rendered privately; the backup directory showed its 723-byte encrypted object. Unsigned archive access returned HTTP 403. Existing CV/certificate and CV-only application sharing stayed unchanged.
+- Added [current main-release readiness](MAIN-RELEASE-READINESS.md), linked from README, with fresh missing Production-binding evidence, local schema compatibility limits and ordered migration/backfill/cutover gates. Updated recovery/audit evidence. No application code, schema, secret or Production change.
+
 ## 21 October 2026 — Older QA-file backfill accepted
 
 - Hosted backfill passed: 2 eligible, 2 verified, 0 stale purges, failures or skips. Current synthetic files received decrypt-verified encrypted backups; records and application permissions were unchanged.

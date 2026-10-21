@@ -69,6 +69,7 @@ Implemented improvements include an application-readiness checklist, source and 
 - [Professional summaries](docs/PROFESSIONAL-SUMMARIES.md): candidate consent, preview, allowlisted fields, employer access, API contracts and limitations.
 
 - [Launch audit](docs/LAUNCH-AUDIT.md): dated findings, local fixes, regression evidence, remaining pilot blockers and release status.
+- [Main release readiness](docs/MAIN-RELEASE-READINESS.md): current testing evidence, missing Production bindings and ordered migration/cutover gates.
 
 - [Candidate readiness and brand review](docs/CANDIDATE-AND-BRAND-REVIEW.md): profile separation, pilot gaps, focused tests and preliminary CAC/domain checks.
 

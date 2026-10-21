@@ -27,8 +27,6 @@
   "environmentChanged": true,
   "sameProviderLimitation": "shares Vercel account/provider with active storage; not independent disaster recovery",
   "pending": [
-    "normal hosted candidate upload with enabled automatic hook",
-    "anonymous HTTP denial for a backup object",
     "independent recovery-key custody check",
     "independent account/provider disaster recovery",
     "production enablement through separate review",
@@ -117,5 +115,28 @@
     },
     "requestedTestingChecks": "both passed: fixed-QA backfill and recipient-confirmed alert"
   },
-  "retainedArchives": "two current QA-file encrypted archives intentionally retained; historical probe cleanup remains separate"
+  "retainedArchives": "three current QA vault files/archives after the normal degree-slot upload; two-file backfill and earlier probe cleanup remain dated evidence",
+  "normalCandidateUpload": {
+    "passed": true,
+    "kind": "degree",
+    "emptyBeforeUpload": true,
+    "fixture": "QA-ONLY-automatic-backup-upload.pdf",
+    "bytes": 659,
+    "sha256": "1bd201f4d02fbd95819e5adc23d6ae956bb2b26dda419070168cfae7dcc25c5f",
+    "persistedAfterReload": true,
+    "guardedOwnerPreview": "known synthetic PDF rendered",
+    "newEncryptedObjectBytes": 723,
+    "encryptedObjectsObserved": 3,
+    "applicationCount": 1,
+    "applicationSelectionStill": "CV only",
+    "existingFileReplaced": false,
+    "aiRequest": false
+  },
+  "anonymousBackupAccess": {
+    "passed": true,
+    "method": "unsigned GET; curl default configuration disabled; no cookies or authentication",
+    "httpStatus": 403,
+    "responseBytes": 10,
+    "privateUrlRecorded": false
+  }
 }

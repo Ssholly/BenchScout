@@ -154,3 +154,8 @@ The hosted labelled backup-alert test was submitted successfully, and its approv
 ## 21 October 2026 — Testing older-file and alert acceptance complete
 
 Hosted fixed-candidate backfill returned 2 eligible/2 verified with zero failures/skips/stale purges, independently observed after private operator authentication. Current encrypted copies were decrypt-verified; records/permissions were unchanged. Combined with the recipient-confirmed alert message, both requested testing checks now pass. This covers only the known synthetic candidate; no real-account/Production backfill or release has occurred. See [document recovery](DOCUMENT-RECOVERY.md).
+
+
+## 21 October 2026 — Current Production wiring review
+
+Normal hosted synthetic upload/private preview and raw anonymous encrypted-archive HTTP 403 now pass. A fresh Vercel metadata review showed the private-upload, administrator, salary-owner and backup variables without Production bindings; Shared reports none linked. No values were revealed/saved. Read-only compatibility of the normal configured local database passed, without proving effective Production mapping or migration checksums. [Main release readiness](MAIN-RELEASE-READINESS.md) records the concrete Production setup and migration/backfill/rollback gates. No main/Production update or real-file transfer occurred.
