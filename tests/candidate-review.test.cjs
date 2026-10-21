@@ -4,7 +4,7 @@ const assert=require('node:assert/strict');
 const Module=require('node:module');
 const load=Module._load;
 let blobReads=0;
-Module._load=function(name,parent,main){if(name==='@vercel/blob')return {
+Module._load=function(name,parent,main){if(name==='@/lib/document-cleanup')return {enqueueDocumentCleanup:async()=>null,tryDocumentCleanup:async()=>false};if(name==='@vercel/blob')return {
  get:async()=>{blobReads++;return {statusCode:200,blob:{contentType:'application/pdf'},stream:new ReadableStream({start(controller){controller.enqueue(new TextEncoder().encode('%PDF-synthetic'));controller.close();}})};},
  put:async()=>({url:'https://store.private.blob.vercel-storage.com/new-evidence.pdf'}),del:async()=>{},
 };return load.call(this,name,parent,main);};
@@ -86,6 +86,7 @@ test('current private review evidence streams only to an authenticated administr
 });
 test('credential upload and deletion invalidate the review and increment revision even for an inactive credential kind',async()=>{
  candidateSession();const upload=require('../app/api/upload/route.ts');prisma.user.update=async args=>applyUserWrite(args);
+ prisma.documentCleanup.count=async()=>0;
  for(const kind of ['license','provisional']){
   user.isLicenseVerified=true;user.licenseReviewedAt=new Date();user.licenseReviewRevision=user.credentialRevision;
   const before=user.credentialRevision;const form=new FormData();form.set('documentType',kind);form.set('file',new File(['%PDF-synthetic'],'evidence.pdf',{type:'application/pdf'}));

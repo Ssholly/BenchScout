@@ -269,3 +269,18 @@ model RateLimit {
   expiresAt DateTime
   @@index([expiresAt])
 }
+
+// Durable deletion intent. No relation: cleanup must survive later account removal.
+model DocumentCleanup {
+  id String @id
+  userId String
+  kind String
+  sourceUrl String
+  attempts Int @default(0)
+  nextAttemptAt DateTime @default(now())
+  leaseUntil DateTime?
+  lastErrorCode String?
+  createdAt DateTime @default(now())
+  @@index([nextAttemptAt, leaseUntil])
+  @@index([userId, kind])
+}

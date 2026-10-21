@@ -1,6 +1,8 @@
 import { randomUUID } from "node:crypto";
 import { put, del } from "@vercel/blob";
 import { ApiError } from "@/lib/security";
+import { prisma } from "@/lib/prisma";
+import { enqueueDocumentCleanup } from "@/lib/document-cleanup-queue";
 import { backupDocument, purgeDocumentBackup } from "@/lib/document-backup";
 export const documentFields = { resume: "resumeUrl", license: "licenseUrl", provisional: "provisionalUrl", degree: "degreeUrl", result: "statementOfResultUrl", placement: "placementLetterUrl", certificate: "certificateUrl", avatar: "avatarUrl" } as const;
 export type DocumentKind = keyof typeof documentFields;
@@ -29,8 +31,10 @@ export async function storeDocument(file: FormDataEntryValue | null, kind: Docum
   const blob = await put(`documents/${userId}/${kind}/${randomUUID()}.${validated.extension}`, validated.buffer, { access: "private", contentType: validated.mime, token: privateBlobToken() });
   try { await backupDocument(blob.url, validated.buffer); }
   catch (error) {
-    await purgeDocumentBackup(blob.url).catch(() => console.error("Uncommitted backup cleanup needs operator attention"));
-    await del(blob.url, { token: privateBlobToken() }).catch(() => console.error("Uncommitted document cleanup failed"));
+    let cleanupFailed = false;
+    await purgeDocumentBackup(blob.url).catch(() => { cleanupFailed = true; });
+    await del(blob.url, { token: privateBlobToken() }).catch(() => { cleanupFailed = true; });
+    if (cleanupFailed) await enqueueDocumentCleanup(prisma, blob.url, userId, kind).catch(() => console.error("Uncommitted file reconciliation needs operator attention"));
     throw error;
   }
   return { ...blob, buffer: validated.buffer };

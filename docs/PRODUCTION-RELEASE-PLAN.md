@@ -1,5 +1,7 @@
 # Public-app release and rollback plan — 21 October 2026
 
+Current update: [durable cleanup](DOCUMENT-CLEANUP.md) adds an eighth migration, applied only to testing. The earlier seven-migration/no-op expectation below is superseded for the new candidate: Production needs the reviewed additive cleanup table before that code is released. Physical storage cleanup is now durable/retriable after transactional reference removal, with external-provider/hosted acceptance limits recorded separately. Public containment remains active; this does not approve the hardened cutover.
+
 Status: **prepared; HOLD for release**. This runbook does not authorise a main merge, live deployment, domain assignment, credential change, database restore or real-document copying. Engineering prepares and records evidence; the owner approves the exact cutover and recovery actions. No new service, paid plan, migration or scheduled backup is introduced by this document.
 
 ## Release identity and impact

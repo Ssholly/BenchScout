@@ -1,0 +1,46 @@
+{
+  "date": "2026-10-21",
+  "implementation": "durable transactional cleanup and guarded retry worker",
+  "testingMigration": {
+    "project": "BenchScout Testing",
+    "projectId": "long-darkness-72914035",
+    "branchId": "br-old-block-b7djhdd0",
+    "database": "benchscout_testing",
+    "migration": "20261021000000_document_cleanup",
+    "sha256": "3d5a68fb3ea8ed37d75b3379297221c7ecc6e9fcf01d982e0aa688a1cf7fc194",
+    "applied": true,
+    "historyRecordedInSameTransaction": true,
+    "columns": 9,
+    "indexesIncludingPrimary": 3,
+    "completedMigrations": 8,
+    "pendingDeletionRows": 0,
+    "sqlRollbackAndLeaseInvariantsPassed": true,
+    "sqlFixturesRetained": 0
+  },
+  "validation": {
+    "lint": true,
+    "typecheck": true,
+    "testsPassed": 274,
+    "uploadQueueBoundaryTests": 22,
+    "productionBuild": true,
+    "viewportWidths": [
+      320,
+      390
+    ],
+    "horizontalOverflow": false
+  },
+  "execution": {
+    "productionMigrationApplied": false,
+    "publicAppReopened": false,
+    "realFilesDeleted": 0,
+    "newAlertSent": false,
+    "cleanupCronInvocationObserved": false,
+    "testingDeploymentVerified": false
+  },
+  "remaining": [
+    "hosted synthetic normal deletion/replacement acceptance on new worker",
+    "Production migration and explicit hardened release approval",
+    "actual scheduler/authentication and failure alert acceptance",
+    "historical writer isolation/retirement and broader release gates"
+  ]
+}

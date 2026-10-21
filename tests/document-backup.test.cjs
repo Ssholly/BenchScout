@@ -3,14 +3,14 @@ const Module = require('node:module');
 const { test, beforeEach, after } = require('node:test');
 const assert = require('node:assert/strict');
 const { randomBytes } = require('node:crypto');
-const map = new Map(); let writes=0, failWrites=0, alerts=0, deleted=[], lastAlert;
+const map = new Map(); let writes=0, failWrites=0, alerts=0, deleted=[], lastAlert, failSourceDelete=false;
 const load=Module._load;
 Module._load=function(name,parent,main) {
  if(name==='@vercel/blob') return {
   BlobNotFoundError:class BlobNotFoundError extends Error {},
   put:async(path,body,options)=>{writes++;if(failWrites-->0)throw new Error('provider failure');assert.equal(options.access,'private');const url=`https://${options.token}.private.blob.vercel-storage.com/${path}`;map.set(url,Buffer.from(body));return {url};},
   get:async(path,options)=>{assert.equal(options.access,'private');assert.equal(options.useCache,false);const url=path.startsWith('https:')?path:`https://${options.token}.private.blob.vercel-storage.com/${path}`;const bytes=map.get(url);if(!bytes)return null;return {statusCode:200,blob:{size:bytes.length},stream:new ReadableStream({start(c){c.enqueue(bytes);c.close();}})};},
-  del:async(path,options)=>{const url=path.startsWith('https:')?path:`https://${options.token}.private.blob.vercel-storage.com/${path}`;deleted.push(url);map.delete(url);}
+  del:async(path,options)=>{const url=path.startsWith('https:')?path:`https://${options.token}.private.blob.vercel-storage.com/${path}`;deleted.push(url);if(failSourceDelete&&url.startsWith('https://live.'))throw new Error('Synthetic delete failure');map.delete(url);}
  };
  return load.call(this,name,parent,main);
 };
@@ -19,7 +19,7 @@ const { storeDocument, removeDocument }=require('../lib/documents.ts');
 const { POST }=require('../app/api/admin/document-backups/route.ts');
 const names=['DOCUMENT_BACKUP_ENABLED','BLOB_BACKUP_READ_WRITE_TOKEN','DOCUMENT_BACKUP_ENCRYPTION_KEY','BLOB_PRIVATE_READ_WRITE_TOKEN','DOCUMENT_BACKUP_ALERT_EMAIL','DOCUMENT_BACKUP_TEST_MODE','VERCEL_ENV','ADMIN_SECRET','DATABASE_URL','VERCEL_GIT_COMMIT_SHA'];
 const previous=Object.fromEntries(names.map(k=>[k,process.env[k]]));
-beforeEach(()=>{map.clear();writes=0;failWrites=0;alerts=0;deleted=[];lastAlert=null;Object.assign(process.env,{DOCUMENT_BACKUP_ENABLED:'true',BLOB_BACKUP_READ_WRITE_TOKEN:'backup',DOCUMENT_BACKUP_ENCRYPTION_KEY:'ab'.repeat(32),BLOB_PRIVATE_READ_WRITE_TOKEN:'live',DOCUMENT_BACKUP_ALERT_EMAIL:'operator@example.com',DOCUMENT_BACKUP_TEST_MODE:'true',VERCEL_ENV:'preview',ADMIN_SECRET:'s'.repeat(40)});prisma.rateLimit.upsert=async()=>({count:1});mailer.sendEmail=async(...args)=>{alerts++;lastAlert=args;};});
+beforeEach(()=>{map.clear();writes=0;failWrites=0;alerts=0;deleted=[];lastAlert=null;failSourceDelete=false;Object.assign(process.env,{DOCUMENT_BACKUP_ENABLED:'true',BLOB_BACKUP_READ_WRITE_TOKEN:'backup',DOCUMENT_BACKUP_ENCRYPTION_KEY:'ab'.repeat(32),BLOB_PRIVATE_READ_WRITE_TOKEN:'live',DOCUMENT_BACKUP_ALERT_EMAIL:'operator@example.com',DOCUMENT_BACKUP_TEST_MODE:'true',VERCEL_ENV:'preview',ADMIN_SECRET:'s'.repeat(40)});prisma.rateLimit.upsert=async()=>({count:1});mailer.sendEmail=async(...args)=>{alerts++;lastAlert=args;};});
 after(()=>{for(const k of names){if(previous[k]===undefined)delete process.env[k];else process.env[k]=previous[k];}});
 const source='https://live.private.blob.vercel-storage.com/documents/qa/resume/v1.pdf';
 test('binary backup authenticates bytes, identity and key; ciphertext is randomized',()=>{
@@ -120,4 +120,11 @@ test('Production alert requires confirmation and uses only configured recipient'
  process.env.VERCEL_ENV='production';process.env.DOCUMENT_BACKUP_TEST_MODE='false';
  assert.equal((await POST(request({action:'runtime-alert'}))).status,400);assert.equal(alerts,0);
  const response=await POST(request({action:'runtime-alert',confirm:'SEND RUNTIME ALERT',to:'attacker@example.com'}));assert.equal(response.status,200);assert.equal(alerts,1);assert.equal(lastAlert[0],'operator@example.com');assert.equal(writes,0);assert.equal((await response.json()).alertSubmitted,true);
+});
+
+test('failed cleanup after an unbacked upload persists a deletion intent without committing user metadata',async()=>{
+ delete process.env.DOCUMENT_BACKUP_ENCRYPTION_KEY;failSourceDelete=true;let queued;
+ prisma.documentCleanup.upsert=async args=>{queued=args.create;return queued;};
+ await assert.rejects(()=>storeDocument(new File(['%PDF-QA'],'qa.pdf',{type:'application/pdf'}),'resume','qa'),e=>e.status===503);
+ assert.equal(queued.userId,'qa');assert.equal(queued.kind,'resume');assert.match(queued.sourceUrl,/^https:\/\/live\.private\.blob/);assert.equal(map.has(queued.sourceUrl),true);
 });

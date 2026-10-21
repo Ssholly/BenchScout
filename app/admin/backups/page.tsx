@@ -10,13 +10,15 @@ export default function BackupOperations() {
   const [targetFingerprint, setTargetFingerprint] = useState("");
   const [backfillPlan, setBackfillPlan] = useState<{ token: string; files: number } | null>(null);
   const [copyApproved, setCopyApproved] = useState(false);
+  const [cleanupApproved, setCleanupApproved] = useState(false);
   async function run(action: string) {
     setBusy(true); setResult("");
     if (action !== "production-backfill-apply") setBackfillPlan(null);
     try {
       const confirmations: Record<string, string> = { "synthetic-restore": "DELETE QA ONLY", "runtime-storage-check": "DELETE RUNTIME QA ONLY", "runtime-alert": "SEND RUNTIME ALERT", "production-backfill-apply": "COPY CURRENT PRIVATE FILES" };
       if (action === "production-backfill-apply" && (!backfillPlan || !copyApproved)) throw new Error("Review the preview first");
-      const response = await fetch("/api/admin/document-backups", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ adminSecret: secret, action, ...(confirmations[action] ? { confirm: confirmations[action] } : {}), ...(action.startsWith("production-backfill-") ? { expectedTargetFingerprint: targetFingerprint, ...(action === "production-backfill-apply" ? { planToken: backfillPlan?.token } : {}) } : {}) }) });
+      if (action === "cleanup-process" && !cleanupApproved) throw new Error("Confirm pending file deletion first");
+      const response = await fetch(action.startsWith("cleanup-") ? "/api/admin/document-cleanup" : "/api/admin/document-backups", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ adminSecret: secret, action: action.startsWith("cleanup-") ? action.slice(8) : action, ...(action === "cleanup-process" ? { confirm: "PROCESS PENDING DELETIONS" } : {}), ...(confirmations[action] ? { confirm: confirmations[action] } : {}), ...(action.startsWith("production-backfill-") ? { expectedTargetFingerprint: targetFingerprint, ...(action === "production-backfill-apply" ? { planToken: backfillPlan?.token } : {}) } : {}) }) });
       const data = await response.json();
       if (action === "production-backfill-preview" && response.ok && data.canApply && typeof data.planToken === "string") setBackfillPlan({ token: data.planToken, files: data.uniqueFiles });
       // Keep the signed approval plan in memory; do not display it in copied results.
@@ -24,7 +26,7 @@ export default function BackupOperations() {
       delete display.planToken;
       setResult(JSON.stringify(display, null, 2));
     } catch { setResult("Request could not complete. No recovery result is established."); }
-    finally { setSecret(""); setBusy(false); setCopyApproved(false); if (action === "production-backfill-apply") setBackfillPlan(null); }
+    finally { setSecret(""); setBusy(false); setCopyApproved(false); setCleanupApproved(false); if (action === "production-backfill-apply") setBackfillPlan(null); }
   }
   return <main className={styles.page}>
     <h1>Document backup operations</h1>
@@ -53,6 +55,13 @@ export default function BackupOperations() {
       <label className={styles.approval}><input type="checkbox" checked={copyApproved} onChange={event => setCopyApproved(event.target.checked)} />I approve this reviewed current-file copy and cleanup of archive copies whose source is no longer current.</label>
       <button disabled={busy || !secret || !copyApproved} onClick={() => run("production-backfill-apply")}>Back up reviewed Production files</button>
     </>}
+    </details>
+    <details>
+    <summary>Pending document deletion</summary>
+    <p>Check durable cleanup counts without reading files. Processing retries up to five server-recorded deletion requests. It permanently removes detached files and their encrypted copies after checking that no current vault still references them. Existing active documents and sharing choices are not changed.</p>
+    <button disabled={busy || !secret} onClick={() => run("cleanup-status")}>Check pending deletion counts</button>
+    <label className={styles.approval}><input type="checkbox" checked={cleanupApproved} onChange={event => setCleanupApproved(event.target.checked)} />I approve retrying permanent deletion of the queued, detached files.</label>
+    <button disabled={busy || !secret || !cleanupApproved} onClick={() => run("cleanup-process")}>Retry pending file deletion</button>
     </details>
     <h2>Older synthetic files</h2>
     <p>Back up and decrypt-verify the current private vault files belonging only to QA ONLY - Synthetic Candidate 20261020. Replaced or deleted references are excluded. Files, database records and application consent stay unchanged. Real accounts are outside this check.</p>

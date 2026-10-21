@@ -113,6 +113,8 @@ export default function SettingsPage() {
 	const [isSaving, setIsSaving] = useState(false);
 	const [uploadsAvailable, setUploadsAvailable] = useState<boolean | null>(null);
 	const [isUploading, setIsUploading] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
+    const deletingDocument = useRef(false);
 	const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
 	const [toast, setToast] = useState<{
 		message: string;
@@ -264,6 +266,7 @@ export default function SettingsPage() {
     };
 
 	const triggerUpload = (id: string) => {
+        if (deletingDocument.current || isUploading) return;
 		setActiveUploadId(id);
 		fileInputRef.current?.click();
 	};
@@ -271,7 +274,7 @@ export default function SettingsPage() {
 	const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
 		const file = e.target.files?.[0];
         const uploadIdentity = userData.email;
-		if (!file || !activeUploadId) return;
+		if (!file || !activeUploadId || deletingDocument.current) return;
 
 		if (file.size > 4 * 1024 * 1024) {
 			showToast("File is too large. Maximum file size is 4 MB.", "error");
@@ -381,45 +384,29 @@ export default function SettingsPage() {
 	};
 
 	const handleDeleteDoc = async (id: string) => {
-		const docToDelete = documents.find((d) => d.id === id);
-		if (!docToDelete || !docToDelete.url || !userData.email) return;
-        if (id === "cv") setResumeGeneration(value => value + 1);
-
-		const updatedDocs = documents.map((doc) =>
-			doc.id === id ? { ...doc, size: "-", uploadedAt: null, url: null } : doc,
-		);
-		setDocuments(updatedDocs);
-		localStorage.setItem(
-			`labpro_vault_${userData.email}`,
-			JSON.stringify(updatedDocs),
-		);
-		showToast("Document unlinked from profile.");
-
-		const docTypeMap: Record<string, string> = {
-			cv: "resume",
-            provisional:"provisional",result:"result",placement:"placement",certificate:"certificate",
-			license: "license",
-			degree: "degree",
-		};
-
-		try {
-			const res = await fetch("/api/upload", {
-				method: "DELETE",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({
-					email: userData.email,
-					documentType: docTypeMap[id],
-					fileUrl: docToDelete.url,
-				}),
-			});
-			const data = await res.json();
-			if (!data.success) {
-				console.error("Failed to delete from server:", data.error);
-			}
-		} catch (error) {
-			console.error("Delete request error:", error);
-		}
-	};
+        if (deletingDocument.current || isUploading) return;
+        const docToDelete = documents.find(doc => doc.id === id);
+        if (!docToDelete?.url || !userData.email) return;
+        const identity = userData.email;
+        const activeIdentity = localStorage.getItem("labpro_active_user");
+        deletingDocument.current = true; setIsDeleting(true);
+        const docTypeMap: Record<string, string> = { cv: "resume", provisional: "provisional", result: "result", placement: "placement", certificate: "certificate", license: "license", degree: "degree" };
+        try {
+            const response = await fetch("/api/upload", { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email: identity, documentType: docTypeMap[id] }) });
+            const data = await response.json();
+            if (!response.ok || !data.success) throw new Error(data.error || "Removal could not be confirmed. Refresh your vault and try again.");
+            if (localStorage.getItem("labpro_active_user") !== activeIdentity) return;
+            setDocuments(previous => {
+                const updated = previous.map(doc => doc.id === id ? { ...doc, size: "-", uploadedAt: null, url: null } : doc);
+                localStorage.setItem(`labpro_vault_${identity}`, JSON.stringify(updated));
+                return updated;
+            });
+            if (id === "cv") { setResumeGeneration(value => value + 1); localStorage.removeItem(`labpro_resume_name_${identity}`); }
+            showToast(data.cleanupPending ? "Document removed from your vault. Secure file cleanup is queued for retry." : "Document removed and stored files deleted.");
+        } catch (error: unknown) {
+            if (localStorage.getItem("labpro_active_user") === activeIdentity) showToast(error instanceof Error ? error.message : "Removal could not be confirmed. Refresh your vault to check its status.", "error");
+        } finally { deletingDocument.current = false; setIsDeleting(false); }
+    };
 
 	const confirmAndSaveLicense = async () => {
 		if (!extractedData.licenseNumber.trim() || !extractedData.expiryDate) {
@@ -1522,7 +1509,8 @@ export default function SettingsPage() {
 														{doc.size === "Re-upload required" ? "Re-upload" : "View"}
 													</button>
 													<button
-														onClick={() => handleDeleteDoc(doc.id)}
+														disabled={isUploading || isDeleting}
+                                                    onClick={() => handleDeleteDoc(doc.id)}
 														style={{
 															background: "rgba(254, 242, 242, 0.8)",
 															border: "1px solid rgba(254, 202, 202, 0.5)",
@@ -1541,7 +1529,7 @@ export default function SettingsPage() {
 											) : (
 												<button
 													onClick={() => triggerUpload(doc.id)}
-													disabled={!userData.email || isUploading || !uploadsAvailable}
+													disabled={!userData.email || isUploading || isDeleting || !uploadsAvailable}
 													style={{
 														background:
 															!userData.email || isUploading

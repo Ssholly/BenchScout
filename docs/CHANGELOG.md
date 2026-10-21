@@ -1,5 +1,9 @@
 # Change log
 
+## 21 October 2026 — Durable document cleanup and retry
+
+- Fixed physical deletion before metadata commit using transactional deletion intents, stale-write checks, leased/backoff retries and active-reference guards. Settings now waits for confirmation; restricted operator controls and a daily cleanup cron are documented. Testing-only migration applied; 274 tests/lint/typecheck/build pass. No Production migration, reopening or real-file deletion. [Contract](DOCUMENT-CLEANUP.md).
+
 ## 21 October 2026 — Public legacy surface contained
 
 - After explicit service-pause approval, activated reviewed `336c6ed` on the public domain. Verified matching source metadata, preserved diagnostic/testing aliases and ten safe hosted 503 checks plus the visible notice. Older protected deployments remain separate; no data/credential mutation or full hardened release. [Evidence](qa/2026-10-21-legacy-containment.json).
