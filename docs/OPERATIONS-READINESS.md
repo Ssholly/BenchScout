@@ -1,5 +1,12 @@
 # Hosted environment and recovery readiness
 
+## 21 October 2026 — Guarded Production file preview staged
+
+After explicit operator approval, source `64e2f83c62d7c81b3905cdc075793255b8e7d186` was deployed from its clean detached checkout using `--prod --skip-domain`. [Deployment 12r5Zwn4tyffsUTnH3YF9tMrNqXh](https://vercel.com/sholly/bench-scout/12r5Zwn4tyffsUTnH3YF9tMrNqXh) is Ready, protected by Vercel authentication. Provider audit/Git metadata both match the reviewed commit. Build/runtime overrides retain `NEXT_PUBLIC_APP_URL=https://bench-scout-sholly.vercel.app` and explicitly set `DOCUMENT_BACKUP_BACKFILL_APPLY_ENABLED=false`.
+
+The hosted older-file section and verified fingerprint field were inspected and prepared at the protected staging alias. The metadata preview has not yet been submitted with the private Production administrator key. No file bytes were read or copied, and no business records or sharing grants were changed. A fresh provider alias lookup confirms `bench-scout.vercel.app` still points to `dpl_4bTpas5uPn1jRpwGeu4eUJvX7nhZ` (`bench-scout-jedrpyruu-sholly.vercel.app`). No main merge or public promotion occurred. Live-hook/write-pause dependency remains required before any real-file copy; do not promote this staging-canonical build. See [backfill workflow](PRODUCTION-DOCUMENT-BACKFILL.md).
+
+
 ## 21 October 2026 — Production backfill planning and copy gate
 
 The guarded older-file tool now separates metadata-only preview from explicitly approved apply. The refreshed current inventory is three private files across all eight vault kinds. Apply is default-off and must stay disabled while old public upload/deletion behavior is active without an approved enforced write pause. Signed plans, target/inventory binding and decrypt verification do not replace that operational prerequisite. [Backfill contract](PRODUCTION-DOCUMENT-BACKFILL.md). No real file transfer or new hosted deployment has occurred in this checkpoint.

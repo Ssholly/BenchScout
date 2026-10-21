@@ -1,5 +1,9 @@
 # Change log
 
+## 21 October 2026 — Protected Production preview deployed
+
+- Staged reviewed `64e2f83` with copying explicitly disabled and Vercel authentication retained. Verified matching provider source metadata and unchanged public deployment. Hosted metadata preview awaits private administrator entry; no real files copied. [Evidence](qa/2026-10-21-production-backfill.json).
+
 ## 21 October 2026 — Guarded Production older-file workflow prepared
 
 - Refreshed all eight vault-field counts read-only: three current distinct private files (CV, licence, avatar), no legacy/other references. No real file bytes read or copied.

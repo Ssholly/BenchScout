@@ -32,15 +32,20 @@
     "testingCliStillTestingOnly": true
   },
   "execution": {
-    "newStagedDeployment": false,
+    "newStagedDeployment": true,
     "hostedGuardedPreviewRun": false,
     "realFileBytesRead": false,
     "realFilesCopied": 0,
-    "liveDomainChanged": false
+    "liveDomainChanged": false,
+    "deploymentId": "dpl_12r5Zwn4tyffsUTnH3YF9tMrNqXh",
+    "sourceCommit": "64e2f83c62d7c81b3905cdc075793255b8e7d186",
+    "providerSourceMetadataMatches": true,
+    "applyExplicitlyDisabled": true,
+    "vercelAuthenticationEnabled": true,
+    "publicAliasDeploymentUnchanged": "dpl_4bTpas5uPn1jRpwGeu4eUJvX7nhZ"
   },
   "remaining": [
-    "approve updated staged deployment with apply explicitly false",
-    "run protected metadata-only preview",
+    "private operator authentication and protected metadata-only preview",
     "resolve live-hook/write-pause prerequisite before approving real copy"
   ],
   "validation": {
