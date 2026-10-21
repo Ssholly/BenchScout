@@ -1,6 +1,6 @@
 # Production configuration — 21 October 2026
 
-Status: approved production backup store created and eight Production-only Secret bindings saved by the operator, then verified through Vercel metadata. Activation/runtime acceptance and effective database mapping remain pending. No release deployed, migrations applied or live documents copied in this checkpoint.
+Status: approved production backup store created and eight Production-only Secret bindings saved by the operator, then verified through Vercel metadata. The operator also re-entered the live Neon database connection privately and saved `DATABASE_URL` as Production-only; the testing override remains. Activation and effective runtime connection/backup acceptance remain pending. No release deployed, migrations applied or live documents copied in this checkpoint.
 
 ## Provider identities verified in the consoles
 
@@ -18,7 +18,7 @@ The normal local configuration connected to **neondb**. All seven repository mig
 
 ### Follow-up verification and database handoff
 
-The saved Production `DATABASE_URL` editor explicitly identifies the existing Secret as write-only, with no readable prior value. Its current saved scope is Production and broad Preview, plus a separate testing override. Metadata alone cannot establish its destination. The editor has been prepared, **without saving**, for operator entry directly from Neon **BenchScout → production → neondb**, using the existing pooled connection string and Production-only scope. The operator must enter/save privately; no password reset, database mutation or deployment is requested. Saving this prepared scope also removes the broad live database default for future Preview builds, while preserving the separate testing override. Previously deployed credentials are not revoked by this edit.
+The original `DATABASE_URL` was write-only and scoped to Production plus broad Preview, so metadata could not establish its destination. The operator completed the prepared private re-entry from Neon **BenchScout → production → neondb** and confirmed saving. Fresh Vercel metadata shows one Secret/Production binding updated just now and the separate Secret/Preview/testing override, with no broad Preview database default. Vercel explicitly confirmed update success and that a new deployment is required. The destination is operator-confirmed, not independently read from the saved secret or exercised by the current deployed app. No password reset, database mutation or deployment occurred. Previously deployed credentials are not revoked by this edit.
 
 The backup store Connections page explicitly reports **No connections yet**. The Vercel project overview still shows the Ready Production deployment created 2 July from main commit `a56fba3641004184e8bd5ddee87a51eb6b5a4fec`; the new backup configuration is not active there. No backup-runtime success is claimed. Store token identity, encryption-key validity, actual alert receipt and current-file archive verification require controlled operator/runtime acceptance after the approved activation sequence.
 

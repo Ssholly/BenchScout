@@ -1,5 +1,10 @@
 # Change log
 
+## 21 October 2026 — Production database scope saved
+
+- Operator confirmed privately saving the live Neon connection into `DATABASE_URL`. Fresh Vercel metadata shows Production-only scope, the unchanged separate testing override and update success; future generic Preview builds no longer inherit the live database default.
+- No credential value was read, deployment activated, database mutated or file copied. Runtime connection and backup acceptance remain pending. Updated [configuration](PRODUCTION-CONFIGURATION.md) and [QA evidence](qa/2026-10-21-production-configuration.json).
+
 ## 21 October 2026 — Production verification boundary and database handoff
 
 - Confirmed the backup store has no automatic project connections and Production still serves the 2 July main deployment. New backup settings have not been activated.

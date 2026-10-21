@@ -167,3 +167,7 @@ After explicit approval, the separate **benchscout-production-backups** Private/
 ## 21 October 2026 — Production binding save verified
 
 The operator confirmed saving the eight entries privately. Vercel showed all eight as Secret/Production and reported save success with a new-deployment requirement; no values were revealed. Read-only normal-database migration history passed all seven checksum comparisons with no unexpected migrations. Aggregate current references: three private, zero public/other. Effective Vercel Production connection mapping and runtime backup/alert acceptance remain open. No deployment, migration, live-file copy or Production alert was performed. [Evidence](qa/2026-10-21-production-configuration.json).
+
+## 21 October 2026 — Live database binding isolated for future builds
+
+Operator-confirmed re-entry from the intended live Neon branch was saved. Vercel metadata now shows `DATABASE_URL` as Secret/Production only, with the separate testing override retained and no broad Preview database default. Save success and the new-deployment requirement were observed. Credential values were not read; existing deployments keep their original environments, so historical deployment isolation and effective runtime identity remain open. No release, database mutation or document transfer occurred. [Configuration](PRODUCTION-CONFIGURATION.md).
