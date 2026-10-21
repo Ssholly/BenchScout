@@ -1,5 +1,10 @@
 # Change log
 
+## 21 October 2026 — Staged Production database runtime passed
+
+- Independently observed correct-key deployed readiness: live-target fingerprint matches, database/name checks pass, backups enabled/configured, alert configured and test mode off. Business records unchanged.
+- Runtime Git SHA was null; separately verified the Vercel deployment’s audit and Git SHA metadata both match approved `b399b13`. Production QA storage/cleanup and alert receipt are prepared but not yet passed. Live domain stays unchanged. [Evidence and limits](PRODUCTION-RUNTIME-ACCEPTANCE.md).
+
 ## 21 October 2026 — Corrected staged runtime build Ready
 
 - Replacement staged deployment `5xj9zsypDUgenQQ2kLA1pgkErTqB` is Ready with a deployment-only canonical URL matching its protected team alias. The same approved `b399b13` source was used; saved project URL and security rules were not changed.
