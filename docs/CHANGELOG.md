@@ -1,5 +1,9 @@
 # Change log
 
+## 21 October 2026 — Historical deployment isolation audit
+
+- Enumerated 92 Ready deployments and four aliases; verified anonymous sign-in gates on immutable URLs and non-public alias upload GETs. Prepared a 30-build retirement set, retained current stages/live app, and documented source-confirmed public legacy risks. No deletion or provider/configuration change. [Audit](DEPLOYMENT-ISOLATION.md).
+
 ## 21 October 2026 — Public release and rollback runbook
 
 - Prepared the live-canonical cutover sequence, gate matrix, bounded smoke checks, separate real-file copy approval and compatible rollback/recovery requirements. Source review records non-atomic document cleanup and cron side effects. No public release or operational change performed. [Plan](PRODUCTION-RELEASE-PLAN.md).
