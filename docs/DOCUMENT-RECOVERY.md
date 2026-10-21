@@ -1,5 +1,9 @@
 # Private document recovery
 
+## 21 October 2026 — Staged Production runtime acceptance complete
+
+Using the approved staged source and saved Production services, correct-key readiness matched the intended database fingerprint. The operator-reported 85-byte QA canary passed encrypted backup, verified source loss, exact decrypted bytes and restored private read-back. Fresh provider listings independently showed the archive store empty and no `qa-recovery/` source objects. The labelled Production alert was submitted and the approved recipient confirmed receipt. No older real files were copied; the public live release remains unchanged. [Runtime acceptance](PRODUCTION-RUNTIME-ACCEPTANCE.md) distinguishes reported storage output, observed cleanup and actual inbox confirmation. Guarded real-file backfill and live release remain separate.
+
 ## 21 October 2026 — Findings and prepared destination
 
 Status: **recovery gap confirmed; destination creation awaiting action-time approval**. This is not an implemented backup integration or a passed file-restore drill.

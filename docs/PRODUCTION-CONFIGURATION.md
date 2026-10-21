@@ -16,6 +16,8 @@ The normal local configuration connected to **neondb**. All seven repository mig
 
 ## Production-only configuration checklist
 
+Current staged runtime acceptance is complete for the scoped QA canary: matching database target, encrypted separate-store backup, source-loss restoration, independently verified cleanup and recipient-confirmed alert delivery passed. The public live domain is still on the old release, and existing candidate documents have not been backfilled. Historical preparation checkpoints below retain their earlier limits. [Accepted runtime results](PRODUCTION-RUNTIME-ACCEPTANCE.md).
+
 The [staged runtime acceptance plan](PRODUCTION-RUNTIME-ACCEPTANCE.md) now provides explicit Production diagnostics without enabling the testing backfill tool. The current live endpoint returned 404, so configuration presence must not be reported as runtime success. Staged deployment and QA-only operations await approval after validation.
 
 Subsequent approved staging is now complete: corrected deployment `5xj9zsypDUgenQQ2kLA1pgkErTqB` is Ready/Staged with only a deployment-specific canonical staging URL override. The saved project/live URL and live-domain release are unchanged. Wrong-key authentication denial passed through the correct origin; valid-key connection and storage/alert checks are pending. This diagnostic build cannot be promoted with its staging URL configuration. See [current runtime checkpoint](PRODUCTION-RUNTIME-ACCEPTANCE.md).

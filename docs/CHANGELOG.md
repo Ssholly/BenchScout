@@ -1,5 +1,10 @@
 # Change log
 
+## 21 October 2026 — Staged Production storage recovery and alert accepted
+
+- Operator reported the 85-byte QA storage canary passed source loss, authenticated decryption and exact restored private read-back. Independently refreshed provider listings confirmed archive cleanup and no remaining `qa-recovery/` source objects.
+- Independently observed alert submission and received recipient confirmation of actual delivery. Scoped staged database/storage/alert checks now pass; older real files remain unbackfilled and the public live deployment stays unchanged. [Acceptance and evidence limits](PRODUCTION-RUNTIME-ACCEPTANCE.md).
+
 ## 21 October 2026 — Staged Production database runtime passed
 
 - Independently observed correct-key deployed readiness: live-target fingerprint matches, database/name checks pass, backups enabled/configured, alert configured and test mode off. Business records unchanged.

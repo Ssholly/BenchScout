@@ -1,5 +1,9 @@
 # Hosted environment and recovery readiness
 
+## 21 October 2026 — Staged runtime database/storage/alert accepted
+
+The staged Production target fingerprint matches the expected live target; provider source metadata matches the approved commit. Operator-reported source-loss/encrypted restoration passed, provider listings independently confirmed QA object cleanup, and the approved recipient confirmed alert inbox delivery. These are scoped synthetic checks on the staged runtime; no real-file backfill or live-domain promotion occurred. [Accepted evidence and remaining work](PRODUCTION-RUNTIME-ACCEPTANCE.md).
+
 ## 21 October 2026 — Document recovery gap and destination preparation
 
 Source/configuration review found no document-backup integration. The private testing store is available, but no independent copy/restore has been verified. Vercel documents no native Blob backup system. The operator asked to create a destination; prepared a separate private testing backup store in the existing account, with Create awaiting action-time approval. See [Private document recovery](DOCUMENT-RECOVERY.md) for exact settings, same-provider limits and the synthetic acceptance plan. No new store, file copy, deletion, credential reveal, paid upgrade or production change has occurred. Pilot remains HOLD.

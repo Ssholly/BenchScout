@@ -1,6 +1,6 @@
 # Production runtime acceptance — 21 October 2026
 
-Status: corrected staged Production deployment **5xj9zsypDUgenQQ2kLA1pgkErTqB** is Ready/Staged. **Correct-key database readiness passed**, with the expected live-target fingerprint and all backup configuration flags as intended. QA storage recovery and alert inbox acceptance remain pending. Initial origin rejection and its deployment-only configuration correction are preserved below. The live July release remains unchanged and lacks the backup endpoint; these passes apply to the staged runtime, not the live domain.
+Status: corrected staged Production deployment **5xj9zsypDUgenQQ2kLA1pgkErTqB** passed the scoped database, QA encrypted-backup/restoration, cleanup and alert-inbox acceptance checks. Initial origin rejection and its deployment-only configuration correction are preserved below. The live July release remains unchanged and lacks the backup endpoint; these passes apply to the staged runtime, not the live domain. Existing candidate files have not been backfilled.
 
 Local validation passed: lint, TypeScript, all **239 tests** (19 backup-focused tests), webpack Production build and `git diff --check`. The built operator screen was inspected at 320px: document width 320px, visible action controls within x=31–289, with no horizontal overflow. No administrator key was entered or diagnostic action submitted during this layout check. These results validate implementation, not hosted Production services.
 
@@ -49,6 +49,14 @@ All actions use `POST /api/admin/document-backups` with existing administrator a
 Existing `synthetic-restore`, fixed-candidate backfill and testing-alert actions remain blocked in Production. The new Production maintenance actions are explicit administrator controls; they do not enable synthetic test mode or allow backfilling real accounts through the testing tool.
 
 ## Execution and pass criteria
+
+### Accepted staged canary and alert results
+
+After the explicit QA-only deletion handoff, the operator reported `passed`, `sourceLossVerified`, `decryptedBytesMatch` and `restoredPrivateReadMatches` all true, 85 bytes, SHA-256 `cb35026fdc8fabd38ccf2bf2da97ccba82beea06429a4092a53387fca8911f81`, cleanupSubmitted true, databaseChanged false and applicationGrantsChanged false. The storage result was supplied by the operator before the alert output replaced it; no claim is made that the overwritten storage result was independently read from the page.
+
+Cleanup was independently verified through fresh provider listings: **benchscout-production-backups** contains no blobs, and the source store’s completed `qa-recovery/` prefix search shows **There are no blobs that match your search**. This confirms removal of the generated archive/source/restored QA objects beyond the submitted-cleanup flag. No additional deletion was performed by the agent.
+
+The staged page was independently observed returning alertSubmitted true, inboxReceipt Await recipient confirmation and documentDataIncluded false. The approved recipient separately confirmed the labelled message arrived, establishing actual delivery rather than submission alone. No operational failure was induced. These results close the requested staged-runtime checks for the scoped synthetic payload; they do not establish bulk current-file backup, recovery-key custody, end-to-end Production candidate upload or independent-provider disaster recovery. The next work is the guarded older-file backfill plan and implementation, followed by separate live-release review with the correct canonical URL.
 
 1. Obtain explicit approval to deploy the tested source as staged Production, without moving the live domain or merging main. Record deployment ID/generated URL and expected source commit. Verify deployment protection through the provider UI before running diagnostics.
 2. Run readiness with the existing Production administrator secret entered privately. Require environment Production, expected build identity, successful database connection/name comparison, expected target fingerprint, enabled/configured backups, approved-alert presence and test mode off. Compare the expected fingerprint using only a private local calculation of the intended live connection hostname/database, normalizing the Neon `-pooler` hostname suffix; never print the original URL.

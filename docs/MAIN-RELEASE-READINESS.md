@@ -43,6 +43,8 @@ A private-file conversion or database migration is not undone by reverting appli
 
 ## Ordered next steps
 
+Latest accepted result: scoped staged Production database, QA encrypted backup/source-loss restoration, independently checked cleanup and recipient-confirmed alert delivery now pass. Existing real-file backfill is not performed, and the public live domain is unchanged. Proceed to the guarded older-file plan; do not treat this diagnostic build, with its staging canonical override, as ready for direct live promotion. [Acceptance details](PRODUCTION-RUNTIME-ACCEPTANCE.md).
+
 Current staged runtime acceptance: correct-key readiness now passes, including the expected target fingerprint and backup configuration/test-mode flags. Provider deployment metadata confirms approved `b399b13`, despite a null runtime Git SHA field. The next operator check is QA-only source loss/encrypted restoration/cleanup, followed by approved-inbox alert receipt. These are not yet passed; live-domain release and guarded older-file backfill stay separate. [Runtime acceptance](PRODUCTION-RUNTIME-ACCEPTANCE.md).
 
 Latest execution: the approved `b399b13` source has a Ready/Staged Production diagnostic deployment, `5xj9zsypDUgenQQ2kLA1pgkErTqB`. Its exact staging-alias canonical URL is overridden only for that deployment after an initial origin rejection; security rules are unchanged. Wrong-key denial now passes the origin gate. Correct-key runtime connection, QA storage recovery and alert receipt remain pending. The live domain still serves July main. Do not promote this diagnostic build with its staging canonical configuration; see [runtime checkpoint](PRODUCTION-RUNTIME-ACCEPTANCE.md).
