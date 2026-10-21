@@ -125,3 +125,10 @@ The operator screen now separates these two checks from the repeatable destructi
 
 
 Deployment follow-up: `13310fc40d34c269a333d088cb3af2df537af56f` reached the testing alias through successful Vercel deployment `GLtdVkt4f7q6b4ctzrijZiyAVoAw`. Hosted screen exposed the two labelled controls; at 320px the document width was 320px and each measured control ended at x=289, inside the viewport. Viewport reset. Prepared private administrator entry for backfill and the single approved test-alert submission. No backfill count or inbox receipt is yet claimed.
+
+
+## 21 October 2026 — Backup alert inbox delivery passed
+
+The operator ran Send test backup alert. Independently observed the hosted response `alertSubmitted: true`, `documentDataIncluded: false`, with receipt explicitly awaiting recipient confirmation. The operator then confirmed the labelled message arrived in the approved inbox. This closes the actual inbox-delivery acceptance for the shared backup-alert mail path; it is not inferred from submission alone. No failure was induced or file/account content sent. The secret field cleared. No alert resend is required.
+
+The same response replaced any earlier backfill output. Eligible/verified/failed counts have not yet been captured or independently observed, so older-file backfill remains unverified. Prepared an idempotent backfill rerun, without another email, for the operator to capture its result. No new product code, schema, environment or production change.

@@ -30,7 +30,6 @@
     "approved backfill of documents uploaded before activation",
     "normal hosted candidate upload with enabled automatic hook",
     "anonymous HTTP denial for a backup object",
-    "recipient-confirmed operational alert delivery",
     "independent recovery-key custody check",
     "independent account/provider disaster recovery",
     "production enablement through separate review"
@@ -89,8 +88,14 @@
       "overflow": false
     },
     "scope": "fixed known synthetic candidate only; configured approved alert recipient",
-    "backfill": "awaiting operator authentication/execution",
-    "alertSubmission": "awaiting operator authentication/execution",
-    "inboxReceipt": "not yet confirmed"
+    "backfill": "counts not captured; operator asked for idempotent rerun",
+    "alertSubmission": "passed: hosted response independently observed",
+    "inboxReceipt": "passed: approved recipient explicitly confirmed receipt",
+    "alertResult": {
+      "alertSubmitted": true,
+      "documentDataIncluded": false,
+      "secretCleared": true,
+      "failureInduced": false
+    }
   }
 }

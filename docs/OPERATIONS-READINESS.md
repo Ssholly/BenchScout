@@ -144,3 +144,8 @@ Opt-in upload-time encrypted backups, verified read-back, retries, deletion-awar
 ## 21 October 2026 — Hosted document restoration acceptance passed
 
 Operator execution and independent hosted-screen observation confirmed a real private source-loss/encrypted-backup/isolated-restore/read-back pass. Exact bytes matched for the new 85-byte synthetic file; no database or application-grant change. The enabled backup primitive now passes against actual providers, with new testing uploads wired through the locally validated hook. Existing-file backfill, post-activation candidate upload acceptance, alert inbox evidence and independent-provider/key recovery remain open. See [document recovery](DOCUMENT-RECOVERY.md). This is not production activation or full service recovery clearance.
+
+
+## 21 October 2026 — Alert inbox acceptance passed
+
+The hosted labelled backup-alert test was submitted successfully, and its approved recipient confirmed inbox receipt. This verifies the configured alert transport beyond mocked tests/provider submission. No backup failure was induced and no document data included. Older synthetic backfill counts remain outstanding; an idempotent rerun is prepared. See [document recovery](DOCUMENT-RECOVERY.md).

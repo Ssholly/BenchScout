@@ -1,5 +1,10 @@
 # Change log
 
+## 21 October 2026 — Backup alert inbox receipt confirmed
+
+- Hosted test-alert submission was observed and the approved recipient confirmed actual inbox receipt. The shared alert mail path now has recipient-confirmed delivery evidence; no failure or document-data disclosure was induced.
+- Older QA-file backfill still needs its counts: the alert output replaced the previous result, so an idempotent rerun is prepared. [Document recovery](DOCUMENT-RECOVERY.md). Documentation only; no new code/schema/environment/production change.
+
 ## 21 October 2026 — Scoped QA backfill and alert delivery controls
 
 - Added operator actions to backfill/decrypt-verify only the known synthetic candidate’s current vault files and send a labelled test through the shared backup-alert mail path. Arbitrary accounts/URLs/recipients are not accepted; database records and sharing grants stay unchanged.
