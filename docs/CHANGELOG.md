@@ -1,5 +1,10 @@
 # Change log
 
+## 21 October 2026 — Production bindings saved and migration history checked
+
+- Operator privately saved all eight Production-only Secret bindings; Vercel metadata and save-success notice were verified without reading values. Activation requires a new deployment and remains pending release approval.
+- Read-only normal database audit found seven applied migrations with matching checksums and three private current file references, with zero public/other references. Effective Vercel database mapping remains unverified. No migration, file transfer or release performed. [Configuration evidence](PRODUCTION-CONFIGURATION.md).
+
 ## 21 October 2026 — Production backup store created
 
 - Created the explicitly approved separate **benchscout-production-backups** Private/IAD1 store; verified empty and left disconnected. No live documents were transferred.

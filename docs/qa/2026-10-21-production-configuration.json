@@ -1,0 +1,9 @@
+{
+  "date": "2026-10-21",
+  "timezone": "Africa/Lagos",
+  "backupStore": {"name": "benchscout-production-backups", "access": "private", "region": "iad1", "creationApproved": true, "created": true, "emptyAtCreation": true, "automaticProjectConnection": false},
+  "productionBindings": {"operatorConfirmedSaved": true, "metadataVerifiedCount": 8, "type": "Secret", "scope": "Production only", "valuesInspected": false, "liveAlertRecipientApproved": true, "runtimeVerified": false},
+  "normalConfiguredDatabase": {"name": "neondb", "effectiveVercelProductionMappingVerified": false, "appliedRepositoryMigrations": 7, "matchingChecksums": 7, "unexpectedMigrationNames": 0, "currentFileReferences": {"private": 3, "public": 0, "other": 0}},
+  "mutations": {"productionDeployment": false, "databaseMigration": false, "liveDocumentCopy": false, "productionAlertSent": false},
+  "remaining": ["verify effective Production database mapping", "runtime validate private source and backup token destinations and encryption key", "approve and execute guarded current-file backfill", "approve release and run scoped Production smoke and alert receipt checks"]
+}

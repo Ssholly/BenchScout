@@ -1,14 +1,18 @@
 # Production configuration — 21 October 2026
 
-Status: approved production backup store created; private operator credential entry/save pending. No Production environment settings were saved, release deployed, migrations applied or live documents copied in this checkpoint.
+Status: approved production backup store created and eight Production-only Secret bindings saved by the operator, then verified through Vercel metadata. Activation/runtime acceptance and effective database mapping remain pending. No release deployed, migrations applied or live documents copied in this checkpoint.
 
 ## Provider identities verified in the consoles
 
 - Neon project **BenchScout**, default branch **production**, database **neondb**; AWS US East 1, PostgreSQL 17, Free plan, six-hour history retention. This is distinct from **BenchScout Testing**. The effective Vercel Production connection has not yet been matched to this identity.
 - Existing Vercel **benchscout-private-documents**: Private, IAD1, created 9 October, approximately 392 kB at inspection. Its Production token binding and current database references still need verification.
 - With explicit action-time approval, created **benchscout-production-backups**, Private, Washington D.C. (IAD1), in the existing SHOLLY Hobby account. The console confirmed creation, Private/IAD1 and 0 B. It remains disconnected from automatic project injection and contains no copied documents. This destination is separate from testing and the source store. A store in the same account/region is not independent provider or regional disaster recovery.
-- Operator approved a different Production alert inbox; it is prepared privately in the form. Testing retains its existing recipient. No alert has been sent in this checkpoint.
-- Prepared eight Secret entries scoped to **Production only**: private source token, administrator secret, salary-owner secret, backup token, encryption key, enabled=true, test-mode=false and the approved alert inbox. Five sensitive values remain blank for private operator entry. The form has not been saved. Existing database/cron/provider/canonical URL bindings remain untouched.
+- Operator approved a different Production alert inbox and saved the configuration privately. Testing retains its existing recipient. No Production alert has been sent in this checkpoint.
+- Vercel metadata confirms eight new Secret entries scoped to **Production only**: private source token, administrator secret, salary-owner secret, backup token, encryption key, enabled, test-mode and alert inbox. The operator confirmed private entry/save; Vercel showed save success and that a new deployment is required. Prepared non-sensitive values were enabled=true and test-mode=false; saved secret values, key strength, token-store matching and recovery custody were not inspected. Existing database/cron/provider/canonical URL bindings remain untouched. Do not infer runtime acceptance from binding presence.
+
+## Read-only normal database checkpoint after settings save
+
+The normal local configuration connected to **neondb**. All seven repository migrations have completed history entries with exact SHA-256 checksums; no unexpected migration names were found. Aggregate inventory: two user records, one CV reference, one license reference and one avatar reference; all three use private Blob URLs, with zero public or other references. No file contents or individual records were printed and no records/files were changed. This does not establish the effective Vercel Production database identity or prove any archive has been written for these files. A matching database name alone is insufficient.
 
 ## Production-only configuration checklist
 

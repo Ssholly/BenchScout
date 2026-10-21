@@ -163,3 +163,7 @@ Normal hosted synthetic upload/private preview and raw anonymous encrypted-archi
 ## 21 October 2026 — Approved Production backup provisioning
 
 After explicit approval, the separate **benchscout-production-backups** Private/IAD1 store was created and observed at 0 B, with no project connection. A distinct live alert inbox was approved and prefilled in a Production-only eight-variable Secret form. Five sensitive values remain for private operator entry/save; no environment save, deployment, migration or live-file transfer occurred. Existing testing configuration stays separate. See [Production configuration](PRODUCTION-CONFIGURATION.md).
+
+## 21 October 2026 — Production binding save verified
+
+The operator confirmed saving the eight entries privately. Vercel showed all eight as Secret/Production and reported save success with a new-deployment requirement; no values were revealed. Read-only normal-database migration history passed all seven checksum comparisons with no unexpected migrations. Aggregate current references: three private, zero public/other. Effective Vercel Production connection mapping and runtime backup/alert acceptance remain open. No deployment, migration, live-file copy or Production alert was performed. [Evidence](qa/2026-10-21-production-configuration.json).
