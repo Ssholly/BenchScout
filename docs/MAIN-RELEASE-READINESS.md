@@ -33,6 +33,8 @@ The visible Production-and-Preview bindings include the existing database, cron,
 
 The current CLI backfill explicitly accepts only a testing target assertion. Do not point it at Production while falsely labelling the target testing. The public-to-private migration script also uses direct Blob writes rather than the upload hook; approved migrated current files need explicit backup verification. No real-file migration/backfill has been authorised or performed here.
 
+Follow-up console verification confirmed the old Ready Production deployment is still the 2 July main release and the backup store has no automatic project connections. The saved database value is write-only, so effective mapping cannot be inferred from metadata. A private operator re-entry from the intended live Neon branch is prepared with an unsaved Production-only scope; saving would remove the broad live default for future Preview builds and retain the testing override. Existing deployments would still require separate retirement/restriction review. See [configuration handoff](PRODUCTION-CONFIGURATION.md).
+
 ## Migration and behaviour review
 
 There are seven repository migration directories, including the baseline, security/session foundation, employer email confirmation, candidate profiles, employer safety, selected application documents and candidate-review revisions. The selection migration backfills only a previously authorised current **private CV**, not all optional documents. Historical credential flags do not by themselves establish a current version-bound independent review. Account/session and salary ownership behaviour changes need targeted release smoke tests.

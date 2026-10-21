@@ -16,6 +16,12 @@ The normal local configuration connected to **neondb**. All seven repository mig
 
 ## Production-only configuration checklist
 
+### Follow-up verification and database handoff
+
+The saved Production `DATABASE_URL` editor explicitly identifies the existing Secret as write-only, with no readable prior value. Its current saved scope is Production and broad Preview, plus a separate testing override. Metadata alone cannot establish its destination. The editor has been prepared, **without saving**, for operator entry directly from Neon **BenchScout → production → neondb**, using the existing pooled connection string and Production-only scope. The operator must enter/save privately; no password reset, database mutation or deployment is requested. Saving this prepared scope also removes the broad live database default for future Preview builds, while preserving the separate testing override. Previously deployed credentials are not revoked by this edit.
+
+The backup store Connections page explicitly reports **No connections yet**. The Vercel project overview still shows the Ready Production deployment created 2 July from main commit `a56fba3641004184e8bd5ddee87a51eb6b5a4fec`; the new backup configuration is not active there. No backup-runtime success is claimed. Store token identity, encryption-key validity, actual alert receipt and current-file archive verification require controlled operator/runtime acceptance after the approved activation sequence.
+
 Use Vercel project **bench-scout → Settings → Environment Variables**. Review scope before each save: **Production only**, excluding Development and Preview/testing. Do not reveal existing values or copy credentials into chat, repository files, screenshots or evidence JSON. Changes affect a subsequent deployment; do not redeploy old main to activate them prematurely.
 
 | Variable | Required value or operator action |

@@ -1,5 +1,10 @@
 # Change log
 
+## 21 October 2026 — Production verification boundary and database handoff
+
+- Confirmed the backup store has no automatic project connections and Production still serves the 2 July main deployment. New backup settings have not been activated.
+- Confirmed the existing database Secret is write-only and currently scoped to Production/broad Preview. Prepared an unsaved Production-only editor for private entry from the known live Neon branch, preserving the testing override; operator save is pending. No database binding or release changed. [Verification limits and handoff](PRODUCTION-CONFIGURATION.md).
+
 ## 21 October 2026 — Production bindings saved and migration history checked
 
 - Operator privately saved all eight Production-only Secret bindings; Vercel metadata and save-success notice were verified without reading values. Activation requires a new deployment and remains pending release approval.
