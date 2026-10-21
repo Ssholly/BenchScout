@@ -6,6 +6,12 @@ Local validation passed: lint, TypeScript, all **239 tests** (19 backup-focused 
 
 ## Controlled staged build
 
+### Approved execution checkpoint
+
+The operator explicitly approved staging commit `b399b13c47041653fb6649bcc6abb06bef377a09`, without main merge or live-domain promotion. A clean detached worktree at that commit is prepared under a temporary directory, excluding untracked local environment files and test artifacts. The official Vercel CLI 65.0.0 is installed through npm; its account check reported **Logged out**. The official device-authorization flow is started and awaits private operator authorisation. **No staged deployment exists yet and no runtime diagnostic has run.** Do not treat deployment approval as successful authentication or execution.
+
+Fresh provider inspection confirmed the live domain remains on the Ready 2 July main deployment and Vercel Authentication **Require Log In / Standard Protection** is enabled. No protection settings were changed and no bypass credential was created. An expected normal-configuration hostname/database fingerprint was calculated privately for later comparison; no raw connection value was printed. It does not by itself prove the staged runtime target.
+
 Vercel supports a staged Production build using Production environment variables while withholding domain assignment: `vercel deploy --prod --skip-domain`. It is available on all plans. This is a real Production-connected runtime, not an isolated testing database. Source: [Vercel environments](https://vercel.com/docs/deployments/environments#verifying-a-production-build-before-promotion), [CLI deployment](https://vercel.com/docs/cli/deploying-from-cli).
 
 Before deployment approval, record the exact tested commit, clean working tree, project/team, and confirm no automatic domain promotion. Use project **bench-scout**, team **sholly**. The Vercel CLI is not currently installed/authenticated in this workspace; authenticate through the official operator flow if needed, without exporting provider credentials. Link the existing project rather than creating another. Do not use an unqualified `--prod` deployment, merge main or promote a deployment during diagnostic acceptance.

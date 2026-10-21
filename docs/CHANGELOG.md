@@ -1,5 +1,10 @@
 # Change log
 
+## 21 October 2026 — Approved staged deployment authentication prepared
+
+- Operator approved staging `b399b13` without promotion. Prepared a clean detached checkout and official Vercel CLI 65.0.0. Account check reports Logged out; the official device-authorisation flow awaits operator action.
+- Verified existing Standard Protection is enabled and the live domain still points to the July release. No deployment, diagnostic, live-file mutation, alert or bypass-credential creation occurred. [Execution checkpoint](PRODUCTION-RUNTIME-ACCEPTANCE.md).
+
 ## 21 October 2026 — Staged Production runtime diagnostics prepared
 
 - Added protected deployed-database readiness, explicitly confirmed QA-only Production storage recovery and approved-recipient alert checks. Extracted the existing isolated recovery probe for shared use; testing-only recovery/backfill gates remain blocked in Production.
