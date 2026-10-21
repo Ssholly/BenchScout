@@ -1,5 +1,11 @@
 # Change log
 
+## 21 October 2026 — Continuous encrypted backups and isolated restore tooling
+
+- Added opt-in encrypted private backup and verified read-back before new document metadata commits, with three attempts, scrubbed failure logs and an optional approved-inbox alert. Explicit removal/replacement also purges its backup; no indefinite deleted-file retention.
+- Added restricted operator status/synthetic loss-and-restore screen/API and a private CLI for dry-run backfill and isolated restoration. No database rewrite, new employer grant, schema or migration. Production defaults remain off.
+- Lint, TypeScript, 230 tests (10 new), production build, CLI syntax, diff check and 320px built-screen bounds passed. [Document recovery](DOCUMENT-RECOVERY.md) records contracts, configuration, retention/key custody and limits. Testing-only credential form prepared but unsaved; hosted activation, provider restoration and inbox evidence remain pending.
+
 ## 21 October 2026 — Private testing backup store created
 
 - After explicit approval, created a distinct Private IAD1 backup store without linking projects, revealing tokens, upgrading or copying real documents. A new synthetic 231-byte file uploaded and its authenticated preview text hash matched the source.

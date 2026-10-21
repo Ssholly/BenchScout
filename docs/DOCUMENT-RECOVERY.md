@@ -41,3 +41,52 @@ Created and uploaded a new QA-only text fixture, independent of the candidate va
 The Download action did not yield a downloadable file through the browser tool before its ten-second event timeout; an ephemeral blank tab disappeared. No raw downloaded-byte checksum, anonymous HTTP denial, source-loss simulation or restore upload is claimed. No browser restriction was bypassed. The fixture and store remain for continuation; no candidate document/application was removed or replaced. Actual loss testing still requires explicit action-time deletion approval.
 
 **Current status:** a private testing backup destination exists and synthetic upload/preview succeeded. Automatic backups, independent application-side encryption/key custody, retention enforcement, backup failure monitoring, binary retrieval and full loss/restore acceptance remain unimplemented or unverified. Creating this store does not begin protecting existing uploads. [Scrubbed evidence](qa/2026-10-21-document-recovery.json).
+
+## 21 October 2026 — Automatic backup and isolated restoration implemented
+
+This supersedes the earlier unimplemented-code status. **Implemented and locally validated; hosted activation and real-service loss/restore acceptance pending.** No production setting or migration changed.
+
+### Upload, encryption and deletion
+
+`lib/document-backup.ts` encrypts document bytes with AES-256-GCM, a fresh random nonce, a source-identity binding and an encrypted SHA-256 checksum. A distinct private Blob store receives the ciphertext under a non-identifying hash-derived path. Each enabled upload reads the archive back, authenticates/decrypts it and compares exact bytes before `storeDocument` returns and before the user's vault metadata is committed. Failed backup operations retry three times with bounded delays, then fail closed with HTTP 503. The unsuccessful new live object and any uncommitted backup receive cleanup attempts. No new successful-upload claim follows from a failed backup.
+
+Automatic means **continuous backup on new upload**, not a scheduled job. Existing files are not silently copied: the operator backfill tool below is required for previously uploaded current documents. No cron setting was added.
+
+Retention is **current-file-only**: explicit document deletion and replacement cleanup purge the matching archive. Withdrawal removes an application grant, not the candidate's current vault file; its backup does not grant employer access. Backup purging still runs with configured backup credentials after new backup writes are disabled. Purge failure blocks the normal deletion path and raises an operational failure; old-file replacement cleanup remains best effort and can leave orphaned objects requiring private operator cleanup. There is no age-based retention sweep or guarantee that failed cleanup has completed. Do not disable/remove credentials to bypass a purge failure.
+
+Failures log a structured `document_backup_failure` event with the operation only, omitting provider exception data/URLs/tokens. If `DOCUMENT_BACKUP_ALERT_EMAIL` is configured, the existing mailer sends an operational message containing no document data. Failed mail logs `document_backup_alert_failed`. Operator approval for the testing recipient is recorded privately in the conversation. Unit tests verify the send path; real inbox delivery has not yet been established. Alerts are per failed operation; distributed deduplication and independent out-of-band failure monitoring are not implemented.
+
+### Configuration
+
+All are server-only variables. In Vercel, scope these **only to Preview / testing branch**, then redeploy. Never overwrite the existing live `BLOB_PRIVATE_READ_WRITE_TOKEN` or generic `BLOB_READ_WRITE_TOKEN`.
+
+| Variable | Meaning |
+| --- | --- |
+| `DOCUMENT_BACKUP_ENABLED` | `true` enables the upload protection hook; default/off when absent. |
+| `BLOB_BACKUP_READ_WRITE_TOKEN` | Token for the distinct private backup store, entered privately by the operator. |
+| `DOCUMENT_BACKUP_ENCRYPTION_KEY` | Exactly 64 hexadecimal characters, representing 32 random bytes; privately entered and saved separately in a password manager/recovery vault. |
+| `DOCUMENT_BACKUP_ALERT_EMAIL` | Explicitly approved operator inbox; omitted means structured hosting logs only. |
+| `DOCUMENT_BACKUP_TEST_MODE` | `true` enables the restricted synthetic tool outside Production. Disable after the acceptance window. |
+
+The token must differ from the live-store token; archive writes also reject a returned hostname matching the source store. `access: private` is explicit on all reads/writes. These checks do not establish account/provider independence. Keep the encryption key outside the hosting account as well: losing it makes archives unrecoverable. No automatic key rotation/re-encryption exists; do not replace the key until retained archives have been safely re-encrypted and verified. No secret values or provider token were read/generated into chat or committed.
+
+### Restricted operator screen and API
+
+- `/admin/backups`: password-style administrator entry, configuration check and separately labelled synthetic loss/restore action. Secret clears after each request. No credential is stored in local storage.
+- `POST /api/admin/document-backups`: existing administrator-secret, same-origin and rate-limit middleware. `action: status` reports booleans only, not secret values or file references.
+- `action: synthetic-restore` additionally requires `confirm: DELETE QA ONLY`, enabled backup/test flags and a non-Production environment. It creates a new QA-only private source, backs it up, deletes that source, verifies its absence, decrypts the archive, writes a separate isolated private restoration, reads and compares the exact bytes, then submits deletion of just those generated recovery objects/archive. It never reads candidate files or changes database rows, application selection, credential approvals or sessions. Returned evidence includes checks, size/hash and `cleanupSubmitted`; provider deletion propagation is not independently confirmed by that field.
+- Failure preserves enough private QA objects for investigation; no successful recovery result is returned. Inspect the `qa-recovery/` and corresponding archive paths privately before scoped cleanup. Operator action-time confirmation covers irreversible deletion of newly generated QA files, not real candidate objects.
+
+### Operator backfill and real restoration tool
+
+`npm run documents:backup -- backfill --confirm-target testing` is dry-run by default. Supply **dedicated testing** credentials through an operator-controlled private environment and set `DOCUMENT_BACKUP_OPERATOR_TARGET=testing`; the script deliberately does not load the normal local `.env`. Add `--apply` only after approving the current documents/destination. It selects current vault fields, backs up/verifies each private object and rechecks its current reference; if replaced/deleted during the run, it purges the stale backup. Output contains counts only. Do not run a backfill against a restored database before reconciling later deletion/withdrawal restrictions. Scope confirmation is an operator assertion, not automatic proof of the database's provider project identity.
+
+`npm run documents:backup -- restore --source-file /protected/source-url.txt --output-dir /protected/recovery` decrypts the selected archive into `restored-document.bin` in a directory with mode 0700 outside the repository, using exclusive creation and mode 0600. The source-file contains the private original object reference and must be supplied privately. The tool authenticates integrity and reports size/hash without logging the URL or contents. It **does not rewrite any database reference** or regrant employer access. Real-document restoration, identity/retention reconciliation and any later cutover need a separate scoped operator procedure. Keep restored plaintext protected and remove it through the approved retention process.
+
+The CLI uses the installed TypeScript compiler, so operator tooling requires the development dependencies; it is not a new public API or background service.
+
+### Validation and remaining acceptance
+
+Lint, TypeScript, all **230 tests** and the webpack production build passed. Ten new focused tests exercise randomized binary encryption, wrong key/source and tamper rejection, size/source validation, private read-back, transient/persistent failures, alerts, purge after disabling new backups, administrator/Production gates and the complete synthetic loss/restore path against an in-memory Blob adapter. This is real cryptography/control-flow validation, **not hosted provider acceptance**. Built `/admin/backups` rendered at 320px with document width 320px and all controls inside the viewport. CLI syntax and diff checks passed. No schema/migration added.
+
+Prepared five Secret variables in the Vercel form with **testing only** selected; token and key remain blank for private operator entry. This form is not yet saved. Hosting activation, existing-file backfill, real-provider synthetic loss/restore, anonymous denial and recipient-confirmed alert delivery remain pending. Documentation must record those outcomes separately before declaring backups running or full restoration passed.

@@ -12,7 +12,8 @@
     "check": "npm run lint && npm run typecheck && npm test",
     "db:deploy": "prisma migrate deploy",
     "acceptance": "node scripts/run-acceptance.cjs",
-    "documents:migrate": "node scripts/migrate-private-documents.cjs"
+    "documents:migrate": "node scripts/migrate-private-documents.cjs",
+    "documents:backup": "node scripts/document-backup.cjs"
   },
   "dependencies": {
     "@prisma/client": "^6.19.3",

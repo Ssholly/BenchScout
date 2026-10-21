@@ -134,3 +134,8 @@ The copy contained two AuthSession rows. Expired both **only in the recovery cop
 ## 21 October 2026 — Private backup destination created
 
 The operator approved creation of the separate private testing backup store. Synthetic upload and authenticated preview text integrity passed; no existing documents were copied and no backup worker/app binding was enabled. Downloaded-byte verification, anonymous denial and loss/restore acceptance remain open, with the browser download event timing out. See [document recovery](DOCUMENT-RECOVERY.md) and its JSON evidence. Same-provider/account limits still apply; pilot remains HOLD.
+
+
+## 21 October 2026 — Backup integration implemented, activation pending
+
+Opt-in upload-time encrypted backups, verified read-back, retries, deletion-aware purge, operational alerts and restricted synthetic/CLI restore tooling are implemented. Lint, TypeScript, 230 tests and production build passed; built operator screen fits 320px. The five testing-only Secret fields are prepared with token/key blank, not saved. No actual automatic hosted backup, current-file backfill or real-provider loss/restore pass is claimed yet. See [document recovery](DOCUMENT-RECOVERY.md) for contracts and retention/key limits. No production or schema/migration change; pilot remains HOLD.

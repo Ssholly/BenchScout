@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { put, del } from "@vercel/blob";
 import { ApiError } from "@/lib/security";
+import { backupDocument, purgeDocumentBackup } from "@/lib/document-backup";
 export const documentFields = { resume: "resumeUrl", license: "licenseUrl", provisional: "provisionalUrl", degree: "degreeUrl", result: "statementOfResultUrl", placement: "placementLetterUrl", certificate: "certificateUrl", avatar: "avatarUrl" } as const;
 export type DocumentKind = keyof typeof documentFields;
 export function documentKind(value: unknown): DocumentKind {
@@ -26,6 +27,12 @@ export function privateBlobToken(): string {
 export async function storeDocument(file: FormDataEntryValue | null, kind: DocumentKind, userId: string) {
   const validated = await validateDocument(file, kind);
   const blob = await put(`documents/${userId}/${kind}/${randomUUID()}.${validated.extension}`, validated.buffer, { access: "private", contentType: validated.mime, token: privateBlobToken() });
+  try { await backupDocument(blob.url, validated.buffer); }
+  catch (error) {
+    await purgeDocumentBackup(blob.url).catch(() => console.error("Uncommitted backup cleanup needs operator attention"));
+    await del(blob.url, { token: privateBlobToken() }).catch(() => console.error("Uncommitted document cleanup failed"));
+    throw error;
+  }
   return { ...blob, buffer: validated.buffer };
 }
 export function isPrivateBlob(url: string) {
@@ -35,6 +42,7 @@ export async function removeDocument(url: string | null) {
   if (!url) return;
   const host = new URL(url).hostname;
   if (!host.endsWith(".blob.vercel-storage.com")) throw new ApiError(400, "Unknown document storage location.");
+  if (isPrivateBlob(url)) await purgeDocumentBackup(url);
   await del(url, { token: isPrivateBlob(url) ? privateBlobToken() : process.env.BLOB_READ_WRITE_TOKEN });
 }
 export async function resumeText(buffer: Buffer) {
