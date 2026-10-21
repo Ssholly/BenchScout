@@ -1,5 +1,9 @@
 # Change log
 
+## 21 October 2026 — Legacy containment and upload failure boundaries
+
+- Prepared and pushed a separate terminal containment build for unsafe July handlers; public service-pause approval is pending. Added six hardened upload/delete fault-injection checks; all 257 application tests pass. No live activation or real-file mutation; durable deletion reconciliation remains open. [Scope](LEGACY-CONTAINMENT.md).
+
 ## 21 October 2026 — Historical deployment isolation audit
 
 - Enumerated 92 Ready deployments and four aliases; verified anonymous sign-in gates on immutable URLs and non-public alias upload GETs. Prepared a 30-build retirement set, retained current stages/live app, and documented source-confirmed public legacy risks. No deletion or provider/configuration change. [Audit](DEPLOYMENT-ISOLATION.md).

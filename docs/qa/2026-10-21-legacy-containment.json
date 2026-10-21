@@ -1,0 +1,41 @@
+{
+  "date": "2026-10-21",
+  "status": "containment prepared; public service-pause approval pending",
+  "containment": {
+    "branch": "hotfix/legacy-containment",
+    "commit": "336c6edf06f8e8a3f0a3fafb43f81feac9c1546f",
+    "base": "a56fba3641004184e8bd5ddee87a51eb6b5a4fec",
+    "pushed": true,
+    "legacyAppRoutesRemoved": true,
+    "terminal503": true,
+    "databaseStorageMailCalls": false,
+    "environmentValuesReadByHandler": false,
+    "unitTests": 12,
+    "builtHttpCases": 70,
+    "normalizationRedirects": 7,
+    "lint": true,
+    "typecheck": true,
+    "productionBuild": true,
+    "mobileWidths": [
+      320,
+      390
+    ],
+    "horizontalOverflow": false,
+    "publicDeploymentPerformed": false
+  },
+  "hardenedRelease": {
+    "newFailureBoundaryTests": 6,
+    "allApplicationTestsPassed": 257,
+    "fullProviderInterruptionAcceptance": false,
+    "durableCleanupReconciliationStillOpen": true
+  },
+  "execution": {
+    "mainMerge": false,
+    "publicAliasChanged": false,
+    "filesCopiedOrDeleted": 0,
+    "databaseMigrations": 0,
+    "credentialsChanged": false,
+    "emailsSent": 0,
+    "oldDeploymentsDeleted": 0
+  }
+}

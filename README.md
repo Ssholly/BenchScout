@@ -69,6 +69,7 @@ Implemented improvements include an application-readiness checklist, source and 
 - [Professional summaries](docs/PROFESSIONAL-SUMMARIES.md): candidate consent, preview, allowlisted fields, employer access, API contracts and limitations.
 
 - [Launch audit](docs/LAUNCH-AUDIT.md): dated findings, local fixes, regression evidence, remaining pilot blockers and release status.
+- [Legacy containment](docs/LEGACY-CONTAINMENT.md): isolated temporary pause build, exact source, availability impact, validation and activation boundary.
 - [Historical deployment isolation](docs/DEPLOYMENT-ISOLATION.md): anonymous access evidence, credential limits, public legacy containment and exact proposed retirement IDs.
 - [Public-app release and rollback plan](docs/PRODUCTION-RELEASE-PLAN.md): cutover gates, live-canonical build, smoke checks, safe fallback and separate real-file copy approval.
 - [Main release readiness](docs/MAIN-RELEASE-READINESS.md): current configuration, staged runtime evidence and ordered backfill/cutover gates.
