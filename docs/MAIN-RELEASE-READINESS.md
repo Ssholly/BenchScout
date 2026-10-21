@@ -15,6 +15,8 @@ Status: **prepare Production configuration and resolve the remaining gates befor
 
 ## Production configuration findings
 
+Production preparation is now requested. The provider consoles confirmed the intended live Neon **BenchScout / production / neondb** identity (six-hour recovery history) and existing **benchscout-private-documents** Private/IAD1 store. A separate **benchscout-production-backups** Private/IAD1 creation form is prepared but not submitted. Effective Production connection mapping, credential entry and activation remain pending. The [Production configuration checklist](PRODUCTION-CONFIGURATION.md) records the exact scope and operator handoff sequence.
+
 Fresh read-only Vercel Project metadata showed `BLOB_PRIVATE_READ_WRITE_TOKEN`, `ADMIN_SECRET`, `SALARY_OWNER_SECRET` and the five new backup variables without a Production-scoped binding. The private-upload token has Preview/testing and a broader Preview binding; administrator/salary and backup variables are testing overrides. The Shared tab explicitly showed **No shared variables linked**. Values were not revealed or modified.
 
 The visible Production-and-Preview bindings include the existing database, cron, canonical app URL, email and external-service variables. Their actual values/strength were not inspected. In particular, broad Preview database defaults and historical deployments still need the isolation/retirement review already recorded in operations readiness.

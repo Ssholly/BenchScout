@@ -1,5 +1,10 @@
 # Change log
 
+## 21 October 2026 — Production configuration preparation
+
+- Verified live provider project/database identity and existing private document-store metadata. Prepared a separate Private/IAD1 production-backup creation form without submitting it.
+- Added the [Production configuration checklist](PRODUCTION-CONFIGURATION.md), covering separate secrets/key custody, Production-only scope, pending live alert approval, database mapping and guarded activation/backfill acceptance. No Production values, files, migrations or release changed.
+
 ## 21 October 2026 — Normal automatic upload and release readiness review
 
 - A new 659-byte synthetic vault upload passed the enabled automatic-backup path, persisted and rendered privately; the backup directory showed its 723-byte encrypted object. Unsigned archive access returned HTTP 403. Existing CV/certificate and CV-only application sharing stayed unchanged.
