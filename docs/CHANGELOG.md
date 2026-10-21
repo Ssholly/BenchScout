@@ -1,5 +1,9 @@
 # Change log
 
+## 21 October 2026 — Public release and rollback runbook
+
+- Prepared the live-canonical cutover sequence, gate matrix, bounded smoke checks, separate real-file copy approval and compatible rollback/recovery requirements. Source review records non-atomic document cleanup and cron side effects. No public release or operational change performed. [Plan](PRODUCTION-RELEASE-PLAN.md).
+
 ## 21 October 2026 — Production file metadata preview accepted
 
 - Recorded the operator-reported dry run: three eligible unique current files, zero blocked, copying disabled, no file contents read or business/grant changes. Real-file backfill remains pending live hooks or an approved enforced write pause, fresh review and copy approval. [Evidence](qa/2026-10-21-production-backfill.json).

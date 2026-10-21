@@ -1,0 +1,40 @@
+{
+  "date": "2026-10-21",
+  "status": "prepared-release-hold",
+  "reviewedApplicationCommit": "64e2f83c62d7c81b3905cdc075793255b8e7d186",
+  "acceptedPreview": {
+    "uniqueFiles": 3,
+    "blockedReferences": 0,
+    "applyEnabled": false,
+    "evidence": "operator-reported"
+  },
+  "sourceReview": {
+    "uploadBackupBeforeMetadata": true,
+    "oldReplacementCleanupBestEffort": true,
+    "deleteStorageBeforeMetadata": true,
+    "storageDatabaseAtomic": false,
+    "cronDailyDigestDryRun": true,
+    "complianceReminderDryRun": false,
+    "rootVercelJsonPresent": false
+  },
+  "remainingGates": [
+    "old deployment isolation and enforced write handling",
+    "direct hosted HTTP denial and repeated application evidence",
+    "interrupted document lifecycle reconciliation",
+    "account compatibility and historical salary ownership",
+    "cron authentication and scheduler acceptance",
+    "recovery ownership key custody and compatible fallback",
+    "final source and live-canonical release approval"
+  ],
+  "execution": {
+    "documentationOnly": true,
+    "newTestsRun": false,
+    "liveDeployments": 0,
+    "mainMerge": false,
+    "databaseMigrations": 0,
+    "realFileCopies": 0,
+    "emailsSent": 0,
+    "providerChanges": false
+  },
+  "nextPriority": "Resolve old-deployment isolation and write handling read-only before proposing changes."
+}

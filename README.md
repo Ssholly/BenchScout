@@ -69,6 +69,7 @@ Implemented improvements include an application-readiness checklist, source and 
 - [Professional summaries](docs/PROFESSIONAL-SUMMARIES.md): candidate consent, preview, allowlisted fields, employer access, API contracts and limitations.
 
 - [Launch audit](docs/LAUNCH-AUDIT.md): dated findings, local fixes, regression evidence, remaining pilot blockers and release status.
+- [Public-app release and rollback plan](docs/PRODUCTION-RELEASE-PLAN.md): cutover gates, live-canonical build, smoke checks, safe fallback and separate real-file copy approval.
 - [Main release readiness](docs/MAIN-RELEASE-READINESS.md): current configuration, staged runtime evidence and ordered backfill/cutover gates.
 - [Production runtime acceptance](docs/PRODUCTION-RUNTIME-ACCEPTANCE.md): staged Production deployment, protected database/storage/alert diagnostics and promotion boundaries.
 - [Production older-file backfill](docs/PRODUCTION-DOCUMENT-BACKFILL.md): metadata preview, signed current-file plans and the default-off copy gate tied to live backup hooks or a controlled write pause.
