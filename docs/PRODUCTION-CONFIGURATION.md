@@ -16,6 +16,8 @@ The normal local configuration connected to **neondb**. All seven repository mig
 
 ## Production-only configuration checklist
 
+The [staged runtime acceptance plan](PRODUCTION-RUNTIME-ACCEPTANCE.md) now provides explicit Production diagnostics without enabling the testing backfill tool. The current live endpoint returned 404, so configuration presence must not be reported as runtime success. Staged deployment and QA-only operations await approval after validation.
+
 ### Follow-up verification and database handoff
 
 The original `DATABASE_URL` was write-only and scoped to Production plus broad Preview, so metadata could not establish its destination. The operator completed the prepared private re-entry from Neon **BenchScout → production → neondb** and confirmed saving. Fresh Vercel metadata shows one Secret/Production binding updated just now and the separate Secret/Preview/testing override, with no broad Preview database default. Vercel explicitly confirmed update success and that a new deployment is required. The destination is operator-confirmed, not independently read from the saved secret or exercised by the current deployed app. No password reset, database mutation or deployment occurred. Previously deployed credentials are not revoked by this edit.

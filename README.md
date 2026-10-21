@@ -70,6 +70,7 @@ Implemented improvements include an application-readiness checklist, source and 
 
 - [Launch audit](docs/LAUNCH-AUDIT.md): dated findings, local fixes, regression evidence, remaining pilot blockers and release status.
 - [Main release readiness](docs/MAIN-RELEASE-READINESS.md): current testing evidence, missing Production bindings and ordered migration/cutover gates.
+- [Production runtime acceptance](docs/PRODUCTION-RUNTIME-ACCEPTANCE.md): staged Production deployment, protected database/storage/alert diagnostics and promotion boundaries.
 
 - [Candidate readiness and brand review](docs/CANDIDATE-AND-BRAND-REVIEW.md): profile separation, pilot gaps, focused tests and preliminary CAC/domain checks.
 

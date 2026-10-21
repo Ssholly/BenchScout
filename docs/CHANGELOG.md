@@ -1,5 +1,11 @@
 # Change log
 
+## 21 October 2026 — Staged Production runtime diagnostics prepared
+
+- Added protected deployed-database readiness, explicitly confirmed QA-only Production storage recovery and approved-recipient alert checks. Extracted the existing isolated recovery probe for shared use; testing-only recovery/backfill gates remain blocked in Production.
+- Extended the operator screen and tests for environment/confirmation/authentication gates, target fingerprinting without credentials, ignored arbitrary file/account inputs and configured-only alert recipients. [Runtime acceptance plan](PRODUCTION-RUNTIME-ACCEPTANCE.md) records staged deployment and approval boundaries. Live public checks: homepage 200, backup endpoint 404. Hosted Production diagnostic execution remains pending; no Production deployment, candidate-file copy or alert occurred.
+- Lint, TypeScript, all 239 tests and webpack Production build passed. Built operator controls fit a 320px viewport with no horizontal overflow. No local diagnostic action was submitted.
+
 ## 21 October 2026 — Production database scope saved
 
 - Operator confirmed privately saving the live Neon connection into `DATABASE_URL`. Fresh Vercel metadata shows Production-only scope, the unchanged separate testing override and update success; future generic Preview builds no longer inherit the live database default.

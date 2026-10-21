@@ -43,6 +43,8 @@ A private-file conversion or database migration is not undone by reverting appli
 
 ## Ordered next steps
 
+Runtime acceptance preparation is available in [Production runtime acceptance](PRODUCTION-RUNTIME-ACCEPTANCE.md): protected connection fingerprint, explicitly confirmed QA storage restoration and configured-recipient alert checks. The updated implementation passed lint/typecheck/239 tests/build and narrow-screen inspection. The existing live homepage returned 200 and backup endpoint 404. Approval of a **staged Production deployment without domain assignment** is the next execution boundary; it does not authorise main merge, promotion, bulk backfill or transfer of existing files.
+
 1. Review the missing Production bindings and effective database/store identities with the operator; prepare concrete, separately scoped configuration forms before requesting any new access/credential approval.
 2. Resolve the remaining hosted identity/recovery, cross-account denial/idempotency, interrupted-request and scheduler operations cases against the dated audit checklist. Keep provider-blocked results separate from observed HTTP denials. Refresh the legacy live-file inventory and migration-history evidence read-only.
 3. Prepare the live backup/migration/backfill and rollback plans with counts, ownership and explicit approval boundaries. Registration/name/domain/service arrangements remain parallel business work from the proposal; their current completion was not verified in this technical pass.

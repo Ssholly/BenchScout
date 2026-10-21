@@ -17,7 +17,7 @@ Module._load=function(name,parent,main) {
 const backup=require('../lib/document-backup.ts');
 const { storeDocument, removeDocument }=require('../lib/documents.ts');
 const { POST }=require('../app/api/admin/document-backups/route.ts');
-const names=['DOCUMENT_BACKUP_ENABLED','BLOB_BACKUP_READ_WRITE_TOKEN','DOCUMENT_BACKUP_ENCRYPTION_KEY','BLOB_PRIVATE_READ_WRITE_TOKEN','DOCUMENT_BACKUP_ALERT_EMAIL','DOCUMENT_BACKUP_TEST_MODE','VERCEL_ENV','ADMIN_SECRET'];
+const names=['DOCUMENT_BACKUP_ENABLED','BLOB_BACKUP_READ_WRITE_TOKEN','DOCUMENT_BACKUP_ENCRYPTION_KEY','BLOB_PRIVATE_READ_WRITE_TOKEN','DOCUMENT_BACKUP_ALERT_EMAIL','DOCUMENT_BACKUP_TEST_MODE','VERCEL_ENV','ADMIN_SECRET','DATABASE_URL','VERCEL_GIT_COMMIT_SHA'];
 const previous=Object.fromEntries(names.map(k=>[k,process.env[k]]));
 beforeEach(()=>{map.clear();writes=0;failWrites=0;alerts=0;deleted=[];lastAlert=null;Object.assign(process.env,{DOCUMENT_BACKUP_ENABLED:'true',BLOB_BACKUP_READ_WRITE_TOKEN:'backup',DOCUMENT_BACKUP_ENCRYPTION_KEY:'ab'.repeat(32),BLOB_PRIVATE_READ_WRITE_TOKEN:'live',DOCUMENT_BACKUP_ALERT_EMAIL:'operator@example.com',DOCUMENT_BACKUP_TEST_MODE:'true',VERCEL_ENV:'preview',ADMIN_SECRET:'s'.repeat(40)});prisma.rateLimit.upsert=async()=>({count:1});mailer.sendEmail=async(...args)=>{alerts++;lastAlert=args;};});
 after(()=>{for(const k of names){if(previous[k]===undefined)delete process.env[k];else process.env[k]=previous[k];}});
@@ -91,4 +91,33 @@ test('alert test uses the configured recipient and shared mail path without indu
 test('missing recipient or rejected mail transport cannot return alert submission success',async()=>{
  delete process.env.DOCUMENT_BACKUP_ALERT_EMAIL;assert.equal((await POST(request({action:'test-alert'}))).status,503);assert.equal(alerts,0);
  process.env.DOCUMENT_BACKUP_ALERT_EMAIL='operator@example.com';mailer.sendEmail=async()=>{throw new Error('private provider details');};const response=await POST(request({action:'test-alert'}));assert.equal(response.status,503);assert.equal((await response.text()).includes('private provider details'),false);
+});
+
+test('runtime readiness queries deployed database and fingerprints target without returning credentials',async()=>{
+ process.env.DATABASE_URL='postgresql://private-user:private-password@intended-pooler.example.com/neondb?sslmode=require';
+ prisma.$queryRaw=async()=>[{name:'neondb'}];
+ const response=await POST(request({action:'runtime-readiness'}));assert.equal(response.status,200);
+ const data=await response.json();assert.equal(data.databaseConnected,true);assert.equal(data.configuredDatabaseMatches,true);
+ assert.equal(data.targetFingerprint,require('node:crypto').createHash('sha256').update('intended.example.com/neondb').digest('hex'));
+ const text=JSON.stringify(data);for(const value of ['private-user','private-password','intended-pooler.example.com'])assert.equal(text.includes(value),false);
+ assert.equal(writes,0);assert.equal(alerts,0);
+ prisma.$queryRaw=async()=>[{name:'different_database'}];assert.equal((await (await POST(request({action:'runtime-readiness'}))).json()).configuredDatabaseMatches,false);
+});
+test('runtime readiness rejects wrong administrator key before querying database',async()=>{
+ let queried=false;prisma.$queryRaw=async()=>{queried=true;return [{name:'neondb'}];};
+ assert.equal((await POST(request({action:'runtime-readiness'},'wrong'))).status,401);assert.equal(queried,false);assert.equal(writes,0);
+});
+test('Production QA storage requires Production, test mode off and explicit confirmation',async()=>{
+ assert.equal((await POST(request({action:'runtime-storage-check',confirm:'DELETE RUNTIME QA ONLY'}))).status,403);
+ process.env.VERCEL_ENV='production';assert.equal((await POST(request({action:'runtime-storage-check',confirm:'DELETE RUNTIME QA ONLY'}))).status,403);
+ process.env.DOCUMENT_BACKUP_TEST_MODE='false';assert.equal((await POST(request({action:'runtime-storage-check'}))).status,400);
+ assert.equal(writes,0);
+ const response=await POST(request({action:'runtime-storage-check',confirm:'DELETE RUNTIME QA ONLY',url:source,userId:'real-person'}));
+ assert.equal(response.status,200);const data=await response.json();assert.equal(data.sourceLossVerified,true);assert.equal(data.decryptedBytesMatch,true);assert.equal(data.restoredPrivateReadMatches,true);assert.equal(map.size,0);assert.equal(deleted.includes(source),false);
+ assert.equal((await POST(request({action:'synthetic-restore',confirm:'DELETE QA ONLY'}))).status,403);
+});
+test('Production alert requires confirmation and uses only configured recipient',async()=>{
+ process.env.VERCEL_ENV='production';process.env.DOCUMENT_BACKUP_TEST_MODE='false';
+ assert.equal((await POST(request({action:'runtime-alert'}))).status,400);assert.equal(alerts,0);
+ const response=await POST(request({action:'runtime-alert',confirm:'SEND RUNTIME ALERT',to:'attacker@example.com'}));assert.equal(response.status,200);assert.equal(alerts,1);assert.equal(lastAlert[0],'operator@example.com');assert.equal(writes,0);assert.equal((await response.json()).alertSubmitted,true);
 });
