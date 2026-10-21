@@ -1,5 +1,13 @@
 # Deploying the security upgrade
 
+## 21 October 2026 — Approved staged Production diagnostics
+
+The operator explicitly approved staging source `b399b13c47041653fb6649bcc6abb06bef377a09`, without main merge, live-domain promotion, bulk backfill or changes to real documents. After official CLI authorisation, a clean detached checkout was linked to the existing sholly/bench-scout project. `vercel deploy --prod --skip-domain` created Ready/Staged deployment `8DwvVxyGiP1eZScMQKgHFWms833h`; first operator readiness submission was rejected by the configured canonical-origin guard before administrator/database access.
+
+The same source was rebuilt as Ready/Staged [5xj9zsypDUgenQQ2kLA1pgkErTqB](https://vercel.com/sholly/bench-scout/5xj9zsypDUgenQQ2kLA1pgkErTqB), with build/runtime `NEXT_PUBLIC_APP_URL=https://bench-scout-sholly.vercel.app` overrides only for that deployment. Use that protected alias for diagnostics. The project’s saved live URL and origin-security rules were not changed. Vercel shows custom-domain assignment Skipped; a fresh overview still shows `bench-scout.vercel.app` on the July main deployment `4bTpas5uPn1jRpwGeu4eUJvX7nhZ`. Vercel authentication remains enabled; an anonymous initial staged request redirected to Vercel SSO.
+
+A deliberately wrong-key request through the corrected staging origin returned Unauthorized, as expected. Valid-key connection, QA storage recovery and alert receipt are pending. No database migration, real-document backfill, QA storage check or Production alert occurred. **Do not promote this diagnostics build with its staging canonical URL**. [Runtime acceptance](PRODUCTION-RUNTIME-ACCEPTANCE.md) records precise limits and the operator handoff.
+
 ## 19 October 2026 — Testing release preparation
 
 User requested publishing the next audit priority to the existing Vercel test link. Target branch: `testing`; repository: `Ssholly/BenchScout`; existing Vercel project: `sholly/bench-scout`. This release includes the pending employer/company/vacancy safety controls, first application-journey audit fixes, and opt-in professional summaries/preview. No production branch update is requested.

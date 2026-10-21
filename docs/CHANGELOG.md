@@ -1,5 +1,15 @@
 # Change log
 
+## 21 October 2026 — Corrected staged runtime build Ready
+
+- Replacement staged deployment `5xj9zsypDUgenQQ2kLA1pgkErTqB` is Ready with a deployment-only canonical URL matching its protected team alias. The same approved `b399b13` source was used; saved project URL and security rules were not changed.
+- An intentionally wrong-key request now passes origin validation and is correctly rejected as Unauthorized. Correct-key readiness remains pending private operator re-entry. The live domain remains on July main; no QA storage check, real-file copy or Production alert has run. [Runtime evidence](PRODUCTION-RUNTIME-ACCEPTANCE.md).
+
+## 21 October 2026 — Staged build reached Ready; origin mismatch diagnosed
+
+- Created approved-source Production deployment `8DwvVxyGiP1eZScMQKgHFWms833h` as Ready/Staged with custom-domain assignment skipped. Verified the user-facing live domain stays on the July main release; anonymous staged access redirects to Vercel authentication.
+- First operator readiness submission stopped at the canonical-origin guard. Preparing the same source with an exact staging-alias canonical URL override for that deployment only; saved live settings and security rules stay unchanged. Runtime database/storage/alert acceptance is not established. [Checkpoint and promotion restriction](PRODUCTION-RUNTIME-ACCEPTANCE.md).
+
 ## 21 October 2026 — Approved staged deployment authentication prepared
 
 - Operator approved staging `b399b13` without promotion. Prepared a clean detached checkout and official Vercel CLI 65.0.0. Account check reports Logged out; the official device-authorisation flow awaits operator action.

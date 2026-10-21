@@ -43,6 +43,8 @@ A private-file conversion or database migration is not undone by reverting appli
 
 ## Ordered next steps
 
+Latest execution: the approved `b399b13` source has a Ready/Staged Production diagnostic deployment, `5xj9zsypDUgenQQ2kLA1pgkErTqB`. Its exact staging-alias canonical URL is overridden only for that deployment after an initial origin rejection; security rules are unchanged. Wrong-key denial now passes the origin gate. Correct-key runtime connection, QA storage recovery and alert receipt remain pending. The live domain still serves July main. Do not promote this diagnostic build with its staging canonical configuration; see [runtime checkpoint](PRODUCTION-RUNTIME-ACCEPTANCE.md).
+
 Runtime acceptance preparation is available in [Production runtime acceptance](PRODUCTION-RUNTIME-ACCEPTANCE.md): protected connection fingerprint, explicitly confirmed QA storage restoration and configured-recipient alert checks. The updated implementation passed lint/typecheck/239 tests/build and narrow-screen inspection. The existing live homepage returned 200 and backup endpoint 404. Approval of a **staged Production deployment without domain assignment** is the next execution boundary; it does not authorise main merge, promotion, bulk backfill or transfer of existing files.
 
 1. Review the missing Production bindings and effective database/store identities with the operator; prepare concrete, separately scoped configuration forms before requesting any new access/credential approval.
