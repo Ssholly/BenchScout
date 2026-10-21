@@ -95,3 +95,8 @@ Prepared five Secret variables in the Vercel form with **testing only** selected
 ## 21 October 2026 — Operator saved testing credentials; redeployment pending
 
 The operator reported Save after private entry. Fresh Vercel metadata showed all five new variables as **Secret**, scoped to **Preview / testing branch only**. Values were not revealed or read back; this does not establish key strength, equality, correct token/store ownership or successful backup. Vercel explicitly requires a new deployment to apply the saved variables. This documentation checkpoint triggers that testing deployment; hosted configuration/provider checks remain pending. No production binding or schema change.
+
+
+## 21 October 2026 — Testing redeployment succeeded; operator check prepared
+
+Credential-save checkpoint `b7370c7` reached the testing alias through successful Vercel deployment `EQQwtr3UW2XhdEVBk9z2cSLKY1Ne`. The hosted `/admin/backups` screen loaded, and a deliberately invalid administrator key returned Unauthorized without storage work; the key field cleared. Reloaded the fresh deployment and handed the clean form to the operator for correct-key configuration and QA-only loss/restore execution. Configuration booleans, backup-provider token/key correctness and recovery results are not yet claimed. No real file or database row was changed in this checkpoint.

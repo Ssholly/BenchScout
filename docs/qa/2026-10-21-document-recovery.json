@@ -45,8 +45,15 @@
       "operatorScreen320px": "passed"
     },
     "configuration": "operator saved; five Secret Preview/testing variables observed; values not read",
-    "hostedActivation": "new deployment pending",
+    "hostedActivation": "redeployed; effective flags/provider check awaits operator",
     "realProviderLossRestore": "pending",
     "alertRecipientApproved": true
+  },
+  "deployment": {
+    "commit": "b7370c7",
+    "vercel": "EQQwtr3UW2XhdEVBk9z2cSLKY1Ne",
+    "state": "success",
+    "hostedInvalidKey": "Unauthorized; secret cleared",
+    "correctKeyAndLossRestore": "operator handoff pending"
   }
 }

@@ -173,3 +173,8 @@ Adaptive-grid follow-up `87bebfd` deployed successfully as Vercel `HpTxd6mR2biKS
 ### 20 October 2026 — Compact recruitment workspace
 
 Application `7aaabef` reached the testing alias through successful Vercel deployment `HMr8UtkBPqP2cdAVKZoVtmurbhiC`, following `e0d9e35` and `5e96bbb`. Compact posting, drawer and match layouts were verified with long synthetic content on phone/desktop widths; final posting/control bounds passed 320/390/1200/1440px. The pending-applicant interview form passed 320/390px without a new save/email. Lint, TypeScript, 220 tests and production builds passed. No API/schema/configuration/permission change or production branch release. [Layout evidence](RECRUITMENT-LAYOUT.md) and [hosted acceptance](HOSTED-EMPLOYER-ACCEPTANCE.md) distinguish completed UI checks from the browser-blocked direct-denial check.
+
+
+### 21 October 2026 — Encrypted document backup tooling and testing configuration
+
+Implementation `2bbb903` passed lint, TypeScript, 230 tests and a webpack production build. After the operator privately saved five testing-only Secret variables, checkpoint `b7370c74cd7d871613f830468048a060c54ab1df` deployed successfully as [EQQwtr3UW2XhdEVBk9z2cSLKY1Ne](https://vercel.com/sholly/bench-scout/EQQwtr3UW2XhdEVBk9z2cSLKY1Ne), serving the existing testing alias. Secret values were not read back. Hosted operator screen and invalid-key rejection passed; correct-key configuration/provider restoration are awaiting operator execution. No production push, schema/migration, actual existing-file backfill or real-document restore. See [document recovery](DOCUMENT-RECOVERY.md).

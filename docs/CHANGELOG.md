@@ -1,5 +1,10 @@
 # Change log
 
+## 21 October 2026 — Hosted backup deployment ready for acceptance
+
+- Testing redeployment after the credential save succeeded. Hosted backup screen loaded and rejected a deliberately invalid administrator key.
+- Prepared correct-key configuration and QA-only loss/restore execution for the operator. Successful backup activation/provider restoration are not yet claimed. [Deployment](DEPLOYMENT.md), [document recovery](DOCUMENT-RECOVERY.md).
+
 ## 21 October 2026 — Testing backup credentials saved
 
 - Operator saved the private inputs. Vercel metadata confirms five Secret variables scoped to Preview/testing; values were not read. Correctness and hosted recovery remain unverified.
