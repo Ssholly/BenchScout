@@ -1,10 +1,17 @@
 # Production older-file backfill — 21 October 2026
 
-Status: guarded preview/apply implementation validated and deployed to the protected Production diagnostic stage; **no real files copied; hosted preview awaits private administrator authentication**. The existing public app remains on July main. Earlier accepted runtime checks establish the connection and QA storage path, not protection of older files.
+Status: guarded preview/apply implementation validated and deployed to the protected Production diagnostic stage; **hosted metadata preview passed; no real files copied**. The existing public app remains on July main. Earlier accepted runtime checks establish the connection and QA storage path, not protection of older files.
 
-Validation passed: lint, TypeScript, **251 tests** (12 focused Production-backfill tests), webpack Production build and diff checks. Built preview controls fit 320px and 390px viewports without horizontal overflow; the long fingerprint field was checked at 390px. No administrator credential or operator request was submitted during local layout verification. Apply controls require a valid enabled-gate plan and were not exercised against real storage. Hosted protected preview awaits private operator authentication.
+Validation passed: lint, TypeScript, **251 tests** (12 focused Production-backfill tests), webpack Production build and diff checks. Built preview controls fit 320px and 390px viewports without horizontal overflow; the long fingerprint field was checked at 390px. No administrator credential or operator request was submitted during local layout verification. Apply controls require a valid enabled-gate plan and were not exercised against real storage. Hosted protected preview has now passed with the exact operator-reported result recorded below.
 
 Reviewed deployment candidate: `64e2f83c62d7c81b3905cdc075793255b8e7d186`, pushed to testing. A clean isolated checkout is linked to the existing sholly/bench-scout project using the already authorised official CLI; its local generated environment file is ignored. The operator approved staging this revision; deployment is Ready with `--prod --skip-domain`, the established protected staging canonical URL at build/runtime, and explicit `DOCUMENT_BACKUP_BACKFILL_APPLY_ENABLED=false`. This checkpoint authorises neither a real file copy nor a live-domain promotion.
+
+## 21 October 2026 — Hosted Production metadata preview passed
+
+The operator supplied the exact successful response from the protected `64e2f83` stage: dryRun=true, eligibleReferences=3, uniqueFiles=3, blockedReferences=0 and inventoryReady=true. The current inventory is one CV, one practising licence and one profile image; every other supported kind is zero. This agrees with the independently queried aggregate inventory. applyEnabled=false and canApply=false confirm the disabled copy gate. The response reports fileContentsRead=false, businessRecordsChanged=false and applicationGrantsChanged=false. Evidence is the operator-reported response, not an independently captured result screen. Operational rate-limit bookkeeping is outside the business-record claim.
+
+No real files have been copied or decrypt-verified by this backfill. The returned preview expiry is `2026-10-21T15:24:35.699Z`; it is not a reusable copy approval or enabled plan. Next: prepare/review the live release and rollback plan, verify current backup lifecycle hooks on the public app (or an explicitly approved enforced write pause), then obtain fresh inventory and explicit real-file copy approval. Keep apply disabled until that prerequisite is resolved. Do not directly promote the diagnostic build with its staging canonical URL. [Workflow](PRODUCTION-DOCUMENT-BACKFILL.md) and [structured evidence](qa/2026-10-21-production-backfill.json).
+
 
 ## Refreshed read-only inventory
 

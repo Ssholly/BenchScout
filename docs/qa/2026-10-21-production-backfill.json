@@ -33,7 +33,7 @@
   },
   "execution": {
     "newStagedDeployment": true,
-    "hostedGuardedPreviewRun": false,
+    "hostedGuardedPreviewRun": true,
     "realFileBytesRead": false,
     "realFilesCopied": 0,
     "liveDomainChanged": false,
@@ -45,8 +45,8 @@
     "publicAliasDeploymentUnchanged": "dpl_4bTpas5uPn1jRpwGeu4eUJvX7nhZ"
   },
   "remaining": [
-    "private operator authentication and protected metadata-only preview",
-    "resolve live-hook/write-pause prerequisite before approving real copy"
+    "resolve live-hook/write-pause prerequisite before approving real copy",
+    "fresh reviewed inventory and explicit real-file copy approval after prerequisite is resolved"
   ],
   "validation": {
     "lint": true,
@@ -60,6 +60,31 @@
     ],
     "horizontalOverflow": false,
     "localOperatorActionsSubmitted": false,
-    "hostedGuardedPreviewPassed": false
+    "hostedGuardedPreviewPassed": true
+  },
+  "hostedPreview": {
+    "evidence": "operator-reported exact response",
+    "dryRun": true,
+    "eligibleReferences": 3,
+    "uniqueFiles": 3,
+    "blockedReferences": 0,
+    "kinds": {
+      "resume": 1,
+      "license": 1,
+      "provisional": 0,
+      "degree": 0,
+      "result": 0,
+      "placement": 0,
+      "certificate": 0,
+      "avatar": 1
+    },
+    "limit": 10,
+    "inventoryReady": true,
+    "applyEnabled": false,
+    "canApply": false,
+    "expiresAt": "2026-10-21T15:24:35.699Z",
+    "fileContentsRead": false,
+    "businessRecordsChanged": false,
+    "applicationGrantsChanged": false
   }
 }

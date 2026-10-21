@@ -1,5 +1,9 @@
 # Change log
 
+## 21 October 2026 — Production file metadata preview accepted
+
+- Recorded the operator-reported dry run: three eligible unique current files, zero blocked, copying disabled, no file contents read or business/grant changes. Real-file backfill remains pending live hooks or an approved enforced write pause, fresh review and copy approval. [Evidence](qa/2026-10-21-production-backfill.json).
+
 ## 21 October 2026 — Protected Production preview deployed
 
 - Staged reviewed `64e2f83` with copying explicitly disabled and Vercel authentication retained. Verified matching provider source metadata and unchanged public deployment. Hosted metadata preview awaits private administrator entry; no real files copied. [Evidence](qa/2026-10-21-production-backfill.json).
