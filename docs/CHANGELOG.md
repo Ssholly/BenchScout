@@ -1,5 +1,10 @@
 # Change log
 
+## 21 October 2026 — Production backup store created
+
+- Created the explicitly approved separate **benchscout-production-backups** Private/IAD1 store; verified empty and left disconnected. No live documents were transferred.
+- Prepared eight Production-only Secret entries and the separately approved live alert recipient. Private operator credential entry/save remains pending; no release, migration, application-code or existing Production-binding change. Updated the [configuration handoff](PRODUCTION-CONFIGURATION.md).
+
 ## 21 October 2026 — Production configuration preparation
 
 - Verified live provider project/database identity and existing private document-store metadata. Prepared a separate Private/IAD1 production-backup creation form without submitting it.

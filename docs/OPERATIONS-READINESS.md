@@ -159,3 +159,7 @@ Hosted fixed-candidate backfill returned 2 eligible/2 verified with zero failure
 ## 21 October 2026 — Current Production wiring review
 
 Normal hosted synthetic upload/private preview and raw anonymous encrypted-archive HTTP 403 now pass. A fresh Vercel metadata review showed the private-upload, administrator, salary-owner and backup variables without Production bindings; Shared reports none linked. No values were revealed/saved. Read-only compatibility of the normal configured local database passed, without proving effective Production mapping or migration checksums. [Main release readiness](MAIN-RELEASE-READINESS.md) records the concrete Production setup and migration/backfill/rollback gates. No main/Production update or real-file transfer occurred.
+
+## 21 October 2026 — Approved Production backup provisioning
+
+After explicit approval, the separate **benchscout-production-backups** Private/IAD1 store was created and observed at 0 B, with no project connection. A distinct live alert inbox was approved and prefilled in a Production-only eight-variable Secret form. Five sensitive values remain for private operator entry/save; no environment save, deployment, migration or live-file transfer occurred. Existing testing configuration stays separate. See [Production configuration](PRODUCTION-CONFIGURATION.md).
