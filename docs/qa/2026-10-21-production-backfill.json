@@ -1,0 +1,60 @@
+{
+  "date": "2026-10-21",
+  "timezone": "Africa/Lagos",
+  "readOnlyInventory": {
+    "targetFingerprintMatchesAcceptedProduction": true,
+    "users": 2,
+    "privateReferences": 3,
+    "uniquePrivateFiles": 3,
+    "otherReferences": 0,
+    "kinds": {
+      "resume": 1,
+      "license": 1,
+      "provisional": 0,
+      "degree": 0,
+      "result": 0,
+      "placement": 0,
+      "certificate": 0,
+      "avatar": 1
+    },
+    "realFileContentsRead": false,
+    "recordsChanged": false
+  },
+  "implementation": {
+    "productionOnly": true,
+    "requiresVerifiedTargetFingerprint": true,
+    "signedPlanBoundToInventoryAndConfiguration": true,
+    "expiryMinutes": 15,
+    "maximumAccounts": 100,
+    "maximumDistinctFiles": 10,
+    "applyDefaultOff": true,
+    "requiresLiveHooksOrApprovedEnforcedWritePause": true,
+    "testingCliStillTestingOnly": true
+  },
+  "execution": {
+    "newStagedDeployment": false,
+    "hostedGuardedPreviewRun": false,
+    "realFileBytesRead": false,
+    "realFilesCopied": 0,
+    "liveDomainChanged": false
+  },
+  "remaining": [
+    "approve updated staged deployment with apply explicitly false",
+    "run protected metadata-only preview",
+    "resolve live-hook/write-pause prerequisite before approving real copy"
+  ],
+  "validation": {
+    "lint": true,
+    "typecheck": true,
+    "testsPassed": 251,
+    "focusedProductionBackfillTests": 12,
+    "productionBuild": true,
+    "previewUiWidths": [
+      320,
+      390
+    ],
+    "horizontalOverflow": false,
+    "localOperatorActionsSubmitted": false,
+    "hostedGuardedPreviewPassed": false
+  }
+}

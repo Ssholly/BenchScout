@@ -1,5 +1,9 @@
 # Private document recovery
 
+## 21 October 2026 — Older-file copy prepared with live-write gate
+
+Fresh metadata-only inventory covers all eight supported kinds and still finds three distinct current private files (CV, licence, avatar). Added the [Production backfill workflow](PRODUCTION-DOCUMENT-BACKFILL.md): signed, expiring previews bound to the verified target/configuration/current references, explicit copy consent, private decrypt verification and concurrent replacement checks. The independent apply flag defaults off: old public upload/deletion code must be replaced with the new backup hooks or subject to a reviewed enforced write pause before real copying. No real file bytes were read or copied and no new staged revision has been deployed at this preparation checkpoint.
+
 ## 21 October 2026 — Staged Production runtime acceptance complete
 
 Using the approved staged source and saved Production services, correct-key readiness matched the intended database fingerprint. The operator-reported 85-byte QA canary passed encrypted backup, verified source loss, exact decrypted bytes and restored private read-back. Fresh provider listings independently showed the archive store empty and no `qa-recovery/` source objects. The labelled Production alert was submitted and the approved recipient confirmed receipt. No older real files were copied; the public live release remains unchanged. [Runtime acceptance](PRODUCTION-RUNTIME-ACCEPTANCE.md) distinguishes reported storage output, observed cleanup and actual inbox confirmation. Guarded real-file backfill and live release remain separate.

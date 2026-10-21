@@ -4,6 +4,8 @@
 .page p { font-size: 14px; line-height: 1.55; color: #52657c; margin: 8px 0 14px; }
 .page label { display: block; font-size: 14px; font-weight: 600; margin-top: 18px; }
 .page input { display: block; width: 100%; min-width: 0; padding: 12px; margin: 8px 0 12px; border: 1px solid #b6c7d8; border-radius: 8px; background: white; }
+.page label.approval { display: flex; align-items: flex-start; gap: 10px; line-height: 1.5; margin-bottom: 14px; }
+.page label.approval input { flex: 0 0 18px; width: 18px; height: 18px; padding: 0; margin: 2px 0 0; }
 .page button { max-width: 100%; min-height: 44px; white-space: normal; padding: 10px 16px; color: white; background: #142b49; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; }
 .page button:disabled { opacity: .45; cursor: not-allowed; }
 .page details { margin-top: 24px; padding-top: 18px; border-top: 1px solid #e1e8ef; }

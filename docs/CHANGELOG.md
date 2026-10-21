@@ -1,5 +1,12 @@
 # Change log
 
+## 21 October 2026 — Guarded Production older-file workflow prepared
+
+- Refreshed all eight vault-field counts read-only: three current distinct private files (CV, licence, avatar), no legacy/other references. No real file bytes read or copied.
+- Added protected Production inventory previews and explicitly confirmed apply plans, with target/configuration/inventory binding, 15-minute expiry, pilot limits, deduplication, concurrent-reference checks and decrypt verification. Signed plans remain in page memory; counts exclude raw identities/URLs.
+- Added `DOCUMENT_BACKUP_BACKFILL_APPLY_ENABLED`, default off. Copying must wait for verified live backup hooks or an approved enforced write pause; the public app is still old. Existing testing-only backfill remains restricted. [Operational contract and boundaries](PRODUCTION-DOCUMENT-BACKFILL.md). No schema/migration/new Production deployment or real-file transfer.
+- Lint, TypeScript, all 251 tests and webpack Production build passed. Built metadata-preview controls fit 320/390px with no overflow; local verification submitted no operator request. The updated staged preview is not deployed yet.
+
 ## 21 October 2026 — Staged Production storage recovery and alert accepted
 
 - Operator reported the 85-byte QA storage canary passed source loss, authenticated decryption and exact restored private read-back. Independently refreshed provider listings confirmed archive cleanup and no remaining `qa-recovery/` source objects.

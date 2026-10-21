@@ -6,11 +6,14 @@ import { backupEnabled, backupConfiguration, sendBackupAlert } from "@/lib/docum
 import { backfillSyntheticDocuments } from "@/lib/synthetic-document-backfill";
 import { runDocumentRecoveryProbe } from "@/lib/document-recovery-probe";
 import { prisma } from "@/lib/prisma";
+import { previewProductionBackfill, applyProductionBackfill } from "@/lib/production-document-backfill";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
 export const POST = withApi("admin", async request => {
   const body = await request.json();
+  if (body.action === "production-backfill-preview") return NextResponse.json(await previewProductionBackfill(body.expectedTargetFingerprint), { headers: { "Cache-Control": "no-store" } });
+  if (body.action === "production-backfill-apply") return NextResponse.json(await applyProductionBackfill(body.expectedTargetFingerprint, body.planToken, body.confirm), { headers: { "Cache-Control": "no-store" } });
   if (body.action === "status") {
     let configured = false;
     try { backupConfiguration(); configured = true; } catch { /* Presence check only. */ }

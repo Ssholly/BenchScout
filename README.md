@@ -71,6 +71,7 @@ Implemented improvements include an application-readiness checklist, source and 
 - [Launch audit](docs/LAUNCH-AUDIT.md): dated findings, local fixes, regression evidence, remaining pilot blockers and release status.
 - [Main release readiness](docs/MAIN-RELEASE-READINESS.md): current configuration, staged runtime evidence and ordered backfill/cutover gates.
 - [Production runtime acceptance](docs/PRODUCTION-RUNTIME-ACCEPTANCE.md): staged Production deployment, protected database/storage/alert diagnostics and promotion boundaries.
+- [Production older-file backfill](docs/PRODUCTION-DOCUMENT-BACKFILL.md): metadata preview, signed current-file plans and the default-off copy gate tied to live backup hooks or a controlled write pause.
 
 - [Candidate readiness and brand review](docs/CANDIDATE-AND-BRAND-REVIEW.md): profile separation, pilot gaps, focused tests and preliminary CAC/domain checks.
 

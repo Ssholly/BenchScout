@@ -7,15 +7,24 @@ export default function BackupOperations() {
   const [secret, setSecret] = useState("");
   const [busy, setBusy] = useState(false);
   const [result, setResult] = useState("");
+  const [targetFingerprint, setTargetFingerprint] = useState("");
+  const [backfillPlan, setBackfillPlan] = useState<{ token: string; files: number } | null>(null);
+  const [copyApproved, setCopyApproved] = useState(false);
   async function run(action: string) {
     setBusy(true); setResult("");
+    if (action !== "production-backfill-apply") setBackfillPlan(null);
     try {
-      const confirmations: Record<string, string> = { "synthetic-restore": "DELETE QA ONLY", "runtime-storage-check": "DELETE RUNTIME QA ONLY", "runtime-alert": "SEND RUNTIME ALERT" };
-      const response = await fetch("/api/admin/document-backups", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ adminSecret: secret, action, ...(confirmations[action] ? { confirm: confirmations[action] } : {}) }) });
+      const confirmations: Record<string, string> = { "synthetic-restore": "DELETE QA ONLY", "runtime-storage-check": "DELETE RUNTIME QA ONLY", "runtime-alert": "SEND RUNTIME ALERT", "production-backfill-apply": "COPY CURRENT PRIVATE FILES" };
+      if (action === "production-backfill-apply" && (!backfillPlan || !copyApproved)) throw new Error("Review the preview first");
+      const response = await fetch("/api/admin/document-backups", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ adminSecret: secret, action, ...(confirmations[action] ? { confirm: confirmations[action] } : {}), ...(action.startsWith("production-backfill-") ? { expectedTargetFingerprint: targetFingerprint, ...(action === "production-backfill-apply" ? { planToken: backfillPlan?.token } : {}) } : {}) }) });
       const data = await response.json();
-      setResult(JSON.stringify(data, null, 2));
+      if (action === "production-backfill-preview" && response.ok && data.canApply && typeof data.planToken === "string") setBackfillPlan({ token: data.planToken, files: data.uniqueFiles });
+      // Keep the signed approval plan in memory; do not display it in copied results.
+      const display = { ...data };
+      delete display.planToken;
+      setResult(JSON.stringify(display, null, 2));
     } catch { setResult("Request could not complete. No recovery result is established."); }
-    finally { setSecret(""); setBusy(false); }
+    finally { setSecret(""); setBusy(false); setCopyApproved(false); if (action === "production-backfill-apply") setBackfillPlan(null); }
   }
   return <main className={styles.page}>
     <h1>Document backup operations</h1>
@@ -32,6 +41,18 @@ export default function BackupOperations() {
     <button disabled={busy || !secret} onClick={() => run("runtime-storage-check")}>Run Production QA storage check</button>
     <p>The alert button sends one clearly labelled QA-only message to the configured, approved Production alert inbox. Confirm actual inbox receipt separately.</p>
     <button disabled={busy || !secret} onClick={() => run("runtime-alert")}>Send Production test alert</button>
+    </details>
+    <details>
+    <summary>Production older-file backfill</summary>
+    <p>First preview the current vault inventory without reading file contents or copying files. Compare it with the independently verified Production database. Plans expire after 15 minutes and are rejected if the target, backup configuration or current file references change. This pilot tool is limited to 100 accounts and 10 distinct files per reviewed plan. Applying stays disabled until the operator enables it after reviewing live backup hooks or an approved write pause.</p>
+    <label htmlFor="backfill-target">Verified Production database fingerprint</label>
+    <input id="backfill-target" type="text" autoComplete="off" maxLength={64} spellCheck={false} value={targetFingerprint} onChange={event => { setTargetFingerprint(event.target.value.trim()); setBackfillPlan(null); setCopyApproved(false); }} />
+    <button disabled={busy || !secret || !/^[a-f0-9]{64}$/.test(targetFingerprint)} onClick={() => run("production-backfill-preview")}>Preview current Production files</button>
+    {backfillPlan && <>
+      <p>Prepared inventory: {backfillPlan.files} distinct current files. Applying creates encrypted, decrypt-verified copies in the configured private Production backup store. Existing source files, candidate records and application permissions stay unchanged. A copy whose source is no longer current is removed from backup storage.</p>
+      <label className={styles.approval}><input type="checkbox" checked={copyApproved} onChange={event => setCopyApproved(event.target.checked)} />I approve this reviewed current-file copy and cleanup of archive copies whose source is no longer current.</label>
+      <button disabled={busy || !secret || !copyApproved} onClick={() => run("production-backfill-apply")}>Back up reviewed Production files</button>
+    </>}
     </details>
     <h2>Older synthetic files</h2>
     <p>Back up and decrypt-verify the current private vault files belonging only to QA ONLY - Synthetic Candidate 20261020. Replaced or deleted references are excluded. Files, database records and application consent stay unchanged. Real accounts are outside this check.</p>

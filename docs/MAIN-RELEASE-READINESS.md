@@ -43,6 +43,8 @@ A private-file conversion or database migration is not undone by reverting appli
 
 ## Ordered next steps
 
+The [older-file workflow](PRODUCTION-DOCUMENT-BACKFILL.md) is now implemented for review. Refreshed aggregate inventory remains three private current files across all eight kinds. It introduces a separate default-off apply gate because the old live app lacks current backup lifecycle hooks; copying awaits verified live hooks or an enforced approved write pause. Initial staged preview must keep apply disabled. No older real files are protected yet by this workflow, and no new staged revision has been deployed.
+
 Latest accepted result: scoped staged Production database, QA encrypted backup/source-loss restoration, independently checked cleanup and recipient-confirmed alert delivery now pass. Existing real-file backfill is not performed, and the public live domain is unchanged. Proceed to the guarded older-file plan; do not treat this diagnostic build, with its staging canonical override, as ready for direct live promotion. [Acceptance details](PRODUCTION-RUNTIME-ACCEPTANCE.md).
 
 Current staged runtime acceptance: correct-key readiness now passes, including the expected target fingerprint and backup configuration/test-mode flags. Provider deployment metadata confirms approved `b399b13`, despite a null runtime Git SHA field. The next operator check is QA-only source loss/encrypted restoration/cleanup, followed by approved-inbox alert receipt. These are not yet passed; live-domain release and guarded older-file backfill stay separate. [Runtime acceptance](PRODUCTION-RUNTIME-ACCEPTANCE.md).

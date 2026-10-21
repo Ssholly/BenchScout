@@ -1,5 +1,9 @@
 # Hosted environment and recovery readiness
 
+## 21 October 2026 — Production backfill planning and copy gate
+
+The guarded older-file tool now separates metadata-only preview from explicitly approved apply. The refreshed current inventory is three private files across all eight vault kinds. Apply is default-off and must stay disabled while old public upload/deletion behavior is active without an approved enforced write pause. Signed plans, target/inventory binding and decrypt verification do not replace that operational prerequisite. [Backfill contract](PRODUCTION-DOCUMENT-BACKFILL.md). No real file transfer or new hosted deployment has occurred in this checkpoint.
+
 ## 21 October 2026 — Staged runtime database/storage/alert accepted
 
 The staged Production target fingerprint matches the expected live target; provider source metadata matches the approved commit. Operator-reported source-loss/encrypted restoration passed, provider listings independently confirmed QA object cleanup, and the approved recipient confirmed alert inbox delivery. These are scoped synthetic checks on the staged runtime; no real-file backfill or live-domain promotion occurred. [Accepted evidence and remaining work](PRODUCTION-RUNTIME-ACCEPTANCE.md).
