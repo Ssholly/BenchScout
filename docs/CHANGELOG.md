@@ -1,5 +1,9 @@
 # Change log
 
+## 21 October 2026 — Public legacy surface contained
+
+- After explicit service-pause approval, activated reviewed `336c6ed` on the public domain. Verified matching source metadata, preserved diagnostic/testing aliases and ten safe hosted 503 checks plus the visible notice. Older protected deployments remain separate; no data/credential mutation or full hardened release. [Evidence](qa/2026-10-21-legacy-containment.json).
+
 ## 21 October 2026 — Legacy containment and upload failure boundaries
 
 - Prepared and pushed a separate terminal containment build for unsafe July handlers; public service-pause approval is pending. Added six hardened upload/delete fault-injection checks; all 257 application tests pass. No live activation or real-file mutation; durable deletion reconciliation remains open. [Scope](LEGACY-CONTAINMENT.md).
