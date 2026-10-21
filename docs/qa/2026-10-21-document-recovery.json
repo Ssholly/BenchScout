@@ -88,7 +88,7 @@
       "overflow": false
     },
     "scope": "fixed known synthetic candidate only; configured approved alert recipient",
-    "backfill": "counts not captured; operator asked for idempotent rerun",
+    "backfill": "latest attempt Unauthorized before handler/storage; private existing-key retry pending",
     "alertSubmission": "passed: hosted response independently observed",
     "inboxReceipt": "passed: approved recipient explicitly confirmed receipt",
     "alertResult": {
@@ -96,6 +96,13 @@
       "documentDataIncluded": false,
       "secretCleared": true,
       "failureInduced": false
+    },
+    "backfillRejectedAttempt": {
+      "error": "Unauthorized",
+      "observedHosted": true,
+      "storageHandlerReached": false,
+      "secretRead": false,
+      "guardChanged": false
     }
   }
 }
