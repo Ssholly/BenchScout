@@ -1,5 +1,10 @@
 # Hosted environment and recovery readiness
 
+## 21 October 2026 — Document recovery gap and destination preparation
+
+Source/configuration review found no document-backup integration. The private testing store is available, but no independent copy/restore has been verified. Vercel documents no native Blob backup system. The operator asked to create a destination; prepared a separate private testing backup store in the existing account, with Create awaiting action-time approval. See [Private document recovery](DOCUMENT-RECOVERY.md) for exact settings, same-provider limits and the synthetic acceptance plan. No new store, file copy, deletion, credential reveal, paid upgrade or production change has occurred. Pilot remains HOLD.
+
+
 ## 20 October 2026 — Recovery drill prepared, not executed
 
 Fresh Neon console inspection of **BenchScout Testing** showed PostgreSQL 17, Free plan, one branch named `production`, and six-hour history retention. This is the dedicated testing project's default branch, separate from the normal BenchScout project. Backup & Restore showed no snapshots or schedule. These settings do not establish a completed restore or independent document backup.

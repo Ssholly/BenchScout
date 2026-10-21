@@ -1,5 +1,10 @@
 # Change log
 
+## 21 October 2026 — Private document recovery audit
+
+- Confirmed no backup integration in the upload/storage code or inspected configuration. Prepared an unsubmitted separate private testing backup store after the operator requested a new destination.
+- Added [document recovery findings and acceptance plan](DOCUMENT-RECOVERY.md), linked from README and operations readiness, including access/consent, retention, integrity and same-provider boundaries. Creation awaits browser-required action-time approval. No code, schema, integration, file or provider configuration change yet.
+
 ## 20 October 2026 — Historical recovery copy verified
 
 - Created the approved disposable testing copy from 21:00 Africa/Lagos. Restored application, closure, suspension, review revision/audit, document-sharing metadata and seven completed migration rows matched expected results.
