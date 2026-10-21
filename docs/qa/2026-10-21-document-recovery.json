@@ -1,0 +1,38 @@
+{
+  "date": "2026-10-21",
+  "scope": "private testing backup destination only",
+  "destination": "benchscout-testing-backups",
+  "access": "private",
+  "region": "iad1",
+  "creationApproval": "explicit operator action-time approval",
+  "created": true,
+  "projectConnectedByAgent": false,
+  "credentialsRevealed": false,
+  "paidUpgrade": false,
+  "realDocumentsTransferred": false,
+  "fixture": {
+    "name": "benchscout-QA-ONLY-recovery-20261021.txt",
+    "bytes": 231,
+    "sourceSha256": "ebfbf38a0948cb701794a63d2304c1e5822bce209f5da923409d92bcfc97253a",
+    "authenticatedPreviewUtf8Sha256": "ebfbf38a0948cb701794a63d2304c1e5822bce209f5da923409d92bcfc97253a",
+    "upload": "passed",
+    "previewTextIntegrity": "passed",
+    "rawDownloadedBytes": "not verified; browser download event timed out",
+    "sourceDeleted": false,
+    "restoredAfterLoss": false
+  },
+  "automaticBackupsConfigured": false,
+  "applicationCodeChanged": false,
+  "schemaChanged": false,
+  "environmentChanged": false,
+  "sameProviderLimitation": "shares Vercel account/provider with active storage; not independent disaster recovery",
+  "pending": [
+    "binary authenticated retrieval and checksum",
+    "anonymous access denial for backup fixture",
+    "approved synthetic source-loss and isolated restore",
+    "backup integration and monitoring",
+    "retention/deletion policy and key custody",
+    "independent account/provider protection"
+  ],
+  "cleanup": "one new synthetic fixture retained in private backup store; original candidate files and application untouched"
+}

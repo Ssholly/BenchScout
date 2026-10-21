@@ -30,3 +30,14 @@ This same-provider destination is for the first synthetic recovery drill. It doe
 - Test restoration into isolation, reconcile later deletions/revocations, invalidate restored sessions and keep email/cron disabled before any recovery cutover.
 
 No new screen, API, schema, environment variable, worker or product behaviour has been implemented by this audit. [Operations readiness](OPERATIONS-READINESS.md) retains the separate database-copy evidence.
+
+
+## 21 October 2026 — Approved store creation and synthetic preview passed
+
+After explicit action-time approval, created **benchscout-testing-backups** as a distinct **Private** Blob store in **IAD1** in the existing Hobby account. The console reported success and initially showed an empty store. No project connection, environment binding, token reveal, paid upgrade or real-document copy was performed.
+
+Created and uploaded a new QA-only text fixture, independent of the candidate vault/application. The authenticated store preview displayed its complete non-personal content and size **231 bytes**. The visible preview text, encoded as UTF-8, had SHA-256 `ebfbf38a0948cb701794a63d2304c1e5822bce209f5da923409d92bcfc97253a`, matching the local source. This establishes successful private-store upload and authenticated preview text integrity. It does not establish arbitrary binary/PDF recovery.
+
+The Download action did not yield a downloadable file through the browser tool before its ten-second event timeout; an ephemeral blank tab disappeared. No raw downloaded-byte checksum, anonymous HTTP denial, source-loss simulation or restore upload is claimed. No browser restriction was bypassed. The fixture and store remain for continuation; no candidate document/application was removed or replaced. Actual loss testing still requires explicit action-time deletion approval.
+
+**Current status:** a private testing backup destination exists and synthetic upload/preview succeeded. Automatic backups, independent application-side encryption/key custody, retention enforcement, backup failure monitoring, binary retrieval and full loss/restore acceptance remain unimplemented or unverified. Creating this store does not begin protecting existing uploads. [Scrubbed evidence](qa/2026-10-21-document-recovery.json).

@@ -1,5 +1,10 @@
 # Change log
 
+## 21 October 2026 — Private testing backup store created
+
+- After explicit approval, created a distinct Private IAD1 backup store without linking projects, revealing tokens, upgrading or copying real documents. A new synthetic 231-byte file uploaded and its authenticated preview text hash matched the source.
+- Downloaded-file verification and loss/restore remain open after the browser download event timed out. Automatic backups are not enabled; same-account/provider limits remain. Updated [document recovery](DOCUMENT-RECOVERY.md) and scrubbed QA evidence. No product code/schema/environment change.
+
 ## 21 October 2026 — Private document recovery audit
 
 - Confirmed no backup integration in the upload/storage code or inspected configuration. Prepared an unsubmitted separate private testing backup store after the operator requested a new destination.

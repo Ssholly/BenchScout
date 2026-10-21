@@ -129,3 +129,8 @@ Ran a SELECT through Neon's SQL editor on the recovery branch, returning counts/
 The copy contained two AuthSession rows. Expired both **only in the recovery copy**, then independently queried zero active restored sessions and rechecked the fixture results. The application source rejects expired sessions before subject access. No browser cookie was reused against this copy; no live app, email or cron was connected. The source testing branch and its active candidate session were untouched.
 
 **Outcome: historical database-copy record verification passed; full recovery acceptance remains incomplete.** File recovery, independent backups, restored-app HTTP acceptance, detailed integrity checks and end-to-end recovery objectives are still open. A post-target canary mutation was not introduced, so this does not independently prove exclusion of later writes. The one-day auto-delete is configured; actual expiry/cleanup has not yet been observed. Retain the copy until its approved expiry, rather than deleting it without action-time confirmation. [Scrubbed results](qa/2026-10-20-recovery-drill.json).
+
+
+## 21 October 2026 — Private backup destination created
+
+The operator approved creation of the separate private testing backup store. Synthetic upload and authenticated preview text integrity passed; no existing documents were copied and no backup worker/app binding was enabled. Downloaded-byte verification, anonymous denial and loss/restore acceptance remain open, with the browser download event timing out. See [document recovery](DOCUMENT-RECOVERY.md) and its JSON evidence. Same-provider/account limits still apply; pilot remains HOLD.
