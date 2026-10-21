@@ -178,3 +178,8 @@ Application `7aaabef` reached the testing alias through successful Vercel deploy
 ### 21 October 2026 — Encrypted document backup tooling and testing configuration
 
 Implementation `2bbb903` passed lint, TypeScript, 230 tests and a webpack production build. After the operator privately saved five testing-only Secret variables, checkpoint `b7370c74cd7d871613f830468048a060c54ab1df` deployed successfully as [EQQwtr3UW2XhdEVBk9z2cSLKY1Ne](https://vercel.com/sholly/bench-scout/EQQwtr3UW2XhdEVBk9z2cSLKY1Ne), serving the existing testing alias. Secret values were not read back. Hosted operator screen and invalid-key rejection passed; correct-key configuration/provider restoration are awaiting operator execution. No production push, schema/migration, actual existing-file backfill or real-document restore. See [document recovery](DOCUMENT-RECOVERY.md).
+
+
+### 21 October 2026 — Scoped older-file backfill and alert test
+
+`13310fc40d34c269a333d088cb3af2df537af56f` deployed successfully to testing as [GLtdVkt4f7q6b4ctzrijZiyAVoAw](https://vercel.com/sholly/bench-scout/GLtdVkt4f7q6b4ctzrijZiyAVoAw). Lint, TypeScript, all 235 tests and production build passed. Hosted operator controls fit the 320px viewport without measured overflow. Fixed-synthetic-account backfill and approved-inbox test submission await private operator authentication; provider backfill/inbox results remain pending. No environment/schema/migration or production update. See [document recovery](DOCUMENT-RECOVERY.md).

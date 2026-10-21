@@ -76,5 +76,21 @@
       "backupMatches": 0,
       "method": "fresh authenticated Vercel prefix searches"
     }
+  },
+  "backfillAlertChecks": {
+    "commit": "13310fc",
+    "vercel": "GLtdVkt4f7q6b4ctzrijZiyAVoAw",
+    "deployment": "success",
+    "localChecks": "lint, TypeScript, 235 tests, production build passed",
+    "hosted320px": {
+      "viewport": 320,
+      "documentWidth": 320,
+      "controlRight": 289,
+      "overflow": false
+    },
+    "scope": "fixed known synthetic candidate only; configured approved alert recipient",
+    "backfill": "awaiting operator authentication/execution",
+    "alertSubmission": "awaiting operator authentication/execution",
+    "inboxReceipt": "not yet confirmed"
   }
 }
