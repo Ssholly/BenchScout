@@ -1,5 +1,10 @@
 # Launch audit — 19 October 2026
 
+## 21 October 2026 — Hosted encrypted document recovery passed
+
+A new QA-only file completed actual private source deletion, authenticated backup decryption, isolated restoration and exact private read-back. The hosted result was independently observed; database rows and application permissions were unchanged. New testing uploads have continuous backup enabled; pre-activation backfill, normal hosted upload acceptance, anonymous denial and failure-alert inbox evidence remain open. This advances LA-13/LA-14 within the recorded synthetic scope; it does not establish independent-provider recovery or production readiness. [Document recovery evidence](DOCUMENT-RECOVERY.md).
+
+
 ## 20 October 2026 — Historical database recovery copy verified
 
 An approved historical child copy of the dedicated testing database preserved the expected synthetic application, closed vacancy, suspended employer, review audit/revision and file-sharing metadata. Seven completed migration rows were present; both copied sessions were expired and zero active sessions rechecked. No app/email/cron connection or production/source reset occurred. See [operations readiness](OPERATIONS-READINESS.md) and its scrubbed recovery evidence. This advances LA-14 at database-record level; file recovery, independent backups, full restored-app acceptance and recovery objectives remain open. Pilot remains HOLD.

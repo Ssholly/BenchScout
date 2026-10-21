@@ -100,3 +100,15 @@ The operator reported Save after private entry. Fresh Vercel metadata showed all
 ## 21 October 2026 — Testing redeployment succeeded; operator check prepared
 
 Credential-save checkpoint `b7370c7` reached the testing alias through successful Vercel deployment `EQQwtr3UW2XhdEVBk9z2cSLKY1Ne`. The hosted `/admin/backups` screen loaded, and a deliberately invalid administrator key returned Unauthorized without storage work; the key field cleared. Reloaded the fresh deployment and handed the clean form to the operator for correct-key configuration and QA-only loss/restore execution. Configuration booleans, backup-provider token/key correctness and recovery results are not yet claimed. No real file or database row was changed in this checkpoint.
+
+
+## 21 October 2026 — Hosted synthetic loss-and-restore passed
+
+The operator completed the correct-key configuration/restore actions and reported success. Independently observed the full successful JSON result in the authenticated hosted operator screen: `passed`, `sourceLossVerified`, `decryptedBytesMatch` and `restoredPrivateReadMatches` were all true. The generated QA-only file was **85 bytes**, with SHA-256 `feee65cee1c34e5726406574fd5bb6feacc6eca1ec005bc64410b27dd7e232e2`. `databaseChanged` and `applicationGrantsChanged` were false. The administrator secret had cleared. This is real provider-backed source deletion, archive decryption, isolated restoration and private read-back, not the earlier preview-text-only check or a mocked test.
+
+The pass demonstrates the enabled upload-backup primitive can write/read a distinct private archive with the configured encryption key and test-mode flag. Continuous backup is enabled for **new testing uploads** through the previously tested `storeDocument` hook. A normal hosted candidate upload through that hook has not yet been independently exercised since activation. Existing documents uploaded before activation still need an approved backfill; no real files were copied during the probe.
+
+`cleanupSubmitted: true` records accepted deletion calls for the generated restored object/archive; independent provider inventory checks are recorded separately below if completed. The earlier 231-byte manual preview fixture is unrelated and remains retained. End-to-end failure-alert inbox delivery, anonymous backup-object denial, old-file backfill, key-custody recovery, production enablement and independent-provider disaster recovery remain open. No full service cutover, restored database grant or production recovery guarantee follows from this single synthetic case.
+
+
+Cleanup follow-up: fresh authenticated Vercel prefix searches showed **no matching objects** under `qa-recovery/` in the testing document store and `document-backups/v1/` in the intended backup store. These observations support completion of this probe's source/restoration/archive cleanup in the inspected stores. The unrelated 231-byte manual fixture remains; no active candidate vault file was deleted. The empty archive prefix also reinforces that earlier candidate files have not been backfilled.

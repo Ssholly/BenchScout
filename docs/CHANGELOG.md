@@ -1,5 +1,10 @@
 # Change log
 
+## 21 October 2026 — Hosted encrypted loss-and-restore passed
+
+- Operator ran the provider-backed QA test; the hosted result independently confirmed source loss, decryption and exact restored private read-back (85 bytes). Database records and application grants were unchanged; cleanup calls were accepted.
+- Automatic backups are enabled for new testing uploads. Pre-activation file backfill, normal hosted upload acceptance, alert inbox delivery and broader disaster-recovery gates remain open. [Document recovery](DOCUMENT-RECOVERY.md), [scrubbed evidence](qa/2026-10-21-document-recovery.json). No new code/schema/production change in this checkpoint.
+
 ## 21 October 2026 — Hosted backup deployment ready for acceptance
 
 - Testing redeployment after the credential save succeeded. Hosted backup screen loaded and rejected a deliberately invalid administrator key.

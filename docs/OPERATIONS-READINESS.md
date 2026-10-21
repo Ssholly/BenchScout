@@ -139,3 +139,8 @@ The operator approved creation of the separate private testing backup store. Syn
 ## 21 October 2026 — Backup integration implemented, activation pending
 
 Opt-in upload-time encrypted backups, verified read-back, retries, deletion-aware purge, operational alerts and restricted synthetic/CLI restore tooling are implemented. Lint, TypeScript, 230 tests and production build passed; built operator screen fits 320px. The five testing-only Secret fields are prepared with token/key blank, not saved. No actual automatic hosted backup, current-file backfill or real-provider loss/restore pass is claimed yet. See [document recovery](DOCUMENT-RECOVERY.md) for contracts and retention/key limits. No production or schema/migration change; pilot remains HOLD.
+
+
+## 21 October 2026 — Hosted document restoration acceptance passed
+
+Operator execution and independent hosted-screen observation confirmed a real private source-loss/encrypted-backup/isolated-restore/read-back pass. Exact bytes matched for the new 85-byte synthetic file; no database or application-grant change. The enabled backup primitive now passes against actual providers, with new testing uploads wired through the locally validated hook. Existing-file backfill, post-activation candidate upload acceptance, alert inbox evidence and independent-provider/key recovery remain open. See [document recovery](DOCUMENT-RECOVERY.md). This is not production activation or full service recovery clearance.

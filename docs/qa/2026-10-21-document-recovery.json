@@ -1,6 +1,6 @@
 {
   "date": "2026-10-21",
-  "scope": "private testing backup destination only",
+  "scope": "testing encrypted automatic backup integration and synthetic provider-backed restoration",
   "destination": "benchscout-testing-backups",
   "access": "private",
   "region": "iad1",
@@ -21,20 +21,21 @@
     "sourceDeleted": false,
     "restoredAfterLoss": false
   },
-  "automaticBackupsConfigured": false,
-  "applicationCodeChanged": false,
+  "automaticBackupsConfigured": true,
+  "applicationCodeChanged": true,
   "schemaChanged": false,
-  "environmentChanged": false,
+  "environmentChanged": true,
   "sameProviderLimitation": "shares Vercel account/provider with active storage; not independent disaster recovery",
   "pending": [
-    "binary authenticated retrieval and checksum",
-    "anonymous access denial for backup fixture",
-    "approved synthetic source-loss and isolated restore",
-    "backup integration and monitoring",
-    "retention/deletion policy and key custody",
-    "independent account/provider protection"
+    "approved backfill of documents uploaded before activation",
+    "normal hosted candidate upload with enabled automatic hook",
+    "anonymous HTTP denial for a backup object",
+    "recipient-confirmed operational alert delivery",
+    "independent recovery-key custody check",
+    "independent account/provider disaster recovery",
+    "production enablement through separate review"
   ],
-  "cleanup": "one new synthetic fixture retained in private backup store; original candidate files and application untouched",
+  "cleanup": "hosted probe source/restoration/archive deletion submitted and inspected prefixes empty; unrelated 231-byte preview fixture retained; original candidate vault/application untouched",
   "implementation": {
     "commit": "2bbb903",
     "localChecks": {
@@ -45,8 +46,8 @@
       "operatorScreen320px": "passed"
     },
     "configuration": "operator saved; five Secret Preview/testing variables observed; values not read",
-    "hostedActivation": "redeployed; effective flags/provider check awaits operator",
-    "realProviderLossRestore": "pending",
+    "hostedActivation": "enabled; real-provider primitive passed; normal candidate upload after activation not independently exercised",
+    "realProviderLossRestore": "passed: operator execution and independently observed hosted JSON",
     "alertRecipientApproved": true
   },
   "deployment": {
@@ -54,6 +55,26 @@
     "vercel": "EQQwtr3UW2XhdEVBk9z2cSLKY1Ne",
     "state": "success",
     "hostedInvalidKey": "Unauthorized; secret cleared",
-    "correctKeyAndLossRestore": "operator handoff pending"
+    "correctKeyAndLossRestore": "passed"
+  },
+  "hostedRestoration": {
+    "passed": true,
+    "sourceLossVerified": true,
+    "decryptedBytesMatch": true,
+    "restoredPrivateReadMatches": true,
+    "bytes": 85,
+    "sha256": "feee65cee1c34e5726406574fd5bb6feacc6eca1ec005bc64410b27dd7e232e2",
+    "cleanupSubmitted": true,
+    "databaseChanged": false,
+    "applicationGrantsChanged": false,
+    "secretCleared": true,
+    "evidence": "operator report and independent hosted screen observation",
+    "cleanupInventory": {
+      "testingDocumentPrefix": "qa-recovery/",
+      "testingDocumentMatches": 0,
+      "backupPrefix": "document-backups/v1/",
+      "backupMatches": 0,
+      "method": "fresh authenticated Vercel prefix searches"
+    }
   }
 }
