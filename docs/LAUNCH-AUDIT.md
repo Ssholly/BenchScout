@@ -1,5 +1,10 @@
 # Launch audit — 19 October 2026
 
+## 21 October 2026 — Testing backfill and alert acceptance passed
+
+The two older current QA files completed encrypted backfill and decryption verification, with zero failures/skips/stale purges. The approved operator inbox also received the shared-path labelled alert test. Database rows and application grants were unchanged. These close the requested synthetic backfill/mail acceptance checks under LA-13/LA-14; real-account/Production backfill, normal hosted upload acceptance, anonymous backup denial and wider recovery/promotion gates remain separate. [Recovery evidence](DOCUMENT-RECOVERY.md).
+
+
 ## 21 October 2026 — Hosted encrypted document recovery passed
 
 A new QA-only file completed actual private source deletion, authenticated backup decryption, isolated restoration and exact private read-back. The hosted result was independently observed; database rows and application permissions were unchanged. New testing uploads have continuous backup enabled; pre-activation backfill, normal hosted upload acceptance, anonymous denial and failure-alert inbox evidence remain open. This advances LA-13/LA-14 within the recorded synthetic scope; it does not establish independent-provider recovery or production readiness. [Document recovery evidence](DOCUMENT-RECOVERY.md).

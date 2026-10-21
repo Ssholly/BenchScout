@@ -149,3 +149,8 @@ Operator execution and independent hosted-screen observation confirmed a real pr
 ## 21 October 2026 — Alert inbox acceptance passed
 
 The hosted labelled backup-alert test was submitted successfully, and its approved recipient confirmed inbox receipt. This verifies the configured alert transport beyond mocked tests/provider submission. No backup failure was induced and no document data included. Older synthetic backfill counts remain outstanding; an idempotent rerun is prepared. See [document recovery](DOCUMENT-RECOVERY.md).
+
+
+## 21 October 2026 — Testing older-file and alert acceptance complete
+
+Hosted fixed-candidate backfill returned 2 eligible/2 verified with zero failures/skips/stale purges, independently observed after private operator authentication. Current encrypted copies were decrypt-verified; records/permissions were unchanged. Combined with the recipient-confirmed alert message, both requested testing checks now pass. This covers only the known synthetic candidate; no real-account/Production backfill or release has occurred. See [document recovery](DOCUMENT-RECOVERY.md).

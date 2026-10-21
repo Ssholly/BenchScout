@@ -135,3 +135,10 @@ The same response replaced any earlier backfill output. Eligible/verified/failed
 
 
 Backfill retry checkpoint, 21 October 2026: the operator's next attempt returned Unauthorized, independently observed on the hosted screen. Source inspection confirms the administrator-secret check runs before the handler/storage operation, so this rejected request copied no files and provides no backfill count. The key field had cleared by design. Prepared private re-entry of the existing testing administrator key, leaving submission to the agent after the operator reports ready. No key was inspected, retrieved or rotated; no safeguard or product code changed. The already confirmed alert delivery remains passed.
+
+
+## 21 October 2026 — Older synthetic-file backfill passed; both checks complete
+
+After the operator privately re-entered the existing testing administrator key, submitted only **Backfill older QA files**. Independently observed the hosted result: **eligible 2, verified 2, stalePurged 0, failed 0, skipped 0, passed true**. The two current private synthetic vault files were read, encrypted into the backup store, decrypted/compared and checked against current references. The administrator input cleared after completion. `databaseChanged` and `applicationGrantsChanged` were false. No file replacement/deletion, new account, application update or extra alert was requested in this successful rerun.
+
+Together with the already recipient-confirmed labelled alert, this completes both requested checks **for the fixed synthetic candidate in testing**. The encrypted archives are intentionally retained to protect those current files. Replaced/deleted references were outside the backfill query; no real testing account or production account was copied. This does not establish a backfill of every older file in either environment, nor Production activation. Normal hosted upload acceptance, anonymous backup-object denial, independent key custody/provider recovery and broader promotion gates remain separate work. The earlier rejected request and pending checkpoints above are preserved as dated history.

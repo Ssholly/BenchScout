@@ -1,5 +1,10 @@
 # Change log
 
+## 21 October 2026 — Older QA-file backfill accepted
+
+- Hosted backfill passed: 2 eligible, 2 verified, 0 stale purges, failures or skips. Current synthetic files received decrypt-verified encrypted backups; records and application permissions were unchanged.
+- This closes both requested testing checks alongside recipient-confirmed alert delivery. Real-account/Production backfills and promotion remain separate. [Document recovery](DOCUMENT-RECOVERY.md), [QA evidence](qa/2026-10-21-document-recovery.json). Documentation only in this checkpoint.
+
 ## 21 October 2026 — Backup alert inbox receipt confirmed
 
 - Hosted test-alert submission was observed and the approved recipient confirmed actual inbox receipt. The shared alert mail path now has recipient-confirmed delivery evidence; no failure or document-data disclosure was induced.

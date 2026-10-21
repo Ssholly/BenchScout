@@ -27,12 +27,12 @@
   "environmentChanged": true,
   "sameProviderLimitation": "shares Vercel account/provider with active storage; not independent disaster recovery",
   "pending": [
-    "approved backfill of documents uploaded before activation",
     "normal hosted candidate upload with enabled automatic hook",
     "anonymous HTTP denial for a backup object",
     "independent recovery-key custody check",
     "independent account/provider disaster recovery",
-    "production enablement through separate review"
+    "production enablement through separate review",
+    "separately approved real-account/Production backfill; completed backfill covers fixed synthetic candidate only"
   ],
   "cleanup": "hosted probe source/restoration/archive deletion submitted and inspected prefixes empty; unrelated 231-byte preview fixture retained; original candidate vault/application untouched",
   "implementation": {
@@ -88,7 +88,7 @@
       "overflow": false
     },
     "scope": "fixed known synthetic candidate only; configured approved alert recipient",
-    "backfill": "latest attempt Unauthorized before handler/storage; private existing-key retry pending",
+    "backfill": "passed: independently observed hosted counts after private existing-key entry",
     "alertSubmission": "passed: hosted response independently observed",
     "inboxReceipt": "passed: approved recipient explicitly confirmed receipt",
     "alertResult": {
@@ -103,6 +103,19 @@
       "storageHandlerReached": false,
       "secretRead": false,
       "guardChanged": false
-    }
-  }
+    },
+    "backfillResult": {
+      "eligible": 2,
+      "verified": 2,
+      "stalePurged": 0,
+      "failed": 0,
+      "skipped": 0,
+      "passed": true,
+      "databaseChanged": false,
+      "applicationGrantsChanged": false,
+      "secretCleared": true
+    },
+    "requestedTestingChecks": "both passed: fixed-QA backfill and recipient-confirmed alert"
+  },
+  "retainedArchives": "two current QA-file encrypted archives intentionally retained; historical probe cleanup remains separate"
 }
