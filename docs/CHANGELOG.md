@@ -1,5 +1,10 @@
 # Change log
 
+## 21 October 2026 — Testing backup credentials saved
+
+- Operator saved the private inputs. Vercel metadata confirms five Secret variables scoped to Preview/testing; values were not read. Correctness and hosted recovery remain unverified.
+- Recorded this configuration checkpoint in [document recovery](DOCUMENT-RECOVERY.md); the testing push triggers a deployment with the new settings. Production and schema remain unchanged.
+
 ## 21 October 2026 — Continuous encrypted backups and isolated restore tooling
 
 - Added opt-in encrypted private backup and verified read-back before new document metadata commits, with three attempts, scrubbed failure logs and an optional approved-inbox alert. Explicit removal/replacement also purges its backup; no indefinite deleted-file retention.

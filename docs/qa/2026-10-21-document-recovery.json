@@ -34,5 +34,19 @@
     "retention/deletion policy and key custody",
     "independent account/provider protection"
   ],
-  "cleanup": "one new synthetic fixture retained in private backup store; original candidate files and application untouched"
+  "cleanup": "one new synthetic fixture retained in private backup store; original candidate files and application untouched",
+  "implementation": {
+    "commit": "2bbb903",
+    "localChecks": {
+      "lint": "passed",
+      "typecheck": "passed",
+      "tests": 230,
+      "build": "passed",
+      "operatorScreen320px": "passed"
+    },
+    "configuration": "operator saved; five Secret Preview/testing variables observed; values not read",
+    "hostedActivation": "new deployment pending",
+    "realProviderLossRestore": "pending",
+    "alertRecipientApproved": true
+  }
 }
