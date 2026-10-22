@@ -1,5 +1,11 @@
 # Main release readiness — 21 October 2026
 
+## 22 October 2026 — Approved cron scope split applied; new Production save pending
+
+The operator approved the controlled Production-only correction and replacement protected build/dry-run. Fresh metadata matched the plan. A **target-only** PATCH moved `CRON_SECRET` binding `EHiEaCCl6rFtGjwz` from Production+Preview to Preview only, without sending or reading a secret value. Vercel rejects a Sensitive-variable PATCH containing even an unchanged key field; that rejected request was followed by the successful target-only edit. Independent metadata lookup verifies Preview-only scope and byte-for-byte unchanged testing-override metadata. No Production key binding existed at that verification checkpoint; **do not build Production until the operator saves the prepared new Production-only Secret**.
+
+The Vercel form is prepared with CRON_SECRET, Secret type and Production only; the tool does not enter or submit the new key. A corrected local private-entry form is also prepared for a one-time test copy of that same new key. The operator must privately generate/save the new value and submit both forms; no key belongs in chat or Git. New build/dry-run approval is already included in the correction, but neither has executed. Existing immutable deployments keep their captured values; public/git-main stay on maintenance. [Scope execution evidence](qa/2026-10-22-production-cron-scope-split.json).
+
 ## 22 October 2026 — Saved Production cron key rejected; private artifacts removed
 
 The operator-supplied saved key was tested only against the fixed public-origin candidate's cleanup dry-run: wrong-key **401**, supplied-key **401**. This does not establish which saved value is effective or whether the current Production value satisfies the application; authenticated cron acceptance remains open. Temporary bypass creation/revocation completed; project access absence and revoked-token HTTP **302** were verified. The private key file was removed and the loopback entry server stopped; port closure was checked. No normal cleanup, email, public promotion or key-value inspection occurred. [Actual result](qa/2026-10-22-saved-production-cron-attempt.json).
