@@ -1,3 +1,7 @@
+## 22 October 2026 — Final protected access smoke prepared
+
+Extended the guarded operator helper with a plan-by-default `--access-smoke` mode: twelve fixed GET-only checks for root/employer HTML, disabled development endpoints, anonymous protected API denial and deliberately invalid session rejection. It requires no valid application secrets and does not load local environment files in this mode. Exact candidate/project/source guards and temporary-access revocation/recovery remain enforced. Syntax, focused ESLint and non-network plan mode pass; hosted checks have **not** run and require separate approval for the project-wide temporary bypass. No app source/build, public mapping or data changed. [Exact scope and limits](CRON-AUTHENTICATION-CHECK.md#fixed-get-only-access-smoke--prepared-22-october).
+
 ## 22 October 2026 — Salary ownership acceptance and remaining release checks
 
 Added five route-level regression tests covering salary write role gates, repeat owner submission, ignored caller ownership, cross-owner/legacy edit and deletion denial, successful owner changes, and missing stable-secret fail-closed behaviour. All **281 tests** pass; focused ESLint and whitespace checks pass. Persistence is an in-memory adapter: no Production account, salary row, file or configuration changed. The deployed application source remains `082c225`; no replacement deployment is needed for test/documentation additions.
