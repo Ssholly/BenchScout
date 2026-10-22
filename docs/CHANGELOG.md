@@ -1,5 +1,9 @@
 # Change log
 
+## 22 October 2026 — Consolidated public release and rollback packet prepared
+
+[The current decision packet](PUBLIC-RELEASE-PACKET.md) freezes the tested candidate, refreshed main identity, accepted migration/runtime evidence and exact maintenance fallback. It separates public-canonical build approval (including the normal cleanup schedule) from promotion, main merge and older-file copying. It records open acceptance/recovery limits, safe smoke/rollback steps and the risk of automatic main deployments. No public-origin deployment exists yet; promotion remains HOLD. README links the consolidated packet rather than requiring readers to infer current status from historical entries. [Structured checkpoint](qa/2026-10-22-public-release-packet.json).
+
 ## 22 October 2026 — Current Production queue connection accepted
 
 The operator reports the correct-key deployed cleanup status returned **pending 0, failed 0, due 0** on the current protected Production diagnostic stage. Combined with the matching live database fingerprint and backup configuration response, this accepts the new runtime's read-only database and queue paths. No deletion worker, file mutation, backfill, alert or scheduled invocation was requested. An empty queue does not itself prove physical cleanup/retry; testing's hosted ordinary deletion and deterministic failure tests remain separate evidence. Public maintenance is unchanged. [Runtime evidence](qa/2026-10-22-protected-stage.json).

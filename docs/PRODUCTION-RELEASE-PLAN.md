@@ -1,5 +1,9 @@
 # Public-app release and rollback plan — 21 October 2026
 
+## 22 October 2026 — Consolidated public release and rollback packet prepared
+
+[The current decision packet](PUBLIC-RELEASE-PACKET.md) freezes the tested candidate, refreshed main identity, accepted migration/runtime evidence and exact maintenance fallback. It separates public-canonical build approval (including the normal cleanup schedule) from promotion, main merge and older-file copying. It records open acceptance/recovery limits, safe smoke/rollback steps and the risk of automatic main deployments. No public-origin deployment exists yet; promotion remains HOLD. README links the consolidated packet rather than requiring readers to infer current status from historical entries. [Structured checkpoint](qa/2026-10-22-public-release-packet.json).
+
 ## 22 October 2026 — Final candidate validation and diagnostic staging prepared
 
 Frozen candidate `082c225a86a1ec582ceb2e27faf276f82b8a7994` passes lint, strict TypeScript, **276 tests**, webpack Production build and diff checks. A clean Git archive is prepared without local environment files (only the tracked .env.example), explicitly mapped to the original BenchScout project/team. Production cleanup schema is already applied and independently verified.
