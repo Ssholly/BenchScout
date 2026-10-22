@@ -1,5 +1,13 @@
 # Main release readiness — 21 October 2026
 
+## 22 October 2026 — Final candidate validation and diagnostic staging prepared
+
+Frozen candidate `082c225a86a1ec582ceb2e27faf276f82b8a7994` passes lint, strict TypeScript, **276 tests**, webpack Production build and diff checks. A clean Git archive is prepared without local environment files (only the tracked .env.example), explicitly mapped to the original BenchScout project/team. Production cleanup schema is already applied and independently verified.
+
+Prepared diagnostic-only deployment: CLI `--project bench-scout --scope sholly --prod --skip-domain`, exact source metadata, existing protected staging canonical URL at build/runtime, backups enabled, test mode off and backfill apply false. A separate local configuration override supplies `crons: []` and the validated webpack command for this diagnostic build; the repository's future public cron definition is preserved. This avoids treating skip-domain as a scheduler-disable guarantee. It will update the protected diagnostic alias while public and git-main remain on maintenance. This diagnostic build must not be promoted directly; a later live-canonical build needs the reviewed normal cron configuration.
+
+No new Production build, runtime action, public promotion or main merge has been performed at this checkpoint. Previous diagnostic approvals do not cover this frozen source/configuration. [Validation and exact scope](qa/2026-10-22-final-release-validation.json). Official references: [CLI staging](https://vercel.com/docs/cli/deploying-from-cli), [cron management](https://vercel.com/docs/cron-jobs/manage-cron-jobs).
+
 ## 22 October 2026 — Approved Production cleanup migration applied
 
 The operator explicitly approved `20261021000000_document_cleanup` on BenchScout Production. The authenticated Neon console verified **BenchScout / production / br-cold-hall-apf2uz7z / neondb**. One transaction checked the database identity, seven matching prior checksums, no unfinished migrations and absence of the new table, then ran the exact repository DDL and recorded its SHA-256 in Prisma history. COMMIT completed.
