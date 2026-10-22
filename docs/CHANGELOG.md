@@ -1,5 +1,9 @@
 # Change log
 
+## 22 October 2026 — Protected cron dry-run prepared; no bypass created
+
+Added the plan-by-default operational helper `scripts/verify-protected-cron.cjs`, targeting only the exact Ready public-origin candidate and cleanup dry-run path. It prepares explicit temporary project-bypass creation, wrong-key/correct-key GET checks, finally-based own-token revocation, restored-protection verification and private interrupted-cleanup recovery. Existing local cron key presence/minimum are checked without disclosure; its Production match remains unverified. Syntax, ESLint and non-network plan mode pass. No access token, hosted request, worker processing or email was created/sent. [Procedure/access risk](CRON-AUTHENTICATION-CHECK.md); [preparation evidence](qa/2026-10-22-cron-probe-preparation.json).
+
 ## 22 October 2026 — Approved public-origin candidate Ready; public remains paused
 
 Validated source `082c225a86a1ec582ceb2e27faf276f82b8a7994` is Ready as protected Production candidate `dpl_CSoxtMv87Zm4xVw2brybZxZV3onF`, immutable `bench-scout-926z7vaov-sholly.vercel.app`. Exact source/provider project identity match. Deployment uses the public canonical origin at build/runtime, validated webpack build, enabled backups, test mode off and backfill apply false. CLI reports Vercel authentication; independent anonymous HEAD returned 302 to Vercel sign-in.

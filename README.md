@@ -72,6 +72,7 @@ Implemented improvements include an application-readiness checklist, source and 
 - [Durable document cleanup](docs/DOCUMENT-CLEANUP.md): transactional deletion intents, retries, stale-write protection, operator/cron access, migration evidence and limitations.
 - [Legacy containment](docs/LEGACY-CONTAINMENT.md): isolated temporary pause build, exact source, availability impact, validation and activation boundary.
 - [Historical deployment isolation](docs/DEPLOYMENT-ISOLATION.md): anonymous access evidence, credential limits, public legacy containment and exact proposed retirement IDs.
+- [Protected cron authentication check](docs/CRON-AUTHENTICATION-CHECK.md): plan-only default, explicitly approved temporary access, read-only dry-run and token revocation/recovery.
 - [Current public release decision packet](docs/PUBLIC-RELEASE-PACKET.md): exact candidate, accepted evidence, build/promotion separation, scheduler, smoke, rollback and main-merge boundaries.
 - [Public-app release and rollback plan](docs/PRODUCTION-RELEASE-PLAN.md): cutover gates, live-canonical build, smoke checks, safe fallback and separate real-file copy approval.
 - [Main release readiness](docs/MAIN-RELEASE-READINESS.md): current configuration, staged runtime evidence and ordered backfill/cutover gates.

@@ -1,0 +1,27 @@
+# Protected cron authentication probe — 22 October 2026
+
+Status: **prepared, not executed; temporary access approval pending**. Candidate: `dpl_CSoxtMv87Zm4xVw2brybZxZV3onF`, source `082c225a86a1ec582ceb2e27faf276f82b8a7994`. This operational helper does not change the frozen application or require a new app build.
+
+## Purpose and access boundary
+
+`node scripts/verify-protected-cron.cjs` prints a plan only. After explicit approval, `--confirm-temporary-access` creates one temporary Vercel **project-level** protection-bypass token, sends a deliberately wrong cron key and the existing local cron key to the fixed candidate's `/api/cron/document-cleanup?dryRun=1`, then revokes only its token. The bypass can access protected BenchScout deployments while valid; it is not endpoint-scoped. Application cron authentication still applies. Never describe it as ordinary metadata-only access or silently allow CLI curl to generate one.
+
+The existing local CRON_SECRET is present and meets the minimum length; it is never printed or passed on the command line. Its equality to the effective Production key is **unverified until a successful authenticated request**. No environment value is retrieved from the provider. The helper uses the existing Vercel CLI login for provider API calls. It does not rotate a key or disable Vercel Authentication.
+
+Vercel documents that [CLI curl retrieves or generates automation bypass tokens](https://vercel.com/docs/cli/curl). The explicit helper makes creation/revocation and evidence visible rather than relying on that implicit lifecycle. Authentication for [cron requests](https://vercel.com/docs/cron-jobs/manage-cron-jobs) remains distinct from scheduler registration and delivery.
+
+## Execution contract
+
+1. Verify exact project, Ready deployment, source SHA and immutable hostname. Stop if any existing project bypass entry is present; do not reuse, expose or revoke someone else's access.
+2. Generate a random token and save a private pending-revocation record (directory 0700/file 0600) before requesting creation. Token/API bodies travel on stdin, not command arguments; no verbose/debug/trace logging.
+3. GET the fixed cleanup dry-run with wrong cron key; require HTTP 401. GET it with the existing local key; require HTTP 200, dryRun true and nonnegative integer queue counts. Curl follows no redirects. No POST, normal worker endpoint, email, source/archive read or new cleanup intent is allowed.
+4. In finally, revoke only the chosen generated token, require zero project bypasses, and verify that the revoked token can no longer reach the candidate anonymously. Save only scrubbed results; remove the private pending record only after verification.
+5. If interrupted or revocation cannot be confirmed, stop other release actions. The private file path is reported without its contents. Run `node scripts/verify-protected-cron.cjs --revoke-pending /absolute/private/pending-revocation.json` to retry revoking that exact token and verify protection. Do not paste the file/token into chat or commit it. Process termination can prevent finally from running; automatic revocation is not guaranteed under every crash.
+
+A failed correct-key request does not authorize retrieving provider secret values, guessing keys, changing authentication or dispatching a normal cron. It requires a separately controlled correction. Report failure and cleanup evidence accurately.
+
+## Acceptance and limits
+
+Syntax, ESLint and non-network plan mode pass. No bypass has been created and no hosted request submitted by this helper at preparation time. A future successful run proves wrong-key denial and correct-key dry-run against the exact deployed candidate. It does not prove an actual provider scheduled invocation, backup-failure inbox delivery, or file deletion/retry behavior.
+
+The approved candidate build submitted the normal daily cron configuration; active project definitions were still empty at the latest provider checkpoint. Do not activate/promote simply to make this check pass. Actual registration and invocation must be observed separately through the approved cutover process. Public promotion, main merge and older-file backfill remain outside this probe.
