@@ -1,5 +1,11 @@
 # Change log
 
+## 22 October 2026 — Remaining July git-main retirement prepared
+
+Fresh provider metadata confirms the only current alias for July deployment `dpl_4bTpas5uPn1jRpwGeu4eUJvX7nhZ` is `bench-scout-git-main-sholly.vercel.app`. Its exact source remains `a56fba3641004184e8bd5ddee87a51eb6b5a4fec`; Git inspection reconfirms destructive setup GET and caller-identified/public upload behavior, without executing those routes. The existing approved maintenance deployment is Ready in the same project at source `336c6ed`.
+
+Prepared scope: move only git-main to that maintenance deployment, verify the alias/terminal response, remove only the now-unaliased July ID with `--safe`, and verify inventory absence/immutable URL shutdown plus kept mappings. This has **not** been executed and needs separate approval because the earlier batch explicitly preserved this build. Database records, stored documents, source history, testing and diagnostics remain outside the removal. Other historical writers still require review. [Exact plan](qa/2026-10-22-old-main-retirement-plan.json).
+
 ## 22 October 2026 — Approved 30-deployment retirement completed
 
 The operator explicitly approved removal of the exact 30 IDs in the first retirement set. Fresh alias checks excluded all targets; each target’s provider metadata matched the original BenchScout project. Vercel CLI 65.0.0 `remove` ran with `--safe --yes --scope sholly` and reported **30 removed**. An independent HEAD request to every removed immutable homepage returned **404 / DEPLOYMENT_NOT_FOUND**. A complete post-removal project inventory (73 entries, null next cursor) contains none of those IDs and retains all five keep-listed deployments. All five alias mappings are unchanged, including testing, public maintenance, diagnostics and old git-main.
