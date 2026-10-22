@@ -1,5 +1,11 @@
 # Change log
 
+## 22 October 2026 — Approved public-origin candidate Ready; public remains paused
+
+Validated source `082c225a86a1ec582ceb2e27faf276f82b8a7994` is Ready as protected Production candidate `dpl_CSoxtMv87Zm4xVw2brybZxZV3onF`, immutable `bench-scout-926z7vaov-sholly.vercel.app`. Exact source/provider project identity match. Deployment uses the public canonical origin at build/runtime, validated webpack build, enabled backups, test mode off and backfill apply false. CLI reports Vercel authentication; independent anonymous HEAD returned 302 to Vercel sign-in.
+
+The approved normal cleanup schedule was submitted (`17 2 * * *`). Fresh active project cron definitions remain empty and point to historical cron metadata, so no active scheduler registration or invocation is claimed. All five current alias mappings are unchanged, including both maintenance domains and protected diagnostics. No public promotion, main merge, real-file operation or new deletion intent occurred. [Build evidence](qa/2026-10-22-public-origin-build.json); [current decision packet](PUBLIC-RELEASE-PACKET.md).
+
 ## 22 October 2026 — Consolidated public release and rollback packet prepared
 
 [The current decision packet](PUBLIC-RELEASE-PACKET.md) freezes the tested candidate, refreshed main identity, accepted migration/runtime evidence and exact maintenance fallback. It separates public-canonical build approval (including the normal cleanup schedule) from promotion, main merge and older-file copying. It records open acceptance/recovery limits, safe smoke/rollback steps and the risk of automatic main deployments. No public-origin deployment exists yet; promotion remains HOLD. README links the consolidated packet rather than requiring readers to infer current status from historical entries. [Structured checkpoint](qa/2026-10-22-public-release-packet.json).

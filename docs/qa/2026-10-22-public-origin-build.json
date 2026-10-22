@@ -1,0 +1,48 @@
+{
+  "date": "2026-10-22",
+  "operatorApprovedBuildAndSchedule": true,
+  "sourceCommit": "082c225a86a1ec582ceb2e27faf276f82b8a7994",
+  "deploymentId": "dpl_CSoxtMv87Zm4xVw2brybZxZV3onF",
+  "immutableUrl": "https://bench-scout-926z7vaov-sholly.vercel.app",
+  "projectId": "prj_MNrDsjvBMVCY5mmPjD3tSyw7OIBs",
+  "state": "READY",
+  "target": "production",
+  "sourceMetadataMatches": true,
+  "publicCanonicalOrigin": "https://bench-scout.vercel.app",
+  "canonicalSetAtBuildAndRuntime": true,
+  "buildCommand": "npm run build -- --webpack",
+  "backupEnabledOverride": true,
+  "testModeOverride": false,
+  "backfillApplyOverride": false,
+  "submittedCronDefinitions": [
+    {
+      "path": "/api/cron/document-cleanup",
+      "schedule": "17 2 * * *"
+    }
+  ],
+  "activeProjectCronDefinitions": [],
+  "activeSchedulerRegistrationVerified": false,
+  "schedulerInvocationObserved": false,
+  "projectCronMetadataStillHistorical": true,
+  "anonymousProtection": {
+    "status": 302,
+    "redirectsToVercelSignIn": true
+  },
+  "allCurrentAliasesUnchanged": true,
+  "aliases": {
+    "bench-scout-git-hotfix-legacy-containment-sholly.vercel.app": "dpl_EcY1anTy6tVPnmAoagf5WCRk2Bed",
+    "bench-scout-git-testing-sholly.vercel.app": "dpl_D2mYf5k3qc892X4TVoRZ3jnoWWjD",
+    "bench-scout.vercel.app": "dpl_3JSXjPv2JjgTBNE3gwXVSiqJFTaV",
+    "bench-scout-sholly.vercel.app": "dpl_F5uCLS312DAkTGAGdUZbWqaUYYrg",
+    "bench-scout-git-main-sholly.vercel.app": "dpl_3JSXjPv2JjgTBNE3gwXVSiqJFTaV"
+  },
+  "publicPromoted": false,
+  "mainMerged": false,
+  "realFilesChangedByAgent": false,
+  "newDeletionIntentsCreated": false,
+  "limitations": [
+    "Schedule submission is not active registration or correct-key cron invocation acceptance.",
+    "Public-canonical generated hostname is not suitable for browser same-origin mutations.",
+    "Promotion and remaining smoke/recovery gates require separate handling."
+  ]
+}

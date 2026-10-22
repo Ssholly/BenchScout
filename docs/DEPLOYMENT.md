@@ -1,5 +1,11 @@
 # Deploying the security upgrade
 
+## 22 October 2026 — Approved public-origin candidate Ready; public remains paused
+
+Validated source `082c225a86a1ec582ceb2e27faf276f82b8a7994` is Ready as protected Production candidate `dpl_CSoxtMv87Zm4xVw2brybZxZV3onF`, immutable `bench-scout-926z7vaov-sholly.vercel.app`. Exact source/provider project identity match. Deployment uses the public canonical origin at build/runtime, validated webpack build, enabled backups, test mode off and backfill apply false. CLI reports Vercel authentication; independent anonymous HEAD returned 302 to Vercel sign-in.
+
+The approved normal cleanup schedule was submitted (`17 2 * * *`). Fresh active project cron definitions remain empty and point to historical cron metadata, so no active scheduler registration or invocation is claimed. All five current alias mappings are unchanged, including both maintenance domains and protected diagnostics. No public promotion, main merge, real-file operation or new deletion intent occurred. [Build evidence](qa/2026-10-22-public-origin-build.json); [current decision packet](PUBLIC-RELEASE-PACKET.md).
+
 ## 22 October 2026 — Approved current diagnostic build Ready
 
 Approved exact source `082c225a86a1ec582ceb2e27faf276f82b8a7994` is Ready as Production diagnostic deployment `dpl_F5uCLS312DAkTGAGdUZbWqaUYYrg`, immutable `bench-scout-8vrlhm9fq-sholly.vercel.app`, in the verified original project. Source/audit metadata match. CLI reports Vercel authentication; project Standard Protection remains all_except_custom_domains. The explicit no-cron local configuration was used; project cron metadata has empty definitions (its historical deploymentId is retained, not relabelled as a current scheduler pass).

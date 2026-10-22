@@ -1,6 +1,6 @@
 # BenchScout public release decision packet — 22 October 2026
 
-**Decision now: prepare the public-origin build; do not reopen or merge main yet.** The running protected diagnostic build is accepted for read-only connection/configuration and queue status. A public-origin artifact and its exact deployment ID do not yet exist. Approval of an unspecified public promotion would be premature.
+**Decision now: public promotion remains HOLD; do not reopen or merge main yet.** The approved public-origin candidate is Ready as `dpl_CSoxtMv87Zm4xVw2brybZxZV3onF`. Its source matches the validated candidate and existing aliases remain unchanged. The cleanup schedule was submitted with the build, but active project cron definitions remain empty; actual registration/authentication/invocation acceptance is not claimed. [Build execution](qa/2026-10-22-public-origin-build.json).
 
 ## Exact identities
 
@@ -12,7 +12,7 @@
 | Vercel project | `sholly/bench-scout`, `prj_MNrDsjvBMVCY5mmPjD3tSyw7OIBs` |
 | Current public and git-main | Maintenance `dpl_3JSXjPv2JjgTBNE3gwXVSiqJFTaV`, source `336c6edf06f8e8a3f0a3fafb43f81feac9c1546f` |
 | Accepted protected diagnostics | `dpl_F5uCLS312DAkTGAGdUZbWqaUYYrg` at `bench-scout-sholly.vercel.app` |
-| New public-origin artifact | **Not built; deployment ID must be recorded before promotion approval** |
+| New public-origin artifact | Ready `dpl_CSoxtMv87Zm4xVw2brybZxZV3onF`, `bench-scout-926z7vaov-sholly.vercel.app`; protected and unpromoted |
 | Production schema | Eight migrations, checksums matched, no unfinished migration; cleanup queue empty |
 
 ## Evidence accepted
@@ -24,7 +24,7 @@
 - Thirty-one explicitly approved obsolete deployments are retired and their URLs verified unavailable. Public and git-main are contained. Other retained deployments are not covered by a claim of global write isolation. [Isolation record](DEPLOYMENT-ISOLATION.md).
 - Earlier scoped Production QA encrypted source-loss/restore and approved inbox delivery were accepted; they are not relabelled as a new storage test on this build. Existing older real files remain unbackfilled.
 
-## Next approval: build only
+## Approved build scope — executed 22 October
 
 Prepare a clean archive of exact candidate `082c225`, assert original project/team mapping, and deploy with `--project bench-scout --scope sholly --prod --skip-domain`. Use the validated webpack build command and **both build/runtime canonical URL `https://bench-scout.vercel.app`**. Keep backups enabled, test mode off and real-file backfill apply false. Preserve existing stable Production database, source/archive, encryption and ownership secrets; never copy testing credentials or records.
 
@@ -62,4 +62,4 @@ Real-file backfill is a separate post-hook operation: fresh metadata preview, cu
 
 ## Current status
 
-This packet is preparation only. No new public-origin build, public promotion, main merge, secret rotation, real-file copy or new application mutation was executed. All historical pending entries remain dated evidence; this packet and linked execution records provide the current consolidated decision.
+The separately approved public-origin build and schedule submission are complete. No public promotion, main merge, secret rotation, real-file copy or new application mutation was executed. Actual scheduler activation/authentication and remaining release gates remain open. Earlier build-preparation records are retained as dated history; this packet and linked execution records provide the current consolidated decision.
