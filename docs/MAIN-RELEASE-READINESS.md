@@ -1,5 +1,26 @@
 # Main release readiness — 21 October 2026
 
+## 22 October 2026 — Retirement alias preflight refreshed
+
+A fresh read-only Vercel lookup found five aliases. None of the 30 previously proposed obsolete deployment IDs is currently assigned to an alias. The current testing, public maintenance, protected diagnostic, containment Preview and old git-main mappings are preserved. This prepares a bounded retirement request; it does not authorize deletion or close the historical writer gate. The mapped old git-main deployment remains outside this set and needs separate handling. No deployment was removed. [Preflight evidence](qa/2026-10-22-retirement-preflight.json).
+
+## 22 October 2026 — Replacement interruption regression coverage
+
+Added two failure-boundary tests for replacement: a storage deletion failure and an unavailable worker after metadata commit. Both verify that the new current source survives and only the old source is removed by a later retry. All **24 focused tests pass**. These use mocked storage/database boundaries; no hosted provider outage was induced, no new hosted replacement is claimed, and application source/Production are unchanged. [Evidence](qa/2026-10-22-cleanup-replacement-retry.json).
+
+## 22 October 2026 — Hosted synthetic deletion passed
+
+After explicit action-time approval, only the newly generated QA-only licence image was deleted through the testing candidate UI. The app reported “Document removed and stored files deleted.” After reload, that slot remained Missing. An independent read-only query in `benchscout_testing` returned pending/failed/due **0/0/0** and confirmed the synthetic account still has its CV, degree and certificate references with a null licence reference. This accepts ordinary hosted upload/delete and queue completion. Physical storage absence was not independently read; replacement, injected provider interruption/retry and actual scheduled invocation are not certified by this check. No real candidate document, application, Production migration or public release was changed. [Evidence](qa/2026-10-21-document-cleanup.json).
+
+## 22 October 2026 — Hosted cleanup counts confirmed
+
+The operator reports the testing counts-only request returned `pending: 0`, `failed: 0`, `due: 0`. This confirms the valid-key hosted status path reached the queue successfully; no deletion worker or storage mutation was requested. Evidence is operator-reported, not an independently observed worker run. Hosted synthetic deletion/replacement through the new worker remains the next acceptance check; Production migration, historical writer retirement and the hardened public cutover remain separate gates. [Cleanup evidence](qa/2026-10-21-document-cleanup.json).
+
+## 21 October 2026 — Cleanup fix served by testing
+
+Application commit `a3b3cf7f7ecb6f847d24324d07221d7387982ffb` is Ready in the existing sholly/bench-scout project as Preview deployment [D2mYf5k3qc892X4TVoRZ3jnoWWjD](https://vercel.com/sholly/bench-scout/D2mYf5k3qc892X4TVoRZ3jnoWWjD). Provider audit/Git metadata both match; branch is testing and expected testing binding names are present without values being inspected. The existing testing alias is assigned to this build with the exact testing canonical URL. The hosted Pending document deletion controls were observed, and a deliberately invalid key returned Unauthorized through the deployed endpoint. A private valid-key **counts-only** operator request is prepared; its result is not yet claimed. No worker processing, real-file deletion or new alert was triggered. The public maintenance and protected Production diagnostic releases are outside this Preview update. [Implementation and testing migration](DOCUMENT-CLEANUP.md); [QA](qa/2026-10-21-document-cleanup.json).
+
+
 ## 21 October 2026 — Durable cleanup implemented; testing migration applied
 
 [Durable document cleanup](DOCUMENT-CLEANUP.md) now atomically records vault removal/replacement and retry intent, guards stale writes, rechecks current references, and retries detached source/archive deletion with leases/backoff. The UI waits for server acknowledgement and distinguishes queued cleanup from completed deletion. Operator counts/explicit retry and a separately authenticated daily cleanup cron are implemented. Lint, TypeScript, 274 tests, build and 320/390px controls pass. A guarded exact-checksum migration plus real SQL rollback/lease checks passed in BenchScout Testing only (eight migrations, nine new-table columns, three indexes, zero queued rows). Production still requires the one additive migration and approved hardened cutover; public maintenance is unchanged. Actual hosted worker deletion/provider interruption and scheduled invocation remain separately tracked. [Evidence](qa/2026-10-21-document-cleanup.json).

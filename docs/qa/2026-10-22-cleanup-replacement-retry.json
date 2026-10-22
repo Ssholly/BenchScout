@@ -1,0 +1,14 @@
+{
+  "date": "2026-10-22",
+  "scope": "additional deterministic replacement failure coverage",
+  "focusedTestsPassed": 24,
+  "addedCases": [
+    "replacement storage failure queues only old source; retry preserves new current source",
+    "replacement worker interruption preserves committed replacement; retry deletes only old source"
+  ],
+  "providers": "mocked",
+  "database": "mocked",
+  "hostedFaultInjection": false,
+  "applicationSourceChanged": false,
+  "productionChanged": false
+}

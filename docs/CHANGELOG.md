@@ -1,5 +1,29 @@
 # Change log
 
+## 22 October 2026 — Retirement alias preflight refreshed
+
+A fresh read-only Vercel lookup found five aliases. None of the 30 previously proposed obsolete deployment IDs is currently assigned to an alias. The current testing, public maintenance, protected diagnostic, containment Preview and old git-main mappings are preserved. This prepares a bounded retirement request; it does not authorize deletion or close the historical writer gate. The mapped old git-main deployment remains outside this set and needs separate handling. No deployment was removed. [Preflight evidence](qa/2026-10-22-retirement-preflight.json).
+
+## 22 October 2026 — Replacement interruption regression coverage
+
+Added two failure-boundary tests for replacement: a storage deletion failure and an unavailable worker after metadata commit. Both verify that the new current source survives and only the old source is removed by a later retry. All **24 focused tests pass**. These use mocked storage/database boundaries; no hosted provider outage was induced, no new hosted replacement is claimed, and application source/Production are unchanged. [Evidence](qa/2026-10-22-cleanup-replacement-retry.json).
+
+## 22 October 2026 — Hosted synthetic deletion passed
+
+After explicit action-time approval, only the newly generated QA-only licence image was deleted through the testing candidate UI. The app reported “Document removed and stored files deleted.” After reload, that slot remained Missing. An independent read-only query in `benchscout_testing` returned pending/failed/due **0/0/0** and confirmed the synthetic account still has its CV, degree and certificate references with a null licence reference. This accepts ordinary hosted upload/delete and queue completion. Physical storage absence was not independently read; replacement, injected provider interruption/retry and actual scheduled invocation are not certified by this check. No real candidate document, application, Production migration or public release was changed. [Evidence](qa/2026-10-21-document-cleanup.json).
+
+## 22 October 2026 — Hosted disposable upload persisted
+
+A newly generated QA-only PNG was uploaded through the testing candidate UI into the previously empty licence slot of the synthetic account. The Uploaded state persisted after reload. No registration details, independent approval, application sharing or other vault files were changed. Permanent deletion of this newly created fixture is prepared, not executed; worker completion remains unverified. [QA record](qa/2026-10-21-document-cleanup.json).
+
+## 22 October 2026 — Hosted cleanup counts confirmed
+
+The operator reports the testing counts-only request returned `pending: 0`, `failed: 0`, `due: 0`. This confirms the valid-key hosted status path reached the queue successfully; no deletion worker or storage mutation was requested. Evidence is operator-reported, not an independently observed worker run. Hosted synthetic deletion/replacement through the new worker remains the next acceptance check; Production migration, historical writer retirement and the hardened public cutover remain separate gates. [Cleanup evidence](qa/2026-10-21-document-cleanup.json).
+
+## 21 October 2026 — Cleanup fix deployed to testing
+
+- Verified `a3b3cf7` Ready in the existing BenchScout Preview project and assigned the testing alias. Hosted controls and invalid-key rejection pass; valid-key queue counts remain pending. Public maintenance stays separate; no Production schema change or real-file deletion. [Evidence](qa/2026-10-21-document-cleanup.json).
+
 ## 21 October 2026 — Durable document cleanup and retry
 
 - Fixed physical deletion before metadata commit using transactional deletion intents, stale-write checks, leased/backoff retries and active-reference guards. Settings now waits for confirmation; restricted operator controls and a daily cleanup cron are documented. Testing-only migration applied; 274 tests/lint/typecheck/build pass. No Production migration, reopening or real-file deletion. [Contract](DOCUMENT-CLEANUP.md).

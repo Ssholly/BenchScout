@@ -110,6 +110,21 @@ test('upload conflict removes only its own uncommitted source',async()=>{
 test('successful replacement queues only old source after new metadata commit',async()=>{
  const response=await upload.POST(request());assert.equal(response.status,200);assert.match(state.resumeUrl,/new-1/);assert.deepEqual(removed,[oldUrl]);assert.equal(sources.has(state.resumeUrl),true);assert.equal(jobs.size,0);
 });
+test('replacement storage failure retains only old-source intent and retry preserves the new current file',async()=>{
+ flags.cleanupFails=true;
+ const response=await upload.POST(request());assert.equal(response.status,200);assert.equal((await response.json()).cleanupPending,true);
+ const current=state.resumeUrl;assert.notEqual(current,oldUrl);assert.equal(sources.has(current),true);assert.equal(sources.has(oldUrl),true);
+ assert.equal(jobs.size,1);assert.equal([...jobs.values()][0].sourceUrl,oldUrl);
+ flags.cleanupFails=false;makeDue();const result=await cleanup.processDocumentCleanup();
+ assert.equal(result.completed,1);assert.equal(jobs.size,0);assert.equal(state.resumeUrl,current);assert.equal(sources.has(current),true);assert.equal(sources.has(oldUrl),false);
+});
+test('replacement worker interruption leaves committed current file intact until old-source retry completes',async()=>{
+ flags.workerUnavailable=true;
+ const response=await upload.POST(request());assert.equal(response.status,200);assert.equal((await response.json()).cleanupPending,true);
+ const current=state.resumeUrl;assert.notEqual(current,oldUrl);assert.equal(sources.has(current),true);assert.equal(sources.has(oldUrl),true);assert.equal(jobs.size,1);assert.deepEqual(removed,[]);
+ flags.workerUnavailable=false;const result=await cleanup.processDocumentCleanup();
+ assert.equal(result.completed,1);assert.equal(jobs.size,0);assert.equal(state.resumeUrl,current);assert.equal(sources.has(current),true);assert.deepEqual(removed,[oldUrl]);
+});
 test('repeat removal returns pending status without creating duplicate intent',async()=>{
  flags.cleanupFails=true;await upload.DELETE(request('DELETE'));const response=await upload.DELETE(request('DELETE'));assert.equal((await response.json()).cleanupPending,true);assert.equal(jobs.size,1);
 });

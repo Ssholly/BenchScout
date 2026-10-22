@@ -1,5 +1,9 @@
 # Historical deployment isolation audit — 21 October 2026
 
+## 22 October 2026 — Retirement alias preflight refreshed
+
+A fresh read-only Vercel lookup found five aliases. None of the 30 previously proposed obsolete deployment IDs is currently assigned to an alias. The current testing, public maintenance, protected diagnostic, containment Preview and old git-main mappings are preserved. This prepares a bounded retirement request; it does not authorize deletion or close the historical writer gate. The mapped old git-main deployment remains outside this set and needs separate handling. No deployment was removed. [Preflight evidence](qa/2026-10-22-retirement-preflight.json).
+
 Status: **anonymous access perimeter passed for the observed URLs; release remains HOLD for legacy public code and credential/write retirement**. This pass was read-only. No deployment was deleted, credential rotated, sharing/access setting changed, file uploaded or destructive route invoked. Full scrubbed IDs/status results are in [audit evidence](qa/2026-10-21-deployment-isolation.json).
 
 ## Observed provider and HTTP results

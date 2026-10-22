@@ -35,12 +35,74 @@
     "realFilesDeleted": 0,
     "newAlertSent": false,
     "cleanupCronInvocationObserved": false,
-    "testingDeploymentVerified": false
+    "testingDeploymentVerified": true
   },
   "remaining": [
-    "hosted synthetic normal deletion/replacement acceptance on new worker",
+    "hosted replacement and interrupted-provider retry acceptance; ordinary synthetic upload/delete path passed",
     "Production migration and explicit hardened release approval",
     "actual scheduler/authentication and failure alert acceptance",
     "historical writer isolation/retirement and broader release gates"
-  ]
+  ],
+  "deploymentCorrection": {
+    "unlinkedCheckoutCreatedDuplicateProject": "sholly/labpro-connect",
+    "accidentalDeploymentId": "dpl_4bVf8DBVbJzCujagVjuJGgFBPLMF",
+    "duplicateProjectDeleted": true,
+    "duplicateAliasHttpStatus": 404,
+    "duplicateAliasProviderError": "DEPLOYMENT_NOT_FOUND",
+    "correctProjectIdVerified": "prj_MNrDsjvBMVCY5mmPjD3tSyw7OIBs",
+    "correctOrgIdVerified": "team_gjcyqkAxZmFeyqWaQCDYTRkE",
+    "publicBenchScoutUnchanged": true
+  },
+  "testingDeployment": {
+    "id": "dpl_D2mYf5k3qc892X4TVoRZ3jnoWWjD",
+    "sourceCommit": "a3b3cf7f7ecb6f847d24324d07221d7387982ffb",
+    "projectId": "prj_MNrDsjvBMVCY5mmPjD3tSyw7OIBs",
+    "environment": "Preview",
+    "branch": "testing",
+    "readyState": "READY",
+    "providerSourceMetadataMatches": true,
+    "testingBindingsPresentByName": true,
+    "canonicalOrigin": "https://bench-scout-git-testing-sholly.vercel.app",
+    "existingTestingAliasAssigned": true,
+    "hostedControlsObserved": true,
+    "wrongAdministratorKeyRejected": true,
+    "operatorQueueReadPending": false,
+    "operatorQueueStatus": {
+      "date": "2026-10-22",
+      "evidence": "operator-reported response",
+      "pending": 0,
+      "failed": 0,
+      "due": 0,
+      "processingRequested": false
+    }
+  },
+  "hostedSyntheticUpload": {
+    "date": "2026-10-22",
+    "environment": "testing",
+    "account": "QA ONLY - Synthetic Candidate 20261020",
+    "slot": "license",
+    "previouslyEmpty": true,
+    "fixture": "benchscout-cleanup-qa-only-v1.png",
+    "realCredential": false,
+    "uploadedObserved": true,
+    "persistedAfterReload": true,
+    "licenseDetailsSaved": false,
+    "deletionExecuted": true,
+    "otherDocumentsChanged": false
+  },
+  "hostedSyntheticDeletion": {
+    "date": "2026-10-22",
+    "explicitOperatorApproval": true,
+    "environment": "testing",
+    "fixture": "benchscout-cleanup-qa-only-v1.png",
+    "uiReported": "Document removed and stored files deleted.",
+    "missingAfterReload": true,
+    "databaseEvidence": "independent read-only Neon SQL on benchscout_testing",
+    "pending": 0,
+    "failed": 0,
+    "due": 0,
+    "syntheticVaultPreserved": true,
+    "storageAbsenceIndependentlyRead": false,
+    "replacementAndInterruptedProviderRuntimeNotClaimed": true
+  }
 }

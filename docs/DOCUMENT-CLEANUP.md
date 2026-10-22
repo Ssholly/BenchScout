@@ -1,5 +1,26 @@
 # Durable document cleanup — 21 October 2026
 
+## 22 October 2026 — Replacement interruption regression coverage
+
+Added two failure-boundary tests for replacement: a storage deletion failure and an unavailable worker after metadata commit. Both verify that the new current source survives and only the old source is removed by a later retry. All **24 focused tests pass**. These use mocked storage/database boundaries; no hosted provider outage was induced, no new hosted replacement is claimed, and application source/Production are unchanged. [Evidence](qa/2026-10-22-cleanup-replacement-retry.json).
+
+## 22 October 2026 — Hosted synthetic deletion passed
+
+After explicit action-time approval, only the newly generated QA-only licence image was deleted through the testing candidate UI. The app reported “Document removed and stored files deleted.” After reload, that slot remained Missing. An independent read-only query in `benchscout_testing` returned pending/failed/due **0/0/0** and confirmed the synthetic account still has its CV, degree and certificate references with a null licence reference. This accepts ordinary hosted upload/delete and queue completion. Physical storage absence was not independently read; replacement, injected provider interruption/retry and actual scheduled invocation are not certified by this check. No real candidate document, application, Production migration or public release was changed. [Evidence](qa/2026-10-21-document-cleanup.json).
+
+## 22 October 2026 — Hosted disposable upload persisted
+
+A newly generated QA-only PNG was uploaded through the testing candidate UI into the previously empty licence slot of the synthetic account. The Uploaded state persisted after reload. No registration details, independent approval, application sharing or other vault files were changed. Permanent deletion of this newly created fixture is prepared, not executed; worker completion remains unverified. [QA record](qa/2026-10-21-document-cleanup.json).
+
+## 22 October 2026 — Hosted cleanup counts confirmed
+
+The operator reports the testing counts-only request returned `pending: 0`, `failed: 0`, `due: 0`. This confirms the valid-key hosted status path reached the queue successfully; no deletion worker or storage mutation was requested. Evidence is operator-reported, not an independently observed worker run. Hosted synthetic deletion/replacement through the new worker remains the next acceptance check; Production migration, historical writer retirement and the hardened public cutover remain separate gates. [Cleanup evidence](qa/2026-10-21-document-cleanup.json).
+
+## 21 October 2026 — Cleanup fix served by testing
+
+Application commit `a3b3cf7f7ecb6f847d24324d07221d7387982ffb` is Ready in the existing sholly/bench-scout project as Preview deployment [D2mYf5k3qc892X4TVoRZ3jnoWWjD](https://vercel.com/sholly/bench-scout/D2mYf5k3qc892X4TVoRZ3jnoWWjD). Provider audit/Git metadata both match; branch is testing and expected testing binding names are present without values being inspected. The existing testing alias is assigned to this build with the exact testing canonical URL. The hosted Pending document deletion controls were observed, and a deliberately invalid key returned Unauthorized through the deployed endpoint. A private valid-key **counts-only** operator request is prepared; its result is not yet claimed. No worker processing, real-file deletion or new alert was triggered. The public maintenance and protected Production diagnostic releases are outside this Preview update. [Implementation and testing migration](DOCUMENT-CLEANUP.md); [QA](qa/2026-10-21-document-cleanup.json).
+
+
 Status: implemented and locally validated; the additive migration is applied **only to BenchScout Testing**. Production remains on the approved terminal maintenance build. Hosted code deployment/acceptance is recorded separately below; source validation is not Production activation.
 
 ## Problem and resulting behavior
@@ -57,3 +78,5 @@ Sources: [Vercel cron usage](https://vercel.com/docs/cron-jobs/usage-and-pricing
 - Hosted synthetic deletion/replacement through the new worker, actual automatic daily invocation and third-failure alert receipt remain distinct runtime acceptance checks. Mocked failure coverage and schema success do not certify full disaster recovery. Older protected writers still require isolation/retirement; do not claim a global write pause or enable real-file backfill solely from public maintenance.
 
 Evidence: [cleanup QA](qa/2026-10-21-document-cleanup.json), [current release readiness](MAIN-RELEASE-READINESS.md), [public containment](LEGACY-CONTAINMENT.md), [release plan](PRODUCTION-RELEASE-PLAN.md).
+
+Deployment correction during this checkpoint: the first CLI Preview attempt omitted an explicit project and found an unlinked checkout, creating a duplicate `sholly/labpro-connect` project (its first build became that new project’s Production build). This was an operational mistake, not a BenchScout rollout. The duplicate project was deleted; a separate request to its generated public alias returned HTTP 404 / DEPLOYMENT_NOT_FOUND. No original BenchScout alias or database configuration was changed by that attempt. The checkout was then explicitly linked and its expected project/team IDs asserted before retrying with `--project bench-scout --scope sholly --environment preview`. Future manual deployment commands must specify the project/scope and verify their local ID mapping; branch name or directory name alone is insufficient. No main merge or hardened Production promotion was performed.
