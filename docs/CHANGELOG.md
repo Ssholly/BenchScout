@@ -1,3 +1,7 @@
+## 22 October 2026 — Twelve protected hosted access checks passed
+
+Executed the separately approved GET-only smoke on the exact corrected release candidate. Root/employer HTML loads passed; disabled setup/test-email endpoints returned 410; protected APIs and a forged session returned 401 JSON errors. Temporary project bypass revoked and protection restored (zero entries; revoked-token HEAD 302). No valid login, account/data/file change, email, worker processing, public promotion or main merge ran. Updated the release packet/readiness record while preserving the distinction from authenticated cross-owner and actual scheduler checks. [Scrubbed results](qa/2026-10-22-protected-access-smoke.json).
+
 ## 22 October 2026 — Final protected access smoke prepared
 
 Extended the guarded operator helper with a plan-by-default `--access-smoke` mode: twelve fixed GET-only checks for root/employer HTML, disabled development endpoints, anonymous protected API denial and deliberately invalid session rejection. It requires no valid application secrets and does not load local environment files in this mode. Exact candidate/project/source guards and temporary-access revocation/recovery remain enforced. Syntax, focused ESLint and non-network plan mode pass; hosted checks have **not** run and require separate approval for the project-wide temporary bypass. No app source/build, public mapping or data changed. [Exact scope and limits](CRON-AUTHENTICATION-CHECK.md#fixed-get-only-access-smoke--prepared-22-october).

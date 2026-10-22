@@ -1,3 +1,7 @@
+## 22 October 2026 — Protected candidate access checks accepted
+
+All twelve separately approved fixed GET checks pass on `dpl_CfjXtpKfxDeThKRc8FfrEXeCHssm` (source `082c225`): HTML page loads, permanently disabled development endpoints, anonymous API denial and forged-session denial. The helper revoked temporary access; zero project bypass entries and revoked-token 302 verify restored protection. No records/files, valid application login, normal cron, public promotion or main merge changed. These results do not prove authenticated cross-owner mutations or public-origin session/link behaviour. [Hosted evidence](qa/2026-10-22-protected-access-smoke.json); [current release decision](PUBLIC-RELEASE-PACKET.md).
+
 # Main release readiness — 21 October 2026
 
 ## 22 October 2026 — Production-only cron correction accepted

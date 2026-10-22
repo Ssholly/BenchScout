@@ -24,13 +24,17 @@
 - Thirty-one explicitly approved obsolete deployments are retired and their URLs verified unavailable. Public and git-main are contained. Other retained deployments are not covered by a claim of global write isolation. [Isolation record](DEPLOYMENT-ISOLATION.md).
 - Earlier scoped Production QA encrypted source-loss/restore and approved inbox delivery were accepted; they are not relabelled as a new storage test on this build. Existing older real files remain unbackfilled.
 
+## Hosted access acceptance — 22 October
+
+All twelve approved fixed GET checks passed on current candidate `dpl_CfjXtpKfxDeThKRc8FfrEXeCHssm`: root/employer HTML 200; disabled setup/test-email JSON 410; protected APIs and forged-session JSON 401. The application denials were reached through the approved temporary bypass; they are not provider protection redirects. Access was revoked and independently checked: project bypass count zero, revoked-token HEAD 302. No application records/files, valid sessions or public aliases changed. [Hosted check results](qa/2026-10-22-protected-access-smoke.json).
+
 ## Remaining acceptance, classified — 22 October
 
 The salary route regression suite now exercises actual route/auth handlers with an in-memory persistence adapter: anonymous and employer write denial; repeat owner submission without duplicate creation or caller-selected ownership; cross-owner and ownerless legacy edit/delete denial; successful own edit/delete; and missing ownership configuration failing closed. **All 281 repository tests pass**, including these five additions; focused ESLint and diff whitespace checks pass. No application/configuration change or replacement build is needed. This proves deterministic route behaviour, **not a hosted Production salary mutation**. [Evidence](qa/2026-10-22-salary-ownership-acceptance.json).
 
 | Remaining item | What is already supported | Required next evidence or decision |
 | --- | --- | --- |
-| Access, duplicate submission and session revocation | Earlier isolated real HTTP/database/private-storage acceptance and dated hosted synthetic recruitment checks; current deterministic route tests | Keep their dated scope explicit. Final public smoke must distinguish application denial from the provider protection page. No repeated real-account mutation is implied. |
+| Access, duplicate submission and session revocation | Earlier isolated real HTTP/database/private-storage acceptance and dated hosted synthetic recruitment checks; current deterministic route tests | Current protected candidate now passes the twelve GET checks, including application-level anonymous and forged-session denial. Authenticated duplicate/cross-owner operations retain earlier dated scope; no current Production mutation is claimed. |
 | Salary ownership | New route regressions pass; live legacy ownerless row was previously identified and remains preserved | A hosted owner/cross-owner write test would require separately scoped synthetic Production accounts/data. It has not run; do not label it passed. |
 | Canonical origin and links | Current build/runtime public origin matches the intended hostname; generated-host mutation rejection is intentional | Validate public-origin sign-in/session and link behaviour during a separately approved cutover smoke. Never relax origin rules to test a generated hostname. |
 | Scheduler | Schedule submitted; exact candidate wrong/correct key dry-run accepted | Verify effective definitions after promotion and observe a real invocation. Empty pre-promotion definitions are an open operational check, not proof of failure or success. |

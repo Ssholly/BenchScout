@@ -19,5 +19,12 @@
   "updated": "2026-10-22",
   "currentEvidence": "2026-10-22-production-cron-correction-accepted.json",
   "salaryRegressionEvidence": "2026-10-22-salary-ownership-acceptance.json",
-  "fullSuiteTestsPassed": 281
+  "fullSuiteTestsPassed": 281,
+  "protectedAccessSmoke": {
+    "passed": true,
+    "checks": 12,
+    "accessRevoked": true,
+    "accessAbsentVerified": true,
+    "evidence": "2026-10-22-protected-access-smoke.json"
+  }
 }

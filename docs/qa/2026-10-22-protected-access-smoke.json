@@ -1,0 +1,111 @@
+{
+  "date": "2026-10-22T15:34:45.053Z",
+  "project": "prj_MNrDsjvBMVCY5mmPjD3tSyw7OIBs",
+  "deployment": "dpl_CfjXtpKfxDeThKRc8FfrEXeCHssm",
+  "source": "082c225a86a1ec582ceb2e27faf276f82b8a7994",
+  "scope": "fixed GET-only access smoke",
+  "accessCreated": true,
+  "accessRevoked": true,
+  "workerProcessing": false,
+  "emailDispatch": false,
+  "passed": true,
+  "generatedTokenMatchesRequested": true,
+  "checks": [
+    {
+      "endpoint": "/",
+      "forgedCookie": false,
+      "expected": 200,
+      "actual": 200,
+      "passed": true
+    },
+    {
+      "endpoint": "/employer",
+      "forgedCookie": false,
+      "expected": 200,
+      "actual": 200,
+      "passed": true
+    },
+    {
+      "endpoint": "/api/setup",
+      "forgedCookie": false,
+      "expected": 410,
+      "actual": 410,
+      "passed": true
+    },
+    {
+      "endpoint": "/api/test-email",
+      "forgedCookie": false,
+      "expected": 410,
+      "actual": 410,
+      "passed": true
+    },
+    {
+      "endpoint": "/api/auth/session",
+      "forgedCookie": false,
+      "expected": 401,
+      "actual": 401,
+      "passed": true
+    },
+    {
+      "endpoint": "/api/auth/session",
+      "forgedCookie": true,
+      "expected": 401,
+      "actual": 401,
+      "passed": true
+    },
+    {
+      "endpoint": "/api/user",
+      "forgedCookie": false,
+      "expected": 401,
+      "actual": 401,
+      "passed": true
+    },
+    {
+      "endpoint": "/api/documents?userId=qa-nonexistent-access-probe&kind=resume",
+      "forgedCookie": false,
+      "expected": 401,
+      "actual": 401,
+      "passed": true
+    },
+    {
+      "endpoint": "/api/jobs/applicants?jobId=qa-nonexistent-access-probe",
+      "forgedCookie": false,
+      "expected": 401,
+      "actual": 401,
+      "passed": true
+    },
+    {
+      "endpoint": "/api/readiness",
+      "forgedCookie": false,
+      "expected": 401,
+      "actual": 401,
+      "passed": true
+    },
+    {
+      "endpoint": "/api/notifications",
+      "forgedCookie": false,
+      "expected": 401,
+      "actual": 401,
+      "passed": true
+    },
+    {
+      "endpoint": "/api/history",
+      "forgedCookie": false,
+      "expected": 401,
+      "actual": 401,
+      "passed": true
+    }
+  ],
+  "revokedAccessHttpStatus": 302,
+  "accessAbsentVerified": true,
+  "operatorApproved": true,
+  "databaseBusinessRecordsChanged": false,
+  "filesChanged": false,
+  "promotionPerformed": false,
+  "mainMergePerformed": false,
+  "limits": [
+    "Anonymous and forged-cookie access only; no successful application login or authenticated cross-owner mutation tested.",
+    "No actual scheduler invocation observed.",
+    "No public canonical-origin mutation or link delivery tested."
+  ]
+}
