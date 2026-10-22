@@ -1,0 +1,76 @@
+{
+  "scope": "isolated PostgreSQL schema; real authenticated HTTP; local SMTP capture; no private storage",
+  "startedAt": "2026-10-22T15:45:38.840Z",
+  "checks": [
+    {
+      "name": "isolated schema migrations and empty account boundary",
+      "status": "passed",
+      "elapsedMs": 31055
+    },
+    {
+      "name": "isolated HTTP server and local-only mail transport",
+      "status": "passed",
+      "elapsedMs": 4696
+    },
+    {
+      "name": "candidate signup, captured confirmation and blocked unverified login",
+      "status": "passed",
+      "elapsedMs": 23777
+    },
+    {
+      "name": "employer confirmation stays separate from company approval",
+      "status": "passed",
+      "elapsedMs": 16328
+    },
+    {
+      "name": "authenticated sessions persist and reject cross-account identity",
+      "status": "passed",
+      "elapsedMs": 7694
+    },
+    {
+      "name": "real HTTP salary ownership, duplicate submission and anonymous legacy preservation",
+      "status": "passed",
+      "elapsedMs": 16114
+    },
+    {
+      "name": "logout invalidates previously valid candidate and employer cookies",
+      "status": "passed",
+      "elapsedMs": 2924
+    },
+    {
+      "name": "no synthetic accounts were written to the normal schema",
+      "status": "passed",
+      "elapsedMs": 1465
+    }
+  ],
+  "cleanup": {
+    "privateFiles": {
+      "status": "not-used",
+      "removed": 0
+    },
+    "schema": "removed"
+  },
+  "limitations": [
+    "Not a hosted Vercel acceptance run",
+    "SMTP capture does not establish external inbox delivery",
+    "No backup/restore or load certification",
+    "Development HttpOnly/SameSite/path cookie checks do not prove Production Secure-cookie delivery.",
+    "Public canonical email-link/browser behaviour and actual cron invocation were not tested."
+  ],
+  "mailCaptured": 5,
+  "status": "passed",
+  "finishedAt": "2026-10-22T15:47:24.284Z",
+  "applicationSource": "082c225a86a1ec582ceb2e27faf276f82b8a7994",
+  "applicationConfigDiffEmptyThrough": "f21248f",
+  "userApproved": true,
+  "independentCleanupVerification": {
+    "schemaAbsent": true,
+    "normalSchemaSyntheticUsers": 0,
+    "normalSchemaSyntheticEmployers": 0
+  },
+  "localHttpPortClosed": true,
+  "normalBusinessRecordsChanged": false,
+  "filesUsed": false,
+  "publicPromotionPerformed": false,
+  "mainMergePerformed": false
+}

@@ -26,5 +26,12 @@
     "accessRevoked": true,
     "accessAbsentVerified": true,
     "evidence": "2026-10-22-protected-access-smoke.json"
+  },
+  "authenticatedIntegration": {
+    "passed": true,
+    "checks": 8,
+    "scope": "isolated schema, real PostgreSQL, loopback HTTP, local SMTP",
+    "independentCleanupPassed": true,
+    "evidence": "2026-10-22-authenticated-subset-accepted.json"
   }
 }
