@@ -26,10 +26,34 @@
   "onlyDiagnosticAliasChanged": true,
   "hostedAdminControlsObserved": true,
   "invalidKeyRejected": true,
-  "correctKeyReadinessPending": true,
-  "correctKeyQueueCountsPending": true,
+  "correctKeyReadinessPending": false,
+  "correctKeyQueueCountsPending": false,
   "realFileBackfillExecuted": false,
   "realFilesChanged": false,
   "mainMerged": false,
-  "publicReopened": false
+  "publicReopened": false,
+  "runtimeReadiness": {
+    "evidence": "operator-reported response",
+    "date": "2026-10-22",
+    "databaseConnected": true,
+    "configuredDatabaseMatches": true,
+    "targetFingerprint": "c64b6f363fb232aaaa9650261e30b563fc2f67af452df65caa89f00f40f458ab",
+    "matchesPreviouslyVerifiedProductionTarget": true,
+    "environment": "production",
+    "buildCommit": null,
+    "sourceIdentityEvidence": "provider auditSourceCommit and githubCommitSha; runtime buildCommit is null",
+    "backupEnabled": true,
+    "backupConfigured": true,
+    "alertConfigured": true,
+    "testModeOff": true,
+    "businessRecordsChanged": false
+  },
+  "runtimeQueueStatus": {
+    "date": "2026-10-22",
+    "evidence": "operator-reported response",
+    "pending": 0,
+    "failed": 0,
+    "due": 0,
+    "workerProcessingRequested": false
+  }
 }

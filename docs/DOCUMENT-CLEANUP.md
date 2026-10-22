@@ -1,5 +1,9 @@
 # Durable document cleanup — 21 October 2026
 
+## 22 October 2026 — Current Production queue connection accepted
+
+The operator reports the correct-key deployed cleanup status returned **pending 0, failed 0, due 0** on the current protected Production diagnostic stage. Combined with the matching live database fingerprint and backup configuration response, this accepts the new runtime's read-only database and queue paths. No deletion worker, file mutation, backfill, alert or scheduled invocation was requested. An empty queue does not itself prove physical cleanup/retry; testing's hosted ordinary deletion and deterministic failure tests remain separate evidence. Public maintenance is unchanged. [Runtime evidence](qa/2026-10-22-protected-stage.json).
+
 ## 22 October 2026 — Approved Production cleanup migration applied
 
 The operator explicitly approved `20261021000000_document_cleanup` on BenchScout Production. The authenticated Neon console verified **BenchScout / production / br-cold-hall-apf2uz7z / neondb**. One transaction checked the database identity, seven matching prior checksums, no unfinished migrations and absence of the new table, then ran the exact repository DDL and recorded its SHA-256 in Prisma history. COMMIT completed.

@@ -1,5 +1,13 @@
 # Main release readiness — 21 October 2026
 
+## 22 October 2026 — Current Production queue connection accepted
+
+The operator reports the correct-key deployed cleanup status returned **pending 0, failed 0, due 0** on the current protected Production diagnostic stage. Combined with the matching live database fingerprint and backup configuration response, this accepts the new runtime's read-only database and queue paths. No deletion worker, file mutation, backfill, alert or scheduled invocation was requested. An empty queue does not itself prove physical cleanup/retry; testing's hosted ordinary deletion and deterministic failure tests remain separate evidence. Public maintenance is unchanged. [Runtime evidence](qa/2026-10-22-protected-stage.json).
+
+## 22 October 2026 — Current stage live connection accepted
+
+The operator reports the current protected stage returned databaseConnected/configuredDatabaseMatches true and the previously verified Production fingerprint `c64b6f363fb232aaaa9650261e30b563fc2f67af452df65caa89f00f40f458ab`. Production environment, backupEnabled/backupConfigured/alertConfigured and testModeOff are true; businessRecordsChanged is false. Runtime buildCommit is null, so source identity relies on the separately verified provider metadata, not an invented runtime SHA. Correct-key cleanup queue counts are still pending. This checks configuration/connection, not a fresh storage recovery or mail delivery test. [Evidence](qa/2026-10-22-protected-stage.json).
+
 ## 22 October 2026 — Approved current diagnostic build Ready
 
 Approved exact source `082c225a86a1ec582ceb2e27faf276f82b8a7994` is Ready as Production diagnostic deployment `dpl_F5uCLS312DAkTGAGdUZbWqaUYYrg`, immutable `bench-scout-8vrlhm9fq-sholly.vercel.app`, in the verified original project. Source/audit metadata match. CLI reports Vercel authentication; project Standard Protection remains all_except_custom_domains. The explicit no-cron local configuration was used; project cron metadata has empty definitions (its historical deploymentId is retained, not relabelled as a current scheduler pass).
