@@ -93,7 +93,7 @@ try {
  report.wrongKeyStatus=negative.status;
  if(negative.status!==401)throw new Error('Wrong-key denial did not return 401.');
  const positive=request(temporary,cron);report.correctKeyStatus=positive.status;
- if(positive.status!==200||positive.data?.dryRun!==true)throw new Error('Correct-key dry-run was not accepted; verify the existing local key matches Production.');
+ if(positive.status!==200||positive.data?.dryRun!==true)throw new Error('Supplied cron key was not accepted by the deployed candidate; confirm the effective Production binding.');
  const {pending,failed,due}=positive.data;
  if(![pending,failed,due].every(n=>Number.isSafeInteger(n)&&n>=0))throw new Error('Unexpected dry-run count format.');
  report.queue={pending,failed,due};report.dryRun=true;report.passed=true;

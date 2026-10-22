@@ -1,5 +1,11 @@
 # Public-app release and rollback plan — 21 October 2026
 
+## 22 October 2026 — Saved Production cron key rejected; private artifacts removed
+
+The operator-supplied saved key was tested only against the fixed public-origin candidate's cleanup dry-run: wrong-key **401**, supplied-key **401**. This does not establish which saved value is effective or whether the current Production value satisfies the application; authenticated cron acceptance remains open. Temporary bypass creation/revocation completed; project access absence and revoked-token HTTP **302** were verified. The private key file was removed and the loopback entry server stopped; port closure was checked. No normal cleanup, email, public promotion or key-value inspection occurred. [Actual result](qa/2026-10-22-saved-production-cron-attempt.json).
+
+Metadata-only/provider UI inspection confirms testing has its separate Preview/testing Secret, while the current unscoped CRON_SECRET is shared by Production and Preview and was last updated 20 May. Prepared an unsaved Production-only Secret form. Proposed separately approved correction: preserve the old shared value on Preview only, let the operator privately save a new Production-only key, verify scopes and rebuild exact source 082c225 as a protected public-origin candidate before retrying dry-run. Existing immutable keys remain captured; neither public reopening nor main merge is included. [Concrete correction plan](qa/2026-10-22-production-cron-correction-plan.json). [Vercel documents that environment edits affect new deployments only](https://vercel.com/docs/environment-variables/managing-environment-variables).
+
 ## 22 October 2026 — Cron denial passed; authenticated dry-run awaits correct Production key
 
 The explicitly approved temporary-access probe reached the exact public-origin candidate: wrong cron key **401**, existing local cron key **401**. Therefore correct-key cron acceptance is **not passed**; a Production mismatch, missing/invalid effective configuration or incorrect saved local key still needs resolution. No normal cleanup, new deletion intent or email ran.
