@@ -34,6 +34,10 @@ Record Ready state, source metadata, protection, effective configuration evidenc
 
 The public-origin build's generated hostname intentionally fails same-origin mutations from that hostname. This is expected; do not broaden origin rules. Current protected diagnostics validate the same application code against live services. Any further authenticated diagnostic access must use an approved supported mechanism, not an invented bypass.
 
+## Cron authentication checkpoint — 22 October
+
+The wrong-key check reached the exact candidate and returned 401, but the available local cron key was also rejected with 401. Correct-key acceptance remains open. Temporary project bypass access is fully removed (zero entries, revoked-token HTTP 302). Obtain the actual Production key privately or prepare a controlled configuration correction; do not infer that cron is ready from key presence. [Probe evidence](qa/2026-10-22-cron-authentication-attempt.json).
+
 ## Promotion remains a separate decision
 
 Before requesting public reopening, present the exact new deployment ID, config/schedule findings, migration identity, remaining acceptance results and rollback ID. Resolve or explicitly record the remaining direct hosted access/idempotency, salary owner/cross-owner, session/canonical-link and cron acceptance limits from the release runbook. Do not change HOLD to release-ready based only on the empty queue.

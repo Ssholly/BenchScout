@@ -1,5 +1,11 @@
 # Public-app release and rollback plan — 21 October 2026
 
+## 22 October 2026 — Cron denial passed; authenticated dry-run awaits correct Production key
+
+The explicitly approved temporary-access probe reached the exact public-origin candidate: wrong cron key **401**, existing local cron key **401**. Therefore correct-key cron acceptance is **not passed**; a Production mismatch, missing/invalid effective configuration or incorrect saved local key still needs resolution. No normal cleanup, new deletion intent or email ran.
+
+Temporary access was revoked and independently verified: project bypass count **zero**, revoked token HEAD **302** to the protection gate. Creation/revocation propagation caused earlier platform-gate/transient observations; an initial helper token-format error was rejected by Vercel before creating access. The helper now uses the required 32-character format, validates returned access metadata, allows bounded propagation, reports sanitized errors, and supports an explicitly supplied private cron-secret file. Syntax, ESLint and non-network plan mode pass. No current app source/configuration or deployment was changed by these operational-helper fixes. [Full sanitized attempts and final cleanup](qa/2026-10-22-cron-authentication-attempt.json).
+
 ## 22 October 2026 — Protected cron dry-run prepared; no bypass created
 
 Added the plan-by-default operational helper `scripts/verify-protected-cron.cjs`, targeting only the exact Ready public-origin candidate and cleanup dry-run path. It prepares explicit temporary project-bypass creation, wrong-key/correct-key GET checks, finally-based own-token revocation, restored-protection verification and private interrupted-cleanup recovery. Existing local cron key presence/minimum are checked without disclosure; its Production match remains unverified. Syntax, ESLint and non-network plan mode pass. No access token, hosted request, worker processing or email was created/sent. [Procedure/access risk](CRON-AUTHENTICATION-CHECK.md); [preparation evidence](qa/2026-10-22-cron-probe-preparation.json).

@@ -1,5 +1,11 @@
 # Protected cron authentication probe — 22 October 2026
 
+## 22 October 2026 — Cron denial passed; authenticated dry-run awaits correct Production key
+
+The explicitly approved temporary-access probe reached the exact public-origin candidate: wrong cron key **401**, existing local cron key **401**. Therefore correct-key cron acceptance is **not passed**; a Production mismatch, missing/invalid effective configuration or incorrect saved local key still needs resolution. No normal cleanup, new deletion intent or email ran.
+
+Temporary access was revoked and independently verified: project bypass count **zero**, revoked token HEAD **302** to the protection gate. Creation/revocation propagation caused earlier platform-gate/transient observations; an initial helper token-format error was rejected by Vercel before creating access. The helper now uses the required 32-character format, validates returned access metadata, allows bounded propagation, reports sanitized errors, and supports an explicitly supplied private cron-secret file. Syntax, ESLint and non-network plan mode pass. No current app source/configuration or deployment was changed by these operational-helper fixes. [Full sanitized attempts and final cleanup](qa/2026-10-22-cron-authentication-attempt.json).
+
 Status: **prepared, not executed; temporary access approval pending**. Candidate: `dpl_CSoxtMv87Zm4xVw2brybZxZV3onF`, source `082c225a86a1ec582ceb2e27faf276f82b8a7994`. This operational helper does not change the frozen application or require a new app build.
 
 ## Purpose and access boundary
@@ -25,3 +31,7 @@ A failed correct-key request does not authorize retrieving provider secret value
 Syntax, ESLint and non-network plan mode pass. No bypass has been created and no hosted request submitted by this helper at preparation time. A future successful run proves wrong-key denial and correct-key dry-run against the exact deployed candidate. It does not prove an actual provider scheduled invocation, backup-failure inbox delivery, or file deletion/retry behavior.
 
 The approved candidate build submitted the normal daily cron configuration; active project definitions were still empty at the latest provider checkpoint. Do not activate/promote simply to make this check pass. Actual registration and invocation must be observed separately through the approved cutover process. Public promotion, main merge and older-file backfill remain outside this probe.
+
+## Private key correction input
+
+If the operator has the actual existing Production cron key, they may provide it privately in an absolute local file with owner-only permissions, then invoke the reviewed helper with `--confirm-temporary-access --cron-secret-file /absolute/private/file`. The helper reads it only into process memory, never command arguments or output. Do not ask for the key in chat or commit the file. No credential replacement or extra request is authorized merely by a failed local-key test. If the key is unavailable, prepare a separately approved Production credential replacement and rebuild plan; changing a saved binding does not update immutable existing deployments.
