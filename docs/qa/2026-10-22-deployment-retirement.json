@@ -1,0 +1,274 @@
+{
+  "date": "2026-10-22",
+  "approvedByOperator": true,
+  "approvedDeploymentIds": [
+    "dpl_5xj9zsypDUgenQQ2kLA1pgkErTqB",
+    "dpl_8DwvVxyGiP1eZScMQKgHFWms833h",
+    "dpl_BAk74C1bDcjt7DwpJty89iMWDEHb",
+    "dpl_dc6vBts5fveSJtvAE8koZYViH3wb",
+    "dpl_HFoyTia8xkmBafWn9GobsLxkddny",
+    "dpl_7GSJcy8eZ6E7EZ6Mm9brpGnTgsdo",
+    "dpl_2mu4waWBuCyUtpV2xwjBR3phenAv",
+    "dpl_39CGUEKXBMYcuqRzayWPWA1o88jk",
+    "dpl_9aV31E6hw5tPRySWfqSi4JCcVKxt",
+    "dpl_6NmrRcQzbvLsHn5K5aWbGDFYQW5n",
+    "dpl_5YxYAp6djKWTcjNxDpUAmueCLV48",
+    "dpl_H6Dw9rT5eadNUrwnefu5ua5QMEKz",
+    "dpl_G8vefGUn9bNV5Sad6Ey8ENUNciiK",
+    "dpl_5bGZTwbQrSJwzcTGfJFtnkCUzcGq",
+    "dpl_9QH3Pjw3eain9ppMoGyXUgZWBTDu",
+    "dpl_8v4grq9bWZGBDE2WpBFJff6ohdZP",
+    "dpl_2fLqixzZz5CFsPNdKf7Tp42HaRLZ",
+    "dpl_HGJeB2bwX6ScvCPVt5yW2krEakoY",
+    "dpl_BmcBVNFErseRj4gfJSLK546YF8sc",
+    "dpl_3PeQoQeWGZQEnUTPy5kxjw2ioML7",
+    "dpl_HixNVfrvP5HsAednc3RvJH7LdHgS",
+    "dpl_E5Ti5zu5U21GKjD7JdsRqMBNSmUj",
+    "dpl_4hDYmWhZFTnHN1A6dN4UpzCTpKpk",
+    "dpl_5PHdYmVGJvF5FGFyPRX7QmWyAhS7",
+    "dpl_5PiRdAhbPD7bfpeWWhfPgavNoxTc",
+    "dpl_JC4avhwBMd3hhKzM158tV9FmVCQV",
+    "dpl_GG3dTVe4kDiubUTBWVgrzt5YB7Ss",
+    "dpl_4H8V8yehZv35vmpkLPvAJvP7aySZ",
+    "dpl_BrodZCkAtc5wgoEAHXmiYaHfM9de",
+    "dpl_2mLyGKZ8WWR12dGU3pHd79A8u8nA"
+  ],
+  "projectId": "prj_MNrDsjvBMVCY5mmPjD3tSyw7OIBs",
+  "projectIdentityVerifiedForAllTargets": true,
+  "command": "Vercel CLI 65.0.0 remove <30 exact deployment IDs> --safe --yes --scope sholly",
+  "providerReportedRemoved": 30,
+  "postRemovalInventoryCount": 73,
+  "inventoryPaginationComplete": true,
+  "retiredIdsAbsent": true,
+  "keptIdsPresent": true,
+  "aliasMappingsUnchanged": true,
+  "keptAliases": {
+    "bench-scout-git-hotfix-legacy-containment-sholly.vercel.app": "dpl_EcY1anTy6tVPnmAoagf5WCRk2Bed",
+    "bench-scout-git-testing-sholly.vercel.app": "dpl_D2mYf5k3qc892X4TVoRZ3jnoWWjD",
+    "bench-scout.vercel.app": "dpl_3JSXjPv2JjgTBNE3gwXVSiqJFTaV",
+    "bench-scout-sholly.vercel.app": "dpl_12r5Zwn4tyffsUTnH3YF9tMrNqXh",
+    "bench-scout-git-main-sholly.vercel.app": "dpl_4bTpas5uPn1jRpwGeu4eUJvX7nhZ"
+  },
+  "removedUrlChecks": [
+    {
+      "id": "dpl_5xj9zsypDUgenQQ2kLA1pgkErTqB",
+      "url": "bench-scout-fldfgwd3s-sholly.vercel.app",
+      "httpStatus": 404,
+      "providerError": "DEPLOYMENT_NOT_FOUND",
+      "nonServingVerified": true
+    },
+    {
+      "id": "dpl_8DwvVxyGiP1eZScMQKgHFWms833h",
+      "url": "bench-scout-jhsmi2dsp-sholly.vercel.app",
+      "httpStatus": 404,
+      "providerError": "DEPLOYMENT_NOT_FOUND",
+      "nonServingVerified": true
+    },
+    {
+      "id": "dpl_BAk74C1bDcjt7DwpJty89iMWDEHb",
+      "url": "bench-scout-m8940uj3v-sholly.vercel.app",
+      "httpStatus": 404,
+      "providerError": "DEPLOYMENT_NOT_FOUND",
+      "nonServingVerified": true
+    },
+    {
+      "id": "dpl_dc6vBts5fveSJtvAE8koZYViH3wb",
+      "url": "bench-scout-q134r3jo8-sholly.vercel.app",
+      "httpStatus": 404,
+      "providerError": "DEPLOYMENT_NOT_FOUND",
+      "nonServingVerified": true
+    },
+    {
+      "id": "dpl_HFoyTia8xkmBafWn9GobsLxkddny",
+      "url": "bench-scout-dwsddz8m3-sholly.vercel.app",
+      "httpStatus": 404,
+      "providerError": "DEPLOYMENT_NOT_FOUND",
+      "nonServingVerified": true
+    },
+    {
+      "id": "dpl_7GSJcy8eZ6E7EZ6Mm9brpGnTgsdo",
+      "url": "bench-scout-i6oszlnbl-sholly.vercel.app",
+      "httpStatus": 404,
+      "providerError": "DEPLOYMENT_NOT_FOUND",
+      "nonServingVerified": true
+    },
+    {
+      "id": "dpl_2mu4waWBuCyUtpV2xwjBR3phenAv",
+      "url": "bench-scout-nrbsie2q0-sholly.vercel.app",
+      "httpStatus": 404,
+      "providerError": "DEPLOYMENT_NOT_FOUND",
+      "nonServingVerified": true
+    },
+    {
+      "id": "dpl_39CGUEKXBMYcuqRzayWPWA1o88jk",
+      "url": "bench-scout-rkwvaxezq-sholly.vercel.app",
+      "httpStatus": 404,
+      "providerError": "DEPLOYMENT_NOT_FOUND",
+      "nonServingVerified": true
+    },
+    {
+      "id": "dpl_9aV31E6hw5tPRySWfqSi4JCcVKxt",
+      "url": "bench-scout-hjn9hejbp-sholly.vercel.app",
+      "httpStatus": 404,
+      "providerError": "DEPLOYMENT_NOT_FOUND",
+      "nonServingVerified": true
+    },
+    {
+      "id": "dpl_6NmrRcQzbvLsHn5K5aWbGDFYQW5n",
+      "url": "bench-scout-36qr9ertx-sholly.vercel.app",
+      "httpStatus": 404,
+      "providerError": "DEPLOYMENT_NOT_FOUND",
+      "nonServingVerified": true
+    },
+    {
+      "id": "dpl_5YxYAp6djKWTcjNxDpUAmueCLV48",
+      "url": "bench-scout-agoeojmqd-sholly.vercel.app",
+      "httpStatus": 404,
+      "providerError": "DEPLOYMENT_NOT_FOUND",
+      "nonServingVerified": true
+    },
+    {
+      "id": "dpl_H6Dw9rT5eadNUrwnefu5ua5QMEKz",
+      "url": "bench-scout-6uuwbf6fc-sholly.vercel.app",
+      "httpStatus": 404,
+      "providerError": "DEPLOYMENT_NOT_FOUND",
+      "nonServingVerified": true
+    },
+    {
+      "id": "dpl_G8vefGUn9bNV5Sad6Ey8ENUNciiK",
+      "url": "bench-scout-33gskhgwr-sholly.vercel.app",
+      "httpStatus": 404,
+      "providerError": "DEPLOYMENT_NOT_FOUND",
+      "nonServingVerified": true
+    },
+    {
+      "id": "dpl_5bGZTwbQrSJwzcTGfJFtnkCUzcGq",
+      "url": "bench-scout-62zs76l25-sholly.vercel.app",
+      "httpStatus": 404,
+      "providerError": "DEPLOYMENT_NOT_FOUND",
+      "nonServingVerified": true
+    },
+    {
+      "id": "dpl_9QH3Pjw3eain9ppMoGyXUgZWBTDu",
+      "url": "bench-scout-8pj3vd9me-sholly.vercel.app",
+      "httpStatus": 404,
+      "providerError": "DEPLOYMENT_NOT_FOUND",
+      "nonServingVerified": true
+    },
+    {
+      "id": "dpl_8v4grq9bWZGBDE2WpBFJff6ohdZP",
+      "url": "bench-scout-g9bn55vcg-sholly.vercel.app",
+      "httpStatus": 404,
+      "providerError": "DEPLOYMENT_NOT_FOUND",
+      "nonServingVerified": true
+    },
+    {
+      "id": "dpl_2fLqixzZz5CFsPNdKf7Tp42HaRLZ",
+      "url": "bench-scout-ldkm3bpxw-sholly.vercel.app",
+      "httpStatus": 404,
+      "providerError": "DEPLOYMENT_NOT_FOUND",
+      "nonServingVerified": true
+    },
+    {
+      "id": "dpl_HGJeB2bwX6ScvCPVt5yW2krEakoY",
+      "url": "bench-scout-7blo0lmnv-sholly.vercel.app",
+      "httpStatus": 404,
+      "providerError": "DEPLOYMENT_NOT_FOUND",
+      "nonServingVerified": true
+    },
+    {
+      "id": "dpl_BmcBVNFErseRj4gfJSLK546YF8sc",
+      "url": "bench-scout-56tn4uu97-sholly.vercel.app",
+      "httpStatus": 404,
+      "providerError": "DEPLOYMENT_NOT_FOUND",
+      "nonServingVerified": true
+    },
+    {
+      "id": "dpl_3PeQoQeWGZQEnUTPy5kxjw2ioML7",
+      "url": "bench-scout-2untt9m09-sholly.vercel.app",
+      "httpStatus": 404,
+      "providerError": "DEPLOYMENT_NOT_FOUND",
+      "nonServingVerified": true
+    },
+    {
+      "id": "dpl_HixNVfrvP5HsAednc3RvJH7LdHgS",
+      "url": "bench-scout-9nuhfd3g4-sholly.vercel.app",
+      "httpStatus": 404,
+      "providerError": "DEPLOYMENT_NOT_FOUND",
+      "nonServingVerified": true
+    },
+    {
+      "id": "dpl_E5Ti5zu5U21GKjD7JdsRqMBNSmUj",
+      "url": "bench-scout-lbxzi0i8m-sholly.vercel.app",
+      "httpStatus": 404,
+      "providerError": "DEPLOYMENT_NOT_FOUND",
+      "nonServingVerified": true
+    },
+    {
+      "id": "dpl_4hDYmWhZFTnHN1A6dN4UpzCTpKpk",
+      "url": "bench-scout-89twrb3et-sholly.vercel.app",
+      "httpStatus": 404,
+      "providerError": "DEPLOYMENT_NOT_FOUND",
+      "nonServingVerified": true
+    },
+    {
+      "id": "dpl_5PHdYmVGJvF5FGFyPRX7QmWyAhS7",
+      "url": "bench-scout-g49h7t86a-sholly.vercel.app",
+      "httpStatus": 404,
+      "providerError": "DEPLOYMENT_NOT_FOUND",
+      "nonServingVerified": true
+    },
+    {
+      "id": "dpl_5PiRdAhbPD7bfpeWWhfPgavNoxTc",
+      "url": "bench-scout-hcofuushw-sholly.vercel.app",
+      "httpStatus": 404,
+      "providerError": "DEPLOYMENT_NOT_FOUND",
+      "nonServingVerified": true
+    },
+    {
+      "id": "dpl_JC4avhwBMd3hhKzM158tV9FmVCQV",
+      "url": "bench-scout-3zya8cgko-sholly.vercel.app",
+      "httpStatus": 404,
+      "providerError": "DEPLOYMENT_NOT_FOUND",
+      "nonServingVerified": true
+    },
+    {
+      "id": "dpl_GG3dTVe4kDiubUTBWVgrzt5YB7Ss",
+      "url": "bench-scout-1ek4yntm9-sholly.vercel.app",
+      "httpStatus": 404,
+      "providerError": "DEPLOYMENT_NOT_FOUND",
+      "nonServingVerified": true
+    },
+    {
+      "id": "dpl_4H8V8yehZv35vmpkLPvAJvP7aySZ",
+      "url": "bench-scout-kxbwq6f0x-sholly.vercel.app",
+      "httpStatus": 404,
+      "providerError": "DEPLOYMENT_NOT_FOUND",
+      "nonServingVerified": true
+    },
+    {
+      "id": "dpl_BrodZCkAtc5wgoEAHXmiYaHfM9de",
+      "url": "bench-scout-qaet5ryw2-sholly.vercel.app",
+      "httpStatus": 404,
+      "providerError": "DEPLOYMENT_NOT_FOUND",
+      "nonServingVerified": true
+    },
+    {
+      "id": "dpl_2mLyGKZ8WWR12dGU3pHd79A8u8nA",
+      "url": "bench-scout-mpstlqkqt-sholly.vercel.app",
+      "httpStatus": 404,
+      "providerError": "DEPLOYMENT_NOT_FOUND",
+      "nonServingVerified": true
+    }
+  ],
+  "databaseRecordsChanged": false,
+  "storedDocumentsChanged": false,
+  "credentialsRotated": false,
+  "mainMerged": false,
+  "publicReopened": false,
+  "remaining": [
+    "The mapped old git-main build was explicitly preserved and requires separate isolation or retirement.",
+    "Later deployments and authorised writers are not certified safe by this bounded batch.",
+    "This removes old deployments, not credentials or Git source."
+  ]
+}

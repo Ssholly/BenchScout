@@ -1,5 +1,11 @@
 # Change log
 
+## 22 October 2026 — Approved 30-deployment retirement completed
+
+The operator explicitly approved removal of the exact 30 IDs in the first retirement set. Fresh alias checks excluded all targets; each target’s provider metadata matched the original BenchScout project. Vercel CLI 65.0.0 `remove` ran with `--safe --yes --scope sholly` and reported **30 removed**. An independent HEAD request to every removed immutable homepage returned **404 / DEPLOYMENT_NOT_FOUND**. A complete post-removal project inventory (73 entries, null next cursor) contains none of those IDs and retains all five keep-listed deployments. All five alias mappings are unchanged, including testing, public maintenance, diagnostics and old git-main.
+
+No database records, stored documents, credentials or Git source were deleted or changed. No main merge or hardened public promotion occurred. The old git-main deployment was deliberately outside this approval and remains a separate historical writer gate; this batch alone does not establish a global write pause or approve real-file backfill. [Execution evidence and per-URL results](qa/2026-10-22-deployment-retirement.json). The earlier proposed/not-executed entries below are dated history, superseded for these exact 30 IDs by this execution record.
+
 ## 22 October 2026 — Retirement alias preflight refreshed
 
 A fresh read-only Vercel lookup found five aliases. None of the 30 previously proposed obsolete deployment IDs is currently assigned to an alias. The current testing, public maintenance, protected diagnostic, containment Preview and old git-main mappings are preserved. This prepares a bounded retirement request; it does not authorize deletion or close the historical writer gate. The mapped old git-main deployment remains outside this set and needs separate handling. No deployment was removed. [Preflight evidence](qa/2026-10-22-retirement-preflight.json).
