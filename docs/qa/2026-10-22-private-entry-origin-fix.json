@@ -1,0 +1,25 @@
+{
+  "date": "2026-10-22",
+  "operatorReported": "Request rejected",
+  "privateKeyFileExistedAfterRejection": false,
+  "reproducedWithNonSensitiveBrowserForm": true,
+  "before": {
+    "originPassed": false,
+    "encodingPassed": true,
+    "referrerPolicy": "no-referrer"
+  },
+  "after": {
+    "originPassed": true,
+    "encodingPassed": true,
+    "referrerPolicy": "same-origin"
+  },
+  "strictOriginGuardRetained": true,
+  "csrfKeySubmissionGuardRetained": true,
+  "connectionTestRequestsKey": false,
+  "operatorRetryPending": true,
+  "productionChanged": false,
+  "newBypassCreated": false,
+  "secretValueRead": false,
+  "syntaxChecked": true,
+  "eslintPassed": true
+}

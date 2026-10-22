@@ -1,5 +1,9 @@
 # Change log
 
+## 22 October 2026 — Local private-entry Origin rejection fixed
+
+The operator reported Request rejected. Inspection showed the local POST failed before key validation; the private key file did not exist. A non-sensitive browser form reproduced **Origin failed / encoding passed** with Referrer-Policy no-referrer. The helper now uses **Referrer-Policy same-origin**, retaining exact Host/Origin checks, CSRF on key submission, loopback binding and owner-only storage. A browser rerun returned **Origin passed / encoding passed** without requesting or saving any key. The corrected empty private-entry page is reopened for operator retry. Syntax and ESLint pass. No Production secret, deployment, bypass token or cron request was changed/created in this fix. [Browser evidence](qa/2026-10-22-private-entry-origin-fix.json). [MDN explains the form Origin/referrer-policy interaction](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Origin).
+
 ## 22 October 2026 — Private operator entry prepared for the saved Production key
 
 The operator confirms the existing Production cron key is saved privately. Added `scripts/private-cron-entry.cjs`, a temporary operator-only page bound to **127.0.0.1:3195**. It uses a password field, strict Host/Origin and CSRF checks, no-store/CSP/frame-denial headers, no external assets or logging, and an owner-only temporary directory/file outside the repository. It never echoes the key or executes the cron probe automatically. The page explains that the subsequent approved test sends the key only to the fixed BenchScout cleanup dry-run endpoint and that its temporary file is removed afterward.
