@@ -1,5 +1,11 @@
 # Main release readiness — 21 October 2026
 
+## 22 October 2026 — Private operator entry prepared for the saved Production key
+
+The operator confirms the existing Production cron key is saved privately. Added `scripts/private-cron-entry.cjs`, a temporary operator-only page bound to **127.0.0.1:3195**. It uses a password field, strict Host/Origin and CSRF checks, no-store/CSP/frame-denial headers, no external assets or logging, and an owner-only temporary directory/file outside the repository. It never echoes the key or executes the cron probe automatically. The page explains that the subsequent approved test sends the key only to the fixed BenchScout cleanup dry-run endpoint and that its temporary file is removed afterward.
+
+Syntax and ESLint pass; the local form is observed and prepared for user entry. No saved key, hosted request or new bypass is claimed at this handoff. After the operator submits the form, the reviewed probe can use its private file without reading a browser password field or putting a key in chat, arguments, logs or Git. Remove the temporary file and stop the local server after acceptance (or a terminal failure); preserve only scrubbed results. [Procedure](CRON-AUTHENTICATION-CHECK.md).
+
 ## 22 October 2026 — Cron denial passed; authenticated dry-run awaits correct Production key
 
 The explicitly approved temporary-access probe reached the exact public-origin candidate: wrong cron key **401**, existing local cron key **401**. Therefore correct-key cron acceptance is **not passed**; a Production mismatch, missing/invalid effective configuration or incorrect saved local key still needs resolution. No normal cleanup, new deletion intent or email ran.
