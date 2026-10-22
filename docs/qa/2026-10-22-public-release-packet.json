@@ -10,10 +10,14 @@
     "bench-scout-git-main-sholly.vercel.app": "dpl_3JSXjPv2JjgTBNE3gwXVSiqJFTaV"
   },
   "publicOriginBuildPrepared": true,
-  "publicOriginDeploymentId": null,
+  "publicOriginDeploymentId": "dpl_CfjXtpKfxDeThKRc8FfrEXeCHssm",
   "promotionReady": false,
   "mainMergeApproved": false,
   "rollbackDeploymentId": "dpl_3JSXjPv2JjgTBNE3gwXVSiqJFTaV",
-  "nextAction": "separate approval for public-canonical staged build including normal cleanup schedule; public promotion remains held",
-  "noApplicationMutation": true
+  "nextAction": "complete scoped final hosted acceptance and prepare separate cutover decision; public promotion remains held",
+  "noApplicationMutation": true,
+  "updated": "2026-10-22",
+  "currentEvidence": "2026-10-22-production-cron-correction-accepted.json",
+  "salaryRegressionEvidence": "2026-10-22-salary-ownership-acceptance.json",
+  "fullSuiteTestsPassed": 281
 }

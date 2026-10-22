@@ -1,3 +1,9 @@
+## 22 October 2026 — Salary ownership acceptance and remaining release checks
+
+Added five route-level regression tests covering salary write role gates, repeat owner submission, ignored caller ownership, cross-owner/legacy edit and deletion denial, successful owner changes, and missing stable-secret fail-closed behaviour. All **281 tests** pass; focused ESLint and whitespace checks pass. Persistence is an in-memory adapter: no Production account, salary row, file or configuration changed. The deployed application source remains `082c225`; no replacement deployment is needed for test/documentation additions.
+
+Updated the [current release packet](PUBLIC-RELEASE-PACKET.md) to link the corrected cron candidate and distinguish existing dated HTTP/hosted evidence, current regression coverage, separately scoped hosted salary work and checks possible only during/after approved cutover. Promotion, main merge and older-file copying remain held. [Evidence](qa/2026-10-22-salary-ownership-acceptance.json).
+
 # Change log
 
 ## 22 October 2026 — Production-only cron correction accepted

@@ -1,13 +1,13 @@
 # BenchScout public release decision packet — 22 October 2026
 
-**Decision now: public promotion remains HOLD; do not reopen or merge main yet.** The corrected approved public-origin candidate is Ready as `dpl_CfjXtpKfxDeThKRc8FfrEXeCHssm`; its new Production-only cron key passes wrong-key/correct-key dry-run acceptance. Its source matches the validated candidate and existing aliases remain unchanged. The cleanup schedule was submitted with the build, but active project cron definitions remain empty; actual provider registration/invocation acceptance is not claimed. Correct-key dry-run authentication passed on the replacement candidate. [Build execution](qa/2026-10-22-public-origin-build.json).
+**Decision now: public promotion remains HOLD; do not reopen or merge main yet.** The corrected approved public-origin candidate is Ready as `dpl_CfjXtpKfxDeThKRc8FfrEXeCHssm`; its new Production-only cron key passes wrong-key/correct-key dry-run acceptance. Its source matches the validated candidate and existing aliases remain unchanged. The cleanup schedule was submitted with the build, but active project cron definitions remain empty; actual provider registration/invocation acceptance is not claimed. Correct-key dry-run authentication passed on the replacement candidate. [Current build and cron acceptance](qa/2026-10-22-production-cron-correction-accepted.json).
 
 ## Exact identities
 
 | Item | Verified identity |
 | --- | --- |
 | Candidate source | `082c225a86a1ec582ceb2e27faf276f82b8a7994` |
-| Application changes since candidate validation | None through documentation checkpoint `9c83d45`; application/config paths were compared |
+| Application changes since candidate validation | None through checkpoint `70df89e`; application/config paths compared again; subsequent additions are tests and documentation only |
 | Refreshed remote main | `a56fba3641004184e8bd5ddee87a51eb6b5a4fec`; do not redeploy this unsafe source |
 | Vercel project | `sholly/bench-scout`, `prj_MNrDsjvBMVCY5mmPjD3tSyw7OIBs` |
 | Current public and git-main | Maintenance `dpl_3JSXjPv2JjgTBNE3gwXVSiqJFTaV`, source `336c6edf06f8e8a3f0a3fafb43f81feac9c1546f` |
@@ -23,6 +23,21 @@
 - Synthetic hosted ordinary upload/delete passed; deterministic replacement storage/worker interruption and retry tests preserve the replacement. A hosted injected provider outage is not claimed. [Hosted evidence](qa/2026-10-21-document-cleanup.json), [failure tests](qa/2026-10-22-cleanup-replacement-retry.json).
 - Thirty-one explicitly approved obsolete deployments are retired and their URLs verified unavailable. Public and git-main are contained. Other retained deployments are not covered by a claim of global write isolation. [Isolation record](DEPLOYMENT-ISOLATION.md).
 - Earlier scoped Production QA encrypted source-loss/restore and approved inbox delivery were accepted; they are not relabelled as a new storage test on this build. Existing older real files remain unbackfilled.
+
+## Remaining acceptance, classified — 22 October
+
+The salary route regression suite now exercises actual route/auth handlers with an in-memory persistence adapter: anonymous and employer write denial; repeat owner submission without duplicate creation or caller-selected ownership; cross-owner and ownerless legacy edit/delete denial; successful own edit/delete; and missing ownership configuration failing closed. **All 281 repository tests pass**, including these five additions; focused ESLint and diff whitespace checks pass. No application/configuration change or replacement build is needed. This proves deterministic route behaviour, **not a hosted Production salary mutation**. [Evidence](qa/2026-10-22-salary-ownership-acceptance.json).
+
+| Remaining item | What is already supported | Required next evidence or decision |
+| --- | --- | --- |
+| Access, duplicate submission and session revocation | Earlier isolated real HTTP/database/private-storage acceptance and dated hosted synthetic recruitment checks; current deterministic route tests | Keep their dated scope explicit. Final public smoke must distinguish application denial from the provider protection page. No repeated real-account mutation is implied. |
+| Salary ownership | New route regressions pass; live legacy ownerless row was previously identified and remains preserved | A hosted owner/cross-owner write test would require separately scoped synthetic Production accounts/data. It has not run; do not label it passed. |
+| Canonical origin and links | Current build/runtime public origin matches the intended hostname; generated-host mutation rejection is intentional | Validate public-origin sign-in/session and link behaviour during a separately approved cutover smoke. Never relax origin rules to test a generated hostname. |
+| Scheduler | Schedule submitted; exact candidate wrong/correct key dry-run accepted | Verify effective definitions after promotion and observe a real invocation. Empty pre-promotion definitions are an open operational check, not proof of failure or success. |
+| Recovery | Synthetic encrypted loss/restore and alert delivery previously accepted; user reported saving credentials after instructions to keep protected encryption-key recovery copy | Confirm accountable operator and recovery expectations before launch. Full dataset restoration duration remains unmeasured. |
+| Older objects | Fresh copy is disabled; historical three-object metadata preview expired | Separate fresh preview/copy approval remains required. Do not describe older objects as already backed up. |
+
+Public promotion and main merge remain unapproved. This review narrows the evidence gaps; it does not silently waive them or start another deployment.
 
 ## Approved build scope — executed 22 October
 

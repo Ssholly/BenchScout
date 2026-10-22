@@ -1,0 +1,26 @@
+{
+  "date": "2026-10-22",
+  "applicationSource": "082c225a86a1ec582ceb2e27faf276f82b8a7994",
+  "comparisonThrough": "70df89e",
+  "applicationConfigDiffEmpty": true,
+  "testFile": "tests/salary-ownership.test.cjs",
+  "newTests": 5,
+  "fullSuite": {
+    "tests": 281,
+    "passed": 281,
+    "failed": 0
+  },
+  "focusedEslintPassed": true,
+  "diffCheckPassed": true,
+  "persistence": "in-memory adapter; real route/auth code; configured database client not loaded",
+  "hostedSalaryMutationPerformed": false,
+  "productionRecordsChanged": false,
+  "deploymentPerformed": false,
+  "promotionPerformed": false,
+  "mainMergePerformed": false,
+  "limits": [
+    "Does not prove hosted Production salary writes or real PostgreSQL constraint execution.",
+    "Actual scheduler invocation remains unobserved.",
+    "Earlier acceptance reports retain their original date and scope."
+  ]
+}
