@@ -1,5 +1,15 @@
 # Change log
 
+## 22 October 2026 — Current Production compatibility checkpoint
+
+Read-only SQL in the verified BenchScout / production / neondb target confirms seven completed migrations, all matching repository SHA-256 checksums, zero unfinished migrations and no DocumentCleanup table. The exact additive migration `20261021000000_document_cleanup` is prepared with target/history/checksum guards and same-transaction Prisma history; **not applied**. It creates an empty queue, primary key and two indexes without changing existing business rows or files. Production deployment of the current candidate must wait for this migration.
+
+Salary aggregates show one existing report with null ownerKey and no owned reports. Preserve that anonymous historical contribution; the new stable ownership key must not be used to guess or reassign it. Runtime salary owner/cross-owner acceptance remains separate.
+
+Fresh inventory contains 76 deployments (75 Ready, one Building at lookup). All 73 testing builds descend from isolation source `699b256`. All 74 non-containment application builds have the authenticated candidate upload wrapper; only 36 have the backup helper and seven have the durable worker. These source markers/ancestry do not prove saved connection values or global write isolation. Two remaining Production-target builds are containment and the retained protected diagnostic stage. [Compatibility evidence](qa/2026-10-22-production-compatibility.json); [source classification](qa/2026-10-22-remaining-source-review.json).
+
+Current runbook corrections: public and git-main now serve maintenance; 31 approved old deployments are retired. Cleanup commits metadata/reference removal and durable intent transactionally; historical pre-fix lifecycle descriptions below are superseded. `vercel.json` now configures daily cleanup at 02:17 UTC; actual Production scheduler/key acceptance remains open. The new release needs **one additive migration**, not the earlier seven-migration/no-op path. The current protected staging canonical build remains unsuitable for direct public promotion. No reopening, backfill, credential change or migration was performed in this checkpoint.
+
 ## 22 October 2026 — Approved July deployment retirement completed
 
 After separate explicit operator approval, `bench-scout-git-main-sholly.vercel.app` was assigned to the existing approved maintenance deployment `dpl_3JSXjPv2JjgTBNE3gwXVSiqJFTaV`. The maintenance page was observed in the browser. Fresh provider lookup verified the old July deployment had no aliases and all other mappings were unchanged. Vercel `remove --safe` then removed only `dpl_4bTpas5uPn1jRpwGeu4eUJvX7nhZ`. Its immutable homepage now returns **404 / DEPLOYMENT_NOT_FOUND**. Complete post-removal inventory (74 entries, null next cursor) excludes that ID and retains every currently aliased deployment. Only the approved git-main mapping changed.

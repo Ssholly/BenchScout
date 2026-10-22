@@ -1,0 +1,29 @@
+{
+  "date": "2026-10-22",
+  "database": "neondb",
+  "project": "BenchScout",
+  "completedMigrations": 7,
+  "appliedChecksumsMatch": true,
+  "unfinishedMigrations": 0,
+  "missingMigration": [
+    "20261021000000_document_cleanup"
+  ],
+  "cleanupTablePresent": false,
+  "salaryReports": 1,
+  "salaryOwnerMissing": 1,
+  "salaryOwnerPresent": 0,
+  "testingDeployments": 73,
+  "testingIsolationCutoffAncestorExceptions": [],
+  "noRowMutations": true,
+  "migrationPrepared": true,
+  "migrationExecuted": false,
+  "migrationSha256": "3d5a68fb3ea8ed37d75b3379297221c7ecc6e9fcf01d982e0aa688a1cf7fc194",
+  "migrationGuards": [
+    "database identity neondb; provider project/branch must also be checked",
+    "exact seven completed matching prior checksums",
+    "no unfinished migration",
+    "new table absent"
+  ],
+  "salaryPolicy": "Preserve the ownerless legacy contribution; do not infer or assign ownership.",
+  "nextMigrationImpact": "Create an empty operational queue table, primary key and two indexes; record its checksum in Prisma history in the same transaction. No existing business rows or files are modified."
+}

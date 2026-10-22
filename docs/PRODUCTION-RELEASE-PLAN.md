@@ -1,5 +1,15 @@
 # Public-app release and rollback plan — 21 October 2026
 
+## 22 October 2026 — Current Production compatibility checkpoint
+
+Read-only SQL in the verified BenchScout / production / neondb target confirms seven completed migrations, all matching repository SHA-256 checksums, zero unfinished migrations and no DocumentCleanup table. The exact additive migration `20261021000000_document_cleanup` is prepared with target/history/checksum guards and same-transaction Prisma history; **not applied**. It creates an empty queue, primary key and two indexes without changing existing business rows or files. Production deployment of the current candidate must wait for this migration.
+
+Salary aggregates show one existing report with null ownerKey and no owned reports. Preserve that anonymous historical contribution; the new stable ownership key must not be used to guess or reassign it. Runtime salary owner/cross-owner acceptance remains separate.
+
+Fresh inventory contains 76 deployments (75 Ready, one Building at lookup). All 73 testing builds descend from isolation source `699b256`. All 74 non-containment application builds have the authenticated candidate upload wrapper; only 36 have the backup helper and seven have the durable worker. These source markers/ancestry do not prove saved connection values or global write isolation. Two remaining Production-target builds are containment and the retained protected diagnostic stage. [Compatibility evidence](qa/2026-10-22-production-compatibility.json); [source classification](qa/2026-10-22-remaining-source-review.json).
+
+Current runbook corrections: public and git-main now serve maintenance; 31 approved old deployments are retired. Cleanup commits metadata/reference removal and durable intent transactionally; historical pre-fix lifecycle descriptions below are superseded. `vercel.json` now configures daily cleanup at 02:17 UTC; actual Production scheduler/key acceptance remains open. The new release needs **one additive migration**, not the earlier seven-migration/no-op path. The current protected staging canonical build remains unsuitable for direct public promotion. No reopening, backfill, credential change or migration was performed in this checkpoint.
+
 Current update: [durable cleanup](DOCUMENT-CLEANUP.md) adds an eighth migration, applied only to testing. The earlier seven-migration/no-op expectation below is superseded for the new candidate: Production needs the reviewed additive cleanup table before that code is released. Physical storage cleanup is now durable/retriable after transactional reference removal, with external-provider/hosted acceptance limits recorded separately. Public containment remains active; this does not approve the hardened cutover.
 
 Status: **prepared; HOLD for release**. This runbook does not authorise a main merge, live deployment, domain assignment, credential change, database restore or real-document copying. Engineering prepares and records evidence; the owner approves the exact cutover and recovery actions. No new service, paid plan, migration or scheduled backup is introduced by this document.
