@@ -1,5 +1,13 @@
 # Deploying the security upgrade
 
+## 22 October 2026 — Production-only cron correction accepted
+
+Operator save and metadata establish a new Production-only Secret CRON_SECRET (`4sCKxYxYsfrOf5up`), with the existing Preview-only value and testing override metadata unchanged. The already-approved replacement build of exact validated source `082c225a86a1ec582ceb2e27faf276f82b8a7994` is **Ready** as `dpl_CfjXtpKfxDeThKRc8FfrEXeCHssm`, immutable `bench-scout-r2ldibwnk-sholly.vercel.app`. Original project and both source metadata fields match. It uses the public canonical URL, normal submitted cleanup schedule, backups enabled, test mode off and backfill apply false.
+
+The explicit temporary-access probe now passes on that exact candidate: **wrong key 401; privately supplied new Production key 200; dryRun true; pending/failed/due 0/0/0**. No normal cleanup or email was invoked. Temporary bypass was revoked, revoked-token access returned 302, and independent project metadata shows **zero bypasses**. The local key file/directory were removed, entry server stopped and port closure verified. The tool did not inspect or print key values.
+
+All five existing alias mappings are verified preserved; public/git-main remain on maintenance and diagnostics remain on the prior protected stage. Active project cron definitions are still empty, so actual scheduler activation/invocation is **not yet certified**. The older public-origin candidate is superseded, not silently deleted. No public promotion, main merge or older real-file copy occurred. This closes the correct-key cron authentication blocker; other packet gates remain separate. [Accepted correction evidence](qa/2026-10-22-production-cron-correction-accepted.json).
+
 ## 22 October 2026 — Approved public-origin candidate Ready; public remains paused
 
 Validated source `082c225a86a1ec582ceb2e27faf276f82b8a7994` is Ready as protected Production candidate `dpl_CSoxtMv87Zm4xVw2brybZxZV3onF`, immutable `bench-scout-926z7vaov-sholly.vercel.app`. Exact source/provider project identity match. Deployment uses the public canonical origin at build/runtime, validated webpack build, enabled backups, test mode off and backfill apply false. CLI reports Vercel authentication; independent anonymous HEAD returned 302 to Vercel sign-in.

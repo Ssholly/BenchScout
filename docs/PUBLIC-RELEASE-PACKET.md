@@ -1,6 +1,6 @@
 # BenchScout public release decision packet — 22 October 2026
 
-**Decision now: public promotion remains HOLD; do not reopen or merge main yet.** The approved public-origin candidate is Ready as `dpl_CSoxtMv87Zm4xVw2brybZxZV3onF`. Its source matches the validated candidate and existing aliases remain unchanged. The cleanup schedule was submitted with the build, but active project cron definitions remain empty; actual registration/authentication/invocation acceptance is not claimed. [Build execution](qa/2026-10-22-public-origin-build.json).
+**Decision now: public promotion remains HOLD; do not reopen or merge main yet.** The corrected approved public-origin candidate is Ready as `dpl_CfjXtpKfxDeThKRc8FfrEXeCHssm`; its new Production-only cron key passes wrong-key/correct-key dry-run acceptance. Its source matches the validated candidate and existing aliases remain unchanged. The cleanup schedule was submitted with the build, but active project cron definitions remain empty; actual provider registration/invocation acceptance is not claimed. Correct-key dry-run authentication passed on the replacement candidate. [Build execution](qa/2026-10-22-public-origin-build.json).
 
 ## Exact identities
 
@@ -12,7 +12,7 @@
 | Vercel project | `sholly/bench-scout`, `prj_MNrDsjvBMVCY5mmPjD3tSyw7OIBs` |
 | Current public and git-main | Maintenance `dpl_3JSXjPv2JjgTBNE3gwXVSiqJFTaV`, source `336c6edf06f8e8a3f0a3fafb43f81feac9c1546f` |
 | Accepted protected diagnostics | `dpl_F5uCLS312DAkTGAGdUZbWqaUYYrg` at `bench-scout-sholly.vercel.app` |
-| New public-origin artifact | Ready `dpl_CSoxtMv87Zm4xVw2brybZxZV3onF`, `bench-scout-926z7vaov-sholly.vercel.app`; protected and unpromoted |
+| New public-origin artifact | Ready `dpl_CfjXtpKfxDeThKRc8FfrEXeCHssm`, `bench-scout-r2ldibwnk-sholly.vercel.app`; corrected Production-only key, protected and unpromoted |
 | Production schema | Eight migrations, checksums matched, no unfinished migration; cleanup queue empty |
 
 ## Evidence accepted
@@ -34,9 +34,9 @@ Record Ready state, source metadata, protection, effective configuration evidenc
 
 The public-origin build's generated hostname intentionally fails same-origin mutations from that hostname. This is expected; do not broaden origin rules. Current protected diagnostics validate the same application code against live services. Any further authenticated diagnostic access must use an approved supported mechanism, not an invented bypass.
 
-## Cron authentication checkpoint — 22 October
+## Cron authentication checkpoint — accepted 22 October
 
-The wrong-key check reached the exact candidate and returned 401, but the available local cron key was also rejected with 401. Correct-key acceptance remains open. Temporary project bypass access is fully removed (zero entries, revoked-token HTTP 302). Obtain the actual Production key privately or prepare a controlled configuration correction; do not infer that cron is ready from key presence. [Probe evidence](qa/2026-10-22-cron-authentication-attempt.json).
+The approved Production-only correction and replacement build passed **wrong-key 401 / new correct-key 200**, dryRun true, queue 0/0/0. Preview/testing bindings remain unchanged. Temporary project bypass is fully revoked (zero entries; revoked-token 302); private key copy removed and local server stopped. Active scheduler definitions remain empty while unpromoted; actual provider invocation remains separate. The earlier rejected-key records are dated history, superseded for the new candidate by [accepted correction evidence](qa/2026-10-22-production-cron-correction-accepted.json).
 
 ## Promotion remains a separate decision
 
