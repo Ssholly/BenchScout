@@ -1,5 +1,11 @@
 # Durable document cleanup — 21 October 2026
 
+## 22 October 2026 — Approved Production cleanup migration applied
+
+The operator explicitly approved `20261021000000_document_cleanup` on BenchScout Production. The authenticated Neon console verified **BenchScout / production / br-cold-hall-apf2uz7z / neondb**. One transaction checked the database identity, seven matching prior checksums, no unfinished migrations and absence of the new table, then ran the exact repository DDL and recorded its SHA-256 in Prisma history. COMMIT completed.
+
+A separate read-only query confirmed **eight completed migrations, zero unfinished, nine cleanup columns, three indexes including the primary key, matching checksum and zero queued rows**. The existing one anonymous salary report remains unchanged. No existing business row or stored file was modified, no testing data imported and no application deployed or reopened. This closes the additive schema prerequisite; deployed current cleanup runtime, scheduler, canonical release and other remaining acceptance gates are separate. Do not drop the queue during rollback. Earlier testing-only/pending-migration entries below are dated history superseded by this execution. [Execution evidence](qa/2026-10-22-production-cleanup-migration.json).
+
 ## 22 October 2026 — Replacement interruption regression coverage
 
 Added two failure-boundary tests for replacement: a storage deletion failure and an unavailable worker after metadata commit. Both verify that the new current source survives and only the old source is removed by a later retry. All **24 focused tests pass**. These use mocked storage/database boundaries; no hosted provider outage was induced, no new hosted replacement is claimed, and application source/Production are unchanged. [Evidence](qa/2026-10-22-cleanup-replacement-retry.json).
