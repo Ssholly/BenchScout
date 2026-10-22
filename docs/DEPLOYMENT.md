@@ -1,5 +1,11 @@
 # Deploying the security upgrade
 
+## 22 October 2026 — Approved current diagnostic build Ready
+
+Approved exact source `082c225a86a1ec582ceb2e27faf276f82b8a7994` is Ready as Production diagnostic deployment `dpl_F5uCLS312DAkTGAGdUZbWqaUYYrg`, immutable `bench-scout-8vrlhm9fq-sholly.vercel.app`, in the verified original project. Source/audit metadata match. CLI reports Vercel authentication; project Standard Protection remains all_except_custom_domains. The explicit no-cron local configuration was used; project cron metadata has empty definitions (its historical deploymentId is retained, not relabelled as a current scheduler pass).
+
+Only `bench-scout-sholly.vercel.app` moved to the new build after Ready; public and git-main remain on approved maintenance. Hosted current admin controls are present and a deliberately invalid key returns Unauthorized through the correct staging origin. Correct-key deployed database/configuration and queue status are prepared, not yet accepted. No real-file backfill, document mutation, main merge or public reopening occurred. This diagnostic canonical/config build must not be directly promoted publicly. [Deployment evidence](qa/2026-10-22-protected-stage.json).
+
 ## 22 October 2026 — Approved Production cleanup migration applied
 
 The operator explicitly approved `20261021000000_document_cleanup` on BenchScout Production. The authenticated Neon console verified **BenchScout / production / br-cold-hall-apf2uz7z / neondb**. One transaction checked the database identity, seven matching prior checksums, no unfinished migrations and absence of the new table, then ran the exact repository DDL and recorded its SHA-256 in Prisma history. COMMIT completed.
