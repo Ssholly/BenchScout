@@ -11,13 +11,14 @@ const { PrismaClient } = require('@prisma/client');
 const { get, list, del } = require('@vercel/blob');
 const root = path.resolve(__dirname, '..');
 const args = new Set(process.argv.slice(2));
+const authOnly = args.has('--auth-only');
 const runId = crypto.randomBytes(5).toString('hex');
 const schema = `qa_acceptance_${runId}`;
 const work = fs.mkdtempSync(path.join(os.tmpdir(), 'benchscout-acceptance-'));
 fs.chmodSync(work, 0o700);
 const output = path.join(work, 'report.json');
 const log = fs.openSync(path.join(work, 'server.log'), 'a', 0o600);
-const report = { runId, scope: 'isolated PostgreSQL schema; real HTTP and private Blob; local SMTP capture', startedAt: new Date().toISOString(), checks: [], cleanup: {}, limitations: ['Not a hosted Vercel acceptance run', 'SMTP capture does not establish external inbox delivery', 'No backup/restore or load certification'] };
+const report = { runId, scope: authOnly ? 'isolated PostgreSQL schema; real authenticated HTTP; local SMTP capture; no private storage' : 'isolated PostgreSQL schema; real HTTP and private Blob; local SMTP capture', startedAt: new Date().toISOString(), checks: [], cleanup: {}, limitations: ['Not a hosted Vercel acceptance run', 'SMTP capture does not establish external inbox delivery', 'No backup/restore or load certification'] };
 let db, control, app, smtp, smtpPort, base, childEnv;
 const createdUsers = new Set();
 const messages = [];
@@ -88,8 +89,8 @@ async function cleanup() {
  for(const socket of sockets)socket.destroy();if(smtp)await new Promise(resolve=>smtp.close(resolve));
  try {
   if(db){for(const user of await db.user.findMany({select:{id:true}}))createdUsers.add(user.id);}
-  let removed=0;for(const id of createdUsers){let cursor;do{const page=await list({prefix:`documents/${id}/`,token:privateToken,cursor});const urls=page.blobs.filter(blob=>blob.pathname.startsWith(`documents/${id}/`)).map(blob=>blob.url);if(urls.length){await del(urls,{token:privateToken});removed+=urls.length;}cursor=page.hasMore?page.cursor:undefined;}while(cursor);const remaining=await list({prefix:`documents/${id}/`,token:privateToken});assert.equal(remaining.blobs.length,0,'Synthetic file prefix must be empty after cleanup');}
-  report.cleanup.privateFiles={status:'passed',removed};
+  let removed=0;for(const id of authOnly ? [] : createdUsers){let cursor;do{const page=await list({prefix:`documents/${id}/`,token:privateToken,cursor});const urls=page.blobs.filter(blob=>blob.pathname.startsWith(`documents/${id}/`)).map(blob=>blob.url);if(urls.length){await del(urls,{token:privateToken});removed+=urls.length;}cursor=page.hasMore?page.cursor:undefined;}while(cursor);const remaining=await list({prefix:`documents/${id}/`,token:privateToken});assert.equal(remaining.blobs.length,0,'Synthetic file prefix must be empty after cleanup');}
+  report.cleanup.privateFiles={status:authOnly?'not-used':'passed',removed};
  }catch(error){report.cleanup.privateFiles={status:'failed',error:error.message};}
  try{if(control && /^qa_acceptance_[a-f0-9]{10}$/.test(schema)){await control.$executeRawUnsafe(`DROP SCHEMA IF EXISTS "${schema}" CASCADE`);report.cleanup.schema='removed';}}catch(error){report.cleanup.schema={status:'failed',error:error.message};}
  await db?.$disconnect();await control?.$disconnect();report.finishedAt=new Date().toISOString();save();fs.closeSync(log);
@@ -99,18 +100,71 @@ async function main() {
  if(args.has('--keep') && !process.stdin.isTTY)throw new Error('--keep requires an interactive terminal (allocate a TTY) so stop can trigger cleanup');
  const source=new URL(process.env.DATABASE_URL);const sourceSchema=source.searchParams.get('schema')||'public';
  if(!args.has('--run')){process.stdout.write(JSON.stringify({databaseConfigured:true,sourceSchema,privateStorageConfigured:!!privateToken,action:'Read-only preflight. Use --run for isolated live-service acceptance.'},null,2)+'\n');return;}
- if(!privateToken)throw new Error('Private storage must be configured for acceptance');
+ if(!authOnly&&!privateToken)throw new Error('Private storage must be configured for acceptance');
  process.stdout.write(`ACCEPTANCE_REPORT ${output}\n`);
  const isolated=new URL(source);isolated.searchParams.set('schema',schema);
  control=new PrismaClient({datasourceUrl:source.toString()});db=new PrismaClient({datasourceUrl:isolated.toString()});
  await startSmtp();const probe=net.createServer();await new Promise((resolve,reject)=>{probe.once('error',reject);probe.listen(0,'127.0.0.1',resolve);});const httpPort=probe.address().port;await new Promise(resolve=>probe.close(resolve));base=`http://127.0.0.1:${httpPort}`;
  childEnv={...process.env,DATABASE_URL:isolated.toString(),NODE_ENV:'development',NEXT_PUBLIC_APP_URL:base,ADMIN_SECRET:adminSecret,CRON_SECRET:crypto.randomBytes(32).toString('hex'),SALARY_OWNER_SECRET:crypto.randomBytes(32).toString('hex'),SMTP_HOST:'127.0.0.1',SMTP_PORT:String(smtpPort),SMTP_USER:'',SMTP_PASSWORD:'',SMTP_SECURE:'false',EMAIL_FROM:'BenchScout QA <qa@example.invalid>',RESEND_API_KEY:'',GMAIL_USER:'',GMAIL_APP_PASSWORD:'',EMAIL_USER:'',EMAIL_PASS:'',GEMINI_API_KEY:'',APIFY_API_KEY:'',VERCEL:''};
+ if(authOnly)Object.assign(childEnv,{BLOB_PRIVATE_READ_WRITE_TOKEN:'',BLOB_BACKUP_READ_WRITE_TOKEN:'',DOCUMENT_BACKUP_ENABLED:'false',DOCUMENT_BACKUP_TEST_MODE:'false',DOCUMENT_BACKUP_BACKFILL_APPLY_ENABLED:'false'});
  await step('isolated schema migrations and empty account boundary',async()=>{await command(process.execPath,[path.join(root,'node_modules/prisma/build/index.js'),'migrate','deploy'],childEnv);assert.equal(await db.user.count(),0);assert.equal(await db.employer.count(),0);const tables=await control.$queryRawUnsafe('SELECT table_name FROM information_schema.tables WHERE table_schema=$1',schema);assert.ok(tables.some(row=>row.table_name==='Application'));});
  app=spawn(process.execPath,[path.join(root,'node_modules/next/dist/bin/next'),'dev','--hostname','127.0.0.1','--port',String(httpPort)],{cwd:root,env:childEnv,stdio:['ignore',log,log]});
  await step('isolated HTTP server and local-only mail transport',async()=>{let ready=false;for(let i=0;i<90;i++){if(app.exitCode!==null)throw new Error('Acceptance server exited; inspect private log');try{if(!fs.readFileSync(path.join(work,'server.log'),'utf8').includes('Ready in')){await pause(500);continue;}const response=await fetch(`${base}/api/auth/session`,{signal:AbortSignal.timeout(1500)});if(response.status===401){ready=true;break;}}catch{/* Server may still compile. */}await pause(500);}assert.equal(ready,true);});
  let licensed,seeking,training,employer,other,job1,job2,internJob,app1;
  await step('candidate signup, captured confirmation and blocked unverified login',async()=>{licensed=await registerCandidate('licensed','licensed');seeking=await registerCandidate('seeking','internship');training=await registerCandidate('training','internship');});
  await step('employer confirmation stays separate from company approval',async()=>{employer=await registerEmployer('employer');other=await registerEmployer('other');await call(employer,'POST','/api/jobs/direct',{role:'QA vacancy',company:employer.companyName,loc:'Lagos',skills:'MLS',noFees:true},403);assert.equal((await call(employer,'GET','/api/employer/verification')).data.isVerified,false);});
+ if(authOnly){
+  await step('authenticated sessions persist and reject cross-account identity',async()=>{
+   for(const actor of [licensed,seeking,training]){
+    const session=(await call(actor,'GET','/api/auth/session')).data.session;
+    assert.equal(session.id,actor.id);assert.equal(session.email,actor.email);
+    assert.equal((await call(actor,'GET','/api/auth/session')).data.session.id,actor.id);
+   }
+   await call(licensed,'GET',`/api/user?email=${encodeURIComponent(seeking.email)}`,null,403);
+   await db.authSession.updateMany({where:{subjectId:training.id},data:{expiresAt:new Date(0)}});
+   await call(training,'GET','/api/auth/session',null,401);
+   const login=await call(training,'POST','/api/auth/login',{email:training.email,password});
+   assert.equal(login.data.user.id,training.id);
+   const cookie=login.response.headers.get('set-cookie');
+   assert.match(cookie,/HttpOnly/i);assert.match(cookie,/SameSite=lax/i);assert.match(cookie,/Path=\//i);
+   assert.equal((await call(training,'GET','/api/auth/session')).data.session.id,training.id);
+  });
+  await step('real HTTP salary ownership, duplicate submission and anonymous legacy preservation',async()=>{
+   const fields={role:'QA ONLY MLS',location:'Lagos',salary:250000,experience:'1-3 years'};
+   const legacy=await db.salaryReport.create({data:fields});
+   const bob=(await call(seeking,'POST','/api/salary',fields)).data.id;
+   const alice=(await call(licensed,'POST','/api/salary',{...fields,ownerKey:'caller-cannot-choose-owner'})).data.id;
+   assert.equal((await call(licensed,'POST','/api/salary',{...fields,salary:300000})).data.id,alice);
+   assert.equal(await db.salaryReport.count(),3);
+   await call(null,'DELETE','/api/salary',{id:alice},401);
+   await call(employer,'PUT','/api/salary',{...fields,id:alice},403);
+   await call(licensed,'PUT','/api/salary',{...fields,id:alice,salary:350000});
+   await call(licensed,'PUT','/api/salary',{...fields,id:bob},404);
+   await call(licensed,'PUT','/api/salary',{...fields,id:legacy.id},404);
+   for(const id of [bob,legacy.id])await call(licensed,'DELETE','/api/salary',{id},404);
+   const publicResult=(await call(null,'GET','/api/salary')).data;
+   assert.equal(publicResult.count,3);assert.ok(!JSON.stringify(publicResult).includes('ownerKey'));
+   assert.equal((await db.salaryReport.findUnique({where:{id:alice}})).salary,350000);
+   await call(licensed,'DELETE','/api/salary',{id:alice});
+   assert.equal(await db.salaryReport.count(),2);
+   assert.equal((await db.salaryReport.findUnique({where:{id:bob}})).salary,fields.salary);
+   assert.deepEqual(await db.salaryReport.findUnique({where:{id:legacy.id}}),legacy);
+  });
+  await step('logout invalidates previously valid candidate and employer cookies',async()=>{
+   for(const actor of [licensed,employer]){
+    const cookie=actor.cookie;
+    await call(actor,'GET','/api/auth/session');
+    await call(actor,'POST','/api/auth/logout');
+    await call({cookie},'GET','/api/auth/session',null,401);
+    await call(null,'GET','/api/auth/session',null,401);
+   }
+  });
+  await step('no synthetic accounts were written to the normal schema',async()=>{
+   assert.equal(await control.user.count({where:{email:{in:[licensed.email,seeking.email,training.email]}}}),0);
+   assert.equal(await control.employer.count({where:{email:{in:[employer.email,other.email]}}}),0);
+  });
+  report.mailCaptured=messages.length;report.status='passed';save();return;
+ }
  await step('private CV, license and provisional uploads with owner and cross-account reads',async()=>{for(const actor of [licensed,seeking,training])await upload(actor,'resume');await upload(licensed,'license');for(const actor of [seeking,training])await upload(actor,'provisional');const owner=await call(licensed,'GET',`/api/documents?userId=${licensed.id}&kind=resume`);assert.deepEqual(owner.data,pdf);assert.equal(owner.response.headers.get('cache-control'),'private, no-store');const stored=(await db.user.findUnique({where:{id:licensed.id}})).resumeUrl;const anonymous=await fetch(stored,{redirect:'manual'});assert.ok([401,403,404].includes(anonymous.status),'Direct private Blob URL must deny anonymous reads');await anonymous.body?.cancel();await call(seeking,'GET',`/api/documents?userId=${licensed.id}&kind=resume`,null,403);await call(null,'GET',`/api/documents?userId=${licensed.id}&kind=resume`,null,401);await call(employer,'GET',`/api/documents?userId=${licensed.id}&kind=resume`,null,403);});
  await step('licensed, seeking and in-training profiles persist through HTTP',async()=>{await call(licensed,'POST','/api/user/compliance',{licenseNumber:'QA-TEST-123',expiryDate:'2035-01-01'});for(const [actor,stage]of [[seeking,'seeking'],[training,'training']]){const current=await call(actor,'GET','/api/user');await call(actor,'POST','/api/user/career',{careerPhase:'internship',profile:{...current.data.user.candidateProfile,placementStage:stage,relocation:false,provisionalNumber:'QA-PROV',provisionalExpiry:'2035-01-01',...(stage==='training'?{placementInstitution:'Synthetic placement',placementStart:'2026-01-01'}:{})}});}assert.equal((await db.user.findUnique({where:{id:training.id}})).candidateProfile.placementStage,'training');});
  await step('real-database candidate review compare-and-set permits only one competing decision',async()=>{const snapshot=(await call(admin,'GET',`/api/admin/reviews?candidate=${encodeURIComponent(licensed.email)}`)).data.candidate;const body={kind:'candidate',candidateId:licensed.id,email:licensed.email,revision:snapshot.revision,approved:true,reviewer:'Acceptance runner',reference:'Synthetic credential only; isolated test not a real registration approval.',checks:{document:'Inspected generated synthetic PDF fixture.',registration:'Compared synthetic registration fields to isolated fixture.'}};const request=()=>fetch(`${base}/api/admin/reviews`,{method:'POST',headers:{Origin:base,Authorization:`Bearer ${adminSecret}`,'Content-Type':'application/json'},body:JSON.stringify(body)});const results=await Promise.all([request(),request()]);assert.deepEqual(results.map(result=>result.status).sort(),[200,409]);assert.equal(await db.safetyReview.count({where:{kind:'candidate',subjectId:licensed.id}}),1);});

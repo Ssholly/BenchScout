@@ -1,3 +1,7 @@
+## 22 October 2026 — Authenticated HTTP/database subset prepared; execution held
+
+Added `--auth-only` to the existing isolated acceptance runner for real session expiry/re-login/logout, cross-account profile rejection and salary owner/cross-owner/anonymous legacy checks. Synthetic accounts and salary rows would exist only in a temporary schema; mail is captured locally and source/archive tokens/backups are disabled. No private-file cleanup occurs in this mode. Syntax, focused ESLint and configuration preflight pass. Execution was rejected by automatic approval review because the configured database is Production and this new temporary-schema mutation needs explicit approval; no DB mutation or hosted authentication result is claimed. [Scope, cleanup and limits](STAGING-ACCEPTANCE.md#authenticated-access-subset--prepared-22-october).
+
 ## 22 October 2026 — Twelve protected hosted access checks passed
 
 Executed the separately approved GET-only smoke on the exact corrected release candidate. Root/employer HTML loads passed; disabled setup/test-email endpoints returned 410; protected APIs and a forged session returned 401 JSON errors. Temporary project bypass revoked and protection restored (zero entries; revoked-token HEAD 302). No valid login, account/data/file change, email, worker processing, public promotion or main merge ran. Updated the release packet/readiness record while preserving the distinction from authenticated cross-owner and actual scheduler checks. [Scrubbed results](qa/2026-10-22-protected-access-smoke.json).
