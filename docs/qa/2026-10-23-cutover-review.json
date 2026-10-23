@@ -1,0 +1,143 @@
+{
+  "date": "2026-10-23",
+  "reviewOnly": true,
+  "candidate": {
+    "id": "dpl_CfjXtpKfxDeThKRc8FfrEXeCHssm",
+    "projectId": "prj_MNrDsjvBMVCY5mmPjD3tSyw7OIBs",
+    "readyState": "READY",
+    "target": "production",
+    "url": "bench-scout-r2ldibwnk-sholly.vercel.app",
+    "source": "082c225a86a1ec582ceb2e27faf276f82b8a7994",
+    "githubCommitSha": "082c225a86a1ec582ceb2e27faf276f82b8a7994",
+    "alias": []
+  },
+  "rollback": {
+    "id": "dpl_3JSXjPv2JjgTBNE3gwXVSiqJFTaV",
+    "projectId": "prj_MNrDsjvBMVCY5mmPjD3tSyw7OIBs",
+    "readyState": "READY",
+    "target": "production",
+    "url": "bench-scout-4a95ak60v-sholly.vercel.app",
+    "source": "336c6edf06f8e8a3f0a3fafb43f81feac9c1546f"
+  },
+  "project": {
+    "id": "prj_MNrDsjvBMVCY5mmPjD3tSyw7OIBs",
+    "name": "bench-scout",
+    "protection": {
+      "deploymentType": "all_except_custom_domains"
+    },
+    "bypassCount": 0,
+    "crons": {
+      "enabledAt": 1779108266469,
+      "disabledAt": null,
+      "updatedAt": 1782997611418,
+      "deploymentId": "dpl_4bTpas5uPn1jRpwGeu4eUJvX7nhZ",
+      "definitions": []
+    }
+  },
+  "aliases": {
+    "aliases": [
+      {
+        "alias": "bench-scout-git-hotfix-legacy-containment-sholly.vercel.app",
+        "deploymentId": "dpl_EcY1anTy6tVPnmAoagf5WCRk2Bed"
+      },
+      {
+        "alias": "bench-scout-git-testing-sholly.vercel.app",
+        "deploymentId": "dpl_D2mYf5k3qc892X4TVoRZ3jnoWWjD"
+      },
+      {
+        "alias": "bench-scout.vercel.app",
+        "deploymentId": "dpl_3JSXjPv2JjgTBNE3gwXVSiqJFTaV"
+      },
+      {
+        "alias": "bench-scout-sholly.vercel.app",
+        "deploymentId": "dpl_F5uCLS312DAkTGAGdUZbWqaUYYrg"
+      },
+      {
+        "alias": "bench-scout-git-main-sholly.vercel.app",
+        "deploymentId": "dpl_3JSXjPv2JjgTBNE3gwXVSiqJFTaV"
+      }
+    ],
+    "pagination": {
+      "count": 5,
+      "next": null,
+      "prev": 1792597782279
+    }
+  },
+  "database": {
+    "date": "2026-10-23",
+    "databaseFingerprint": "c64b6f363fb232aaaa9650261e30b563fc2f67af452df65caa89f00f40f458ab",
+    "migrations": {
+      "total": 8,
+      "completedChecksumMatches": 8,
+      "unfinished": 0
+    },
+    "cleanup": {
+      "pending": 0,
+      "failed": 0,
+      "due": 0
+    },
+    "currentFileMetadata": {
+      "uniqueFiles": 3,
+      "kinds": {
+        "resume": 1,
+        "license": 1,
+        "provisional": 0,
+        "degree": 0,
+        "result": 0,
+        "placement": 0,
+        "certificate": 0,
+        "avatar": 1
+      },
+      "blockedReferences": 0,
+      "fileContentsRead": false,
+      "signedCopyPlan": false
+    },
+    "businessRecordsChanged": false
+  },
+  "publicRootStatus": 503,
+  "sourceComparison": {
+    "candidate": "082c225a86a1ec582ceb2e27faf276f82b8a7994",
+    "checkpoint": "34d6e52bec37cd2c159033c49a27996e37471e93",
+    "applicationConfigDiffEmpty": true
+  },
+  "remoteMain": "a56fba3641004184e8bd5ddee87a51eb6b5a4fec",
+  "recoveryConsole": {
+    "project": "BenchScout",
+    "projectId": "delicate-bread-53785485",
+    "branch": "production",
+    "branchId": "br-cold-hall-apf2uz7z",
+    "historyHours": 6,
+    "earliestTimeDisplayed": "2026-10-23 08:59 Africa/Lagos",
+    "snapshotsPresent": false,
+    "snapshotSchedulePresent": false,
+    "restorePerformed": false
+  },
+  "storageConsole": {
+    "stores": [
+      {
+        "name": "benchscout-private-documents",
+        "id": "store_mZ20PbMIJpMM6tli",
+        "access": "Private",
+        "status": "Available"
+      },
+      {
+        "name": "benchscout-production-backups",
+        "id": "store_p6fHiIr0jFmd2w2c",
+        "access": "Private",
+        "status": "Available"
+      }
+    ],
+    "fileContentsRead": false,
+    "credentialsRead": false
+  },
+  "promotionPerformed": false,
+  "mainMergePerformed": false,
+  "realFileCopyPerformed": false,
+  "schedulerInvocationObserved": false,
+  "limitations": [
+    "Older three files remain unbackfilled; metadata inventory is not a signed copy plan.",
+    "Six-hour rolling PostgreSQL history is not a measured full-service recovery objective.",
+    "Hosted public-origin authenticated browser/link behaviour remains a cutover acceptance item.",
+    "Retained immutable deployments are not globally write-isolated."
+  ]
+}

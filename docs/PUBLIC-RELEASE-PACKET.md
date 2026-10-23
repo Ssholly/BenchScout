@@ -1,6 +1,10 @@
-# BenchScout public release decision packet — 22 October 2026
+# BenchScout public release decision packet — current review 23 October 2026
 
 **Decision now: public promotion remains HOLD; do not reopen or merge main yet.** The corrected approved public-origin candidate is Ready as `dpl_CfjXtpKfxDeThKRc8FfrEXeCHssm`; its new Production-only cron key passes wrong-key/correct-key dry-run acceptance. Its source matches the validated candidate and existing aliases remain unchanged. The cleanup schedule was submitted with the build, but active project cron definitions remain empty; actual provider registration/invocation acceptance is not claimed. Correct-key dry-run authentication passed on the replacement candidate. [Current build and cron acceptance](qa/2026-10-22-production-cron-correction-accepted.json).
+
+## 23 October refresh — decision prepared, no cutover performed
+
+The [current controlled-reopening decision](CUTOVER-DECISION-2026-10-23.md) verifies Ready candidate/rollback identities, maintained public aliases (root 503), zero bypasses, eight live migration checksums, queue 0/0/0 and the expected Private/Available source/archive stores. Neon currently shows six-hour history with no snapshots/schedule. Fresh metadata still finds three files; this does not authorise copying or establish backup completion. The decision records exact promotion/rollback scope, public-origin/scheduler follow-up, main auto-deploy handling and required acknowledgement of recovery limits. Public remains held pending explicit approval. [Current evidence](qa/2026-10-23-cutover-review.json).
 
 ## Exact identities
 

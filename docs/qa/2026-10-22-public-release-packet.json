@@ -14,7 +14,7 @@
   "promotionReady": false,
   "mainMergeApproved": false,
   "rollbackDeploymentId": "dpl_3JSXjPv2JjgTBNE3gwXVSiqJFTaV",
-  "nextAction": "complete scoped final hosted acceptance and prepare separate cutover decision; public promotion remains held",
+  "nextAction": "explicit controlled reopening decision with recovery limits, scoped smoke and maintenance rollback; no main merge",
   "noApplicationMutation": true,
   "updated": "2026-10-22",
   "currentEvidence": "2026-10-22-production-cron-correction-accepted.json",
@@ -33,5 +33,7 @@
     "scope": "isolated schema, real PostgreSQL, loopback HTTP, local SMTP",
     "independentCleanupPassed": true,
     "evidence": "2026-10-22-authenticated-subset-accepted.json"
-  }
+  },
+  "reviewUpdated": "2026-10-23",
+  "currentCutoverReview": "2026-10-23-cutover-review.json"
 }

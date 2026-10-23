@@ -1,3 +1,7 @@
+## 23 October 2026 — Current cutover decision ready for owner review
+
+Read-only refresh confirms Ready candidate/rollback, maintained public aliases and 503, zero bypasses, eight matching migration checksums, cleanup 0/0/0 and expected Private/Available source/archive stores. Neon currently provides six-hour history with no snapshots/schedule; three current private files remain unbackfilled. The [controlled reopening decision](CUTOVER-DECISION-2026-10-23.md) specifies exact promotion/rollback, remaining public-origin and scheduler checks, recovery limits and separate main integration. Public promotion/main merge remain unapproved; review is not execution. [Fresh evidence](qa/2026-10-23-cutover-review.json).
+
 ## 22 October 2026 — Authenticated HTTP/PostgreSQL acceptance passed
 
 All eight approved temporary-schema checks passed: verified registration/login, persistent/expired/recovered sessions, cross-account profile denial, salary duplicate/ownership/anonymous legacy preservation, and candidate/employer logout revocation. Independent cleanup confirms schema absent, zero fixture accounts in the normal schema and local HTTP server closed. Five locally captured messages, no external delivery or Blob use. The frozen app source remains unchanged. This is actual local HTTP/PostgreSQL integration evidence; final hosted/public-origin cookie/link and scheduled execution checks retain their scope. Public promotion/main merge remain unapproved. [Acceptance and cleanup](qa/2026-10-22-authenticated-subset-accepted.json).
