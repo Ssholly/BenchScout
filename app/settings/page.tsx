@@ -215,7 +215,8 @@ export default function SettingsPage() {
 			setHasSettings(true);
 		} catch (error) {
 			if (!isCurrent()) return;
-			setSettingsError(settingsLoaded.current ? "Couldn’t refresh settings. Your existing details are still shown." : "Couldn’t load your settings. Please try again.");
+			const timedOut = error instanceof Error && ["TimeoutError", "AbortError"].includes(error.name);
+			setSettingsError(settingsLoaded.current ? "Couldn’t refresh settings. Your existing details are still shown." : timedOut ? "Your settings took too long to load. Please try again." : "Couldn’t load your settings. Please try again.");
 			console.error("Failed to load settings:", error);
 		}
 		setCheckingAuth(false);

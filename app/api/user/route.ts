@@ -10,7 +10,7 @@ import { roleKeywords, validRoleKeywords } from "@/lib/role-keywords";
 
 
 // GET: Fetch the specific logged-in user by their email
-export const GET = withApi("candidate", async (request: Request) => {
+export const GET = withApi("candidate", async (request: Request, session) => {
 	try {
 		const { searchParams } = new URL(request.url);
 		const email = searchParams.get("email");
@@ -19,10 +19,9 @@ export const GET = withApi("candidate", async (request: Request) => {
 			return NextResponse.json({ error: "No email provided" }, { status: 400 });
 		}
 
-		// Look up the EXACT user by email, not just the first one
-		const user = await prisma.user.findFirst({
-			where: { email: email },
-		});
+		// The guard already loaded and verified this exact session owner. Reuse that
+		// request's snapshot instead of making a third sequential database query.
+		const user = session!.candidateAccount;
 
 		if (!user) {
 			return NextResponse.json({ error: "No user found" }, { status: 404 });
@@ -37,7 +36,7 @@ export const GET = withApi("candidate", async (request: Request) => {
 			{ status: 500 },
 		);
 	}
-}, {});
+}, { candidateAccount: true });
 
 // POST: Update the specific user's settings when they click "Update Profile"
 export const POST = withApi("candidate", async (request: Request) => {

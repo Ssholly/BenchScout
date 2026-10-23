@@ -51,3 +51,17 @@ test('saving preferences invalidates an overlapping old read before the next ref
   assert.deepEqual(await (await fresh).json(),{stage:'training'});await old;
  } finally {global.fetch=oldFetch;global.localStorage=oldStorage;invalidateSharedPageRequests();}
 });
+test('a timed-out shared read rejects both consumers and permits a fresh retry', async () => {
+ const originalFetch=global.fetch,originalStorage=global.localStorage,originalTimeout=AbortSignal.timeout;
+ let calls=0;
+ global.localStorage={getItem:()=> 'candidate:timeout'};
+ AbortSignal.timeout=milliseconds=>{assert.equal(milliseconds,15000);return AbortSignal.abort(new DOMException('Timed out','TimeoutError'));};
+ global.fetch=async (_url,{signal})=>{calls++;signal.throwIfAborted();throw new Error('Expected an aborted deadline');};
+ try{
+  const one=sharedPageRequest('/api/user?email=timeout'),two=sharedPageRequest('/api/user?email=timeout');
+  await assert.rejects(one,{name:'TimeoutError'});await assert.rejects(two,{name:'TimeoutError'});
+  assert.equal(calls,1);
+  global.fetch=async()=>{calls++;return Response.json({success:true});};
+  assert.equal((await sharedPageRequest('/api/user?email=timeout')).status,200);assert.equal(calls,2);
+ }finally{global.fetch=originalFetch;AbortSignal.timeout=originalTimeout;if(originalStorage===undefined)delete global.localStorage;else global.localStorage=originalStorage;invalidateSharedPageRequests();}
+});

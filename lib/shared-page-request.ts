@@ -8,7 +8,8 @@ export async function sharedPageRequest(url: string): Promise<Response> {
   const key = `${identity}:${url}`;
   let request = pending.get(key);
   if (!request) {
-    request = fetch(url, { cache: "no-store" });
+    // Failed/cold connections must reach the page's retry UI instead of spinning forever.
+    request = fetch(url, { cache: "no-store", signal: AbortSignal.timeout(15_000) });
     pending.set(key, request);
     const clear = () => { if (pending.get(key) === request) pending.delete(key); };
     void request.then(clear, clear);

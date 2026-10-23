@@ -1,3 +1,7 @@
+## 23 October 2026 — Settings loading correction implemented; Production unchanged
+
+Traced one observed 3,167 ms public settings navigation to the blocking profile request; source inspection found a redundant serial account lookup. The guarded profile GET now reuses its current verified owner snapshot with an explicit safe projection (two DB reads instead of three; password/CV text not selected). Ordinary session responses remain slim, email ownership checks and fresh verification remain enforced, and profile writes are unchanged. Shared reads now abort at 15 seconds so stalled settings reach retry feedback; no completed-response cache is introduced. Lint, TypeScript and 287 tests pass. Webpack Production build also passes; testing-hosted acceptance and exact Production release remain separate. [Investigation, changes and limits](SETTINGS-PERFORMANCE.md).
+
 ## 23 October 2026 — Public browser session persistence passed
 
 The owner privately signed in to the reopened pilot. Operator verification passed two full refreshes (Applied and Profile & documents), loaded profile preferences and return navigation without a login prompt. No settings save, manual document action, logout or new email request occurred; password/cookie values were not read, and no account identity is stored in evidence. Actual scheduled execution remains pending; next priority is the separately approved older-file backfill workflow. [Scrubbed result](qa/2026-10-23-public-session-accepted.json).

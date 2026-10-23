@@ -4,7 +4,7 @@ import { getSession, type Session } from "@/lib/auth";
 import { ApiError, assertJobAccess, assertSameOrigin, hashToken, sanitizeResponse, secretMatches, textField } from "@/lib/security";
 
 type Access = "public" | "candidate" | "employer" | "either" | "admin" | "cron";
-type Options = { job?: "candidate" | "available" | "employer"; application?: boolean; verifiedEmployer?: boolean; limit?: number };
+type Options = { job?: "candidate" | "available" | "employer"; application?: boolean; verifiedEmployer?: boolean; limit?: number; candidateAccount?: true };
 type Handler = (request: Request, session: Session | null) => Promise<Response>;
 
 async function rateLimit(key: string, limit: number, windowMs = 60000) {
@@ -42,7 +42,7 @@ export function withApi(access: Access, handler: Handler, options: Options = {})
         const supplied = request.headers.get("authorization")?.replace(/^Bearer /, "") || (access === "admin" ? body.passcode ?? body.adminSecret : undefined);
         if (!secretMatches(supplied, access === "admin" ? process.env.ADMIN_SECRET : process.env.CRON_SECRET)) throw new ApiError(401, "Unauthorized.");
       } else if (access !== "public") {
-        session = await getSession(request);
+        session = await getSession(request, access === "candidate" && options.candidateAccount === true);
         if (access !== "either" && session.role !== access) throw new ApiError(403, "This action is not available for your account.");
         if (options.verifiedEmployer && !session.verified) throw new ApiError(403, "Your employer account needs review before publishing jobs or accessing candidates.");
         for (const key of ["email", "targetEmail", "employerId"]) {
