@@ -1,5 +1,9 @@
 ## 23 October 2026 — Current cutover decision ready for owner review
 
+## 23 October 2026 — Public browser session persistence accepted
+
+After the owner's private Production sign-in, authenticated Applied and Profile & documents pages survived full refreshes and navigation without another login prompt. Profile preferences finished loading; no save, manual document action, logout or new email request was made. Password/cookie values and account identity are excluded from committed evidence. This accepts public browser session persistence/read-only profile access; new email-link delivery, actual scheduled invocation, older-file backup copying and main integration retain separate scope. [Acceptance](qa/2026-10-23-public-session-accepted.json).
+
 ## 23 October 2026 — Controlled public pilot reopened
 
 Owner-approved exact Production artifact `dpl_CfjXtpKfxDeThKRc8FfrEXeCHssm` / source `082c225` is current on `bench-scout.vercel.app`, without rebuild or main merge. Thirteen public GET checks passed, browser home rendered, and cleanup cron definitions now register this candidate at `17 2 * * *`. Actual scheduled invocation and private public-origin login remain pending. Git-main was restored to maintenance after promotion moved it; testing/diagnostics are preserved, bypass count zero. Six-hour database history and three unbackfilled older files remain the accepted pilot limits. [Execution and remaining work](CONTROLLED-PILOT-2026-10-23.md).

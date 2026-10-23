@@ -14,7 +14,7 @@
   "promotionReady": true,
   "mainMergeApproved": false,
   "rollbackDeploymentId": "dpl_3JSXjPv2JjgTBNE3gwXVSiqJFTaV",
-  "nextAction": "private public-origin sign-in, observe scheduler run, separately approved older-file backfill and controlled main integration",
+  "nextAction": "separately approved older-file backfill, observe actual scheduled invocation, then controlled main integration",
   "noApplicationMutation": true,
   "updated": "2026-10-22",
   "currentEvidence": "2026-10-22-production-cron-correction-accepted.json",
@@ -38,5 +38,11 @@
   "currentCutoverReview": "2026-10-23-cutover-review.json",
   "publicReopened": true,
   "promotionApproved": true,
-  "cutoverExecution": "2026-10-23-controlled-pilot-reopened.json"
+  "cutoverExecution": "2026-10-23-controlled-pilot-reopened.json",
+  "publicBrowserSession": {
+    "passed": true,
+    "profileNavigationPassed": true,
+    "fullRefreshes": 2,
+    "evidence": "2026-10-23-public-session-accepted.json"
+  }
 }

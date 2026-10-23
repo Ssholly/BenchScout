@@ -28,9 +28,13 @@ Project metadata now registers `/api/cron/document-cleanup` on the promoted cand
 
 The existing correct-key/wrong-key dry-run evidence belongs to this exact artifact before promotion. It was not repeated with a retained private key copy: that copy had already been removed. No new protection bypass or secret was created.
 
+## Public browser session accepted — 23 October follow-up
+
+The owner privately signed in through the prepared public Scientist form. The operator observed the signed-in application pipeline, refreshed it fully and confirmed the session persisted, navigated to Profile & documents and waited for the preferences form to finish loading, refreshed that page successfully, then returned to Applied without another login prompt. No profile/preferences were saved and no manual document operation, logout or new email request was performed. Password and cookie values were not read; account identity is excluded from the committed evidence. This closes the public browser persistence/read-only profile check, not new email-link delivery or cookie-attribute inspection. [Scrubbed acceptance](qa/2026-10-23-public-session-accepted.json).
+
 ## Remaining work
 
-1. Owner privately signs in through the prepared public Scientist form with an existing Production account. Verify browser session persistence/read-only profile behaviour; do not use a testing-only account or read password/cookie values. New confirmation/reset messages are outside this cutover's scope.
+1. **Completed:** owner-initiated public sign-in and operator-verified session persistence/read-only profile navigation. New confirmation/reset-link delivery remains outside this check; request it separately if needed.
 2. Observe the actual scheduled invocation. Registration is passed; invocation is pending.
 3. Refresh the guarded older-file preview and obtain separate real-document copy/stale-archive cleanup approval after confirming the live hooks. Three older files remain unbackfilled. Keep the public apply gate disabled.
 4. Prepare the main merge under an approved automatic-deployment/domain-assignment plan. July main is unchanged and must not be redeployed. No testing database transfer is required.
