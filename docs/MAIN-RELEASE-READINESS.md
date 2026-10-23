@@ -1,5 +1,9 @@
 ## 23 October 2026 — Current cutover decision ready for owner review
 
+## 23 October 2026 — Controlled public pilot reopened
+
+Owner-approved exact Production artifact `dpl_CfjXtpKfxDeThKRc8FfrEXeCHssm` / source `082c225` is current on `bench-scout.vercel.app`, without rebuild or main merge. Thirteen public GET checks passed, browser home rendered, and cleanup cron definitions now register this candidate at `17 2 * * *`. Actual scheduled invocation and private public-origin login remain pending. Git-main was restored to maintenance after promotion moved it; testing/diagnostics are preserved, bypass count zero. Six-hour database history and three unbackfilled older files remain the accepted pilot limits. [Execution and remaining work](CONTROLLED-PILOT-2026-10-23.md).
+
 Read-only refresh confirms Ready candidate/rollback, maintained public aliases and 503, zero bypasses, eight matching migration checksums, cleanup 0/0/0 and expected Private/Available source/archive stores. Neon currently provides six-hour history with no snapshots/schedule; three current private files remain unbackfilled. The [controlled reopening decision](CUTOVER-DECISION-2026-10-23.md) specifies exact promotion/rollback, remaining public-origin and scheduler checks, recovery limits and separate main integration. Public promotion/main merge remain unapproved; review is not execution. [Fresh evidence](qa/2026-10-23-cutover-review.json).
 
 ## 22 October 2026 — Authenticated HTTP/PostgreSQL acceptance passed

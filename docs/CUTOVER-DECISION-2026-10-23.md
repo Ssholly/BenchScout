@@ -1,6 +1,6 @@
 # BenchScout controlled reopening decision — 23 October 2026
 
-**Review complete; public reopening awaits explicit approval.** No main merge, public promotion, real-document copy, restore or secret change occurred in this review. Recommend a controlled pilot reopening with immediate smoke/rollback, rather than treating the release as a fully certified recovery service. The recovery limits below must be accepted or resolved before approving.
+**Approved and executed: controlled public pilot reopened.** See [execution, smoke and remaining work](CONTROLLED-PILOT-2026-10-23.md). The following review records the pre-cutover proposal and its limits. No main merge, public promotion, real-document copy, restore or secret change occurred in this review. Recommend a controlled pilot reopening with immediate smoke/rollback, rather than treating the release as a fully certified recovery service. The recovery limits below must be accepted or resolved before approving.
 
 ## Verified today
 

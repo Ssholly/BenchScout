@@ -1,5 +1,9 @@
 # Deploying the security upgrade
 
+## 23 October 2026 — Controlled public pilot reopened
+
+Owner-approved exact Production artifact `dpl_CfjXtpKfxDeThKRc8FfrEXeCHssm` / source `082c225` is current on `bench-scout.vercel.app`, without rebuild or main merge. Thirteen public GET checks passed, browser home rendered, and cleanup cron definitions now register this candidate at `17 2 * * *`. Actual scheduled invocation and private public-origin login remain pending. Git-main was restored to maintenance after promotion moved it; testing/diagnostics are preserved, bypass count zero. Six-hour database history and three unbackfilled older files remain the accepted pilot limits. [Execution and remaining work](CONTROLLED-PILOT-2026-10-23.md).
+
 ## 22 October 2026 — Production-only cron correction accepted
 
 Operator save and metadata establish a new Production-only Secret CRON_SECRET (`4sCKxYxYsfrOf5up`), with the existing Preview-only value and testing override metadata unchanged. The already-approved replacement build of exact validated source `082c225a86a1ec582ceb2e27faf276f82b8a7994` is **Ready** as `dpl_CfjXtpKfxDeThKRc8FfrEXeCHssm`, immutable `bench-scout-r2ldibwnk-sholly.vercel.app`. Original project and both source metadata fields match. It uses the public canonical URL, normal submitted cleanup schedule, backups enabled, test mode off and backfill apply false.

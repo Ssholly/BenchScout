@@ -2,6 +2,10 @@
 
 A career workspace for Nigerian medical laboratory scientists and employers: sourced job matching, applications, private credential storage, renewal tracking, employer interviews, and salary contributions.
 
+## Current pilot
+
+The owner-approved controlled pilot is live at [bench-scout.vercel.app](https://bench-scout.vercel.app). [23 October cutover record and remaining checks](docs/CONTROLLED-PILOT-2026-10-23.md): public access checks passed and cleanup schedule registered; private browser sign-in and actual scheduled execution remain pending. Main merge and older-file backup copying are separate.
+
 ## Local setup
 
 Requires Node 22+, npm, and PostgreSQL. Copy `.env.example` to `.env` and configure a development database. Never use a production database for local tests.

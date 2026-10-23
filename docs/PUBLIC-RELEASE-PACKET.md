@@ -1,8 +1,8 @@
 # BenchScout public release decision packet — current review 23 October 2026
 
-**Decision now: public promotion remains HOLD; do not reopen or merge main yet.** The corrected approved public-origin candidate is Ready as `dpl_CfjXtpKfxDeThKRc8FfrEXeCHssm`; its new Production-only cron key passes wrong-key/correct-key dry-run acceptance. Its source matches the validated candidate and existing aliases remain unchanged. The cleanup schedule was submitted with the build, but active project cron definitions remain empty; actual provider registration/invocation acceptance is not claimed. Correct-key dry-run authentication passed on the replacement candidate. [Current build and cron acceptance](qa/2026-10-22-production-cron-correction-accepted.json).
+**Current status: controlled pilot reopened with explicit owner approval.** Public `bench-scout.vercel.app` serves reviewed deployment `dpl_CfjXtpKfxDeThKRc8FfrEXeCHssm` / source `082c225`. All thirteen public GET checks passed, cleanup cron registration now matches this artifact, and git-main is restored to provider-protected maintenance. Testing/diagnostics are preserved and bypass count is zero. Actual scheduled execution and private public-origin sign-in acceptance remain pending. Main merge and real-file backfill remain unapproved. [Executed cutover and remaining work](CONTROLLED-PILOT-2026-10-23.md).
 
-## 23 October refresh — decision prepared, no cutover performed
+## 23 October pre-cutover refresh — historical review
 
 The [current controlled-reopening decision](CUTOVER-DECISION-2026-10-23.md) verifies Ready candidate/rollback identities, maintained public aliases (root 503), zero bypasses, eight live migration checksums, queue 0/0/0 and the expected Private/Available source/archive stores. Neon currently shows six-hour history with no snapshots/schedule. Fresh metadata still finds three files; this does not authorise copying or establish backup completion. The decision records exact promotion/rollback scope, public-origin/scheduler follow-up, main auto-deploy handling and required acknowledgement of recovery limits. Public remains held pending explicit approval. [Current evidence](qa/2026-10-23-cutover-review.json).
 
@@ -14,9 +14,9 @@ The [current controlled-reopening decision](CUTOVER-DECISION-2026-10-23.md) veri
 | Application changes since candidate validation | None through checkpoint `70df89e`; application/config paths compared again; subsequent additions are tests and documentation only |
 | Refreshed remote main | `a56fba3641004184e8bd5ddee87a51eb6b5a4fec`; do not redeploy this unsafe source |
 | Vercel project | `sholly/bench-scout`, `prj_MNrDsjvBMVCY5mmPjD3tSyw7OIBs` |
-| Current public and git-main | Maintenance `dpl_3JSXjPv2JjgTBNE3gwXVSiqJFTaV`, source `336c6edf06f8e8a3f0a3fafb43f81feac9c1546f` |
+| Current public / git-main | Public: reviewed `dpl_CfjXtpKfxDeThKRc8FfrEXeCHssm`; git-main: maintenance `dpl_3JSXjPv2JjgTBNE3gwXVSiqJFTaV` |
 | Accepted protected diagnostics | `dpl_F5uCLS312DAkTGAGdUZbWqaUYYrg` at `bench-scout-sholly.vercel.app` |
-| New public-origin artifact | Ready `dpl_CfjXtpKfxDeThKRc8FfrEXeCHssm`, `bench-scout-r2ldibwnk-sholly.vercel.app`; corrected Production-only key, protected and unpromoted |
+| New public-origin artifact | Ready `dpl_CfjXtpKfxDeThKRc8FfrEXeCHssm`, `bench-scout-r2ldibwnk-sholly.vercel.app`; corrected Production-only key; promoted to current public pilot |
 | Production schema | Eight migrations, checksums matched, no unfinished migration; cleanup queue empty |
 
 ## Evidence accepted
@@ -65,7 +65,7 @@ The public-origin build's generated hostname intentionally fails same-origin mut
 
 The approved Production-only correction and replacement build passed **wrong-key 401 / new correct-key 200**, dryRun true, queue 0/0/0. Preview/testing bindings remain unchanged. Temporary project bypass is fully revoked (zero entries; revoked-token 302); private key copy removed and local server stopped. Active scheduler definitions remain empty while unpromoted; actual provider invocation remains separate. The earlier rejected-key records are dated history, superseded for the new candidate by [accepted correction evidence](qa/2026-10-22-production-cron-correction-accepted.json).
 
-## Promotion remains a separate decision
+## Pre-promotion decision safeguards — fulfilled approval recorded above
 
 Before requesting public reopening, present the exact new deployment ID, config/schedule findings, migration identity, remaining acceptance results and rollback ID. Resolve or explicitly record the remaining direct hosted access/idempotency, salary owner/cross-owner, session/canonical-link and cron acceptance limits from the release runbook. Do not change HOLD to release-ready based only on the empty queue.
 
@@ -93,4 +93,4 @@ Real-file backfill is a separate post-hook operation: fresh metadata preview, cu
 
 ## Current status
 
-The separately approved public-origin build and schedule submission are complete. No public promotion, main merge, secret rotation, real-file copy or new application mutation was executed. Actual scheduler activation/authentication and remaining release gates remain open. Earlier build-preparation records are retained as dated history; this packet and linked execution records provide the current consolidated decision.
+The explicitly approved controlled promotion is complete, public smoke passed, git-main restoration is verified and scheduler registration is active. Private browser sign-in and actual scheduled invocation remain follow-ups; main merge and older-file copying remain separate. No rebuild, new test email, real-file operation or secret rotation occurred. Earlier HOLD/build-preparation records below their dates remain history; the linked controlled-pilot execution is current.
