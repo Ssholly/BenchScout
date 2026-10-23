@@ -2449,9 +2449,9 @@ body.walkthrough-open { overflow: hidden !important; }
 .home-footer > div > span { font-size:12px; }
 .home-footer small { display:block; margin-top:6px; font-size:10px; }
 @media(max-width:900px) {
- /* At .85 scale, 19 CSS px renders above Safari's 16px focus threshold. */
+ /* Native viewport scale keeps 16px entry controls readable without focus zoom. */
  .settings-page input:not([type="range"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]), .settings-page select, .settings-page textarea,
- #career-profile input, #career-profile select { font-size:19px !important; font-weight:400; }
+ #career-profile input, #career-profile select { font-size:16px !important; font-weight:400; }
  .settings-keywords { gap:4px !important; }
  .settings-keywords > div { padding:1px 3px 1px 6px !important; font-size:10px !important; line-height:1.3; }
  .settings-keywords button { width:28px; flex-basis:28px; min-height:28px; }
@@ -2469,21 +2469,22 @@ body.walkthrough-open { overflow: hidden !important; }
  .search-sources-list { grid-template-columns:repeat(3,minmax(0,1fr)) !important; }
  .search-sources-list > div { padding:6px !important; gap:4px; }
  .search-sources-list > div > span { font-size:10px !important; }
- .compact-profile-dialog { max-width:380px !important; max-height:calc(85dvh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px)) !important; }
- .compact-profile-dialog .account-dialog-header { padding:12px !important; }
+ .compact-profile-dialog { max-width:440px !important; max-height:calc(100dvh - max(12px,env(safe-area-inset-top,0px)) - max(12px,env(safe-area-inset-bottom,0px))) !important; }
+ .compact-profile-dialog .account-dialog-header { padding:16px !important; }
  .compact-profile-dialog .account-dialog-header > div > div:first-child { display:none !important; }
- .compact-profile-dialog .account-dialog-header h3 { font-size:18px !important; margin:0 !important; }
+ .compact-profile-dialog .account-dialog-header h3 { font-size:20px !important; margin:0 !important; }
  .compact-profile-dialog .account-dialog-header p { display:none; }
- .compact-profile-dialog .account-dialog-body { padding:12px !important; flex:0 1 auto !important; }
- .profile-summary > div { padding:10px !important; margin-bottom:10px !important; border-radius:10px !important; gap:8px !important; }
+ .compact-profile-dialog .account-dialog-body { padding:16px !important; flex:0 1 auto !important; overscroll-behavior:contain; }
+ .profile-summary > div { padding:12px !important; margin-bottom:12px !important; border-radius:12px !important; gap:10px !important; }
  .profile-summary > div:first-child { padding:0 !important; margin-bottom:12px !important; }
- .profile-summary > div:first-child > div:first-child { width:40px !important; height:40px !important; flex-shrink:0; }
- .profile-summary h2 { font-size:14px !important; white-space:normal !important; }
- .profile-summary p { font-size:11px !important; }
- .profile-summary button { padding:6px 8px !important; min-height:36px; font-size:11px !important; }
- .profile-summary > div > div:first-child { font-size:9px !important; }
- .profile-keywords { gap:4px !important; }
- .profile-keywords > span { font-size:10px !important; padding:4px 6px !important; font-weight:500 !important; border-radius:6px !important; }
+ .profile-summary > div:first-child > div:first-child { width:48px !important; height:48px !important; flex-shrink:0; }
+ .profile-summary h2 { font-size:16px !important; line-height:1.4; white-space:normal !important; }
+ .profile-summary p { font-size:13px !important; line-height:1.45; overflow-wrap:anywhere; }
+ .profile-summary button { padding:8px 10px !important; min-height:44px; font-size:13px !important; white-space:normal; line-height:1.4; }
+ .profile-summary > div > div:first-child { font-size:11px !important; }
+ .profile-summary > a { font-size:14px !important; line-height:1.5; }
+ .profile-keywords { gap:6px !important; }
+ .profile-keywords > span { font-size:13px !important; padding:6px 8px !important; font-weight:500 !important; border-radius:8px !important; line-height:1.4; }
  .compact-compliance-dialog { height:auto !important; max-height:80dvh; align-self:center; padding:14px !important; border-radius:16px !important; overflow-y:auto; }
  .compact-compliance-dialog > div:first-of-type { margin-bottom:12px !important; }
  .compact-compliance-dialog h3 { font-size:18px !important; }
@@ -2494,11 +2495,28 @@ body.walkthrough-open { overflow: hidden !important; }
 }
 @media(prefers-reduced-motion:reduce) { .search-source-pulse { animation:none; } }
 @media(max-width:600px) {
- .profile-summary > div:first-child img { width:40px !important; height:40px !important; object-fit:cover; }
+ .profile-summary > div:first-child img { width:48px !important; height:48px !important; object-fit:cover; }
  .compact-compliance-dialog > div:last-child > button { margin-top:0 !important; }
 }
 @media(max-width:600px) {
- .profile-summary > div:first-child > div:first-child > div:first-of-type { width:40px !important; height:40px !important; }
+ .profile-summary > div:first-child > div:first-child > div:first-of-type { width:48px !important; height:48px !important; }
+}
+
+/* One readable drawer/dialog scale for installed apps and ordinary mobile pages. */
+@media(max-width:900px) {
+ .account-dialog-header > button { min-width:44px; min-height:44px; flex-shrink:0; }
+ .account-backdrop { padding: max(12px,env(safe-area-inset-top,0px)) 12px max(12px,env(safe-area-inset-bottom,0px)) !important; }
+ .account-dialog { max-height:calc(100dvh - max(12px,env(safe-area-inset-top,0px)) - max(12px,env(safe-area-inset-bottom,0px))) !important; }
+ .sidebar-wrapper { width:min(280px,calc(100vw - 40px)) !important; }
+ .sidebar-wrapper .sidebar-brand { height:90px !important; }
+ .sidebar-wrapper nav { font-size:16px; }
+ .sidebar-footer h4 { font-size:15px !important; }
+ .sidebar-footer p { font-size:12px !important; }
+ .sidebar-footer > button { font-size:15px !important; min-height:44px; }
+ .home-menu-close { min-height:44px; font-size:14px; }
+}
+@media(min-width:901px) {
+ .sidebar-wrapper:not(.home-navigation) .home-menu-close { display:none; }
 }
 
 /* Match the navy/teal wordmark used throughout BenchScout. */

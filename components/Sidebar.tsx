@@ -562,7 +562,7 @@ export default function Sidebar() {
 					boxShadow: "none",
 				}}
 			>
-				{isHomeNavigation && <button className="home-menu-close" onClick={() => setIsMobileOpen(false)} aria-label="Close navigation menu">Close <span aria-hidden="true">×</span></button>}
+				{(isHomeNavigation || isMobileOpen) && <button className="home-menu-close" onClick={() => setIsMobileOpen(false)} aria-label="Close navigation menu">Close <span aria-hidden="true">×</span></button>}
 				<div
 					style={{
 						position: "absolute",
@@ -741,7 +741,7 @@ export default function Sidebar() {
 							<Link
 								key={item.name}
 								href={item.path}
-								onClick={isHomeNavigation ? () => setIsMobileOpen(false) : undefined}
+								onClick={() => setIsMobileOpen(false)}
 								style={{ textDecoration: "none" }}
 							>
 								<div

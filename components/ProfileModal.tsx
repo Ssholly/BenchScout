@@ -399,7 +399,7 @@ export default function ProfileModal() {
 		border: "1px solid #e2e8f0",
 		borderRadius: "10px",
 		padding: "14px",
-		fontSize: "14px",
+		fontSize: "16px",
 		outline: "none",
 		color: "#0f172a",
 		fontWeight: 600,
@@ -409,6 +409,7 @@ export default function ProfileModal() {
 
 	return createPortal(
 		<div
+			className="account-backdrop"
 			style={{
 				position: "fixed",
 				top: 0,

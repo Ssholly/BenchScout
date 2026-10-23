@@ -1,5 +1,9 @@
 ## 23 October 2026 — Settings fix accepted on testing; public hotfix awaits approval
 
+## 23 October 2026 — Mobile scale and readable account panels
+
+Replaced 85% initial page scale with native device scale, retained pinch zoom, used 16px account/Settings inputs, enlarged the mobile profile and standardized mobile drawers with Close/link-close actions. Local synthetic UI geometry passed at 320/393/430px and short height; lint, TypeScript, 287 tests and webpack build passed. Native iPhone standalone/focus verification remains pending; hosted status is recorded separately. [Details and evidence](MOBILE-SCALE-2026-10-23.md).
+
 ## 23 October 2026 — Approved Settings hotfix released
 
 Public `bench-scout.vercel.app` now serves exact approved source **3ecf303** / **dpl_3mF9yJiLtE45yXzXyMoshdiHUbCx**. All thirteen public GET access checks passed; the existing signed-in owner session survived refresh and Settings loaded. A single navigation observation was 893 ms, with automation overhead; this is not a latency guarantee. Cleanup registration matches the new artifact at 03:17 Lagos, with actual scheduled invocation still pending. Testing/diagnostics are preserved, git-main remains maintenance, bypass count is zero and the previous safe pilot Cfj remains rollback. No data/schema/file mutation, key change, main merge or new email occurred. Mobile sizing edits are not included. [Execution and evidence](SETTINGS-PERFORMANCE.md#approved-public-execution--23-october-2026).

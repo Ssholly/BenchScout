@@ -20,7 +20,9 @@ Generate independent `ADMIN_SECRET`, `CRON_SECRET`, and `SALARY_OWNER_SECRET` va
 
 External listings work through source adapters in `lib/job-sources.ts`. Apify and Gemini are optional; without Gemini, AI skills suggestions, license extraction and letter generation are unavailable. CV skill suggestions require explicit consent and review before saving; see [CV skills and role keywords](docs/RESUME-KEYWORDS.md). AI-extracted license details are self-reported until independently reviewed. Job source layouts and third-party APIs require ongoing monitoring; a successful build does not validate live feeds.
 
-[Settings loading correction](docs/SETTINGS-PERFORMANCE.md): redundant account-read removal and bounded retry; current deployment status and measured limits.
+[Settings loading correction](docs/SETTINGS-PERFORMANCE.md): released publicly with reduced account reads and bounded retry; measured limits recorded.
+
+[Mobile scale correction](docs/MOBILE-SCALE-2026-10-23.md): native page scale, readable profile and consistent phone navigation; hosted status and device verification limits.
 
 ## Checks
 
