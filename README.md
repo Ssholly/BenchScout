@@ -22,7 +22,7 @@ External listings work through source adapters in `lib/job-sources.ts`. Apify an
 
 [Settings loading correction](docs/SETTINGS-PERFORMANCE.md): released publicly with reduced account reads and bounded retry; measured limits recorded.
 
-[Mobile scale correction](docs/MOBILE-SCALE-2026-10-23.md): native page scale, readable profile and consistent phone navigation; hosted status and device verification limits.
+[Mobile scale correction](docs/MOBILE-SCALE-2026-10-23.md): released publicly with native page scale, readable profile and consistent phone navigation; physical iPhone verification remains.
 
 ## Checks
 

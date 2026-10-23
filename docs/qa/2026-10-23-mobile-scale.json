@@ -125,7 +125,7 @@
     "webpackBuild": true
   },
   "nativeIphoneVerified": false,
-  "productionMobileReleased": false,
+  "productionMobileReleased": true,
   "realDataOrFilesChanged": false,
   "source": "c06a420a20d379a01e67b2d9ccb5e2311ea81963",
   "testingDeployment": "dpl_EFnMuTL4xVfs5Q23YpZsKx7tXD5h",
@@ -142,5 +142,6 @@
     "horizontalOverflow": false,
     "mutationsPerformed": false
   },
-  "proposedRollback": "dpl_3mF9yJiLtE45yXzXyMoshdiHUbCx"
+  "proposedRollback": "dpl_3mF9yJiLtE45yXzXyMoshdiHUbCx",
+  "publicReleaseEvidence": "2026-10-23-mobile-public-release.json"
 }

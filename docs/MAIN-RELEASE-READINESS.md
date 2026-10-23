@@ -1,5 +1,10 @@
 ## 23 October 2026 — Current cutover decision ready for owner review
 
+## 23 October 2026 — Approved mobile release now public
+
+Exact approved source **c06a420** is live as **dpl_AtULjDHZtBiAVqNE46cZ7LKDS4tE** on `bench-scout.vercel.app`. All 13 public GET checks passed; existing-session refresh/Settings and mobile profile geometry passed, including the 14 saved keywords. Production and testing both measure a 280px drawer with 16px navigation at 393px viewport width. The Settings hotfix 3mF9 remains rollback; testing/diagnostics are preserved, git-main remains maintenance, bypass count is zero, and cleanup registration follows the new artifact at 03:17 Lagos. No main merge, migration, account/file mutation or new email. Physical iPhone standalone/focus acceptance and actual scheduled execution remain pending. [Execution and evidence](MOBILE-SCALE-2026-10-23.md#approved-public-execution--23-october-2026).
+
+
 ## 23 October 2026 — Approved Settings hotfix released
 
 Public `bench-scout.vercel.app` now serves exact approved source **3ecf303** / **dpl_3mF9yJiLtE45yXzXyMoshdiHUbCx**. All thirteen public GET access checks passed; the existing signed-in owner session survived refresh and Settings loaded. A single navigation observation was 893 ms, with automation overhead; this is not a latency guarantee. Cleanup registration matches the new artifact at 03:17 Lagos, with actual scheduled invocation still pending. Testing/diagnostics are preserved, git-main remains maintenance, bypass count is zero and the previous safe pilot Cfj remains rollback. No data/schema/file mutation, key change, main merge or new email occurred. Mobile sizing edits are not included. [Execution and evidence](SETTINGS-PERFORMANCE.md#approved-public-execution--23-october-2026).

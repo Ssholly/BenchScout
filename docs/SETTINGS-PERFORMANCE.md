@@ -1,5 +1,7 @@
 # Settings loading investigation and correction — 23 October 2026
 
+Current public artifact superseded by the separately approved [mobile release c06a420](MOBILE-SCALE-2026-10-23.md#approved-public-execution--23-october-2026), which retains this Settings fix. The 3ecf303 execution below is historical and retained as the current mobile rollback.
+
 Status: **released to Production after exact-source owner approval; public access and existing signed-in Settings acceptance passed.** Public source is now `3ecf303` at deployment `dpl_3mF9yJiLtE45yXzXyMoshdiHUbCx`. The previous pilot `dpl_CfjXtpKfxDeThKRc8FfrEXeCHssm` is retained for rollback. No database migration, secret change or account/file mutation is needed for this fix.
 
 ## Observed issue and evidence limits

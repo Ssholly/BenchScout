@@ -1,5 +1,10 @@
 ## 23 October 2026 — Settings fix accepted on testing; public hotfix awaits approval
 
+## 23 October 2026 — Approved mobile release now public
+
+Exact approved source **c06a420** is live as **dpl_AtULjDHZtBiAVqNE46cZ7LKDS4tE** on `bench-scout.vercel.app`. All 13 public GET checks passed; existing-session refresh/Settings and mobile profile geometry passed, including the 14 saved keywords. Production and testing both measure a 280px drawer with 16px navigation at 393px viewport width. The Settings hotfix 3mF9 remains rollback; testing/diagnostics are preserved, git-main remains maintenance, bypass count is zero, and cleanup registration follows the new artifact at 03:17 Lagos. No main merge, migration, account/file mutation or new email. Physical iPhone standalone/focus acceptance and actual scheduled execution remain pending. [Execution and evidence](MOBILE-SCALE-2026-10-23.md#approved-public-execution--23-october-2026).
+
+
 ## 23 October 2026 — Mobile scale and readable account panels
 
 Replaced 85% initial page scale with native device scale, retained pinch zoom, used 16px account/Settings inputs, enlarged the mobile profile and standardized mobile drawers with Close/link-close actions. Local synthetic UI geometry passed at 320/393/430px and short height; lint, TypeScript, 287 tests and webpack build passed. Authenticated testing-hosted drawer/profile geometry also passed on c06a420; public mobile rollout and native iPhone standalone/focus verification remain pending. [Details and evidence](MOBILE-SCALE-2026-10-23.md).
