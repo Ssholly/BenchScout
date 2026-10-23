@@ -1,6 +1,6 @@
 # Settings loading investigation and correction — 23 October 2026
 
-Status: **implemented, locally validated and authenticated testing screen passed; not released to Production.** The current public pilot remains the separately approved source `082c225` until a new exact revision is approved and promoted. No database migration, secret change or account/file mutation is needed for this fix.
+Status: **released to Production after exact-source owner approval; public access and existing signed-in Settings acceptance passed.** Public source is now `3ecf303` at deployment `dpl_3mF9yJiLtE45yXzXyMoshdiHUbCx`. The previous pilot `dpl_CfjXtpKfxDeThKRc8FfrEXeCHssm` is retained for rollback. No database migration, secret change or account/file mutation is needed for this fix.
 
 ## Observed issue and evidence limits
 
@@ -32,3 +32,11 @@ The existing synthetic candidate session restored. Preferences loaded, navigatio
 The public fix needs separate approval because the earlier pilot approval named exact artifact `dpl_CfjXtpKfxDeThKRc8FfrEXeCHssm` / source `082c225`. Proposed scope: build a clean archive of exact validated **3ecf303** as staged Production with `--prod --skip-domain`, explicit public canonical origin at build/runtime, backups enabled/test mode off/backfill apply false, and unchanged daily cleanup schedule. Verify Ready project/source and preserved aliases before promotion; then promote only that artifact and repeat anonymous/forged-session smoke plus private browser settings timing. Retain existing keys/schema/data, testing and diagnostics; keep git-main on maintenance after provider promotion if it moves. On critical failure restore the currently live known-good artifact **Cfj** (or maintenance for safety containment) under the same scoped fallback, preserving kept aliases.
 
 No main merge, secret rotation, real-file backfill, new synthetic Production account or new test email is included. This is a new code revision; do not silently treat the earlier source-specific approval as approval to replace the public pilot. The existing six-hour database history, unbackfilled three-file interval and pending actual scheduled invocation remain separate operational limits.
+
+## Approved public execution — 23 October 2026
+
+The owner approved the exact proposed source. A clean archive of `3ecf30313f2dbfb069040abc0961cdd9a5de7767` built Ready as **dpl_3mF9yJiLtE45yXzXyMoshdiHUbCx** (`bench-scout-7blgkq7dc-sholly.vercel.app`) with the public canonical origin, backups on, test mode off and real-file backfill apply disabled. The approved promotion completed. All **13** anonymous/forged-session GET checks passed; the existing Production owner session restored after refresh, and the preferences form loaded without any save or document action. One same-account Applied → Settings navigation measured **893 ms**, versus the earlier 3,167 ms observation. Both include automation overhead and are individual observations; no guaranteed latency or isolated API benchmark is claimed.
+
+Provider readback confirms the public alias and current Production target identify the new artifact; cleanup registration follows that artifact at `17 2 * * *` (03:17 Lagos). Testing remains `dpl_7grwerRWY63CrUsVT5zAYUBa4nxx`, diagnostics `dpl_F5uCLS312DAkTGAGdUZbWqaUYYrg`, hotfix `dpl_EcY1anTy6tVPnmAoagf5WCRk2Bed`, and git-main was restored to maintenance `dpl_3JSXjPv2JjgTBNE3gwXVSiqJFTaV`. Deployment protection remains `all_except_custom_domains`; bypass count is zero. Actual scheduled execution is still unobserved. No main merge, secret rotation, schema/data/file operation or new email occurred. The pending mobile viewport/profile/navigation changes are explicitly excluded from this exact-source release.
+
+[Public release evidence](qa/2026-10-23-settings-public-release.json). Earlier unreleased/proposal paragraphs above describe the pre-approval checkpoints and are retained as history.

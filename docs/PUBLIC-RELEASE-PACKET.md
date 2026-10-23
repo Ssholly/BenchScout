@@ -1,6 +1,11 @@
 # BenchScout public release decision packet — current review 23 October 2026
 
-**Current status: controlled pilot reopened with explicit owner approval.** Public `bench-scout.vercel.app` serves reviewed deployment `dpl_CfjXtpKfxDeThKRc8FfrEXeCHssm` / source `082c225`. All thirteen public GET checks passed, cleanup cron registration now matches this artifact, and git-main is restored to provider-protected maintenance. Testing/diagnostics are preserved and bypass count is zero. Public browser sign-in persistence/read-only profile navigation is now accepted; actual scheduled execution remains pending. Main merge and real-file backfill remain unapproved. [Executed cutover and remaining work](CONTROLLED-PILOT-2026-10-23.md).
+## 23 October 2026 — Approved Settings hotfix released
+
+Public `bench-scout.vercel.app` now serves exact approved source **3ecf303** / **dpl_3mF9yJiLtE45yXzXyMoshdiHUbCx**. All thirteen public GET access checks passed; the existing signed-in owner session survived refresh and Settings loaded. A single navigation observation was 893 ms, with automation overhead; this is not a latency guarantee. Cleanup registration matches the new artifact at 03:17 Lagos, with actual scheduled invocation still pending. Testing/diagnostics are preserved, git-main remains maintenance, bypass count is zero and the previous safe pilot Cfj remains rollback. No data/schema/file mutation, key change, main merge or new email occurred. Mobile sizing edits are not included. [Execution and evidence](SETTINGS-PERFORMANCE.md#approved-public-execution--23-october-2026).
+
+
+**Current status: controlled pilot open with approved Settings hotfix.** Public `bench-scout.vercel.app` serves deployment `dpl_3mF9yJiLtE45yXzXyMoshdiHUbCx` / source `3ecf303`. The original cutover below is retained as history; the current hotfix evidence above supersedes its artifact identity. All thirteen public GET checks passed, cleanup cron registration now matches this artifact, and git-main is restored to provider-protected maintenance. Testing/diagnostics are preserved and bypass count is zero. Public browser sign-in persistence/read-only profile navigation is now accepted; actual scheduled execution remains pending. Main merge and real-file backfill remain unapproved. [Executed cutover and remaining work](CONTROLLED-PILOT-2026-10-23.md).
 
 ## 23 October pre-cutover refresh — historical review
 

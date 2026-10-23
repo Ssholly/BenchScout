@@ -1,6 +1,6 @@
 {
   "date": "2026-10-23",
-  "status": "implemented; 287 tests/checks/build passed; authenticated testing screen passed; Production unchanged",
+  "status": "released after exact-source approval; public GET and signed-in Settings acceptance passed",
   "observedPublicRevision": "082c225a86a1ec582ceb2e27faf276f82b8a7994",
   "browserObservation": {
     "navigationToSettingsMs": 3167,
@@ -23,11 +23,11 @@
     "newRegressionTests": 6,
     "webpackBuild": true
   },
-  "productionChanged": false,
+  "productionChanged": true,
   "databaseMigration": false,
   "businessDataOrFilesChanged": false,
   "limitations": [
-    "No deployed before/after latency claim yet.",
+    "Single same-account public observations only; no guaranteed latency or isolated API benchmark.",
     "No specific infrastructure cold-start cause established.",
     "Request metadata available through inspected CLI fields did not expose latency.",
     "Public and testing observations use different accounts/environments; no speedup ratio or guaranteed cold-load latency claimed."
@@ -59,5 +59,6 @@
     "bench-scout.vercel.app": "dpl_CfjXtpKfxDeThKRc8FfrEXeCHssm",
     "bench-scout-sholly.vercel.app": "dpl_F5uCLS312DAkTGAGdUZbWqaUYYrg",
     "bench-scout-git-main-sholly.vercel.app": "dpl_3JSXjPv2JjgTBNE3gwXVSiqJFTaV"
-  }
+  },
+  "publicReleaseEvidence": "2026-10-23-settings-public-release.json"
 }

@@ -1,5 +1,10 @@
 # Controlled pilot reopened — 23 October 2026
 
+## 23 October 2026 — Approved Settings hotfix released
+
+Public `bench-scout.vercel.app` now serves exact approved source **3ecf303** / **dpl_3mF9yJiLtE45yXzXyMoshdiHUbCx**. All thirteen public GET access checks passed; the existing signed-in owner session survived refresh and Settings loaded. A single navigation observation was 893 ms, with automation overhead; this is not a latency guarantee. Cleanup registration matches the new artifact at 03:17 Lagos, with actual scheduled invocation still pending. Testing/diagnostics are preserved, git-main remains maintenance, bypass count is zero and the previous safe pilot Cfj remains rollback. No data/schema/file mutation, key change, main merge or new email occurred. Mobile sizing edits are not included. [Execution and evidence](SETTINGS-PERFORMANCE.md#approved-public-execution--23-october-2026).
+
+
 **BenchScout is available at https://bench-scout.vercel.app.** The owner explicitly approved the controlled reopening and recorded recovery limits. Existing Production build `dpl_CfjXtpKfxDeThKRc8FfrEXeCHssm`, source `082c225a86a1ec582ceb2e27faf276f82b8a7994`, was promoted without a rebuild. No main merge, testing-data import, real-file backfill or new test email was performed.
 
 ## Execution and acceptance

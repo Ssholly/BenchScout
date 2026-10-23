@@ -1,5 +1,10 @@
 # Deploying the security upgrade
 
+## 23 October 2026 — Approved Settings hotfix released
+
+Public `bench-scout.vercel.app` now serves exact approved source **3ecf303** / **dpl_3mF9yJiLtE45yXzXyMoshdiHUbCx**. All thirteen public GET access checks passed; the existing signed-in owner session survived refresh and Settings loaded. A single navigation observation was 893 ms, with automation overhead; this is not a latency guarantee. Cleanup registration matches the new artifact at 03:17 Lagos, with actual scheduled invocation still pending. Testing/diagnostics are preserved, git-main remains maintenance, bypass count is zero and the previous safe pilot Cfj remains rollback. No data/schema/file mutation, key change, main merge or new email occurred. Mobile sizing edits are not included. [Execution and evidence](SETTINGS-PERFORMANCE.md#approved-public-execution--23-october-2026).
+
+
 ## 23 October 2026 — Public browser session persistence accepted
 
 After the owner's private Production sign-in, authenticated Applied and Profile & documents pages survived full refreshes and navigation without another login prompt. Profile preferences finished loading; no save, manual document action, logout or new email request was made. Password/cookie values and account identity are excluded from committed evidence. This accepts public browser session persistence/read-only profile access; new email-link delivery, actual scheduled invocation, older-file backup copying and main integration retain separate scope. [Acceptance](qa/2026-10-23-public-session-accepted.json).

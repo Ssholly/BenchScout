@@ -1,5 +1,10 @@
 ## 23 October 2026 — Settings fix accepted on testing; public hotfix awaits approval
 
+## 23 October 2026 — Approved Settings hotfix released
+
+Public `bench-scout.vercel.app` now serves exact approved source **3ecf303** / **dpl_3mF9yJiLtE45yXzXyMoshdiHUbCx**. All thirteen public GET access checks passed; the existing signed-in owner session survived refresh and Settings loaded. A single navigation observation was 893 ms, with automation overhead; this is not a latency guarantee. Cleanup registration matches the new artifact at 03:17 Lagos, with actual scheduled invocation still pending. Testing/diagnostics are preserved, git-main remains maintenance, bypass count is zero and the previous safe pilot Cfj remains rollback. No data/schema/file mutation, key change, main merge or new email occurred. Mobile sizing edits are not included. [Execution and evidence](SETTINGS-PERFORMANCE.md#approved-public-execution--23-october-2026).
+
+
 Exact validated source `3ecf303` is Ready Preview `dpl_7grwerRWY63CrUsVT5zAYUBa4nxx` and assigned to the existing testing alias. The retained synthetic candidate session restored; settings navigation (1,076 ms) and full refresh (4,229 ms) reached the loaded form without any save/file mutation. These are single automation observations in a different environment/account from the live baseline, not a controlled speedup benchmark. Final alias metadata confirms public remains approved pilot Cfj, git-main remains maintenance and diagnostics/hotfix are preserved. Prepared exact-source staged Production/promotion/fallback scope for separate approval. [Evidence](qa/2026-10-23-settings-performance.json); [investigation and release scope](SETTINGS-PERFORMANCE.md).
 
 ## 23 October 2026 — Settings loading correction implemented; Production unchanged
