@@ -1,6 +1,6 @@
 {
   "date": "2026-10-23",
-  "status": "implemented; local checks and webpack build passed; testing deployment pending",
+  "status": "implemented; 287 tests/checks/build passed; authenticated testing screen passed; Production unchanged",
   "observedPublicRevision": "082c225a86a1ec582ceb2e27faf276f82b8a7994",
   "browserObservation": {
     "navigationToSettingsMs": 3167,
@@ -29,6 +29,35 @@
   "limitations": [
     "No deployed before/after latency claim yet.",
     "No specific infrastructure cold-start cause established.",
-    "Request metadata available through inspected CLI fields did not expose latency."
-  ]
+    "Request metadata available through inspected CLI fields did not expose latency.",
+    "Public and testing observations use different accounts/environments; no speedup ratio or guaranteed cold-load latency claimed."
+  ],
+  "source": "3ecf30313f2dbfb069040abc0961cdd9a5de7767",
+  "testingDeployment": {
+    "id": "dpl_7grwerRWY63CrUsVT5zAYUBa4nxx",
+    "projectId": "prj_MNrDsjvBMVCY5mmPjD3tSyw7OIBs",
+    "readyState": "READY",
+    "target": null,
+    "url": "bench-scout-l8xb1vd4q-sholly.vercel.app",
+    "sha": "3ecf30313f2dbfb069040abc0961cdd9a5de7767",
+    "branch": "testing",
+    "aliases": []
+  },
+  "testingAlias": "https://bench-scout-git-testing-sholly.vercel.app",
+  "testingBrowser": {
+    "existingSyntheticSessionRestored": true,
+    "profilePreferencesLoaded": true,
+    "navigationToSettingsMs": 1076,
+    "fullRefreshToSettingsMs": 4229,
+    "samplesPerCase": 1,
+    "includesAutomationOverhead": true,
+    "profileOrDocumentMutationPerformed": false
+  },
+  "aliases": {
+    "bench-scout-git-hotfix-legacy-containment-sholly.vercel.app": "dpl_EcY1anTy6tVPnmAoagf5WCRk2Bed",
+    "bench-scout-git-testing-sholly.vercel.app": "dpl_7grwerRWY63CrUsVT5zAYUBa4nxx",
+    "bench-scout.vercel.app": "dpl_CfjXtpKfxDeThKRc8FfrEXeCHssm",
+    "bench-scout-sholly.vercel.app": "dpl_F5uCLS312DAkTGAGdUZbWqaUYYrg",
+    "bench-scout-git-main-sholly.vercel.app": "dpl_3JSXjPv2JjgTBNE3gwXVSiqJFTaV"
+  }
 }

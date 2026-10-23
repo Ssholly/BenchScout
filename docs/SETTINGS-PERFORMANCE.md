@@ -1,6 +1,6 @@
 # Settings loading investigation and correction — 23 October 2026
 
-Status: **implemented and locally checked; not released to Production.** The current public pilot remains the separately approved source `082c225` until a new exact revision is approved and promoted. No database migration, secret change or account/file mutation is needed for this fix.
+Status: **implemented, locally validated and authenticated testing screen passed; not released to Production.** The current public pilot remains the separately approved source `082c225` until a new exact revision is approved and promoted. No database migration, secret change or account/file mutation is needed for this fix.
 
 ## Observed issue and evidence limits
 
@@ -22,3 +22,13 @@ There is no promise that every settings load will be instantaneous. Removing one
 Five profile-read regressions cover query count/projection, proxy-only document metadata, caller identity denial, fresh verification/data checks, anonymous/expired/employer denial and the slim ordinary session response. An additional shared-request regression covers timeout fan-out and a fresh retry; existing tests continue to require no completed-response cache and isolation across identities/invalidation.
 
 Lint, strict TypeScript and **287 tests** passed. The webpack Production build also passed. Testing-hosted acceptance is recorded separately when complete. No new Production build/promotion, database migration, real-data mutation or secret retrieval is authorised by these local checks. Preserve the existing public artifact, scheduler and rollback until the exact tested fix is approved for release.
+
+## Testing acceptance and proposed public hotfix
+
+Exact source `3ecf30313f2dbfb069040abc0961cdd9a5de7767` built successfully as Preview `dpl_7grwerRWY63CrUsVT5zAYUBa4nxx` / `bench-scout-l8xb1vd4q-sholly.vercel.app`. The established testing alias was still pinned to an older artifact, so it was explicitly assigned to this verified Ready testing-branch deployment. Final readback confirms public remains `dpl_CfjXtpKfxDeThKRc8FfrEXeCHssm`, git-main remains maintenance, and diagnostics/hotfix mappings are unchanged.
+
+The existing synthetic candidate session restored. Preferences loaded, navigation from Applied to Settings took **1,076 ms**, and full refresh to the loaded form took **4,229 ms**. Each is a single automation observation including tool overhead. These are different accounts/environments from the 3,167 ms public observation, so no before/after speedup ratio or guaranteed cold-load time is claimed. No settings save, account creation, document operation, new email or database migration was performed. [Scrubbed results](qa/2026-10-23-settings-performance.json).
+
+The public fix needs separate approval because the earlier pilot approval named exact artifact `dpl_CfjXtpKfxDeThKRc8FfrEXeCHssm` / source `082c225`. Proposed scope: build a clean archive of exact validated **3ecf303** as staged Production with `--prod --skip-domain`, explicit public canonical origin at build/runtime, backups enabled/test mode off/backfill apply false, and unchanged daily cleanup schedule. Verify Ready project/source and preserved aliases before promotion; then promote only that artifact and repeat anonymous/forged-session smoke plus private browser settings timing. Retain existing keys/schema/data, testing and diagnostics; keep git-main on maintenance after provider promotion if it moves. On critical failure restore the currently live known-good artifact **Cfj** (or maintenance for safety containment) under the same scoped fallback, preserving kept aliases.
+
+No main merge, secret rotation, real-file backfill, new synthetic Production account or new test email is included. This is a new code revision; do not silently treat the earlier source-specific approval as approval to replace the public pilot. The existing six-hour database history, unbackfilled three-file interval and pending actual scheduled invocation remain separate operational limits.
