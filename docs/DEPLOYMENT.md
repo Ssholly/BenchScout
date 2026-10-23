@@ -1,5 +1,9 @@
 # Deploying the security upgrade
 
+## 23 October 2026 — Mobile layout accepted on testing
+
+Exact mobile source c06a420 built Ready as `dpl_EFnMuTL4xVfs5Q23YpZsKx7tXD5h` and was assigned to the established testing alias. Existing synthetic session, native viewport, 280px drawer and wider profile geometry passed. Public still serves the separately approved Settings source 3ecf303; the mobile revision's public build/promotion scope is prepared for separate approval. [Scope, geometry and limitations](MOBILE-SCALE-2026-10-23.md).
+
 ## 23 October 2026 — Approved Settings hotfix released
 
 Public `bench-scout.vercel.app` now serves exact approved source **3ecf303** / **dpl_3mF9yJiLtE45yXzXyMoshdiHUbCx**. All thirteen public GET access checks passed; the existing signed-in owner session survived refresh and Settings loaded. A single navigation observation was 893 ms, with automation overhead; this is not a latency guarantee. Cleanup registration matches the new artifact at 03:17 Lagos, with actual scheduled invocation still pending. Testing/diagnostics are preserved, git-main remains maintenance, bypass count is zero and the previous safe pilot Cfj remains rollback. No data/schema/file mutation, key change, main merge or new email occurred. Mobile sizing edits are not included. [Execution and evidence](SETTINGS-PERFORMANCE.md#approved-public-execution--23-october-2026).

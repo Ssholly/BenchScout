@@ -1,6 +1,6 @@
 # Mobile login, profile and navigation scale — 23 October 2026
 
-Status: implemented and locally validated; hosted deployment recorded below when accepted. The approved Settings hotfix is a separate exact-source release, already public as `3ecf303`.
+Status: implemented, local checks/build passed and authenticated testing-hosted geometry accepted; mobile Production release pending separate approval. The approved Settings hotfix is a separate exact-source release, already public as `3ecf303`.
 
 ## Findings
 
@@ -21,3 +21,9 @@ Lint, strict TypeScript, all 287 tests and webpack build passed. An optimized lo
 [Scrubbed geometry](qa/2026-10-23-mobile-scale.json). Chromium viewport testing does not reproduce Safari keyboard focus, installed-mode safe-area values or iOS auto-zoom. After hosted release, check those on the actual iPhone, reopening the home-screen app to load the new document. Existing installations may retain an open document; a fresh launch is needed to evaluate the current viewport. No service worker is registered by this app.
 
 Technical context: [Apple viewport guidance](https://developer.apple.com/library/archive/documentation/AppleApplications/Reference/SafariWebContent/UsingtheViewport/UsingtheViewport.html), [Apple responsive-design testing limits](https://developer.apple.com/documentation/safari-developer-tools/responsive-design-mode).
+
+## Hosted testing acceptance and public release scope
+
+Source **c06a420a20d379a01e67b2d9ccb5e2311ea81963** is Ready as Preview **dpl_EFnMuTL4xVfs5Q23YpZsKx7tXD5h**, immutable `bench-scout-pt6gq1303-sholly.vercel.app`. The established testing alias was explicitly assigned to it after the Git build was Ready. The existing synthetic session restored and Settings loaded. At 393×852 the hosted drawer measured 280px with 16px navigation text and viewport initial-scale 1; the hosted profile measured 369px wide, 619px high, with 16px name and no horizontal overflow. No settings save, upload, document access or account mutation occurred. Local fixtures additionally cover the longer 14-keyword profile; the hosted synthetic profile has no keywords, so it is not evidence for hosted keyword extraction/persistence. Browser viewport overrides were reset and isolated local preview processes stopped.
+
+The user's public approval named the separate Settings revision **3ecf303**, which has already shipped. The mobile revision **c06a420** is kept out of that approval/artifact. Concrete proposed next step: build this exact validated mobile source as staged Production with public canonical origin, backups enabled, test mode off, backfill apply false and the unchanged 03:17 Lagos cleanup schedule. Verify exact source/project/Ready state before promotion, retain current Settings deployment **dpl_3mF9yJiLtE45yXzXyMoshdiHUbCx** as rollback, preserve testing/diagnostics, and restore git-main to maintenance after provider promotion. Run public GET access checks and existing-session read-only profile/settings checks; restore rollback if critical checks fail. No main merge, data migration, credential change, account creation, document operation or new email is included. Actual native iPhone focus/installed-window verification remains an operator acceptance step after release.

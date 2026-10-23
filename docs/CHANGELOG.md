@@ -2,7 +2,7 @@
 
 ## 23 October 2026 — Mobile scale and readable account panels
 
-Replaced 85% initial page scale with native device scale, retained pinch zoom, used 16px account/Settings inputs, enlarged the mobile profile and standardized mobile drawers with Close/link-close actions. Local synthetic UI geometry passed at 320/393/430px and short height; lint, TypeScript, 287 tests and webpack build passed. Native iPhone standalone/focus verification remains pending; hosted status is recorded separately. [Details and evidence](MOBILE-SCALE-2026-10-23.md).
+Replaced 85% initial page scale with native device scale, retained pinch zoom, used 16px account/Settings inputs, enlarged the mobile profile and standardized mobile drawers with Close/link-close actions. Local synthetic UI geometry passed at 320/393/430px and short height; lint, TypeScript, 287 tests and webpack build passed. Authenticated testing-hosted drawer/profile geometry also passed on c06a420; public mobile rollout and native iPhone standalone/focus verification remain pending. [Details and evidence](MOBILE-SCALE-2026-10-23.md).
 
 ## 23 October 2026 — Approved Settings hotfix released
 
