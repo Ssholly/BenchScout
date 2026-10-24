@@ -1,0 +1,47 @@
+{
+  "date": "2026-10-24",
+  "status": "protected temporary copy window Ready; awaiting privately entered operator execution",
+  "publicDeployment": "dpl_EA6N74nt32g56QbkiJQWZPwMvrAt",
+  "source": "6bd57210c44f6d681020ef14f68281ea73b82a38",
+  "preview": {
+    "dryRun": true,
+    "eligibleReferences": 3,
+    "uniqueFiles": 3,
+    "blockedReferences": 0,
+    "kinds": {
+      "resume": 1,
+      "license": 1,
+      "provisional": 0,
+      "degree": 0,
+      "result": 0,
+      "placement": 0,
+      "certificate": 0,
+      "avatar": 1
+    },
+    "limit": 10,
+    "inventoryReady": true,
+    "applyEnabled": false,
+    "canApply": false,
+    "expiresAt": "2026-10-24T14:36:38.066Z",
+    "fileContentsRead": false,
+    "businessRecordsChanged": false,
+    "applicationGrantsChanged": false,
+    "evidence": "operator-reported exact result"
+  },
+  "realFilesCopied": 0,
+  "copyVerificationPending": true,
+  "temporaryDeployment": "dpl_H7oT6LPw6ndc2DhESJJU78ZTAB6v",
+  "temporaryAlias": "bench-scout-sholly.vercel.app",
+  "nonDiagnosticAliasesUnchanged": true,
+  "publicScheduleUnchanged": true,
+  "noNewBypass": true,
+  "scheduledRequestHistoryAttempt": {
+    "success": false,
+    "reason": "provider requires paid entitlement for CDN request records older than 12 hours",
+    "upgradePerformed": false
+  },
+  "scheduledRuntimeHistoryAttempt": {
+    "success": false,
+    "reason": "requested time range outside Hobby runtime-log retention"
+  }
+}

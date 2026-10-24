@@ -1,5 +1,7 @@
 # Production older-file backfill — 21 October 2026
 
+Newer operational checkpoint: [24 October protected backup window](PRODUCTION-BACKFILL-2026-10-24.md). The July-live dependency described below is historical; current execution status is in the newer record.
+
 Status: guarded preview/apply implementation validated and deployed to the protected Production diagnostic stage; **hosted metadata preview passed; no real files copied**. The existing public app remains on July main. Earlier accepted runtime checks establish the connection and QA storage path, not protection of older files.
 
 Validation passed: lint, TypeScript, **251 tests** (12 focused Production-backfill tests), webpack Production build and diff checks. Built preview controls fit 320px and 390px viewports without horizontal overflow; the long fingerprint field was checked at 390px. No administrator credential or operator request was submitted during local layout verification. Apply controls require a valid enabled-gate plan and were not exercised against real storage. Hosted protected preview has now passed with the exact operator-reported result recorded below.
