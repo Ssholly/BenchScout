@@ -1,5 +1,9 @@
 # Deploying the security upgrade
 
+## 24 October 2026 — 90% overlay preview accepted on testing
+
+Source **e3bded2** is Ready as Preview **dpl_Hod97ZJwduMjNLF9emNvvshMgmW9** and assigned only to testing. Local 14-keyword/configured/unconfigured geometry and hosted wider-profile/centered-hub checks passed; lint, TypeScript and optimized build passed. Public remains **2tcm/e62934b**. No Production build or promotion; physical iPhone review is pending. [Changes and evidence](MOBILE-90-PREVIEW-2026-10-24.md).
+
 ## 24 October 2026 — 87% mobile polish released publicly
 
 Exact source **e62934b** is live as **dpl_2tcm2t75xXCL3Hcg5udHCRq7Lrco** after testing acceptance and the owner’s release instruction. Retains the compact 87% profile, raises account input text to 19px, aligns Home actions side by side and collapses employer preview details. Lint/TypeScript/287 tests, build and hosted geometry passed; all 13 public access checks and existing-session Settings checks passed. Testing/diagnostics are preserved, git-main remains maintenance, cleanup registration follows the new artifact, and AtUL remains rollback. No main merge, migration, document mutation or new email. Physical iPhone focus-zoom confirmation remains pending. [Execution and limits](MOBILE-POLISH-2026-10-24.md).

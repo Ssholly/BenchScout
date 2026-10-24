@@ -4,7 +4,7 @@
   "refreshedMain": "a56fba3641004184e8bd5ddee87a51eb6b5a4fec",
   "aliases": {
     "bench-scout-git-hotfix-legacy-containment-sholly.vercel.app": "dpl_EcY1anTy6tVPnmAoagf5WCRk2Bed",
-    "bench-scout-git-testing-sholly.vercel.app": "dpl_Gc6GEp8TgeNbH3CThJwJq6g4R8oZ",
+    "bench-scout-git-testing-sholly.vercel.app": "dpl_Hod97ZJwduMjNLF9emNvvshMgmW9",
     "bench-scout.vercel.app": "dpl_2tcm2t75xXCL3Hcg5udHCRq7Lrco",
     "bench-scout-sholly.vercel.app": "dpl_F5uCLS312DAkTGAGdUZbWqaUYYrg",
     "bench-scout-git-main-sholly.vercel.app": "dpl_3JSXjPv2JjgTBNE3gwXVSiqJFTaV"
@@ -48,5 +48,5 @@
   "currentReleaseSource": "e62934b5d341f1e34a193371c9c9cb4dee107a20",
   "currentPublicDeploymentId": "dpl_2tcm2t75xXCL3Hcg5udHCRq7Lrco",
   "currentRollbackDeploymentId": "dpl_AtULjDHZtBiAVqNE46cZ7LKDS4tE",
-  "testingPreviewEvidence": "2026-10-24-mobile-polish-public.json"
+  "testingPreviewEvidence": "2026-10-24-mobile-90-testing.json"
 }

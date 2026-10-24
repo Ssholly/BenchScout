@@ -2,7 +2,7 @@
 
 ## 24 October 2026 — 90% scale and centered overlays testing preview
 
-Set starting scale to 0.90, widened the phone profile and increased its text slightly while retaining the 80dvh height cap. Centered the mobile Compliance Hub by removing the flex spacer from its layout, preserving background dismissal and the desktop side panel. Existing 19px account inputs, Home actions and preview toggle remain. Testing-only scope; checks and hosted evidence are recorded separately. [Details](MOBILE-90-PREVIEW-2026-10-24.md).
+Set starting scale to 0.90, widened the phone profile and increased its text slightly while retaining the 80dvh height cap. Centered the mobile Compliance Hub by removing the flex spacer from its layout, preserving background dismissal and the desktop side panel. Existing 19px account inputs, Home actions and preview toggle remain. Lint, TypeScript and optimized build passed; local and hosted geometry accepted. Testing-only scope; Production remains unchanged pending phone review. [Details](MOBILE-90-PREVIEW-2026-10-24.md).
 
 ## 24 October 2026 — 87% mobile polish released publicly
 
