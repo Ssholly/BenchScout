@@ -1,5 +1,9 @@
 ## 23 October 2026 — Current cutover decision ready for owner review
 
+## 24 October 2026 — Cleanup run history released to Production
+
+Approved migration `20261024000000_document_cleanup_runs` is applied to neondb with an empty table and matching checksum. Exact tested source **4eb3e2c** is public as **dpl_9CMj8YniwM7cWcNm8WfEzmpGowsf**; EA6 remains rollback. All 13 public GET checks passed; other aliases, existing keys, backup flags and daily cleanup definition are preserved, with no bypasses. Valid-key public history read is pending; no worker was manually invoked and actual automatic execution remains unverified. Prior artifact statements below are dated history. [Execution and next observation](CLEANUP-RUN-HISTORY-2026-10-24.md).
+
 ## 24 October 2026 — Production older-file backups verified
 
 All three current private files (CV, practising licence, profile image) were encrypted, read back, decrypted and byte-verified: verified 3, failed/stale/skipped 0, inventory unchanged. Source files, records and sharing were retained. The temporary enabled deployment was removed and its provider lookup returns 404; all original aliases/public cleanup registration are restored. Actual scheduled execution and a timed full-service restoration drill remain open. This closes the earlier three-unbackfilled-files limit; historical audit entries below retain their original scope. [Execution and evidence](PRODUCTION-BACKFILL-2026-10-24.md).

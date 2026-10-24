@@ -1,5 +1,9 @@
 # Deploying the security upgrade
 
+## 24 October 2026 — Cleanup run history released to Production
+
+Approved migration `20261024000000_document_cleanup_runs` is applied to neondb with an empty table and matching checksum. Exact tested source **4eb3e2c** is public as **dpl_9CMj8YniwM7cWcNm8WfEzmpGowsf**; EA6 remains rollback. All 13 public GET checks passed; other aliases, existing keys, backup flags and daily cleanup definition are preserved, with no bypasses. Valid-key public history read is pending; no worker was manually invoked and actual automatic execution remains unverified. Prior artifact statements below are dated history. [Execution and next observation](CLEANUP-RUN-HISTORY-2026-10-24.md).
+
 ## 24 October 2026 — Account loading labels released
 
 Source **6bd5721** is public as **dpl_EA6N74nt32g56QbkiJQWZPwMvrAt** and on testing as **dpl_4qrtMaabrvMSWoVSjPNHAdVsXKRB**. Verification resend no longer shows “Sending…” during login; account actions have separate status labels. The 90% layout remains. Lint, TypeScript, 287 tests, build and isolated delayed-failure UI checks passed; all 13 public GET checks and existing-session Settings refresh passed. Previous 8242 remains rollback. Diagnostics/hotfix are preserved, git-main remains maintenance, cleanup registration follows this artifact at 03:17 Lagos and bypass count is zero. No data/file/key change, main merge or new email. This supersedes earlier current-artifact statements below; dated execution records remain historical. [Details and evidence](AUTH-ACTION-STATUS-2026-10-24.md).

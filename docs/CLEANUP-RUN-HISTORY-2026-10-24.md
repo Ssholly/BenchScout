@@ -1,6 +1,6 @@
 # Cleanup run history — 24 October 2026
 
-Status: implemented and locally validated; additive migration applied to **BenchScout Testing only**. Hosted testing deployment/UI, invalid-key denial and valid-key history read passed. Production is unchanged. The earlier three-file backup is accepted separately.
+Status: **approved migration and application released to Production**. Testing migration and hosted read-only acceptance passed. All thirteen public access checks passed; valid-key Production history read is pending. Actual scheduled execution remains unverified. The earlier three-file backup is accepted separately.
 
 ## Why execution remains unverified
 
@@ -41,3 +41,21 @@ Prisma's generated before/after schema delta exactly matches the reviewed migrat
 The operator entered the existing testing administrator key and requested only **Check recent cleanup runs**. Independently observed the same reported success response: `runs: []` with the provenance/unfinished-outcome notice. The empty list is expected because no processing invocation was made after migration. This accepts the deployed administrator route, Prisma table read and result display; it does not establish scheduled or manual cleanup execution. The key field cleared and the deletion confirmation remained unchecked. Production migration/release remain pending approval.
 
 The proposed Production action is exactly the reviewed additive migration plus release of application source **4eb3e2c8486cb8532aa400106d1bc306c9c8cb5a**, retaining EA6 for rollback. It does not authorize a manual deletion run to manufacture scheduler evidence. Existing daily cleanup permission/schedule is unchanged; only its future run records are added. After rollout, accept actual scheduling only after correlating the next overnight invocation with provider evidence. Main merge, paid upgrades and the full-restoration drill remain separate.
+
+## Approved Production migration
+
+The owner approved the operational migration and release of exact source 4eb3e2c. Selected Neon project **BenchScout** / branch **production** / database **neondb**, distinct from BenchScout Testing. Executed the reviewed guarded transaction: one new `DocumentCleanupRun` table/index and one completed migration checksum record. Independent post-commit readback reports `neondb`, audit_rows=0 and checksum_matches=true. No existing business table or file was part of the migration. A clean archive of the exact approved source is being built in the original Vercel project with the public origin, existing keys/backup flags, apply gate off and normal cleanup schedule. Public promotion remains pending readiness checks.
+
+## Approved Production release
+
+Exact approved source **4eb3e2c8486cb8532aa400106d1bc306c9c8cb5a** was built from a clean archive without local environment files as **dpl_9CMj8YniwM7cWcNm8WfEzmpGowsf** (`bench-scout-4ixd5y3y3-sholly.vercel.app`). Original project, exact source, Production target, Ready state and absence of aliases were checked before promotion. Public `bench-scout.vercel.app` now serves this artifact; previous **dpl_EA6N74nt32g56QbkiJQWZPwMvrAt** remains rollback. The new operator screen loaded publicly. All **13 GET-only public checks passed**, including anonymous/forged-session denial and retired endpoints.
+
+Final provider readback confirms testing D6, diagnostics F5, retained hotfix EcY and git-main 3JS maintenance are preserved. The public cleanup schedule follows the new artifact with unchanged `17 2 * * *` definition. Existing Production credentials, public canonical origin and backup flags remain (enabled, test mode off, backfill apply off). Protection remains `all_except_custom_domains`, bypass count zero. No cleanup processing, real-file operation, main merge, new email or paid upgrade was performed.
+
+The next scheduling window is **25 October 2026, 03:00–03:59 Africa/Lagos** under Hobby timing precision. Inspect provider logs promptly within their retention window and compare the new cron-endpoint record/deployment/timestamp and completion counts. A missing or unfinished row does not establish success, and a manual request or agent hint alone is not independent scheduler proof. Production read-only history is prepared for private operator-key entry; its result is pending. Full-service restoration timing remains a separate drill.
+
+## Recent provider evidence path confirmed
+
+After release, a read-only CLI request-log lookup limited to the last hour succeeded on the existing plan. Its single cleanup-path request was the deliberate unauthenticated smoke dry run: HTTP 401 at 15:47:28 UTC on 9CM, not an execution pass. The earlier rejected 24-hour lookups do not mean all request metadata is unavailable; the provider rejected request records older than 12 hours. Query promptly after the next window, using a bounded range and path/deployment filters. No paid upgrade is needed for this observed recent lookup. Raw provider records remain outside Git; committed evidence contains no request IDs, IP/location metadata or raw headers.
+
+Next observation range: 25 October 02:00–03:05 UTC (03:00–04:05 Lagos), after the scheduled hour completes. Correlate a successful provider GET with the same deployment and an authenticated cron-endpoint row, matching timestamp, agent hint and terminal result. Check queue counts separately if unresolved work is reported. Do not confuse an HTTP 401, a dry-run request or a manually triggered row with an automatic scheduled pass.

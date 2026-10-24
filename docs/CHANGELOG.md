@@ -1,5 +1,9 @@
 ## 24 October 2026 — Hosted cleanup-history read accepted
 
+## 24 October 2026 — Cleanup run history released to Production
+
+Approved migration `20261024000000_document_cleanup_runs` is applied to neondb with an empty table and matching checksum. Exact tested source **4eb3e2c** is public as **dpl_9CMj8YniwM7cWcNm8WfEzmpGowsf**; EA6 remains rollback. All 13 public GET checks passed; other aliases, existing keys, backup flags and daily cleanup definition are preserved, with no bypasses. Valid-key public history read is pending; no worker was manually invoked and actual automatic execution remains unverified. Prior artifact statements below are dated history. [Execution and next observation](CLEANUP-RUN-HISTORY-2026-10-24.md).
+
 Valid-key testing history returned the expected empty list, independently observed in the browser. No cleanup was invoked. This completes hosted read-only acceptance for source 4eb3e2c; Production migration/release and actual scheduled execution remain pending. [Evidence and rollout](CLEANUP-RUN-HISTORY-2026-10-24.md).
 
 ## 24 October 2026 — Durable cleanup run evidence prepared

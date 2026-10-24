@@ -13,11 +13,13 @@
     "testingApplied": true,
     "testingRows": 0,
     "testingChecksumMatches": true,
-    "productionApplied": false,
-    "matchesPrismaGeneratedDelta": true
+    "productionApplied": true,
+    "matchesPrismaGeneratedDelta": true,
+    "productionRowsAtAcceptance": 0,
+    "productionChecksumMatches": true
   },
   "hostedTestingAccepted": true,
-  "productionReleased": false,
+  "productionReleased": true,
   "actualScheduledExecutionVerified": false,
   "realFileDeletionTriggered": false,
   "newEmailsSent": false,
@@ -39,5 +41,145 @@
     "runs": [],
     "evidence": "operator-reported exact result independently observed in protected browser status",
     "processingInvoked": false
+  },
+  "productionApproval": "Owner approved additive migration and exact tested 4eb3e2c application release",
+  "productionBuildPending": false,
+  "productionDeployment": "dpl_9CMj8YniwM7cWcNm8WfEzmpGowsf",
+  "rollbackDeployment": "dpl_EA6N74nt32g56QbkiJQWZPwMvrAt",
+  "productionValidKeyReadPending": true,
+  "allNonPublicAliasesPreserved": true,
+  "productionSmoke": {
+    "observedAt": "2026-10-24T15:47:29.611Z",
+    "deployment": "dpl_9CMj8YniwM7cWcNm8WfEzmpGowsf",
+    "source": "4eb3e2c8486cb8532aa400106d1bc306c9c8cb5a",
+    "checks": [
+      {
+        "path": "/",
+        "status": 200,
+        "expected": 200,
+        "forged": false,
+        "passed": true
+      },
+      {
+        "path": "/employer",
+        "status": 200,
+        "expected": 200,
+        "forged": false,
+        "passed": true
+      },
+      {
+        "path": "/api/setup",
+        "status": 410,
+        "expected": 410,
+        "forged": false,
+        "passed": true
+      },
+      {
+        "path": "/api/test-email",
+        "status": 410,
+        "expected": 410,
+        "forged": false,
+        "passed": true
+      },
+      {
+        "path": "/api/auth/session",
+        "status": 401,
+        "expected": 401,
+        "forged": false,
+        "passed": true
+      },
+      {
+        "path": "/api/auth/session",
+        "status": 401,
+        "expected": 401,
+        "forged": true,
+        "passed": true
+      },
+      {
+        "path": "/api/user",
+        "status": 401,
+        "expected": 401,
+        "forged": false,
+        "passed": true
+      },
+      {
+        "path": "/api/documents?userId=qa-nonexistent-access-probe&kind=resume",
+        "status": 401,
+        "expected": 401,
+        "forged": false,
+        "passed": true
+      },
+      {
+        "path": "/api/jobs/applicants?jobId=qa-nonexistent-access-probe",
+        "status": 401,
+        "expected": 401,
+        "forged": false,
+        "passed": true
+      },
+      {
+        "path": "/api/readiness",
+        "status": 401,
+        "expected": 401,
+        "forged": false,
+        "passed": true
+      },
+      {
+        "path": "/api/notifications",
+        "status": 401,
+        "expected": 401,
+        "forged": false,
+        "passed": true
+      },
+      {
+        "path": "/api/history",
+        "status": 401,
+        "expected": 401,
+        "forged": false,
+        "passed": true
+      },
+      {
+        "path": "/api/cron/document-cleanup?dryRun=1",
+        "status": 401,
+        "expected": 401,
+        "forged": false,
+        "passed": true
+      }
+    ],
+    "passed": true
+  },
+  "productionProvider": {
+    "crons": {
+      "enabledAt": 1779108266469,
+      "disabledAt": null,
+      "updatedAt": 1792856760835,
+      "deploymentId": "dpl_9CMj8YniwM7cWcNm8WfEzmpGowsf",
+      "definitions": [
+        {
+          "host": "bench-scout-4ixd5y3y3-sholly.vercel.app",
+          "path": "/api/cron/document-cleanup",
+          "schedule": "17 2 * * *"
+        }
+      ]
+    },
+    "ssoProtection": {
+      "deploymentType": "all_except_custom_domains"
+    },
+    "bypassCount": 0
+  },
+  "productionAliases": {
+    "bench-scout-git-hotfix-legacy-containment-sholly.vercel.app": "dpl_EcY1anTy6tVPnmAoagf5WCRk2Bed",
+    "bench-scout-git-testing-sholly.vercel.app": "dpl_D6i3a87oxQ3R8Gfu98tPqCpcB2Na",
+    "bench-scout.vercel.app": "dpl_9CMj8YniwM7cWcNm8WfEzmpGowsf",
+    "bench-scout-sholly.vercel.app": "dpl_F5uCLS312DAkTGAGdUZbWqaUYYrg",
+    "bench-scout-git-main-sholly.vercel.app": "dpl_3JSXjPv2JjgTBNE3gwXVSiqJFTaV"
+  },
+  "recentProviderRequestLookup": {
+    "success": true,
+    "window": "last hour",
+    "recordsReturned": 1,
+    "observedCleanupStatus": 401,
+    "observedDeployment": "dpl_9CMj8YniwM7cWcNm8WfEzmpGowsf",
+    "interpretation": "deliberate unauthenticated dry-run smoke request; not scheduled execution",
+    "paidUpgrade": false
   }
 }
