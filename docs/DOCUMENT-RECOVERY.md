@@ -1,5 +1,9 @@
 # Private document recovery
 
+## 24 October 2026 — Production older-file backups verified
+
+All three current private files (CV, practising licence, profile image) were encrypted, read back, decrypted and byte-verified: verified 3, failed/stale/skipped 0, inventory unchanged. Source files, records and sharing were retained. The temporary enabled deployment was removed and its provider lookup returns 404; all original aliases/public cleanup registration are restored. Actual scheduled execution and a timed full-service restoration drill remain open. This closes the earlier three-unbackfilled-files limit; historical audit entries below retain their original scope. [Execution and evidence](PRODUCTION-BACKFILL-2026-10-24.md).
+
 ## 21 October 2026 — Durable cleanup implemented; testing migration applied
 
 [Durable document cleanup](DOCUMENT-CLEANUP.md) now atomically records vault removal/replacement and retry intent, guards stale writes, rechecks current references, and retries detached source/archive deletion with leases/backoff. The UI waits for server acknowledgement and distinguishes queued cleanup from completed deletion. Operator counts/explicit retry and a separately authenticated daily cleanup cron are implemented. Lint, TypeScript, 274 tests, build and 320/390px controls pass. A guarded exact-checksum migration plus real SQL rollback/lease checks passed in BenchScout Testing only (eight migrations, nine new-table columns, three indexes, zero queued rows). Production still requires the one additive migration and approved hardened cutover; public maintenance is unchanged. Actual hosted worker deletion/provider interruption and scheduled invocation remain separately tracked. [Evidence](qa/2026-10-21-document-cleanup.json).

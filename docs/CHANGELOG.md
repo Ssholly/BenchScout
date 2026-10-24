@@ -1,5 +1,9 @@
 ## 24 October 2026 — Fresh Production backfill inventory accepted
 
+## 24 October 2026 — Production older-file backups verified
+
+All three current private files (CV, practising licence, profile image) were encrypted, read back, decrypted and byte-verified: verified 3, failed/stale/skipped 0, inventory unchanged. Source files, records and sharing were retained. The temporary enabled deployment was removed and its provider lookup returns 404; all original aliases/public cleanup registration are restored. Actual scheduled execution and a timed full-service restoration drill remain open. This closes the earlier three-unbackfilled-files limit; historical audit entries below retain their original scope. [Execution and evidence](PRODUCTION-BACKFILL-2026-10-24.md).
+
 Operator preview confirms three eligible private files, zero blocked references and no file contents read. Live upload/cleanup source dependency has been reviewed. Temporary protected copy window is being prepared; no real-copy result is claimed yet. [Plan and evidence](PRODUCTION-BACKFILL-2026-10-24.md).
 
 ## 24 October 2026 — Account loading labels released

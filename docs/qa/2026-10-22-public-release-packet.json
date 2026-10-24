@@ -14,7 +14,7 @@
   "promotionReady": true,
   "mainMergeApproved": false,
   "rollbackDeploymentId": "dpl_3JSXjPv2JjgTBNE3gwXVSiqJFTaV",
-  "nextAction": "separately approved older-file backfill, observe actual scheduled invocation, then controlled main integration",
+  "nextAction": "verify actual scheduled invocation, complete isolated timed full-service recovery drill, then controlled main integration",
   "noApplicationMutation": true,
   "updated": "2026-10-22",
   "currentEvidence": "2026-10-24-auth-action-status.json",
@@ -48,5 +48,7 @@
   "currentReleaseSource": "6bd57210c44f6d681020ef14f68281ea73b82a38",
   "currentPublicDeploymentId": "dpl_EA6N74nt32g56QbkiJQWZPwMvrAt",
   "currentRollbackDeploymentId": "dpl_8242kxsYFxz6qtrHFtsxNwqiA4oC",
-  "testingPreviewEvidence": "2026-10-24-mobile-90-testing.json"
+  "testingPreviewEvidence": "2026-10-24-mobile-90-testing.json",
+  "olderProductionFilesBackfilled": true,
+  "productionBackfillEvidence": "2026-10-24-production-backfill-window.json"
 }
