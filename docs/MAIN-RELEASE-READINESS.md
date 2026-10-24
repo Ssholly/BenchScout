@@ -1,5 +1,9 @@
 ## 23 October 2026 — Current cutover decision ready for owner review
 
+## 24 October 2026 — Account loading labels released
+
+Source **6bd5721** is public as **dpl_EA6N74nt32g56QbkiJQWZPwMvrAt** and on testing as **dpl_4qrtMaabrvMSWoVSjPNHAdVsXKRB**. Verification resend no longer shows “Sending…” during login; account actions have separate status labels. The 90% layout remains. Lint, TypeScript, 287 tests, build and isolated delayed-failure UI checks passed; all 13 public GET checks and existing-session Settings refresh passed. Previous 8242 remains rollback. Diagnostics/hotfix are preserved, git-main remains maintenance, cleanup registration follows this artifact at 03:17 Lagos and bypass count is zero. No data/file/key change, main merge or new email. This supersedes earlier current-artifact statements below; dated execution records remain historical. [Details and evidence](AUTH-ACTION-STATUS-2026-10-24.md).
+
 ## 24 October 2026 — Approved 90% version released publicly
 
 Exact tested source **e3bded2** is live as **dpl_8242kxsYFxz6qtrHFtsxNwqiA4oC** after owner approval. Initial scale 0.90, wider profile and centered mobile Compliance Hub are public. All 13 public access checks and existing-session profile/configured-hub geometry passed. Previous 2tcm remains rollback; testing/diagnostics are preserved, git-main is maintenance, and cleanup registration follows the new artifact at 03:17 Lagos. No main merge, migration, account/file mutation or new email. [Execution, evidence and native-device limits](MOBILE-90-PUBLIC-2026-10-24.md).

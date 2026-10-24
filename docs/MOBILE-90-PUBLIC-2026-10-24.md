@@ -1,5 +1,7 @@
 # 90% mobile release — 24 October 2026
 
+Subsequently superseded by the [account-status hotfix](AUTH-ACTION-STATUS-2026-10-24.md), retaining this mobile layout. The dated release record below remains historical.
+
 Status: **live on Production after explicit owner approval**. This promotes the exact [validated testing preview](MOBILE-90-PREVIEW-2026-10-24.md), without a main merge or additional application changes.
 
 ## Released source and behavior

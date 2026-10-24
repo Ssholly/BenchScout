@@ -1,3 +1,7 @@
+## 24 October 2026 — Account loading labels released
+
+Source **6bd5721** is public as **dpl_EA6N74nt32g56QbkiJQWZPwMvrAt** and on testing as **dpl_4qrtMaabrvMSWoVSjPNHAdVsXKRB**. Verification resend no longer shows “Sending…” during login; account actions have separate status labels. The 90% layout remains. Lint, TypeScript, 287 tests, build and isolated delayed-failure UI checks passed; all 13 public GET checks and existing-session Settings refresh passed. Previous 8242 remains rollback. Diagnostics/hotfix are preserved, git-main remains maintenance, cleanup registration follows this artifact at 03:17 Lagos and bypass count is zero. No data/file/key change, main merge or new email. This supersedes earlier current-artifact statements below; dated execution records remain historical. [Details and evidence](AUTH-ACTION-STATUS-2026-10-24.md).
+
 ## 24 October 2026 — Separate account action status
 
 Fixed verification resend showing “Sending…” during sign-in by tracking the specific active account action. Candidate/employer login, resend and reset delayed-failure UI checks passed; lint, TypeScript, all 287 tests and optimized build passed. No request/session/email logic change. [Details and hosting recommendation](AUTH-ACTION-STATUS-2026-10-24.md).
