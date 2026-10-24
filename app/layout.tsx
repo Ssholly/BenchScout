@@ -18,10 +18,10 @@ export const metadata = {
 	},
 };
 
-// Use the device's native scale in Safari and installed windows; preserve pinch zoom.
+// Owner-requested compact 87% starting scale; preserve manual pinch zoom.
 export const viewport: Viewport = {
     width: "device-width",
-    initialScale: 1,
+    initialScale: 0.87,
     viewportFit: "cover",
     themeColor: "#edf5fd",
 };

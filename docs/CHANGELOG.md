@@ -1,5 +1,9 @@
 ## 23 October 2026 — Settings fix accepted on testing; public hotfix awaits approval
 
+## 24 October 2026 — 87% scale and compact profile testing preview
+
+Owner-requested initial scale 0.87 and smaller phone profile: 380px width cap, 80dvh height cap, tighter padding/keyword spacing and an 18px title. Pinch zoom and existing account controls remain. Lint and TypeScript passed; build/hosted results are recorded in the preview document. Testing-only scope; Production remains unchanged. [Details](MOBILE-87-PREVIEW-2026-10-24.md).
+
 ## 23 October 2026 — Approved mobile release now public
 
 Exact approved source **c06a420** is live as **dpl_AtULjDHZtBiAVqNE46cZ7LKDS4tE** on `bench-scout.vercel.app`. All 13 public GET checks passed; existing-session refresh/Settings and mobile profile geometry passed, including the 14 saved keywords. Production and testing both measure a 280px drawer with 16px navigation at 393px viewport width. The Settings hotfix 3mF9 remains rollback; testing/diagnostics are preserved, git-main remains maintenance, bypass count is zero, and cleanup registration follows the new artifact at 03:17 Lagos. No main merge, migration, account/file mutation or new email. Physical iPhone standalone/focus acceptance and actual scheduled execution remain pending. [Execution and evidence](MOBILE-SCALE-2026-10-23.md#approved-public-execution--23-october-2026).

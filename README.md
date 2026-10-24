@@ -24,6 +24,8 @@ External listings work through source adapters in `lib/job-sources.ts`. Apify an
 
 [Mobile scale correction](docs/MOBILE-SCALE-2026-10-23.md): released publicly with native page scale, readable profile and consistent phone navigation; physical iPhone verification remains.
 
+[87% mobile testing preview](docs/MOBILE-87-PREVIEW-2026-10-24.md): smaller starting scale and a compact profile; testing only pending iPhone review.
+
 ## Checks
 
 ```sh
