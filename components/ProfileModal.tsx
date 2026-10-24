@@ -15,7 +15,8 @@ export default function ProfileModal() {
 		"login" | "signup" | "profile" | "forgot" | "verify-sent"
 	>("login");
 
-	const [isAuthLoading, setIsAuthLoading] = useState(false);
+	const [authAction, setAuthAction] = useState<"register" | "login" | "resend" | "reset" | null>(null);
+	const isAuthLoading = authAction !== null;
 	const [isUploadingResume, setIsUploadingResume] = useState(false);
 	const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
 
@@ -207,12 +208,13 @@ export default function ProfileModal() {
 	};
 
 	const handleRegister = async () => {
-		setIsAuthLoading(true);
+		if (isAuthLoading) return;
+		setAuthAction("register");
 
 		// 🚀 B2B EMPLOYER REGISTRATION ROUTE
 		if (signupPhase === "employer") {
 			if (!companyName || !email || !password) {
-				setIsAuthLoading(false);
+				setAuthAction(null);
 				return showToast("Please fill all hospital/company fields.", "error");
 			}
 
@@ -240,14 +242,14 @@ export default function ProfileModal() {
 			} catch {
 				showToast("Network error during registration.", "error");
 			} finally {
-				setIsAuthLoading(false);
+				setAuthAction(null);
 			}
 			return;
 		}
 
 		// 🔬 SCIENTIST REGISTRATION ROUTE
 		if (!name || !email || !password) {
-			setIsAuthLoading(false);
+			setAuthAction(null);
 			return showToast("Please fill in your name, email, and password.", "error");
 		}
 
@@ -275,14 +277,15 @@ export default function ProfileModal() {
 		} catch {
 			showToast("Network error during registration.", "error");
 		} finally {
-			setIsAuthLoading(false);
+			setAuthAction(null);
 		}
 	};
 
 	const handleLogin = async () => {
+		if (isAuthLoading) return;
 		if (!email || !password)
 			return showToast("Please enter email and password.", "error");
-		setIsAuthLoading(true);
+		setAuthAction("login");
 
 		// 🚀 B2B EMPLOYER LOGIN ROUTE
 		if (loginPhase === "employer") {
@@ -309,7 +312,7 @@ export default function ProfileModal() {
 			} catch {
 				showToast("Network error during login.", "error");
 			} finally {
-				setIsAuthLoading(false);
+				setAuthAction(null);
 			}
 			return;
 		}
@@ -342,14 +345,15 @@ export default function ProfileModal() {
 		} catch {
 			showToast("Network error during login.", "error");
 		} finally {
-			setIsAuthLoading(false);
+			setAuthAction(null);
 		}
 	};
 
 	const handleResendLink = async () => {
+		if (isAuthLoading) return;
 		if (!email)
 			return showToast("Please enter your email address first.", "error");
-		setIsAuthLoading(true);
+		setAuthAction("resend");
 		try {
 			const res = await fetch("/api/auth/resend-verification", {
 				method: "POST",
@@ -365,14 +369,15 @@ export default function ProfileModal() {
 		} catch {
 			showToast("Network error.", "error");
 		} finally {
-			setIsAuthLoading(false);
+			setAuthAction(null);
 		}
 	};
 
 	const handleForgotPassword = async () => {
+		if (isAuthLoading) return;
 		if (!email)
 			return showToast("Please enter your email address first.", "error");
-		setIsAuthLoading(true);
+		setAuthAction("reset");
 		try {
 			const res = await fetch("/api/auth/forgot", {
 				method: "POST",
@@ -385,7 +390,7 @@ export default function ProfileModal() {
 		} catch {
 			showToast("Network error.", "error");
 		} finally {
-			setIsAuthLoading(false);
+			setAuthAction(null);
 		}
 	};
 
@@ -558,7 +563,7 @@ export default function ProfileModal() {
 									marginTop: "8px",
 								}}
 							>
-								{isAuthLoading
+								{authAction === "resend"
 									? "Sending..."
 									: "Didn't receive it? Resend Link"}
 							</button>
@@ -1027,7 +1032,7 @@ export default function ProfileModal() {
 													opacity: isAuthLoading ? 0.5 : 1,
 												}}
 											>
-												{isAuthLoading ? "Sending..." : "Resend verification?"}
+												{authAction === "resend" ? "Sending..." : "Resend verification?"}
 											</button>
 											<button
 												type="button"
@@ -1075,11 +1080,9 @@ export default function ProfileModal() {
 											(e.currentTarget.style.transform = "translateY(0)")
 										}
 									>
-										{isAuthLoading
-											? "Processing..."
-											: view === "signup"
-												? "Create Account"
-												: "Secure Login"}
+										{authAction === "login" ? "Signing in..."
+											: authAction === "register" ? "Creating account..."
+											: view === "signup" ? "Create Account" : "Secure Login"}
 									</button>
 
 									<div
@@ -1139,7 +1142,7 @@ export default function ProfileModal() {
 											transition: "0.2s",
 										}}
 									>
-										{isAuthLoading ? "Sending..." : "Send Reset Link"}
+										{authAction === "reset" ? "Sending reset link..." : "Send Reset Link"}
 									</button>
 									<div style={{ textAlign: "center", marginTop: "1.5rem" }}>
 										<button

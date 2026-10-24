@@ -1,3 +1,7 @@
+## 24 October 2026 — Separate account action status
+
+Fixed verification resend showing “Sending…” during sign-in by tracking the specific active account action. Candidate/employer login, resend and reset delayed-failure UI checks passed; lint, TypeScript, all 287 tests and optimized build passed. No request/session/email logic change. [Details and hosting recommendation](AUTH-ACTION-STATUS-2026-10-24.md).
+
 ## 23 October 2026 — Settings fix accepted on testing; public hotfix awaits approval
 
 ## 24 October 2026 — Approved 90% version released publicly

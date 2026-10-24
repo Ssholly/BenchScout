@@ -1,0 +1,22 @@
+{
+  "date": "2026-10-24",
+  "scope": "isolated delayed HTTP simulator; not live authentication",
+  "lint": true,
+  "typecheck": true,
+  "testsPassed": 287,
+  "build": true,
+  "candidateLoginResendLabelIdle": true,
+  "employerLoginResendLabelIdle": true,
+  "resendLoginLabelIdle": true,
+  "resetActionLabel": true,
+  "errorRecovery": true,
+  "apiRoutesMocked": {
+    "/api/auth/login": 1,
+    "/api/auth/resend-verification": 1,
+    "/api/auth/employer": 2,
+    "/api/auth/forgot": 1
+  },
+  "realAccountsChanged": false,
+  "emailsSent": false,
+  "databaseChanged": false
+}
