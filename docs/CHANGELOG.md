@@ -1,5 +1,9 @@
 ## 23 October 2026 — Settings fix accepted on testing; public hotfix awaits approval
 
+## 24 October 2026 — Account focus and compact Home/Settings controls
+
+Kept 87% starting scale and the compact profile; raised mobile account-entry text to 19px to address effective-size focus zoom. Home actions now sit side by side on phones. Employer preview fields/disclosures start collapsed, while sharing consent and Save remain visible; employer-facing summaries remain expanded. Lint, TypeScript and 287 tests passed. Build/browser/deployment outcomes and native iPhone limits are recorded separately. [Details](MOBILE-POLISH-2026-10-24.md).
+
 ## 24 October 2026 — 87% scale and compact profile testing preview
 
 Owner-requested initial scale 0.87 and smaller phone profile: 380px width cap, 80dvh height cap, tighter padding/keyword spacing and an 18px title. Pinch zoom and existing account controls remain. Lint, TypeScript and optimized build passed; local 14-keyword geometry and hosted existing-session/profile checks also passed. Testing-only scope; Production remains unchanged. [Details](MOBILE-87-PREVIEW-2026-10-24.md).

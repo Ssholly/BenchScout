@@ -6,3 +6,7 @@
 .summary dd { margin: 0; font-size: 13px; line-height: 1.5; white-space: pre-wrap; }
 .summary small { display: block; color: #4a6080; font-size: 11px; line-height: 1.6; }
 @media (max-width: 480px) { .summary dl { grid-template-columns: minmax(0, 1fr); } }
+
+.previewToggle { cursor: pointer; min-height: 44px; align-content: center; font-size: 13px; font-weight: 600; }
+.previewContent { padding-top: 8px; }
+.previewContent > p:last-child { margin: 12px 0 0; }
