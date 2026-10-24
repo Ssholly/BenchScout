@@ -16,7 +16,7 @@
     "productionApplied": false,
     "matchesPrismaGeneratedDelta": true
   },
-  "hostedTestingAccepted": false,
+  "hostedTestingAccepted": true,
   "productionReleased": false,
   "actualScheduledExecutionVerified": false,
   "realFileDeletionTriggered": false,
@@ -27,12 +27,17 @@
   "testingAliasAssigned": true,
   "hostedInvalidKeyDenied": true,
   "testingSessionPreserved": true,
-  "validKeyHistoryReadPending": true,
+  "validKeyHistoryReadPending": false,
   "narrowViewport": {
     "width": 320,
     "buttonX": 31,
     "buttonWidth": 258,
     "buttonRight": 289,
     "minimumHeight": "44px"
+  },
+  "validKeyHistoryRead": {
+    "runs": [],
+    "evidence": "operator-reported exact result independently observed in protected browser status",
+    "processingInvoked": false
   }
 }

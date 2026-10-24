@@ -1,6 +1,6 @@
 # Cleanup run history — 24 October 2026
 
-Status: implemented and locally validated; additive migration applied to **BenchScout Testing only**. Hosted testing deployment/UI and invalid-key checks passed; valid-key history read is pending. Production is unchanged. The earlier three-file backup is accepted separately.
+Status: implemented and locally validated; additive migration applied to **BenchScout Testing only**. Hosted testing deployment/UI, invalid-key denial and valid-key history read passed. Production is unchanged. The earlier three-file backup is accepted separately.
 
 ## Why execution remains unverified
 
@@ -35,3 +35,9 @@ After approval: verify project/branch/database mapping and apply only this migra
 Exact source **4eb3e2c8486cb8532aa400106d1bc306c9c8cb5a** is Ready as **dpl_D6i3a87oxQ3R8Gfu98tPqCpcB2Na** (`bench-scout-ktqointc5-sholly.vercel.app`); original project, Preview target and exact source were verified before assigning the established testing alias. The existing synthetic session restored. The new history control was observed; a deliberately invalid administrator value returned Unauthorized and cleared the input. At 320px the new button spans x=31 to289 with 44px minimum height. Viewport override was reset. A valid-key read-only `runs` request is handed to the operator; no deletion, new run or Production migration is claimed by this checkpoint.
 
 Prisma's generated before/after schema delta exactly matches the reviewed migration. The guarded Production execution script is available for review at [SQL plan](sql/2026-10-24-production-cleanup-runs.sql); it is not applied. Production remains **dpl_EA6N74nt32g56QbkiJQWZPwMvrAt** until the additive migration and tested release are separately approved. Previous artifact EA6 is the proposed rollback; diagnostic F5 and git-main maintenance 3JS must be preserved.
+
+## Hosted valid-key acceptance
+
+The operator entered the existing testing administrator key and requested only **Check recent cleanup runs**. Independently observed the same reported success response: `runs: []` with the provenance/unfinished-outcome notice. The empty list is expected because no processing invocation was made after migration. This accepts the deployed administrator route, Prisma table read and result display; it does not establish scheduled or manual cleanup execution. The key field cleared and the deletion confirmation remained unchecked. Production migration/release remain pending approval.
+
+The proposed Production action is exactly the reviewed additive migration plus release of application source **4eb3e2c8486cb8532aa400106d1bc306c9c8cb5a**, retaining EA6 for rollback. It does not authorize a manual deletion run to manufacture scheduler evidence. Existing daily cleanup permission/schedule is unchanged; only its future run records are added. After rollout, accept actual scheduling only after correlating the next overnight invocation with provider evidence. Main merge, paid upgrades and the full-restoration drill remain separate.
