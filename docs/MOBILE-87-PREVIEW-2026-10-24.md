@@ -1,5 +1,7 @@
 # 87% mobile scale and smaller profile — testing preview, 24 October 2026
 
+Superseded by the subsequent owner-authorised [87% mobile polish public release](MOBILE-POLISH-2026-10-24.md). The testing-only execution below is retained as history; its unchanged-Production statements refer to that earlier checkpoint.
+
 Status: **implemented, lint/strict TypeScript/optimized build passed and hosted testing profile accepted.** Physical iPhone review remains pending. **Testing only: do not build, promote or change Production for this request.** The current public mobile revision remains c06a420.
 
 The owner found the native-scale release too large on the physical iPhone and asked for an 87% starting scale and a smaller profile panel, reviewed on the established testing URL before any public release. This supersedes the previous native-scale preference for the testing preview, without approving a Production change.

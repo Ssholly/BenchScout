@@ -1,0 +1,380 @@
+{
+  "observedAt": "2026-10-24T08:09:35.713Z",
+  "deployment": "dpl_2tcm2t75xXCL3Hcg5udHCRq7Lrco",
+  "source": "e62934b5d341f1e34a193371c9c9cb4dee107a20",
+  "checks": [
+    {
+      "path": "/",
+      "status": 200,
+      "expected": 200,
+      "forged": false,
+      "passed": true
+    },
+    {
+      "path": "/employer",
+      "status": 200,
+      "expected": 200,
+      "forged": false,
+      "passed": true
+    },
+    {
+      "path": "/api/setup",
+      "status": 410,
+      "expected": 410,
+      "forged": false,
+      "passed": true
+    },
+    {
+      "path": "/api/test-email",
+      "status": 410,
+      "expected": 410,
+      "forged": false,
+      "passed": true
+    },
+    {
+      "path": "/api/auth/session",
+      "status": 401,
+      "expected": 401,
+      "forged": false,
+      "passed": true
+    },
+    {
+      "path": "/api/auth/session",
+      "status": 401,
+      "expected": 401,
+      "forged": true,
+      "passed": true
+    },
+    {
+      "path": "/api/user",
+      "status": 401,
+      "expected": 401,
+      "forged": false,
+      "passed": true
+    },
+    {
+      "path": "/api/documents?userId=qa-nonexistent-access-probe&kind=resume",
+      "status": 401,
+      "expected": 401,
+      "forged": false,
+      "passed": true
+    },
+    {
+      "path": "/api/jobs/applicants?jobId=qa-nonexistent-access-probe",
+      "status": 401,
+      "expected": 401,
+      "forged": false,
+      "passed": true
+    },
+    {
+      "path": "/api/readiness",
+      "status": 401,
+      "expected": 401,
+      "forged": false,
+      "passed": true
+    },
+    {
+      "path": "/api/notifications",
+      "status": 401,
+      "expected": 401,
+      "forged": false,
+      "passed": true
+    },
+    {
+      "path": "/api/history",
+      "status": 401,
+      "expected": 401,
+      "forged": false,
+      "passed": true
+    },
+    {
+      "path": "/api/cron/document-cleanup?dryRun=1",
+      "status": 401,
+      "expected": 401,
+      "forged": false,
+      "passed": true
+    }
+  ],
+  "passed": true,
+  "date": "2026-10-24",
+  "authorization": "Owner requested testing first and Production release after passing checks",
+  "rollback": "dpl_AtULjDHZtBiAVqNE46cZ7LKDS4tE",
+  "testing": {
+    "id": "dpl_Gc6GEp8TgeNbH3CThJwJq6g4R8oZ",
+    "projectId": "prj_MNrDsjvBMVCY5mmPjD3tSyw7OIBs",
+    "state": "READY",
+    "url": "bench-scout-embsgoxlq-sholly.vercel.app",
+    "sha": "e62934b5d341f1e34a193371c9c9cb4dee107a20",
+    "target": null,
+    "branch": "testing"
+  },
+  "testingBrowser": {
+    "home": [
+      {
+        "buttons": [
+          {
+            "height": 55.796875,
+            "overflow": false,
+            "width": 144,
+            "x": 12,
+            "y": 372.8671875
+          },
+          {
+            "height": 55.796875,
+            "overflow": false,
+            "width": 144,
+            "x": 164,
+            "y": 372.8671875
+          }
+        ],
+        "equalHeight": true,
+        "horizontalOverflow": false,
+        "sameRow": true,
+        "width": 320
+      },
+      {
+        "buttons": [
+          {
+            "height": 48,
+            "overflow": false,
+            "width": 180.5,
+            "x": 12,
+            "y": 322.375
+          },
+          {
+            "height": 48,
+            "overflow": false,
+            "width": 180.5,
+            "x": 200.5,
+            "y": 322.375
+          }
+        ],
+        "equalHeight": true,
+        "horizontalOverflow": false,
+        "sameRow": true,
+        "width": 393
+      },
+      {
+        "buttons": [
+          {
+            "height": 48,
+            "overflow": false,
+            "width": 199,
+            "x": 12,
+            "y": 322.375
+          },
+          {
+            "height": 48,
+            "overflow": false,
+            "width": 199,
+            "x": 219,
+            "y": 322.375
+          }
+        ],
+        "equalHeight": true,
+        "horizontalOverflow": false,
+        "sameRow": true,
+        "width": 430
+      }
+    ],
+    "existingSessionRestored": true,
+    "settingsLoaded": true,
+    "previewCollapsedByDefault": true,
+    "previewKeyboardExpandAndCollapse": true,
+    "sharingMutated": false,
+    "initialScale": 0.87
+  },
+  "publicBrowser": {
+    "home": {
+      "buttons": [
+        {
+          "height": 48,
+          "width": 180.5,
+          "x": 12,
+          "y": 322.375
+        },
+        {
+          "height": 48,
+          "width": 180.5,
+          "x": 200.5,
+          "y": 322.375
+        }
+      ],
+      "horizontalOverflow": false,
+      "sameRow": true,
+      "viewport": "width=device-width, initial-scale=0.87, viewport-fit=cover",
+      "width": 393
+    },
+    "preview": {
+      "collapsedByDefault": true,
+      "collapsedHeight": 78,
+      "sharingCheckboxOutside": true
+    },
+    "expanded": {
+      "fieldCount": 8,
+      "open": true
+    },
+    "existingSessionRestored": true,
+    "settingsLoaded": true,
+    "mutationsPerformed": false,
+    "nativeIphoneFocusVerified": false
+  },
+  "localGeometryBeforeFinalAlignment": {
+    "home": [
+      {
+        "buttons": [
+          {
+            "height": 53.796875,
+            "overflow": false,
+            "width": 144,
+            "x": 12,
+            "y": 373.8671875
+          },
+          {
+            "height": 55.796875,
+            "overflow": false,
+            "width": 144,
+            "x": 164,
+            "y": 372.8671875
+          }
+        ],
+        "horizontalOverflow": false,
+        "sameRow": false,
+        "screen": "home",
+        "separate": true,
+        "width": 320
+      },
+      {
+        "buttons": [
+          {
+            "height": 48,
+            "overflow": false,
+            "width": 180.5,
+            "x": 12,
+            "y": 322.375
+          },
+          {
+            "height": 48,
+            "overflow": false,
+            "width": 180.5,
+            "x": 200.5,
+            "y": 322.375
+          }
+        ],
+        "horizontalOverflow": false,
+        "sameRow": true,
+        "screen": "home",
+        "separate": true,
+        "width": 393
+      },
+      {
+        "buttons": [
+          {
+            "height": 48,
+            "overflow": false,
+            "width": 199,
+            "x": 12,
+            "y": 322.375
+          },
+          {
+            "height": 48,
+            "overflow": false,
+            "width": 199,
+            "x": 219,
+            "y": 322.375
+          }
+        ],
+        "horizontalOverflow": false,
+        "sameRow": true,
+        "screen": "home",
+        "separate": true,
+        "width": 430
+      }
+    ],
+    "login": [
+      {
+        "height": 740,
+        "horizontalOverflow": false,
+        "inputFonts": [
+          "19px",
+          "19px"
+        ],
+        "panelHeight": 616.5,
+        "panelWidth": 296,
+        "panelX": 12,
+        "viewport": "width=device-width, initial-scale=0.87, viewport-fit=cover",
+        "width": 320
+      },
+      {
+        "height": 852,
+        "horizontalOverflow": false,
+        "inputFonts": [
+          "19px",
+          "19px"
+        ],
+        "panelHeight": 600,
+        "panelWidth": 369,
+        "panelX": 12,
+        "viewport": "width=device-width, initial-scale=0.87, viewport-fit=cover",
+        "width": 393
+      },
+      {
+        "height": 480,
+        "horizontalOverflow": false,
+        "inputFonts": [
+          "19px",
+          "19px"
+        ],
+        "panelHeight": 456,
+        "panelWidth": 369,
+        "panelX": 12,
+        "viewport": "width=device-width, initial-scale=0.87, viewport-fit=cover",
+        "width": 393
+      }
+    ]
+  },
+  "aliases": {
+    "bench-scout-git-hotfix-legacy-containment-sholly.vercel.app": "dpl_EcY1anTy6tVPnmAoagf5WCRk2Bed",
+    "bench-scout-git-testing-sholly.vercel.app": "dpl_Gc6GEp8TgeNbH3CThJwJq6g4R8oZ",
+    "bench-scout.vercel.app": "dpl_2tcm2t75xXCL3Hcg5udHCRq7Lrco",
+    "bench-scout-sholly.vercel.app": "dpl_F5uCLS312DAkTGAGdUZbWqaUYYrg",
+    "bench-scout-git-main-sholly.vercel.app": "dpl_3JSXjPv2JjgTBNE3gwXVSiqJFTaV"
+  },
+  "project": {
+    "production": "dpl_2tcm2t75xXCL3Hcg5udHCRq7Lrco",
+    "crons": {
+      "enabledAt": 1779108266469,
+      "disabledAt": null,
+      "updatedAt": 1792829307612,
+      "deploymentId": "dpl_2tcm2t75xXCL3Hcg5udHCRq7Lrco",
+      "definitions": [
+        {
+          "host": "bench-scout-l2xw88e10-sholly.vercel.app",
+          "path": "/api/cron/document-cleanup",
+          "schedule": "17 2 * * *"
+        }
+      ]
+    },
+    "protection": {
+      "deploymentType": "all_except_custom_domains"
+    },
+    "bypassCount": 0
+  },
+  "validation": {
+    "lint": true,
+    "typecheck": true,
+    "testsPassed": 287,
+    "optimizedLocalBuild": true,
+    "finalHostedBuildReady": true
+  },
+  "accountInputCssPx": 19,
+  "effectiveInputPxAtInitialScale": 16.53,
+  "initialScale": 0.87,
+  "nativeIphoneFocusVerified": false,
+  "actualScheduledInvocationObserved": false,
+  "mainMerged": false,
+  "schemaMigration": false,
+  "accountDocumentMutation": false,
+  "newEmailSent": false,
+  "temporaryBypassCreated": false
+}

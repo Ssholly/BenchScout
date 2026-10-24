@@ -6,7 +6,7 @@ A career workspace for Nigerian medical laboratory scientists and employers: sou
 
 The owner-approved controlled pilot is live at [bench-scout.vercel.app](https://bench-scout.vercel.app). [23 October cutover record and remaining checks](docs/CONTROLLED-PILOT-2026-10-23.md): public access checks passed and cleanup schedule registered; public browser sign-in persistence passed; actual scheduled execution remains pending. Main merge and older-file backup copying are separate.
 
-[87% mobile polish](docs/MOBILE-POLISH-2026-10-24.md): account input focus sizing, side-by-side Home actions and collapsible employer preview; testing/public execution and native-device limits.
+[87% mobile polish](docs/MOBILE-POLISH-2026-10-24.md): released publicly with corrected account input sizing, side-by-side Home actions and collapsible employer preview; native iPhone focus confirmation remains.
 
 ## Local setup
 

@@ -1,6 +1,6 @@
 # 87% account focus, Home actions and employer preview — 24 October 2026
 
-Status: implemented; lint, strict TypeScript and 287 tests passed. Build/browser/hosted release results are recorded below when executed. The owner requested testing first, then Production release if checks pass. This includes the smaller 87% profile preview from 6b32b12; no main merge is included.
+Status: **released to testing and Production after local checks, hosted layout acceptance and the owner’s release instruction.** Public access and existing-session checks passed. Physical iPhone focus behavior remains unverified. The owner requested testing first, then Production release if checks pass. This includes the smaller 87% profile preview from 6b32b12; no main merge is included.
 
 ## Changes
 
@@ -16,3 +16,17 @@ Use read-only guest/candidate fixtures for narrow layout, focus geometry and key
 After testing acceptance, build a clean archive of the exact source as staged Production with the public canonical origin, backups on, test mode off and real-file backfill apply disabled. Preserve daily cleanup at 03:17 Lagos, testing/diagnostics and git-main maintenance. Retain current public AtUL/c06a420 as rollback. Verify Ready/source/project before promotion, then repeat GET-only access and existing-session browser checks. No secret change, schema migration, data/file mutation, new email or main merge is included.
 
 Desktop Chromium can check computed input size, viewport metadata, bounds and toggles; it cannot certify physical iPhone keyboard/focus behavior or installed-window safe-area rendering. A native iPhone confirmation remains distinct from those checks. Do not claim the zoom issue was reproduced/fixed on a physical device without that evidence.
+
+## Executed validation and release
+
+Lint, strict TypeScript, **287 tests** and isolated optimized build passed for d2da209. Local guest fixtures confirmed 19px account email/password text, retained 0.87 viewport metadata and contained login dialogs at 320/393px and short height. No credentials were entered or submitted. Candidate fixtures confirmed a collapsed 78px preview, keyboard Enter/Space expansion/collapse and preserved sharing controls. The first 320px Home check found a one-pixel top-edge/two-pixel height mismatch between the two buttons; final CSS-only correction **e62934b5d341f1e34a193371c9c9cb4dee107a20** stretches both grid cells equally. The final hosted build and geometry acceptance cover that correction; the earlier local geometry is labelled before-alignment in the evidence.
+
+Final source **e62934b** built Ready as testing **dpl_Gc6GEp8TgeNbH3CThJwJq6g4R8oZ** (`bench-scout-embsgoxlq-sholly.vercel.app`), verified before assigning the established testing alias. The existing synthetic session restored, Settings loaded and the preview expanded/collapsed through the keyboard. Both Home buttons occupy one row with equal heights and no horizontal overflow at 320, 393 and 430px. No profile/consent save or document operation occurred.
+
+A clean archive of the same final source built Ready as staged Production **dpl_2tcm2t75xXCL3Hcg5udHCRq7Lrco** (`bench-scout-l2xw88e10-sholly.vercel.app`) in the original project. Exact source/project/Ready state, testing geometry and public rollback were checked before promotion. The user’s current instruction authorises Production after testing; no additional approval was requested. The public alias/current Production target now identify this build; prior mobile **AtUL/c06a420** remains retained as rollback.
+
+All **13 public GET access checks passed**, including anonymous/forged-session denials and retired setup/test-email endpoints. The previous public tab was no longer present, so a fresh Home tab was opened using the existing browser session; the owner account restored without entering credentials. Public Home shows two aligned 48px-high buttons at 393px and initial scale 0.87. Public Settings loaded; the employer preview starts collapsed at 78px and expands to all eight existing fields, then closes again. Sharing controls remained outside the disclosure. Geometry/counts only are committed; screenshots remain local, without copying account field values into evidence.
+
+Provider readback confirms testing Gc, diagnostics F5, hotfix EcY and git-main maintenance 3JS match the pre-promotion mapping. Cleanup registration follows the new public artifact at `17 2 * * *` (**03:17 Lagos**); actual scheduled invocation was not inspected. Protection remains `all_except_custom_domains`, bypass count zero. No new secret/configuration binding, schema/data/file operation, new email or main merge occurred. Local fixture servers were stopped and browser viewport overrides reset.
+
+[Scrubbed execution evidence](qa/2026-10-24-mobile-polish-public.json). This releases the font-size-based zoom correction; it does not claim a physical-iPhone successful focus test. Fully close/reopen the installed app, then check email/password focus on the iPhone. Earlier testing-only restriction for 6b32b12 is superseded by the owner’s subsequent explicit testing-then-Production instruction for these added changes.

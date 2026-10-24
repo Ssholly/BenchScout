@@ -1,5 +1,10 @@
 ## 23 October 2026 — Settings fix accepted on testing; public hotfix awaits approval
 
+## 24 October 2026 — 87% mobile polish released publicly
+
+Exact source **e62934b** is live as **dpl_2tcm2t75xXCL3Hcg5udHCRq7Lrco** after testing acceptance and the owner’s release instruction. Retains the compact 87% profile, raises account input text to 19px, aligns Home actions side by side and collapses employer preview details. Lint/TypeScript/287 tests, build and hosted geometry passed; all 13 public access checks and existing-session Settings checks passed. Testing/diagnostics are preserved, git-main remains maintenance, cleanup registration follows the new artifact, and AtUL remains rollback. No main merge, migration, document mutation or new email. Physical iPhone focus-zoom confirmation remains pending. [Execution and limits](MOBILE-POLISH-2026-10-24.md).
+
+
 ## 24 October 2026 — Account focus and compact Home/Settings controls
 
 Kept 87% starting scale and the compact profile; raised mobile account-entry text to 19px to address effective-size focus zoom. Home actions now sit side by side on phones. Employer preview fields/disclosures start collapsed, while sharing consent and Save remain visible; employer-facing summaries remain expanded. Lint, TypeScript and 287 tests passed. Build/browser/deployment outcomes and native iPhone limits are recorded separately. [Details](MOBILE-POLISH-2026-10-24.md).

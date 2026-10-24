@@ -1,5 +1,10 @@
 # Deploying the security upgrade
 
+## 24 October 2026 — 87% mobile polish released publicly
+
+Exact source **e62934b** is live as **dpl_2tcm2t75xXCL3Hcg5udHCRq7Lrco** after testing acceptance and the owner’s release instruction. Retains the compact 87% profile, raises account input text to 19px, aligns Home actions side by side and collapses employer preview details. Lint/TypeScript/287 tests, build and hosted geometry passed; all 13 public access checks and existing-session Settings checks passed. Testing/diagnostics are preserved, git-main remains maintenance, cleanup registration follows the new artifact, and AtUL remains rollback. No main merge, migration, document mutation or new email. Physical iPhone focus-zoom confirmation remains pending. [Execution and limits](MOBILE-POLISH-2026-10-24.md).
+
+
 ## 24 October 2026 — 87% preview deployed to testing only
 
 Source **6b32b12** is Ready as Preview **dpl_C9hTU2V7YTWCjXs75h4ffUCRvqXU** and assigned to the established testing alias. Lint, TypeScript, optimized build, local long-profile geometry and hosted existing-session/profile checks passed. Public remains **dpl_AtULjDHZtBiAVqNE46cZ7LKDS4tE** / c06a420; no Production deployment or promotion. Actual iPhone review is pending before any public release. [Changes and evidence](MOBILE-87-PREVIEW-2026-10-24.md).

@@ -1,5 +1,10 @@
 ## 23 October 2026 — Current cutover decision ready for owner review
 
+## 24 October 2026 — 87% mobile polish released publicly
+
+Exact source **e62934b** is live as **dpl_2tcm2t75xXCL3Hcg5udHCRq7Lrco** after testing acceptance and the owner’s release instruction. Retains the compact 87% profile, raises account input text to 19px, aligns Home actions side by side and collapses employer preview details. Lint/TypeScript/287 tests, build and hosted geometry passed; all 13 public access checks and existing-session Settings checks passed. Testing/diagnostics are preserved, git-main remains maintenance, cleanup registration follows the new artifact, and AtUL remains rollback. No main merge, migration, document mutation or new email. Physical iPhone focus-zoom confirmation remains pending. [Execution and limits](MOBILE-POLISH-2026-10-24.md).
+
+
 ## 23 October 2026 — Approved mobile release now public
 
 Exact approved source **c06a420** is live as **dpl_AtULjDHZtBiAVqNE46cZ7LKDS4tE** on `bench-scout.vercel.app`. All 13 public GET checks passed; existing-session refresh/Settings and mobile profile geometry passed, including the 14 saved keywords. Production and testing both measure a 280px drawer with 16px navigation at 393px viewport width. The Settings hotfix 3mF9 remains rollback; testing/diagnostics are preserved, git-main remains maintenance, bypass count is zero, and cleanup registration follows the new artifact at 03:17 Lagos. No main merge, migration, account/file mutation or new email. Physical iPhone standalone/focus acceptance and actual scheduled execution remain pending. [Execution and evidence](MOBILE-SCALE-2026-10-23.md#approved-public-execution--23-october-2026).
