@@ -60,6 +60,8 @@ export default function BackupOperations() {
     <summary>Pending document deletion</summary>
     <p>Check durable cleanup counts without reading files. Processing retries up to five server-recorded deletion requests. It permanently removes detached files and their encrypted copies after checking that no current vault still references them. Existing active documents and sharing choices are not changed.</p>
     <button disabled={busy || !secret} onClick={() => run("cleanup-status")}>Check pending deletion counts</button>
+    <p>Recent runs show authenticated endpoint execution, timestamps and counts. The cron agent hint alone does not prove an automatic scheduled invocation. An unfinished run has an unknown outcome.</p>
+    <button disabled={busy || !secret} onClick={() => run("cleanup-runs")}>Check recent cleanup runs</button>
     <label className={styles.approval}><input type="checkbox" checked={cleanupApproved} onChange={event => setCleanupApproved(event.target.checked)} />I approve retrying permanent deletion of the queued, detached files.</label>
     <button disabled={busy || !secret || !cleanupApproved} onClick={() => run("cleanup-process")}>Retry pending file deletion</button>
     </details>

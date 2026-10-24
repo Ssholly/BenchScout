@@ -1,0 +1,24 @@
+{
+  "date": "2026-10-24",
+  "implemented": true,
+  "lint": true,
+  "typecheck": true,
+  "testsPassed": 296,
+  "newTests": 9,
+  "optimizedBuild": true,
+  "migration": {
+    "name": "20261024000000_document_cleanup_runs",
+    "sha256": "dc004200c77fadfcf3a95aeae351b8226e66bdfb77dff792ac12523e91d74a92",
+    "testingRollbackCheckPassed": true,
+    "testingApplied": true,
+    "testingRows": 0,
+    "testingChecksumMatches": true,
+    "productionApplied": false
+  },
+  "hostedTestingAccepted": false,
+  "productionReleased": false,
+  "actualScheduledExecutionVerified": false,
+  "realFileDeletionTriggered": false,
+  "newEmailsSent": false,
+  "operatorApprovalRequired": "Production operational table and tested application release"
+}

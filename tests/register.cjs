@@ -8,6 +8,7 @@ const unexpected = () => { throw new Error('Unexpected database call in test'); 
 const table = () => new Proxy({}, { get(target, key) { return target[key] || unexpected; } });
 const prisma = { authSession: table(), user: table(), employer: table(), job: table(), application: table(), notification: table(), rateLimit: table(), salaryReport: table(), runHistory: table(), verificationToken: table(), $transaction: unexpected };
 prisma.documentCleanup = table();
+prisma.documentCleanupRun = table();
 prisma.safetyReview = table();
 prisma.jobReport = table();
 const originalLoad = Module._load;

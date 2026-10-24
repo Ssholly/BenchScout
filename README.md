@@ -8,6 +8,8 @@ The owner-approved controlled pilot is live at [bench-scout.vercel.app](https://
 
 [87% mobile polish](docs/MOBILE-POLISH-2026-10-24.md): released publicly with corrected account input sizing, side-by-side Home actions and collapsible employer preview; native iPhone focus confirmation remains.
 
+[Cleanup run history](docs/CLEANUP-RUN-HISTORY-2026-10-24.md): durable execution evidence, testing migration and Production rollout status.
+
 [Production older-file backup window](docs/PRODUCTION-BACKFILL-2026-10-24.md): three current files decrypt-verified; temporary copy window closed.
 
 [Account action status fix](docs/AUTH-ACTION-STATUS-2026-10-24.md): independent login, verification resend and reset progress labels.

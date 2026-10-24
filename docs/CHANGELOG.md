@@ -1,3 +1,7 @@
+## 24 October 2026 — Durable cleanup run evidence prepared
+
+Added authenticated cleanup run records and a protected recent-history action/control; dry-run/status stay read-only. Lint, TypeScript, 296 tests and optimized build passed. The empty operational table and exact migration checksum are applied on Testing only after a PostgreSQL rollback check. Hosted acceptance/Production rollout and actual scheduled execution remain separate. [Details, provenance limits and rollout](CLEANUP-RUN-HISTORY-2026-10-24.md).
+
 ## 24 October 2026 — Fresh Production backfill inventory accepted
 
 ## 24 October 2026 — Production older-file backups verified
