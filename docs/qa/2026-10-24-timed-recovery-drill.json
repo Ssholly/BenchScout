@@ -1,0 +1,16 @@
+{
+  "date": "2026-10-24",
+  "status": "prepared; awaiting recovery-copy approval",
+  "project": "BenchScout Testing",
+  "parentBranchName": "production",
+  "branchName": "qa-full-recovery-20261024",
+  "targetLagos": "2026-10-24T18:50:36.235+01:00",
+  "autoDeleteAfterDays": 1,
+  "branchCreated": false,
+  "databaseRestored": false,
+  "filesRestored": false,
+  "applicationConnected": false,
+  "timerStarted": false,
+  "productionChanged": false,
+  "emailCronConnected": false
+}
