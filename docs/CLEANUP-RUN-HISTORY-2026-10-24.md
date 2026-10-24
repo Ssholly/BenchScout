@@ -1,6 +1,6 @@
 # Cleanup run history — 24 October 2026
 
-Status: implemented and locally validated; additive migration applied to **BenchScout Testing only**. Hosted testing deployment is pending. Production is unchanged. The earlier three-file backup is accepted separately.
+Status: implemented and locally validated; additive migration applied to **BenchScout Testing only**. Hosted testing deployment/UI and invalid-key checks passed; valid-key history read is pending. Production is unchanged. The earlier three-file backup is accepted separately.
 
 ## Why execution remains unverified
 
@@ -29,3 +29,9 @@ On Neon **BenchScout Testing**, database `benchscout_testing`, the exact SQL and
 Production requires separate approval for the empty operational table and release. Exact migration: `20261024000000_document_cleanup_runs`; checksum recorded in [QA evidence](qa/2026-10-24-cleanup-run-history.json). Prepared guarded SQL checks `current_database() = neondb`, refuses an existing migration record, creates one table/index and records the exact checksum atomically. No existing business table is altered. Do not deploy new processing code against Production before this migration: initial audit persistence deliberately fails closed if the table is absent.
 
 After approval: verify project/branch/database mapping and apply only this migration; confirm an empty table and matching checksum. Build the exact tested revision with existing Production keys, public origin, backfill gate off and normal cleanup schedule, preserving the current public artifact for rollback and diagnostics/testing/maintenance aliases. Do not trigger processing merely to manufacture scheduled evidence. Read-only operator history should initially be empty. Observe the next daily scheduling window and inspect within provider retention for corroboration; an unfinished/failed/missing run is not accepted. Rollback can restore the prior application artifact while retaining the audit table/rows; verify the active cron registration explicitly because provider instant rollback does not itself update cron definitions. No main merge, backfill, paid upgrade or new test email is included.
+
+## Hosted testing checkpoint
+
+Exact source **4eb3e2c8486cb8532aa400106d1bc306c9c8cb5a** is Ready as **dpl_D6i3a87oxQ3R8Gfu98tPqCpcB2Na** (`bench-scout-ktqointc5-sholly.vercel.app`); original project, Preview target and exact source were verified before assigning the established testing alias. The existing synthetic session restored. The new history control was observed; a deliberately invalid administrator value returned Unauthorized and cleared the input. At 320px the new button spans x=31 to289 with 44px minimum height. Viewport override was reset. A valid-key read-only `runs` request is handed to the operator; no deletion, new run or Production migration is claimed by this checkpoint.
+
+Prisma's generated before/after schema delta exactly matches the reviewed migration. The guarded Production execution script is available for review at [SQL plan](sql/2026-10-24-production-cleanup-runs.sql); it is not applied. Production remains **dpl_EA6N74nt32g56QbkiJQWZPwMvrAt** until the additive migration and tested release are separately approved. Previous artifact EA6 is the proposed rollback; diagnostic F5 and git-main maintenance 3JS must be preserved.

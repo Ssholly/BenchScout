@@ -13,12 +13,26 @@
     "testingApplied": true,
     "testingRows": 0,
     "testingChecksumMatches": true,
-    "productionApplied": false
+    "productionApplied": false,
+    "matchesPrismaGeneratedDelta": true
   },
   "hostedTestingAccepted": false,
   "productionReleased": false,
   "actualScheduledExecutionVerified": false,
   "realFileDeletionTriggered": false,
   "newEmailsSent": false,
-  "operatorApprovalRequired": "Production operational table and tested application release"
+  "operatorApprovalRequired": "Production operational table and tested application release",
+  "source": "4eb3e2c8486cb8532aa400106d1bc306c9c8cb5a",
+  "testingDeployment": "dpl_D6i3a87oxQ3R8Gfu98tPqCpcB2Na",
+  "testingAliasAssigned": true,
+  "hostedInvalidKeyDenied": true,
+  "testingSessionPreserved": true,
+  "validKeyHistoryReadPending": true,
+  "narrowViewport": {
+    "width": 320,
+    "buttonX": 31,
+    "buttonWidth": 258,
+    "buttonRight": 289,
+    "minimumHeight": "44px"
+  }
 }
