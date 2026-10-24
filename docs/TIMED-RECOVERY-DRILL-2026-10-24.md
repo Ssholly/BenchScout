@@ -1,6 +1,6 @@
 # Timed isolated restoration drill — 24 October 2026
 
-Status: **prepared, not executed**. No recovery branch has been created by this checkpoint. This is the next bounded launch-readiness exercise, not a new product feature or public cutover. [Overall launch position](LAUNCH-CHECKPOINT-2026-10-24.md).
+Status: **in progress**. Approved historical testing copy created and database checks passed; private file restoration/application connection are pending operator credentials. This is the next bounded launch-readiness exercise, not a new product feature or public cutover. [Overall launch position](LAUNCH-CHECKPOINT-2026-10-24.md).
 
 ## Prepared resource and authorization boundary
 
@@ -23,3 +23,17 @@ Creating the branch copies testing records, including private document reference
 A pass needs all three components in the **same isolated restored application**: validated database state, recovered synthetic private bytes and expected HTTP access decisions. Database fork, decrypt-only canary and HTTP mocks remain separate evidence until integrated. Missing historical file versions or revocation evidence are failures/limits to report, not permissions to revive stale grants. Production’s current-file-only archives and finite database history do not guarantee that every historical database point has all corresponding file versions.
 
 This first drill measures a testing scenario. It does not certify recovery after total provider/account compromise, independent key loss or a Production outage. No branch, file restoration, copied-session mutation or timing result is claimed yet. The planned expansion ends at these acceptance criteria; general queue, design and business features are outside it.
+
+## Approved creation and database checks
+
+After owner approval, the timer started immediately before Create. Neon created **br-small-fog-b7aog0ki** in BenchScout Testing with the approved target and one-day expiry; the alert reports expiry 25 October at 19:02 Lagos (minute precision). This is a new copy; source testing and Production remain unchanged. No password was revealed or copied by the agent from the masked Connect panel.
+
+With the recovery branch explicitly selected in the SQL editor, invalidated three copied AuthSession rows and one copied PasswordResetToken; confirmation-token invalidation completed with no active links. Post-commit aggregate readback: zero active copied sessions/confirmation/reset links, all **nine migration checksums match**, nine completed/zero unfinished migrations, zero orphaned applications, one QA candidate with current CV/degree/certificate references, one closed QA vacancy and one suspended/unverified QA employer. The recovery database is verified; these are not recovered-file or application HTTP results.
+
+## Private operator entry and prepared application
+
+Added one-time operator helpers `scripts/private-recovery-entry.cjs` and `scripts/recovery-entry-guards.cjs`. They bind only to 127.0.0.1:3196, require the exact local Host/Origin and per-form CSRF nonce, cap input size, save once to a mode-0600 file in a mode-0700 temporary directory outside Git, and never echo/log credential values or make external requests. Target checks reject other database hosts/databases, exchanged or Production Blob-store tokens, malformed encryption keys and invalid saved-password length. Four focused guard tests and Node syntax check passed. No new app feature, schema change or hosted deployment is introduced by these helpers.
+
+The form requests only the recovery branch connection, existing testing source/archive credentials/key and existing QA candidate password. The connection is limited to the new branch. Storage token IDs are checked against the independently read existing testing store identities; no token values were revealed through provider tools. The form is awaiting private operator entry. Both testing stores are opened at Quickstart; the operator must select `.env.local` and copy values privately. Snippets may use the generic BLOB_READ_WRITE_TOKEN name; use the token value from the correct store. The encryption key is the previously saved testing value; do not generate/rotate a replacement if it is missing. Actual recoverability/key custody remains unaccepted until the existing key decrypts the archives.
+
+A clean archive of source **4eb3e2c** is built in isolation for the planned loopback restored app, using a blocked database at build time and no local environment files. No restored app has been connected yet. Execution timing continues and includes first-rehearsal preparation and operator waits; it must not be reported as a certified Production RTO. No file restore, source deletion, mail or cron connection has occurred.
