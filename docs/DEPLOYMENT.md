@@ -1,5 +1,9 @@
 # Deploying the security upgrade
 
+## 24 October 2026 — 87% preview deployed to testing only
+
+Source **6b32b12** is Ready as Preview **dpl_C9hTU2V7YTWCjXs75h4ffUCRvqXU** and assigned to the established testing alias. Lint, TypeScript, optimized build, local long-profile geometry and hosted existing-session/profile checks passed. Public remains **dpl_AtULjDHZtBiAVqNE46cZ7LKDS4tE** / c06a420; no Production deployment or promotion. Actual iPhone review is pending before any public release. [Changes and evidence](MOBILE-87-PREVIEW-2026-10-24.md).
+
 ## 23 October 2026 — Approved mobile release now public
 
 Exact approved source **c06a420** is live as **dpl_AtULjDHZtBiAVqNE46cZ7LKDS4tE** on `bench-scout.vercel.app`. All 13 public GET checks passed; existing-session refresh/Settings and mobile profile geometry passed, including the 14 saved keywords. Production and testing both measure a 280px drawer with 16px navigation at 393px viewport width. The Settings hotfix 3mF9 remains rollback; testing/diagnostics are preserved, git-main remains maintenance, bypass count is zero, and cleanup registration follows the new artifact at 03:17 Lagos. No main merge, migration, account/file mutation or new email. Physical iPhone standalone/focus acceptance and actual scheduled execution remain pending. [Execution and evidence](MOBILE-SCALE-2026-10-23.md#approved-public-execution--23-october-2026).

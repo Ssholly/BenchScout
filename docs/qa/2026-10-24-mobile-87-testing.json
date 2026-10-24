@@ -1,0 +1,120 @@
+{
+  "date": "2026-10-24",
+  "source": "6b32b1252ae5a3035d8988d74c4effdd45073403",
+  "scope": "testing only",
+  "initialScale": 0.87,
+  "profileWidthCapCssPx": 380,
+  "profileHeightCapDvh": 80,
+  "localGeometry": [
+    {
+      "bodyScrollable": true,
+      "height": 740,
+      "horizontalOverflow": false,
+      "keywordCount": 14,
+      "maxHeight": "592px",
+      "panelHeight": 592,
+      "panelWidth": 296,
+      "viewport": "width=device-width, initial-scale=0.87, viewport-fit=cover",
+      "width": 320,
+      "x": 12,
+      "y": 74
+    },
+    {
+      "bodyScrollable": true,
+      "height": 852,
+      "horizontalOverflow": false,
+      "keywordCount": 14,
+      "maxHeight": "681.6px",
+      "panelHeight": 681.59375,
+      "panelWidth": 369,
+      "viewport": "width=device-width, initial-scale=0.87, viewport-fit=cover",
+      "width": 393,
+      "x": 12,
+      "y": 85.203125
+    },
+    {
+      "bodyScrollable": false,
+      "height": 932,
+      "horizontalOverflow": false,
+      "keywordCount": 14,
+      "maxHeight": "745.6px",
+      "panelHeight": 718.2578125,
+      "panelWidth": 380,
+      "viewport": "width=device-width, initial-scale=0.87, viewport-fit=cover",
+      "width": 430,
+      "x": 25,
+      "y": 106.8671875
+    },
+    {
+      "bodyScrollable": false,
+      "height": 979,
+      "horizontalOverflow": false,
+      "keywordCount": 14,
+      "maxHeight": "783.2px",
+      "panelHeight": 718.2578125,
+      "panelWidth": 380,
+      "viewport": "width=device-width, initial-scale=0.87, viewport-fit=cover",
+      "width": 452,
+      "x": 36,
+      "y": 130.3671875
+    },
+    {
+      "bodyScrollable": true,
+      "height": 480,
+      "horizontalOverflow": false,
+      "keywordCount": 14,
+      "maxHeight": "384px",
+      "panelHeight": 384,
+      "panelWidth": 369,
+      "viewport": "width=device-width, initial-scale=0.87, viewport-fit=cover",
+      "width": 393,
+      "x": 12,
+      "y": 48
+    }
+  ],
+  "hostedGeometry": {
+    "bodyPadding": "12px",
+    "headerTitleFont": "18px",
+    "height": 852,
+    "horizontalOverflow": false,
+    "maxHeight": "681.6px",
+    "maxWidth": "380px",
+    "panelHeight": 558.921875,
+    "panelWidth": 369,
+    "viewport": "width=device-width, initial-scale=0.87, viewport-fit=cover",
+    "width": 393,
+    "x": 12,
+    "y": 146.5390625
+  },
+  "testingDeployment": {
+    "id": "dpl_C9hTU2V7YTWCjXs75h4ffUCRvqXU",
+    "projectId": "prj_MNrDsjvBMVCY5mmPjD3tSyw7OIBs",
+    "url": "bench-scout-n65mgv8dc-sholly.vercel.app",
+    "state": "READY",
+    "target": null,
+    "sha": "6b32b1252ae5a3035d8988d74c4effdd45073403",
+    "branch": "testing"
+  },
+  "aliases": {
+    "bench-scout-git-hotfix-legacy-containment-sholly.vercel.app": "dpl_EcY1anTy6tVPnmAoagf5WCRk2Bed",
+    "bench-scout-git-testing-sholly.vercel.app": "dpl_C9hTU2V7YTWCjXs75h4ffUCRvqXU",
+    "bench-scout.vercel.app": "dpl_AtULjDHZtBiAVqNE46cZ7LKDS4tE",
+    "bench-scout-sholly.vercel.app": "dpl_F5uCLS312DAkTGAGdUZbWqaUYYrg",
+    "bench-scout-git-main-sholly.vercel.app": "dpl_3JSXjPv2JjgTBNE3gwXVSiqJFTaV"
+  },
+  "checks": {
+    "lint": true,
+    "typecheck": true,
+    "optimizedWebpackBuild": true,
+    "local14KeywordProfile": true,
+    "logoutReachableByScrolling": true,
+    "closeRemainsVisible": true,
+    "hostedExistingSyntheticSessionRestored": true,
+    "hostedSettingsLoaded": true
+  },
+  "nativeIphoneVerified": false,
+  "productionChanged": false,
+  "accountDocumentOrDatabaseMutation": false,
+  "browserViewportReset": true,
+  "localFixtureServersStopped": true
+}

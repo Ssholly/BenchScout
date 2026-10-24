@@ -2,7 +2,7 @@
 
 ## 24 October 2026 — 87% scale and compact profile testing preview
 
-Owner-requested initial scale 0.87 and smaller phone profile: 380px width cap, 80dvh height cap, tighter padding/keyword spacing and an 18px title. Pinch zoom and existing account controls remain. Lint and TypeScript passed; build/hosted results are recorded in the preview document. Testing-only scope; Production remains unchanged. [Details](MOBILE-87-PREVIEW-2026-10-24.md).
+Owner-requested initial scale 0.87 and smaller phone profile: 380px width cap, 80dvh height cap, tighter padding/keyword spacing and an 18px title. Pinch zoom and existing account controls remain. Lint, TypeScript and optimized build passed; local 14-keyword geometry and hosted existing-session/profile checks also passed. Testing-only scope; Production remains unchanged. [Details](MOBILE-87-PREVIEW-2026-10-24.md).
 
 ## 23 October 2026 — Approved mobile release now public
 
