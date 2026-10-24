@@ -18,10 +18,10 @@ export const metadata = {
 	},
 };
 
-// Owner-requested compact 87% starting scale; preserve manual pinch zoom.
+// Owner-requested 90% starting scale; preserve manual pinch zoom.
 export const viewport: Viewport = {
     width: "device-width",
-    initialScale: 0.87,
+    initialScale: 0.9,
     viewportFit: "cover",
     themeColor: "#edf5fd",
 };

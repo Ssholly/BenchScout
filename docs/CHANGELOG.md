@@ -1,5 +1,9 @@
 ## 23 October 2026 — Settings fix accepted on testing; public hotfix awaits approval
 
+## 24 October 2026 — 90% scale and centered overlays testing preview
+
+Set starting scale to 0.90, widened the phone profile and increased its text slightly while retaining the 80dvh height cap. Centered the mobile Compliance Hub by removing the flex spacer from its layout, preserving background dismissal and the desktop side panel. Existing 19px account inputs, Home actions and preview toggle remain. Testing-only scope; checks and hosted evidence are recorded separately. [Details](MOBILE-90-PREVIEW-2026-10-24.md).
+
 ## 24 October 2026 — 87% mobile polish released publicly
 
 Exact source **e62934b** is live as **dpl_2tcm2t75xXCL3Hcg5udHCRq7Lrco** after testing acceptance and the owner’s release instruction. Retains the compact 87% profile, raises account input text to 19px, aligns Home actions side by side and collapses employer preview details. Lint/TypeScript/287 tests, build and hosted geometry passed; all 13 public access checks and existing-session Settings checks passed. Testing/diagnostics are preserved, git-main remains maintenance, cleanup registration follows the new artifact, and AtUL remains rollback. No main merge, migration, document mutation or new email. Physical iPhone focus-zoom confirmation remains pending. [Execution and limits](MOBILE-POLISH-2026-10-24.md).

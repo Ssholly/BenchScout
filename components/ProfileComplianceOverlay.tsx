@@ -70,6 +70,7 @@ export default function ProfileComplianceOverlay({
 
 	return createPortal(
 		<div
+			className="compliance-backdrop"
 			style={{
 				position: "fixed",
 				top: 0,
@@ -85,7 +86,7 @@ export default function ProfileComplianceOverlay({
 				padding: "1rem",
 			}}
 		>
-			<div style={{ flex: 1 }} onClick={onClose} />
+			<div className="compliance-dismiss-area" style={{ flex: 1 }} onClick={onClose} />
 
 			<div
 				className="compact-compliance-dialog"

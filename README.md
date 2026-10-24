@@ -8,6 +8,8 @@ The owner-approved controlled pilot is live at [bench-scout.vercel.app](https://
 
 [87% mobile polish](docs/MOBILE-POLISH-2026-10-24.md): released publicly with corrected account input sizing, side-by-side Home actions and collapsible employer preview; native iPhone focus confirmation remains.
 
+[90% mobile testing preview](docs/MOBILE-90-PREVIEW-2026-10-24.md): wider profile and centered Compliance Hub; testing only pending phone review.
+
 ## Local setup
 
 Requires Node 22+, npm, and PostgreSQL. Copy `.env.example` to `.env` and configure a development database. Never use a production database for local tests.

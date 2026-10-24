@@ -2469,22 +2469,22 @@ body.walkthrough-open { overflow: hidden !important; }
  .search-sources-list { grid-template-columns:repeat(3,minmax(0,1fr)) !important; }
  .search-sources-list > div { padding:6px !important; gap:4px; }
  .search-sources-list > div > span { font-size:10px !important; }
- .compact-profile-dialog.account-dialog { max-width:380px !important; max-height:min(80dvh,calc(100dvh - max(16px,env(safe-area-inset-top,0px)) - max(16px,env(safe-area-inset-bottom,0px)))) !important; }
+ .compact-profile-dialog.account-dialog { max-width:480px !important; max-height:min(80dvh,calc(100dvh - max(16px,env(safe-area-inset-top,0px)) - max(16px,env(safe-area-inset-bottom,0px)))) !important; }
  .compact-profile-dialog .account-dialog-header { padding:12px !important; }
  .compact-profile-dialog .account-dialog-header > div > div:first-child { display:none !important; }
- .compact-profile-dialog .account-dialog-header h3 { font-size:18px !important; margin:0 !important; }
+ .compact-profile-dialog .account-dialog-header h3 { font-size:20px !important; margin:0 !important; }
  .compact-profile-dialog .account-dialog-header p { display:none; }
- .compact-profile-dialog .account-dialog-body { padding:12px !important; flex:0 1 auto !important; overscroll-behavior:contain; }
+ .compact-profile-dialog .account-dialog-body { padding:14px !important; flex:0 1 auto !important; overscroll-behavior:contain; }
  .profile-summary > div { padding:10px !important; margin-bottom:10px !important; border-radius:12px !important; gap:8px !important; }
  .profile-summary > div:first-child { padding:0 !important; margin-bottom:10px !important; }
  .profile-summary > div:first-child > div:first-child { width:48px !important; height:48px !important; flex-shrink:0; }
- .profile-summary h2 { font-size:16px !important; line-height:1.4; white-space:normal !important; }
- .profile-summary p { font-size:13px !important; line-height:1.45; overflow-wrap:anywhere; }
- .profile-summary button { padding:8px 10px !important; min-height:44px; font-size:13px !important; white-space:normal; line-height:1.4; }
+ .profile-summary h2 { font-size:17px !important; line-height:1.4; white-space:normal !important; }
+ .profile-summary p { font-size:14px !important; line-height:1.45; overflow-wrap:anywhere; }
+ .profile-summary button { padding:8px 10px !important; min-height:44px; font-size:14px !important; white-space:normal; line-height:1.4; }
  .profile-summary > div > div:first-child { font-size:11px !important; }
  .profile-summary > a { font-size:14px !important; line-height:1.5; }
  .profile-keywords { gap:4px !important; }
- .profile-keywords > span { font-size:13px !important; padding:4px 6px !important; font-weight:500 !important; border-radius:8px !important; line-height:1.4; }
+ .profile-keywords > span { font-size:14px !important; padding:4px 6px !important; font-weight:500 !important; border-radius:8px !important; line-height:1.4; }
  .compact-compliance-dialog { height:auto !important; max-height:80dvh; align-self:center; padding:14px !important; border-radius:16px !important; overflow-y:auto; }
  .compact-compliance-dialog > div:first-of-type { margin-bottom:12px !important; }
  .compact-compliance-dialog h3 { font-size:18px !important; }
@@ -2634,7 +2634,7 @@ body.walkthrough-open { overflow: hidden !important; }
 
 @media (max-width:600px) { .employer-post-fields { grid-template-columns: minmax(0,1fr); } }
 
-/* At 87% page scale, 19 CSS px keeps account entry text above 16 effective px. */
+/* At 90% page scale, 19 CSS px keeps account entry text above 16 effective px. */
 @media (max-width:900px) {
  .account-dialog .account-dialog-body input:not([type="checkbox"]):not([type="radio"]):not([type="file"]) { font-size:19px !important; }
 }
@@ -2642,4 +2642,12 @@ body.walkthrough-open { overflow: hidden !important; }
  .home-hero .home-actions { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); align-items:stretch; width:100%; max-width:520px; margin-inline:auto; gap:8px; }
  .home-hero .home-actions > button { width:100% !important; min-width:0; min-height:48px; padding:10px 8px !important; font-size:13px !important; justify-content:center; gap:6px !important; }
  .home-hero .home-actions > button svg { width:16px; height:16px; flex-shrink:0; }
+}
+
+/* Compliance is a centered dialog on phones, retaining the desktop side panel. */
+@media (max-width:900px) {
+ .compliance-backdrop { justify-content:center !important; align-items:center; padding:max(16px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(16px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px)) !important; }
+ .compliance-dismiss-area { position:absolute; inset:0; }
+ .compliance-backdrop .compact-compliance-dialog { position:relative; z-index:1; flex:0 1 auto; min-width:0; height:auto !important; max-height:min(80dvh,calc(100dvh - max(16px,env(safe-area-inset-top,0px)) - max(16px,env(safe-area-inset-bottom,0px)))); overflow-y:auto; overflow-wrap:anywhere; }
+ .compact-compliance-dialog > div:first-of-type > button { min-width:44px; min-height:44px; flex-shrink:0; }
 }
