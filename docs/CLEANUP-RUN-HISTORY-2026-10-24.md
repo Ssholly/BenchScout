@@ -1,6 +1,6 @@
 # Cleanup run history — 24 October 2026
 
-Status: **approved migration and application released to Production**. Testing migration and hosted read-only acceptance passed. All thirteen public access checks passed; valid-key Production history read is pending. Actual scheduled execution remains unverified. The earlier three-file backup is accepted separately.
+Status: **approved migration and application released to Production**. Testing migration and hosted read-only acceptance passed. All thirteen public access checks passed; valid-key Production history read passed. Actual scheduled execution remains unverified. The earlier three-file backup is accepted separately.
 
 ## Why execution remains unverified
 
@@ -59,3 +59,7 @@ The next scheduling window is **25 October 2026, 03:00–03:59 Africa/Lagos** un
 After release, a read-only CLI request-log lookup limited to the last hour succeeded on the existing plan. Its single cleanup-path request was the deliberate unauthenticated smoke dry run: HTTP 401 at 15:47:28 UTC on 9CM, not an execution pass. The earlier rejected 24-hour lookups do not mean all request metadata is unavailable; the provider rejected request records older than 12 hours. Query promptly after the next window, using a bounded range and path/deployment filters. No paid upgrade is needed for this observed recent lookup. Raw provider records remain outside Git; committed evidence contains no request IDs, IP/location metadata or raw headers.
 
 Next observation range: 25 October 02:00–03:05 UTC (03:00–04:05 Lagos), after the scheduled hour completes. Correlate a successful provider GET with the same deployment and an authenticated cron-endpoint row, matching timestamp, agent hint and terminal result. Check queue counts separately if unresolved work is reported. Do not confuse an HTTP 401, a dry-run request or a manually triggered row with an automatic scheduled pass.
+
+## Production read-only acceptance completed
+
+The operator entered the existing Production administrator key and requested only **Check recent cleanup runs**. Independently observed the same exact response: `runs: []` with the provenance/unfinished-run notice. The key field cleared and permanent-deletion confirmation remained unchecked. This accepts the released application’s administrator authentication, Production audit-table read and result display. No manual processing, source deletion, new run row or email was triggered. The empty list is expected before the next processing invocation and is not evidence of a successful automatic run. The scheduled observation window and full-restoration drill remain outstanding.

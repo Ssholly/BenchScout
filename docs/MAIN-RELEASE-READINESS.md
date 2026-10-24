@@ -1,5 +1,9 @@
 ## 23 October 2026 — Current cutover decision ready for owner review
 
+## 24 October 2026 — Production cleanup-history read accepted
+
+The valid-key public history request returned the expected empty list, independently observed in the browser. Key cleared; deletion confirmation stayed unchecked and no worker was invoked. Production migration, release and read-only acceptance are complete. Actual automatic execution and the timed full-restoration drill remain open. [Evidence](CLEANUP-RUN-HISTORY-2026-10-24.md).
+
 ## 24 October 2026 — Cleanup run history released to Production
 
 Approved migration `20261024000000_document_cleanup_runs` is applied to neondb with an empty table and matching checksum. Exact tested source **4eb3e2c** is public as **dpl_9CMj8YniwM7cWcNm8WfEzmpGowsf**; EA6 remains rollback. All 13 public GET checks passed; other aliases, existing keys, backup flags and daily cleanup definition are preserved, with no bypasses. Valid-key public history read is pending; no worker was manually invoked and actual automatic execution remains unverified. Prior artifact statements below are dated history. [Execution and next observation](CLEANUP-RUN-HISTORY-2026-10-24.md).

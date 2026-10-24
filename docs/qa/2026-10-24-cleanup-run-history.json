@@ -46,7 +46,7 @@
   "productionBuildPending": false,
   "productionDeployment": "dpl_9CMj8YniwM7cWcNm8WfEzmpGowsf",
   "rollbackDeployment": "dpl_EA6N74nt32g56QbkiJQWZPwMvrAt",
-  "productionValidKeyReadPending": true,
+  "productionValidKeyReadPending": false,
   "allNonPublicAliasesPreserved": true,
   "productionSmoke": {
     "observedAt": "2026-10-24T15:47:29.611Z",
@@ -181,5 +181,12 @@
     "observedDeployment": "dpl_9CMj8YniwM7cWcNm8WfEzmpGowsf",
     "interpretation": "deliberate unauthenticated dry-run smoke request; not scheduled execution",
     "paidUpgrade": false
+  },
+  "productionValidKeyHistoryRead": {
+    "runs": [],
+    "evidence": "operator-reported exact result independently observed in public browser status",
+    "keyCleared": true,
+    "deletionConfirmationUnchecked": true,
+    "processingInvoked": false
   }
 }
