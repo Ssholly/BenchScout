@@ -1,5 +1,10 @@
 ## 23 October 2026 — Settings fix accepted on testing; public hotfix awaits approval
 
+## 24 October 2026 — Approved 90% version released publicly
+
+Exact tested source **e3bded2** is live as **dpl_8242kxsYFxz6qtrHFtsxNwqiA4oC** after owner approval. Initial scale 0.90, wider profile and centered mobile Compliance Hub are public. All 13 public access checks and existing-session profile/configured-hub geometry passed. Previous 2tcm remains rollback; testing/diagnostics are preserved, git-main is maintenance, and cleanup registration follows the new artifact at 03:17 Lagos. No main merge, migration, account/file mutation or new email. [Execution, evidence and native-device limits](MOBILE-90-PUBLIC-2026-10-24.md).
+
+
 ## 24 October 2026 — 90% scale and centered overlays testing preview
 
 Set starting scale to 0.90, widened the phone profile and increased its text slightly while retaining the 80dvh height cap. Centered the mobile Compliance Hub by removing the flex spacer from its layout, preserving background dismissal and the desktop side panel. Existing 19px account inputs, Home actions and preview toggle remain. Lint, TypeScript and optimized build passed; local and hosted geometry accepted. Testing-only scope; Production remains unchanged pending phone review. [Details](MOBILE-90-PREVIEW-2026-10-24.md).

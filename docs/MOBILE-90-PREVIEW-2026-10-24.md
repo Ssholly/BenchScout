@@ -1,5 +1,7 @@
 # 90% scale, wider profile and centered compliance — testing preview
 
+Subsequently approved and [released to Production](MOBILE-90-PUBLIC-2026-10-24.md). The testing-only restrictions/results below are retained as the pre-approval checkpoint.
+
 Date: 24 October 2026. Status: **implemented, lint/TypeScript/build passed and hosted testing geometry accepted.** Native iPhone review pending. **Testing only. Production remains on e62934b until a separate review/release instruction.**
 
 The owner found 87% too small, the profile too narrow and the Compliance Hub shifted right on the iPhone. This preview changes initial scale to 0.90, preserving device width, safe-area cover and manual pinch zoom. Existing 19px account-entry controls remain (approximately 17.1 effective px at initial scale); no maximum-scale/user-scalable restriction is added.

@@ -1,5 +1,10 @@
 # Deploying the security upgrade
 
+## 24 October 2026 — Approved 90% version released publicly
+
+Exact tested source **e3bded2** is live as **dpl_8242kxsYFxz6qtrHFtsxNwqiA4oC** after owner approval. Initial scale 0.90, wider profile and centered mobile Compliance Hub are public. All 13 public access checks and existing-session profile/configured-hub geometry passed. Previous 2tcm remains rollback; testing/diagnostics are preserved, git-main is maintenance, and cleanup registration follows the new artifact at 03:17 Lagos. No main merge, migration, account/file mutation or new email. [Execution, evidence and native-device limits](MOBILE-90-PUBLIC-2026-10-24.md).
+
+
 ## 24 October 2026 — 90% overlay preview accepted on testing
 
 Source **e3bded2** is Ready as Preview **dpl_Hod97ZJwduMjNLF9emNvvshMgmW9** and assigned only to testing. Local 14-keyword/configured/unconfigured geometry and hosted wider-profile/centered-hub checks passed; lint, TypeScript and optimized build passed. Public remains **2tcm/e62934b**. No Production build or promotion; physical iPhone review is pending. [Changes and evidence](MOBILE-90-PREVIEW-2026-10-24.md).

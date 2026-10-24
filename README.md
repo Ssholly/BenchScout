@@ -8,7 +8,7 @@ The owner-approved controlled pilot is live at [bench-scout.vercel.app](https://
 
 [87% mobile polish](docs/MOBILE-POLISH-2026-10-24.md): released publicly with corrected account input sizing, side-by-side Home actions and collapsible employer preview; native iPhone focus confirmation remains.
 
-[90% mobile testing preview](docs/MOBILE-90-PREVIEW-2026-10-24.md): wider profile and centered Compliance Hub; testing only pending phone review.
+[90% mobile release](docs/MOBILE-90-PUBLIC-2026-10-24.md): wider profile and centered Compliance Hub, now public after testing and owner approval.
 
 ## Local setup
 
