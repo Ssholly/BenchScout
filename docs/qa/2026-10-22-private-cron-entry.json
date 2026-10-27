@@ -1,0 +1,15 @@
+{
+  "date": "2026-10-22",
+  "operatorHasSavedProductionKey": true,
+  "localForm": "http://127.0.0.1:3195/",
+  "loopbackOnly": true,
+  "privateFilePermissions": "directory 0700, file 0600",
+  "secretValuesPrinted": false,
+  "secretFileOutsideRepository": true,
+  "userEntryPending": true,
+  "newBypassCreated": false,
+  "probeAutoRun": false,
+  "syntaxChecked": true,
+  "eslintPassed": true,
+  "browserFormObserved": true
+}

@@ -1,0 +1,140 @@
+# Launch audit — 19 October 2026
+
+## 21 October 2026 — Normal upload/access checks and current release handover
+
+A normal candidate upload into an empty synthetic vault slot persisted, rendered privately and created the expected encrypted archive. An unsigned request to that observed archive returned HTTP 403. Application sharing stayed CV-only. Fresh Production metadata has no live-scoped private-upload/admin/salary/backup bindings and no linked Shared variables. The configured normal local database compatibility check passed, but effective Production mapping/history still needs verification. [Current main-release readiness](MAIN-RELEASE-READINESS.md) consolidates completed evidence and remaining blockers; older tables below are dated history. No Production change or merge occurred.
+
+
+## 21 October 2026 — Testing backfill and alert acceptance passed
+
+The two older current QA files completed encrypted backfill and decryption verification, with zero failures/skips/stale purges. The approved operator inbox also received the shared-path labelled alert test. Database rows and application grants were unchanged. These close the requested synthetic backfill/mail acceptance checks under LA-13/LA-14; real-account/Production backfill, normal hosted upload acceptance, anonymous backup denial and wider recovery/promotion gates remain separate. [Recovery evidence](DOCUMENT-RECOVERY.md).
+
+
+## 21 October 2026 — Hosted encrypted document recovery passed
+
+A new QA-only file completed actual private source deletion, authenticated backup decryption, isolated restoration and exact private read-back. The hosted result was independently observed; database rows and application permissions were unchanged. New testing uploads have continuous backup enabled; pre-activation backfill, normal hosted upload acceptance, anonymous denial and failure-alert inbox evidence remain open. This advances LA-13/LA-14 within the recorded synthetic scope; it does not establish independent-provider recovery or production readiness. [Document recovery evidence](DOCUMENT-RECOVERY.md).
+
+
+## 20 October 2026 — Historical database recovery copy verified
+
+An approved historical child copy of the dedicated testing database preserved the expected synthetic application, closed vacancy, suspended employer, review audit/revision and file-sharing metadata. Seven completed migration rows were present; both copied sessions were expired and zero active sessions rechecked. No app/email/cron connection or production/source reset occurred. See [operations readiness](OPERATIONS-READINESS.md) and its scrubbed recovery evidence. This advances LA-14 at database-record level; file recovery, independent backups, full restored-app acceptance and recovery objectives remain open. Pilot remains HOLD.
+
+
+## 20 October 2026 — Hosted safety journey update
+
+The protected testing journey now verifies replacement CV withholding in the employer roster, soft closure with one retained application, and roster/directory revocation for an already authenticated employer after QA-only suspension. Candidate history remained accessible and the historical viewer offered no Apply action; Matches was empty in the combined applied/closed/suspended state. See [hosted acceptance](HOSTED-EMPLOYER-ACCEPTANCE.md) for evidence and attribution limits. LA-12/LA-13 advance but remain incomplete: direct hosted denial/idempotency, independent old-object cleanup and broader operational recovery checks are still open. Pilot remains HOLD. No product code, schema or configuration change.
+
+
+## 20 October 2026 — Administrator queue authentication accepted
+
+Operator correct-key loading of the hosted company/vacancy/report queues succeeded (all empty); prior wrong-key access was denied. No review decision submitted. Recovery-email absence was traced through a targeted read-only query to an unregistered exact recipient address; this exercises the intentional generic/no-send path, not provider delivery. Test signup is prepared and awaits user password entry/submission. See Testing credentials and its 20 October scrubbed evidence. No product code or production state changed; live inbox and remaining operational gates stay open.
+
+## 19 October 2026 — Credential handoff and email preparation
+
+Prepared testing-only administrator/cron/salary Secret configuration for secure operator entry. None is claimed saved/activated yet. Standardised initial candidate confirmation on the shared template (role-specific link, 24-hour expiry, plain text) and retained unconfirmed-state/delivery-failure behaviour. Lint, TypeScript, 201 tests and build passed. Live inbox messages/receipt, hosted secret authentication and recovery remain open. See [Testing credentials](TESTING-CREDENTIALS.md); no real approval or test message was sent in this pass.
+
+## 19 October 2026 — Hosted testing isolation verified
+
+Successful testing deployment `699b256` was checked through an actual synthetic login, browser certificate upload and guarded preview. Direct persistence checks confirmed the new database/store and absence of the fixture from the normal database. One synthetic object/account/session was removed; zero candidates/employers/jobs/applications remained. See [hosted evidence](qa/2026-10-19-hosted-isolation.json) and Deployment. This closes the current testing database/store cutover verification, not other preview/old-deployment isolation, hosted administrative secrets, inbox delivery or recovery gates. Pilot remains HOLD.
+
+## 19 October 2026 — Testing branch isolation setup
+
+The user-created dedicated testing project was verified empty and all seven repository migrations applied with matching completed history/checksums. A separate private testing document store passed write/authenticated read, anonymous 403 and cleanup. Vercel Secret overrides now target Preview/testing only, retaining Production bindings. See [Hosted operations readiness](OPERATIONS-READINESS.md) for exact scope and remaining other-preview/old-deployment isolation, independent secrets, email and recovery gates. Hosted deployment/smoke evidence is recorded in Deployment. Pilot remains HOLD.
+
+## 19 October 2026 — Hosted operations audit
+
+Read-only Vercel/Neon checks confirmed a shared Production/Preview DATABASE_URL configuration, a single Neon production branch, a six-hour history window, a Preview-only private Blob token and no visible ADMIN_SECRET/SALARY_OWNER_SECRET or linked Shared variables. This supersedes the earlier unknown database-separation status at configuration level; effective settings of every historical deployment were not inspected. Email aliases are configured, but actual sender/inbox delivery remains unverified. See [Hosted operations readiness](OPERATIONS-READINESS.md) and its scrubbed evidence for findings, a prepared empty testing project, exact cutover sequence, email acceptance and recovery drill. No provider configuration or data changed. Pilot remains HOLD.
+
+## 19 October 2026 — Isolated live-service acceptance
+
+The isolated-schema HTTP journey passed on real PostgreSQL/private Blob with local SMTP capture, including competing reviews, forced audit rollback, moderation, document grants, closure, withdrawal, file replacement/deletion and suspension. Actual mobile browser checks covered candidate sign-in, CV/degree selection/submission, history, employer receipt and guarded PDF opening, interview scheduling/notification and withdrawal. A match-summary defect found during that journey was fixed: employer posts no longer dilute personalised scores or trigger a false high-score message. See [Staging acceptance](STAGING-ACCEPTANCE.md) for scope and the aggregate evidence report.
+
+This advances LA-12/LA-13 and the real-transaction portion of LA-14. It does not establish hosted database separation, external inbox delivery, backup/restore or complete interrupted-request acceptance. Browser file-picker certificate upload passed after the user enabled the extension permission; authenticated HTTP upload passed too. Referenced legacy-public inventory was zero; unauthenticated Vercel API access redirects to Vercel SSO. Scoped cleanup removed seven remaining synthetic private files, verified empty prefixes, and removed the temporary schema. Hosted code release is recorded separately in Deployment. Pilot status remains HOLD for the remaining gates.
+
+## 19 October 2026 — LA-11 implementation update
+
+Candidate review now uses version-bound private evidence, candidate identity checks and an atomic decision/audit transaction. Credential mutation and older profile JSON writes cannot silently inherit an approval. Historical flags need a fresh review. See [Candidate credential review](CANDIDATE-CREDENTIAL-REVIEW.md) for scope and remaining named-admin/staging/retention limits. Migration applied; configured database compatibility, lint, TypeScript, 192 tests, production build and mobile form checks passed. Testing deployment for `e91a6b3` succeeded; exact evidence is in Deployment. Historical findings below are preserved. Full staging acceptance and pilot HOLD remain in force.
+
+## 19 October 2026 — LA-10 implementation update
+
+Selected application documents and a submission reference record are now implemented. See [Application document sharing](APPLICATION-DOCUMENT-SHARING.md) for exact behaviour, legacy CV-only migration, deletion/replacement rules and limits. The record does not retain immutable file copies; existing attachments cannot yet be changed in place. Full staging/private-store acceptance remains open and pilot status stays HOLD. Migration application and configured database compatibility passed; lint, TypeScript, 177 tests, build and 320/390px synthetic component checks passed. Testing deployment for `b02fdaf` succeeded; see Deployment for evidence. LA-11 credential-review concurrency is the next implementation priority. The findings below remain historical evidence.
+
+## Follow-up: professional summary priority
+
+LA-09 is implemented and deployed to testing through explicit, default-off candidate consent, an allowlisted live professional summary, Settings draft preview, saved direct-application preview and employer applicant/previous-applicant views. Seven new tests cover data minimization, consent and access checks; the full suite passes 172 tests. Vercel Preview for `f0d1a67` is Ready, and the hosted Settings controls were checked without saving changes. See [Professional summaries](PROFESSIONAL-SUMMARIES.md) for all contracts and limitations and [Deployment](DEPLOYMENT.md) for exact release evidence. LA-10 remains open: this does not implement selected-document sharing or submission snapshots. The original first-pass findings below remain dated evidence.
+
+## Decision and scope
+
+**Pilot readiness: HOLD.** First source/test audit pass completed for candidate identity, career profiles, direct applications, employer applicant access, document sharing, interview feedback, withdrawal and vacancy closure. Confirmed defects below were fixed locally. This is not a production security certification or a completed signed-in acceptance test.
+
+Audit began with 153 passing automated tests and the existing employer-safety/profile work already in the checkout. Existing uncommitted changes were preserved. The app name remains a working name and does not block engineering work.
+
+Severity: P1 must be resolved/verified before pilot use of the affected flow; P2 is a reliability or usability issue with a practical workaround. “Fixed locally” requires hosted staging acceptance before it counts as released.
+
+## Findings addressed locally
+
+| ID | Priority | Trigger and previous result | Local correction | Evidence |
+| --- | --- | --- | --- | --- |
+| LA-01 | P1 | A candidate with a legacy public CV URL could submit a direct application, but the employer document endpoint would refuse that file. | Direct applications require a private-store CV. Matches distinguishes private uploads from files needing re-upload. Optional profile fields are not made universal application blockers. | Application journey tests reject absent, public and malformed CV URLs; duplicate submissions preserve the existing application stage. |
+| LA-02 | P1 | Candidate withdrawal reused the active-discovery guard, rejecting a closed/paused direct vacancy even when the candidate had applied. | Withdrawal uses candidate-owned application deletion for direct jobs regardless of publication status; external jobs still require ownership. No other applicant or vacancy status is changed. | Tests cover active/closed/pending-review/cleared, other candidate records, malformed IDs and document denial after final withdrawal. |
+| LA-03 | P1 | Employer rejection changed the UI before confirmation and reported success on HTTP errors; interviews also updated optimistically. | Shared client request validation; visible stages change only after confirmed server results. Pending decisions are guarded; results are ignored if client identity changes. | Applicant update tests reject 403/503, unsuccessful and malformed results. Server tests reject cross-employer/invalid interview writes. |
+| LA-04 | P2 | Interview success copy claimed email dispatch even when the server returned emailDelivered=false. | Distinguish saved interview/in-app notification from email delivery; warn the employer to contact the candidate when email fails. | Simulated email failure preserves the interview and in-app notification and returns false delivery status. |
+| LA-05 | P1 | A reviewed flag plus review date could continue displaying a reviewed badge after credential expiry. | Central currentCredentialReview helper checks review date and applicable expiry; used by JSON sanitization, readiness, applicant/talent responses and compliance. Practicing licenses require expiry; provisional expiry remains optional, but when provided must be future. Database historical review records are retained. | Tests cover expired/missing/invalid practicing expiry, invalid review date, and intern provisional expiry independently of a past practicing-license expiry. |
+| LA-06 | P1 | Employer vacancy deletion cascaded to Application records, removing candidate history. | Existing DELETE /api/jobs/direct now closes the vacancy (status=closed) using employer-scoped updateMany. Existing applications/reports remain. Employer labels describe closure, and new applications are blocked by the existing active-status gate. | Test fails if physical job deletion is attempted and checks preserved applications. |
+| LA-07 | P1 | DELETE /api/jobs/applicants could erase all application records for a vacancy. | Keep authenticated ownership checks, then return HTTP 409 with guidance to close the vacancy/update individual statuses. | Test confirms the owning employer cannot bulk-delete application history. |
+| LA-08 | P1 | Sharing information was brief and in a footer hidden on narrow screens; live document replacement/access rules were not explained. | Add ApplicationSharingNotice to the scrollable direct-application dialog body. Explain identity/stage/status sharing, current vault access, replacements, final withdrawal and limits on recalling downloaded copies. | Actual component rendered with application CSS in an isolated synthetic fixture at 320/390/800px. No horizontal overflow; submit control remains within fixture viewport. This is not a full application-dialog/browser acceptance pass. |
+
+The candidate application submit button also shows a pending state; success/failure results from an obsolete client identity are ignored. The pipeline labels removal of a direct application as “Withdraw application”, rather than promising a closed vacancy will return to Matches.
+
+## Confirmed foundations
+
+- Candidate User and Employer records use distinct roles. Authentication middleware restores server-owned identity, rejects role mismatches and gates employer applicant access on current company approval.
+- Career stages and intern placement stages are saved server-side. The existing tests exercise validation, explicit stage-change confirmation, credential-review reset and preservation of account documents/history.
+- Employer applicant/talent queries are scoped to the employer's jobs/previous applicants. Full candidateProfile JSON is stripped from these responses; private reminders are not shared.
+- Private document reads require candidate ownership or a currently verified employer/application relationship. After the final application relationship is removed, further employer downloads are denied. Another remaining application to the same employer continues to authorise access.
+- Direct submission checks career stage, recorded deadline, active vacancy and company approval. The unique candidate/job application key makes sequential duplicate submission idempotent. These checks do not independently certify professional eligibility or establish race-free behaviour under all concurrent operations.
+- Company review, per-vacancy review, reporting and suspension have existing automated coverage; no actual company approval/report/suspension was created during this audit.
+
+## Remaining work before pilot acceptance
+
+| ID | Priority | Work and acceptance evidence | Responsible function |
+| --- | --- | --- | --- |
+| LA-09 | P1 | Define an explicit shared professional summary (education, relevant experience/specialties, availability, preferences) and candidate preview. Add allowlisted API fields and employer UI without exposing reminders or internal scan metadata. A CV can cover detailed employment history initially. | Product + engineering |
+| LA-10 | P1 | Resolve document scope: current access is to the supported current vault documents, not selected files or an immutable submission. The notice now describes this, but selective per-application sharing, retention/deletion policy and a submission record still need design and implementation before offering that stronger promise. | Product + privacy + engineering |
+| LA-11 | P1 | Candidate credential review needs a concurrency/evidence audit. The existing admin candidate branch reads current details then updates a review flag without the revision checks/audit transaction used for employer/vacancy decisions. Require current private evidence and prove that document/profile replacement cannot inherit a stale approval. This branch was identified, not changed, in this pass. | Review operations + engineering |
+| LA-12 | P1 | Use isolated staging candidates (intern seeking/in-training/licensed), employers (pending/approved/suspended) and reviewed vacancies. Complete signup/confirmation, profile/upload, review/post, apply, employer assessment/interview, candidate notification, closure and withdrawal. Repeat with another account's IDs, rejected requests and interrupted requests. | QA + engineering |
+| LA-13 | P1 | Verify private-store configuration, current legacy-document inventory and cleanup outcomes in the target deployment. Complete actual private upload/read/delete and replacement checks with synthetic files; verify deployment protection and storage permissions. | Engineering + operations |
+| LA-14 | P1 | Verify hosted release, monitoring, rollback and a backup/restore exercise. Check application/review races and database transaction failure handling with a real staging database. No disaster-recovery or load claim follows from mocked tests. | Engineering + operations |
+| LA-15 | P2 / P1 if promised | Revalidate unattended scans and email delivery/retry operations. docs/SCHEDULER-AUDIT.md records a 14 October trigger/protection limitation and absent email retries; hosting was not refreshed in this pass. Do not advertise unsupported scheduled guarantees. | Operations |
+| LA-16 | P2 | Audit interview timezone/date constraints, stale employer drawer reads, repeated requests and client identity changes across all remaining mutation flows. Confirm consistent labels and accessible errors on real devices, keyboard and short landscape screens. | QA + engineering |
+
+Business registration, final name/domain, applicable recruitment/privacy arrangements and employer service terms remain parallel launch work described in the proposal. This audit made no registration or legal-clearance determination.
+
+## API, data and release record
+
+- POST /api/apply: a direct application with no privately stored CV returns HTTP 400. Existing career-stage/publication/company checks remain.
+- DELETE /api/apply: validates jobId; own direct application can be withdrawn from an inactive vacancy; no matching own application returns 404. Other candidates' external jobs return 403. Response remains {success:true} on successful withdrawal.
+- DELETE /api/jobs/direct: closes an owned vacancy rather than deleting it. Existing application/document access remains until withdrawal or employer restriction; closure itself does not revoke that relationship.
+- DELETE /api/jobs/applicants: returns 409 for an authorised owning employer; anonymous/wrong-role/ownership denials still run first.
+- Applicant/talent queries select licenseExpiry; current reviewed booleans are recalculated using the applicable credential. Personal candidateProfile content remains excluded. No new professional-summary API fields are exposed yet.
+- New helpers: lib/credential-review.ts and lib/applicant-update.ts. New component: components/ApplicationSharingNotice.tsx. New regression suites: tests/application-journey.test.cjs and tests/applicant-update.test.cjs. The existing duplicate-application fixture now uses a valid private-store URL.
+- No schema change, new migration, credentials, provider integration or dependency was introduced. No hosted deployment, Git push or real candidate/employer decision was performed.
+- Read-only node scripts/check-database.cjs returned missing=[], migrationHistoryPresent=true, compatible=true on 19 October. This is schema compatibility evidence only, not a migration-provenance or hosted-code check.
+
+## Verification
+
+Baseline: 153/153 tests passed before this audit's edits. Final validation after component extraction/copy refinements: `npm run check` passed lint, TypeScript and 165/165 automated tests; `npm run build` passed. `git diff --check` passed after documentation formatting cleanup. Tests use mocked database/provider dependencies; they are not evidence of real-database transaction isolation or provider delivery.
+
+Browser: /matches loaded locally; guest state provided no signed-in test identity. No application, rejection, hire, credential approval or interview was submitted against real records. An isolated fixture rendered the actual ApplicationSharingNotice and app CSS with synthetic text. Width/scrollWidth pairs were 320/320, 390/390 and 800/800, and fixture submit controls remained inside the 720px viewport. This establishes notice layout only; full authenticated dialog interactions remain LA-12/LA-16.
+
+Next implementation milestone: LA-09 and LA-10, followed by the LA-11 credential-review race check and the complete staging acceptance journey. The pitch deck and pilot pack must use confirmed behaviour and must not describe these open capabilities as shipped.
+
+
+### 20 October 2026 — Interview future-time constraint (LA-16 partial)
+
+The hosted synthetic employer roster showed one applicant and rendered only its selected synthetic CV; the unselected-file direct request was blocked by the browser client and does not establish a server denial. See [hosted evidence](HOSTED-EMPLOYER-ACCEPTANCE.md).
+
+Implemented shared Africa/Lagos date/time validation in the interview form and `PATCH /api/jobs/applicants`. Invalid or non-future schedules return HTTP 400 before transaction/notification/email; current-minute times are rejected once their minute has begun. The form explicitly labels and associates Nigeria-time inputs. Existing schedules, status values, ownership/review checks, transaction and email delivery reporting are unchanged. No schema/migration/configuration. New boundary/calendar tests passed: lint, TypeScript, 220 tests, production build and diff check. Testing deployment and hosted scheduling acceptance remain pending. This does not close the remaining LA-16 stale-read/repetition/device checks.
+
+
+Hosted LA-16 follow-up: `49e5108` deployed successfully; a populated past interview was rejected in the form. A future synthetic interview saved and its approved recipient confirmed correct inbox details (21 October, 10:00 Africa/Lagos; no attendance). A 320px inspection found time-input overflow. The adaptive-grid repair passed lint, TypeScript, 220 tests and build; deployment and fresh 320/390px form checks remain pending. Candidate notification/scheduler acceptance remains open.

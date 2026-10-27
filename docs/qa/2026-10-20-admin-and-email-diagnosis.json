@@ -1,0 +1,34 @@
+{
+  "date": "2026-10-20",
+  "scope": "Isolated hosted testing only",
+  "administrator": {
+    "operatorCorrectKeyRead": "passed",
+    "invalidKeyRead": "previously rejected with Unauthorized.",
+    "companyQueueCount": 0,
+    "vacancyReviewCount": 0,
+    "openReportCount": 0,
+    "reviewDecisionSubmitted": false,
+    "secretReadBack": false,
+    "secretFieldCleared": true
+  },
+  "approvedInboxDiagnostic": {
+    "recipientReportedRecoveryEmail": "not received",
+    "readOnlyQuery": true,
+    "database": "benchscout_testing",
+    "exactAddressCandidateExists": false,
+    "exactAddressEmployerExists": false,
+    "exactAddressCandidateResetTokenExists": false,
+    "recipientAddressPublished": false,
+    "dataModified": false,
+    "interpretation": "Missing account matches the no-send branch of password recovery; provider delivery has not been exercised for this address."
+  },
+  "preparedSignup": {
+    "name": "BenchScout Email QA",
+    "recipient": "approved address; omitted",
+    "submitted": false,
+    "passwordEnteredByAgent": false,
+    "requiresOperatorCredentialEntry": true
+  },
+  "emailDeliveryAccepted": false,
+  "productionChanged": false
+}

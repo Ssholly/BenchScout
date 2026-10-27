@@ -1,5 +1,9 @@
 "use client";
-import { useState, useEffect } from "react";
+import Toast from "@/components/Toast";
+import { startTransition } from "react";
+import { nextScheduledRun, scheduleZones } from "@/lib/schedule";
+import { useMounted } from "@/lib/use-mounted";
+import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 
 // --- UTILITIES ---
@@ -16,7 +20,8 @@ const convertAMPMTo24H = (ampmTime: string): string => {
 	if (!ampmTime) return "12:00";
 	const [time, period] = ampmTime.split(" ");
 	if (!time || !period) return "12:00";
-	let [hours, minutes] = time.split(":").map(Number);
+	const [parsedHours, minutes] = time.split(":").map(Number);
+	let hours = parsedHours;
 	if (period === "PM" && hours !== 12) hours += 12;
 	if (period === "AM" && hours === 12) hours = 0;
 	return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
@@ -86,6 +91,7 @@ type EventType = "interview" | "deadline" | "followup" | "action";
 type ScheduledEvent = {
 	id: string;
 	date: number;
+	fullDate?: string;
 	time: string;
 	title: string;
 	company: string;
@@ -93,47 +99,10 @@ type ScheduledEvent = {
 	location: string;
 };
 
-const DEFAULT_EVENTS: ScheduledEvent[] = [
-	{
-		id: "e1",
-		date: new Date().getDate(),
-		time: "09:00 AM",
-		title: "Submit Additional Documents",
-		company: "Synlab Nigeria",
-		type: "deadline",
-		location: "Portal",
-	},
-	{
-		id: "e2",
-		date: new Date().getDate() + 1,
-		time: "11:30 AM",
-		title: "Technical Interview (Stage 1)",
-		company: "EHA Clinics",
-		type: "interview",
-		location: "Google Meet",
-	},
-	{
-		id: "e3",
-		date: new Date().getDate() + 3,
-		time: "02:00 PM",
-		title: "Check Application Status",
-		company: "Integra Diagnostics",
-		type: "followup",
-		location: "Email",
-	},
-	{
-		id: "e4",
-		date: new Date().getDate() + 7,
-		time: "10:00 AM",
-		title: "Final Hiring Manager Chat",
-		company: "AMCE / Deloitte HC",
-		type: "interview",
-		location: "Abuja Office",
-	},
-];
+const DEFAULT_EVENTS: ScheduledEvent[] = [];
 
 export default function SchedulerPage() {
-	const [mounted, setMounted] = useState(false);
+	const mounted = useMounted();
 
 	// --- 1. DYNAMIC CALENDAR STATE ---
 	const [currentMonthDate, setCurrentMonthDate] = useState(new Date());
@@ -152,7 +121,7 @@ export default function SchedulerPage() {
 	};
 
 	const selectedDayEvents = events
-		.filter((e) => e.date === selectedDay)
+		.filter((e) => e.fullDate === `${currentMonthDate.getFullYear()}-${String(currentMonthDate.getMonth() + 1).padStart(2, "0")}-${String(selectedDay).padStart(2, "0")}`)
 		.sort((a, b) => {
 			const timeA = new Date(`1970/01/01 ${a.time}`).getTime();
 			const timeB = new Date(`1970/01/01 ${b.time}`).getTime();
@@ -174,13 +143,19 @@ export default function SchedulerPage() {
 	const [countdown, setCountdown] = useState("--:--:--");
 	const [nextDate, setNextDate] = useState("—");
 	const [nextTimeStr, setNextTimeStr] = useState("—");
+	const [calendarSyncUnavailable, setCalendarSyncUnavailable] = useState(false);
 	const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
 
 	const [isAlertModalOpen, setIsAlertModalOpen] = useState(false);
 	const [isAlertsActive, setIsAlertsActive] = useState(false);
+	const [isTestingEmail, setIsTestingEmail] = useState(false);
+    const [emailTestStatus, setEmailTestStatus] = useState("");
 	const [alertTier, setAlertTier] = useState("Tier 1 Only");
+    const [isSavingAlerts, setIsSavingAlerts] = useState(false);
+    const [alertSaveError, setAlertSaveError] = useState("");
+    const [isSavingSchedule, setIsSavingSchedule] = useState(false);
 	const [alertKeywords, setAlertKeywords] = useState(
-		"Blood Bank, AMCE, Manager",
+		"",
 	);
 
 	// 🚀 FIXED: Added "warning" to the Toast state type
@@ -218,7 +193,7 @@ export default function SchedulerPage() {
 		
 		// Fetch LIVE B2B Shortlist events
 		try {
-			const res = await fetch(`/api/scheduler/sync?email=${activeEmail}`);
+			const res = await fetch(`/api/scheduler/sync?email=${encodeURIComponent(activeEmail)}`);
 
 			// 🚀 CRITICAL FIX: Only try to parse JSON if the response is actually OK (Not 404 HTML)
 			if (!res.ok) {
@@ -226,13 +201,15 @@ export default function SchedulerPage() {
 			}
 
 			const data = await res.json();
+            setCalendarSyncUnavailable(false);
 			if (data.success && data.employerEvents) {
 				setEvents([...localEvents, ...data.employerEvents]);
 			} else {
 				setEvents(localEvents);
 			}
 		} catch (error) {
-			console.error("Failed to sync B2B schedule data:", error);
+			setCalendarSyncUnavailable(true);
+            console.warn("Interview updates are temporarily unavailable", error);
 			// Fail silently and just load local events
 			setEvents(localEvents);
 		}
@@ -256,15 +233,30 @@ export default function SchedulerPage() {
 		if (savedAlertsActive) setIsAlertsActive(savedAlertsActive === "true");
 
 		const savedAlertTier = localStorage.getItem("labpro_alerts_tier");
-		if (savedAlertTier) setAlertTier(savedAlertTier);
+		if (savedAlertTier) setAlertTier(savedAlertTier === "All Roles" ? "All Tiers" : savedAlertTier);
 
 		const savedAlertKeywords = localStorage.getItem("labpro_alerts_keywords");
 		if (savedAlertKeywords) setAlertKeywords(savedAlertKeywords);
+        try {
+            const response = await fetch("/api/user");
+            if (!response.ok) throw new Error("Could not load schedule");
+            const { user } = await response.json();
+            setIsActive(user.alertsActive);
+            setTime(user.scanTime);
+            setSelectedDays(user.scanDays.split(","));
+            setTimezone(Object.keys(scheduleZones).find(key => scheduleZones[key].iana === user.scanTimezone) || "WAT");
+            setTargetLocation(user.location);
+            setIsAlertsActive(user.autoSendEmail);
+            setAlertTier(user.alertTier === "All Roles" ? "All Tiers" : user.alertTier);
+            setAlertKeywords(user.alertKeywords || "");
+            localStorage.setItem("labpro_scheduler_active", String(user.alertsActive));
+        } catch {
+            setToast({ message: "Could not load your saved schedule. Try refreshing.", type: "error" });
+        }
 	};;
 
 	useEffect(() => {
-		setMounted(true);
-		loadScheduleData();
+		startTransition(() => { loadScheduleData(); });
 		window.addEventListener("userStateChanged", loadScheduleData);
 		return () =>
 			window.removeEventListener("userStateChanged", loadScheduleData);
@@ -280,42 +272,15 @@ export default function SchedulerPage() {
 		}
 	}, [events, mounted, isUserLoggedIn]);
 
-	const getNextRun = (t: string, d: string[]) => {
-		if (!d || d.length === 0) return null;
 
-		const dayIndices = d.map((dayName) => {
-			const idx = [
-				"Sunday",
-				"Monday",
-				"Tuesday",
-				"Wednesday",
-				"Thursday",
-				"Friday",
-				"Saturday",
-			].indexOf(dayName);
-			return idx !== -1 ? idx : 1;
-		});
-
-		const [h, m] = t.split(":").map(Number);
-		let date = new Date();
-		date.setHours(h, m, 0, 0);
-
-		for (let i = 0; i < 8; i++) {
-			if (date > new Date() && dayIndices.includes(date.getDay())) return date;
-			date = new Date(date.getTime() + 86400000);
-			date.setHours(h, m, 0, 0);
-		}
-		return null;
-	};
-
-	let lastRunTime = "";
+	const lastRunTime = useRef("");
 
 	useEffect(() => {
 		let timer: NodeJS.Timeout;
 
 		if (isActive && isUserLoggedIn) {
 			timer = setInterval(() => {
-				const next = getNextRun(time, selectedDays);
+				const next = nextScheduledRun(time, selectedDays, timezone);
 				if (!next) {
 					setCountdown("--:--:--");
 					setNextDate("—");
@@ -328,20 +293,13 @@ export default function SchedulerPage() {
 
 				if (diff <= 1000) {
 					const currentMinuteString = `${now.getHours()}:${now.getMinutes()}`;
-					if (lastRunTime !== currentMinuteString) {
-						lastRunTime = currentMinuteString;
+					if (lastRunTime.current !== currentMinuteString) {
+						lastRunTime.current = currentMinuteString;
 
 						triggerToast(
-							"Cloud Scanner is running in the background...",
+							"Scheduled time reached. Check Run History for completed scans.",
 							"success",
 						);
-
-						const timeNow = new Date().toLocaleTimeString([], {
-							hour: "2-digit",
-							minute: "2-digit",
-						});
-						localStorage.setItem("labpro_last_run", timeNow);
-						window.dispatchEvent(new Event("jobsUpdated"));
 					}
 				}
 
@@ -353,30 +311,28 @@ export default function SchedulerPage() {
 				);
 				setNextDate(
 					next.toLocaleDateString("en-GB", {
+						timeZone: scheduleZones[timezone].iana,
 						weekday: "long",
 						day: "numeric",
 						month: "short",
 					}),
 				);
-				setNextTimeStr(formatTimeAMPM(time) + " WAT");
+				setNextTimeStr(formatTimeAMPM(time) + " " + timezone);
 			}, 1000);
 		} else {
-			setCountdown("--:--:--");
-			setNextDate("—");
-			setNextTimeStr("—");
+			startTransition(() => { setCountdown("--:--:--"); });
+			startTransition(() => { setNextDate("—"); });
+			startTransition(() => { setNextTimeStr("—"); });
 		}
 		return () => clearInterval(timer);
-	}, [isActive, time, selectedDays, isUserLoggedIn]);
+	}, [isActive, time, selectedDays, timezone, isUserLoggedIn]);
 
 	// --- 4. HANDLERS ---
 	// 🚀 FIXED: Allow "warning" type dynamically
-	const triggerToast = (
-		message: string,
-		type: "success" | "error" | "warning" = "success",
-	) => {
+	function triggerToast(message: string, type: "success" | "error" | "warning" = "success") {
 		setToast({ message, type });
 		setTimeout(() => setToast(null), 3500);
-	};
+	}
 
 	const handleMonthChange = (direction: number) => {
 		setCurrentMonthDate(
@@ -404,7 +360,7 @@ export default function SchedulerPage() {
 		setIsActive(checked);
 		localStorage.setItem("labpro_scheduler_active", String(checked));
 		window.dispatchEvent(new Event("schedulerUpdated"));
-		if (checked) triggerToast("Automated Scraper Activated!");
+		if (checked) triggerToast("Schedule enabled locally. Save to activate it on the server.");
 	};
 
 	const handleSaveScheduler = async () => {
@@ -413,60 +369,84 @@ export default function SchedulerPage() {
 			return;
 		}
 
-		localStorage.setItem("labpro_scheduler_time", time);
-		localStorage.setItem("labpro_scheduler_tz", timezone);
-		localStorage.setItem("labpro_scheduler_location", targetLocation);
-		localStorage.setItem("labpro_scheduler_days", JSON.stringify(selectedDays));
-		localStorage.setItem("labpro_scheduler_active", String(isActive));
+        if (isSavingSchedule) return;
+        setIsSavingSchedule(true);
 
 		try {
 			const activeEmail = localStorage.getItem("labpro_active_user");
-			await fetch("/api/user/preferences", {
+			const response = await fetch("/api/user/preferences", {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({
 					email: activeEmail,
 					jobAlertsEnabled: isActive,
 					targetLocation: targetLocation,
+					scanTime: time, scanDays: selectedDays, scanTimezone: timezone, autoSendEmail: isAlertsActive,
 				}),
 			});
-			triggerToast("Cloud Automation Schedule Saved!");
-		} catch (error) {
-			triggerToast("Failed to sync with cloud.", "error");
-		}
+			const result = await response.json();
+            if (!response.ok) throw new Error(result.error || "Schedule was not saved. Please retry.");
+		localStorage.setItem("labpro_scheduler_time", time);
+		localStorage.setItem("labpro_scheduler_tz", timezone);
+		localStorage.setItem("labpro_scheduler_location", targetLocation);
+		localStorage.setItem("labpro_scheduler_days", JSON.stringify(selectedDays));
+		localStorage.setItem("labpro_scheduler_active", String(isActive));
+
+			triggerToast("Schedule saved. Scans run when the server scheduler checks your account.");
+        } catch (error) {
+            triggerToast(error instanceof Error ? error.message : "Cannot reach the server. Your schedule was not saved.", "error");
+        } finally { setIsSavingSchedule(false); }
 	};
 
-	const handleSaveAlerts = async () => {
-		if (!isUserLoggedIn) return;
+    const testPriorityEmail = async () => {
+      if (isTestingEmail) return;
+      setIsTestingEmail(true);
+      setEmailTestStatus("");
+      try {
+        const response = await fetch("/api/send-digest", {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({triggerType:"PRIORITY_TEST"})});
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error || "Email test failed. Please retry.");
+        setEmailTestStatus(result.message);
+        triggerToast(result.message);
+      } catch (error) { const message = error instanceof Error ? error.message : "Email test failed."; setEmailTestStatus(message); triggerToast(message,"error"); }
+      finally { setIsTestingEmail(false); }
+    };
 
-		localStorage.setItem("labpro_alerts_active", String(isAlertsActive));
-		localStorage.setItem("labpro_alerts_tier", alertTier);
-		localStorage.setItem("labpro_alerts_keywords", alertKeywords);
+	const handleSaveAlerts = async () => {
+		if (!isUserLoggedIn || isSavingAlerts) return;
+        setIsSavingAlerts(true); setAlertSaveError("");
 
 		try {
 			const activeEmail = localStorage.getItem("labpro_active_user");
-			await fetch("/api/user/preferences", {
+			const response = await fetch("/api/user/preferences", {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({
 					email: activeEmail,
 					alertKeywords: alertKeywords,
 					alertTier: alertTier,
+                    autoSendEmail: isAlertsActive,
 				}),
 			});
-			setIsAlertModalOpen(false);
-			triggerToast("Priority Alerts Updated in Cloud!");
-		} catch (error) {
-			triggerToast("Failed to save alerts to cloud.", "error");
-		}
+            const result = await response.json();
+            if (!response.ok) throw new Error(result.error || "Alerts could not be saved. Please retry.");
+            localStorage.setItem("labpro_alerts_active", String(isAlertsActive));
+            localStorage.setItem("labpro_alerts_tier", alertTier);
+            localStorage.setItem("labpro_alerts_keywords", alertKeywords);
+            setIsAlertModalOpen(false);
+            triggerToast("Priority alerts saved.");
+        } catch (error) {
+            setAlertSaveError(error instanceof Error ? error.message : "Cannot reach the server. Your alerts have not been saved. Please retry.");
+        } finally { setIsSavingAlerts(false); }
 	};
 
 	const openNewEventModal = () => {
 		if (!isUserLoggedIn)
 			return triggerToast("Please log in to add events.", "error");
 		setEditingEvent({
-			id: Math.random().toString(),
+			id: crypto.randomUUID(),
 			date: selectedDay,
+			fullDate: `${currentMonthDate.getFullYear()}-${String(currentMonthDate.getMonth() + 1).padStart(2, "0")}-${String(selectedDay).padStart(2, "0")}`,
 			time: "12:00 PM",
 			title: "",
 			company: "",
@@ -542,7 +522,7 @@ export default function SchedulerPage() {
 		for (let day = 1; day <= daysInMonth; day++) {
 			const isToday = isCurrentMonth && day === today.getDate();
 			const isSelected = day === selectedDay;
-			const dayEvents = events.filter((e) => e.date === day);
+			const dayEvents = events.filter((e) => e.fullDate === `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`);
 
 			days.push(
 				<div
@@ -610,7 +590,7 @@ export default function SchedulerPage() {
 			label: "Morning (8a-11a)",
 			range: [8, 11],
 			height: "90%",
-			text: '"Morning runs (08:00-11:00) generally find 15% more new listings."',
+			text: "Choose a scan time that suits your routine. Source updates vary throughout the day.",
 		},
 		{
 			label: "Mid-Day (12p-2p)",
@@ -663,47 +643,10 @@ export default function SchedulerPage() {
 				}}
 			/>
 
-			{toast &&
-				createPortal(
-					<div
-						style={{
-							position: "fixed",
-							top: "24px",
-							left: "50%",
-							background:
-								toast.type === "success"
-									? "rgba(15, 23, 42, 0.9)"
-									: toast.type === "warning"
-										? "rgba(217, 119, 6, 0.9)"
-										: "rgba(153, 27, 27, 0.9)",
-							backdropFilter: "blur(12px)",
-							color: "white",
-							padding: "12px 24px",
-							borderRadius: "30px",
-							fontSize: "13px",
-							fontWeight: 700,
-							display: "flex",
-							alignItems: "center",
-							gap: "8px",
-							boxShadow: "0 10px 40px -5px rgba(0,0,0,0.3)",
-							zIndex: 99999,
-							animation:
-								"slideDownToast 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards",
-							transform: "translateX(-50%)",
-						}}
-					>
-						{toast.type === "success"
-							? "✓ "
-							: toast.type === "warning"
-								? "⚠️ "
-								: "✕ "}{" "}
-						{toast.message}
-					</div>,
-					document.body,
-				)}
+			{toast && <Toast message={toast.message} type={toast.type} />}
 
-			<section className="pane active" style={{ position: "relative" }}>
-				<div style={{ marginBottom: "2.5rem" }}>
+			<section className="pane active scheduler-page" style={{ position: "relative" }}>
+				<div style={{ marginBottom: "20px" }}>
 					<div style={{ marginBottom: "1.25rem" }}>
 						<h1
 							className="page-title"
@@ -813,16 +756,17 @@ export default function SchedulerPage() {
 				) : (
 					<>
 						<div
-							className="mobile-stack"
+							className="mobile-stack scheduler-stack"
 							style={{
 								display: "flex",
-								gap: "1.25rem",
+								gap: "12px",
 								alignItems: "flex-start",
 							}}
 						>
 							<div
 								style={{
 									flex: 1,
+									minWidth: 0,
 									width: "100%",
 									maxWidth: "300px",
 									background: "rgba(255, 255, 255, 0.4)",
@@ -830,7 +774,7 @@ export default function SchedulerPage() {
 									WebkitBackdropFilter: "blur(24px)",
 									borderRadius: "20px",
 									border: "1px solid rgba(255, 255, 255, 0.3)",
-									padding: "1.25rem",
+									padding: "16px",
 									boxShadow: "0 4px 20px -2px rgba(0,0,0,0.03)",
 								}}
 							>
@@ -1019,18 +963,20 @@ export default function SchedulerPage() {
 							</div>
 
 							<div
+								className="scheduler-agenda"
 								style={{
 									flex: 1.2,
+									minWidth: 0,
 									background: "rgba(255, 255, 255, 0.5)",
 									backdropFilter: "blur(24px)",
 									WebkitBackdropFilter: "blur(24px)",
 									borderRadius: "20px",
 									border: "1px solid rgba(255, 255, 255, 0.3)",
-									padding: "1.25rem",
+									padding: "16px",
 									boxShadow: "0 4px 20px -2px rgba(0,0,0,0.03)",
 									display: "flex",
 									flexDirection: "column",
-									minHeight: "320px",
+									minHeight: "220px",
 									width: "100%",
 								}}
 							>
@@ -1101,7 +1047,8 @@ export default function SchedulerPage() {
 								<div
 									style={{ flex: 1, overflowY: "auto", paddingRight: "4px" }}
 								>
-									{selectedDayEvents.length === 0 ? (
+									{calendarSyncUnavailable && <p role="status" style={{ fontSize: 12, color: "#92400e" }}>Interview updates could not be loaded. Personal events remain available; refresh to try again.</p>}
+                                    {selectedDayEvents.length === 0 ? (
 										<div
 											style={{
 												height: "100%",
@@ -1110,7 +1057,7 @@ export default function SchedulerPage() {
 												alignItems: "center",
 												justifyContent: "center",
 												color: "#94a3b8",
-												padding: "2rem 0",
+												padding: "12px 0",
 											}}
 										>
 											<svg
@@ -1302,7 +1249,7 @@ export default function SchedulerPage() {
 								width: "100%",
 								height: "1px",
 								background: "rgba(0,0,0,0.05)",
-								marginBottom: "2.5rem",
+								marginBottom: "20px",
 								marginTop: "1.25rem",
 							}}
 						></div>
@@ -1324,20 +1271,22 @@ export default function SchedulerPage() {
 						</div>
 
 						<div
-							className="mobile-stack"
+							className="mobile-stack scheduler-stack"
 							style={{
 								display: "flex",
-								gap: "1.5rem",
+								gap: "14px",
 								alignItems: "flex-start",
+								flexWrap: "wrap",
 							}}
 						>
 							<div
 								style={{
-									flex: 1,
+									flex: "1 1 320px",
+									minWidth: 0,
 									width: "100%",
 									display: "flex",
 									flexDirection: "column",
-									gap: "1.25rem",
+									gap: "12px",
 								}}
 							>
 								<div
@@ -1346,7 +1295,7 @@ export default function SchedulerPage() {
 										backdropFilter: "blur(24px)",
 										borderRadius: "20px",
 										border: "1px solid rgba(255, 255, 255, 0.3)",
-										padding: "1.25rem",
+										padding: "16px",
 										boxShadow: "0 4px 20px -2px rgba(0,0,0,0.02)",
 									}}
 								>
@@ -1355,7 +1304,7 @@ export default function SchedulerPage() {
 											display: "flex",
 											justifyContent: "space-between",
 											alignItems: "flex-start",
-											marginBottom: "1.5rem",
+											marginBottom: "14px",
 											flexWrap: "wrap",
 											gap: "1rem",
 										}}
@@ -1416,7 +1365,7 @@ export default function SchedulerPage() {
 										</div>
 									</div>
 
-									<div style={{ marginBottom: "1.5rem" }}>
+									<div style={{ marginBottom: "14px" }}>
 										<div
 											style={{
 												fontSize: "10px",
@@ -1429,7 +1378,7 @@ export default function SchedulerPage() {
 											SCHEDULE & LOCATION
 										</div>
 										<div
-											className="mobile-stack"
+											className="mobile-stack scheduler-stack"
 											style={{
 												display: "flex",
 												gap: "1rem",
@@ -1672,7 +1621,7 @@ export default function SchedulerPage() {
 										backdropFilter: "blur(16px)",
 										border: "1px solid rgba(26, 140, 122, 0.2)",
 										borderRadius: "20px",
-										padding: "1.25rem",
+										padding: "16px",
 										display: "flex",
 										gap: "1rem",
 									}}
@@ -1723,7 +1672,7 @@ export default function SchedulerPage() {
 												logged in the History tab.
 											</li>
 											<li>
-												Matches exceeding 88% (Tier 1) are highlighted and sent
+												Matches scoring 90% or above (Tier 1) are highlighted and sent
 												as priority notifications.
 											</li>
 										</ul>
@@ -1733,6 +1682,7 @@ export default function SchedulerPage() {
 								<div style={{ display: "flex", justifyContent: "flex-end" }}>
 									<button
 										onClick={handleSaveScheduler}
+                                disabled={isSavingSchedule}
 										style={{
 											background: "#0B2444",
 											color: "white",
@@ -1752,7 +1702,7 @@ export default function SchedulerPage() {
 											(e.currentTarget.style.transform = "scale(1)")
 										}
 									>
-										Save Settings
+										{isSavingSchedule ? "Saving…" : "Save Settings"}
 									</button>
 								</div>
 							</div>
@@ -1763,7 +1713,7 @@ export default function SchedulerPage() {
 									maxWidth: "300px",
 									display: "flex",
 									flexDirection: "column",
-									gap: "1.25rem",
+									gap: "12px",
 									flexShrink: 0,
 								}}
 							>
@@ -1784,7 +1734,7 @@ export default function SchedulerPage() {
 												: "rgba(100, 116, 139, 0.8)",
 											backdropFilter: "blur(12px)",
 											color: "white",
-											padding: "1.25rem",
+											padding: "16px",
 										}}
 									>
 										<div
@@ -1810,7 +1760,7 @@ export default function SchedulerPage() {
 											{countdown}
 										</div>
 									</div>
-									<div style={{ padding: "1.25rem" }}>
+									<div style={{ padding: "16px" }}>
 										<div
 											style={{
 												display: "flex",
@@ -1881,7 +1831,7 @@ export default function SchedulerPage() {
 										backdropFilter: "blur(24px)",
 										borderRadius: "20px",
 										border: "1px solid rgba(226, 232, 240, 0.5)",
-										padding: "1.25rem",
+										padding: "16px",
 										boxShadow: "0 4px 20px -2px rgba(0,0,0,0.03)",
 									}}
 								>
@@ -1942,7 +1892,7 @@ export default function SchedulerPage() {
 										background: "rgba(11, 36, 68, 0.85)",
 										backdropFilter: "blur(24px)",
 										borderRadius: "20px",
-										padding: "1.25rem",
+										padding: "16px",
 										color: "white",
 										border: "1px solid rgba(255,255,255,0.1)",
 										position: "relative",
@@ -2016,6 +1966,8 @@ export default function SchedulerPage() {
 									>
 										Configure Alerts
 									</button>
+                                    <button onClick={testPriorityEmail} disabled={isTestingEmail} style={{marginLeft:8,background:"transparent",border:"1px solid #ffffff60",borderRadius:8,padding:"6px 12px",color:"white",fontSize:11,cursor:"pointer"}}>{isTestingEmail ? "Sending test…" : "Test priority email"}</button>
+                                    {emailTestStatus && <p role="status" style={{fontSize:11,lineHeight:1.5,margin:"10px 0 0",color:"#e2e8f0"}}>{emailTestStatus}</p>}
 								</div>
 							</div>
 						</div>
@@ -2033,7 +1985,7 @@ export default function SchedulerPage() {
 							top: 0,
 							left: 0,
 							width: "100vw",
-							height: "100vh",
+							height: "100dvh",
 							background: "rgba(15, 23, 42, 0.15)",
 							backdropFilter: "blur(18px)",
 							WebkitBackdropFilter: "blur(18px)",
@@ -2050,8 +2002,9 @@ export default function SchedulerPage() {
 								border: "1px solid rgba(255, 255, 255, 0.5)",
 								width: "100%",
 								maxWidth: "400px",
+                                maxHeight: "calc(100dvh - 2rem)",
 								borderRadius: "24px",
-								overflow: "hidden",
+								overflowY: "auto",
 								boxShadow: "0 30px 60px -15px rgba(0,0,0,0.12)",
 								animation:
 									"modalFadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards",
@@ -2059,7 +2012,7 @@ export default function SchedulerPage() {
 						>
 							<div
 								style={{
-									padding: "1.25rem",
+									padding: "16px",
 									borderBottom: "1px solid rgba(0,0,0,0.05)",
 									display: "flex",
 									justifyContent: "space-between",
@@ -2110,7 +2063,7 @@ export default function SchedulerPage() {
 							<form
 								onSubmit={handleSaveEvent}
 								style={{
-									padding: "1.25rem",
+									padding: "16px",
 									display: "flex",
 									flexDirection: "column",
 									gap: "1rem",
@@ -2379,7 +2332,7 @@ export default function SchedulerPage() {
 							top: 0,
 							left: 0,
 							width: "100vw",
-							height: "100vh",
+							height: "100dvh",
 							background: "rgba(15, 23, 42, 0.15)",
 							backdropFilter: "blur(18px)",
 							WebkitBackdropFilter: "blur(18px)",
@@ -2405,7 +2358,7 @@ export default function SchedulerPage() {
 						>
 							<div
 								style={{
-									padding: "1.25rem",
+									padding: "16px",
 									borderBottom: "1px solid rgba(0,0,0,0.05)",
 									display: "flex",
 									justifyContent: "space-between",
@@ -2453,10 +2406,10 @@ export default function SchedulerPage() {
 
 							<div
 								style={{
-									padding: "1.25rem",
+									padding: "16px",
 									display: "flex",
 									flexDirection: "column",
-									gap: "1.25rem",
+									gap: "12px",
 								}}
 							>
 								<div
@@ -2525,7 +2478,7 @@ export default function SchedulerPage() {
 										<option value="Tier 1 & Tier 2">
 											Tier 1 & Tier 2 (75%+ Match)
 										</option>
-										<option value="All Roles">Any Laboratory Role</option>
+										<option value="All Tiers">Any Laboratory Role</option>
 									</select>
 								</div>
 								<div>
@@ -2561,12 +2514,13 @@ export default function SchedulerPage() {
 
 							<div
 								style={{
-									padding: "1.25rem",
+									padding: "16px",
 									background: "#f8fafc",
 									borderTop: "1px solid rgba(0,0,0,0.05)",
 									display: "flex",
 									justifyContent: "flex-end",
 									gap: "8px",
+                                    flexWrap: "wrap",
 								}}
 							>
 								<button
@@ -2584,8 +2538,10 @@ export default function SchedulerPage() {
 								>
 									Cancel
 								</button>
-								<button
+								{alertSaveError && <p role="alert" style={{ color: "#b91c1c", fontSize: 13, lineHeight: 1.5, flexBasis: "100%", order: -1, margin: 0 }}>{alertSaveError}</p>}
+                                    <button
 									onClick={handleSaveAlerts}
+                                        disabled={isSavingAlerts}
 									style={{
 										padding: "8px 16px",
 										borderRadius: "8px",
@@ -2597,7 +2553,7 @@ export default function SchedulerPage() {
 										cursor: "pointer",
 									}}
 								>
-									Save Alerts
+									{isSavingAlerts ? "Saving…" : "Save Alerts"}
 								</button>
 							</div>
 						</div>

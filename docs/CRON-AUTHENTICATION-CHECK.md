@@ -1,0 +1,81 @@
+# Protected cron authentication probe — 22 October 2026
+
+## 22 October 2026 — Production-only cron correction accepted
+
+Operator save and metadata establish a new Production-only Secret CRON_SECRET (`4sCKxYxYsfrOf5up`), with the existing Preview-only value and testing override metadata unchanged. The already-approved replacement build of exact validated source `082c225a86a1ec582ceb2e27faf276f82b8a7994` is **Ready** as `dpl_CfjXtpKfxDeThKRc8FfrEXeCHssm`, immutable `bench-scout-r2ldibwnk-sholly.vercel.app`. Original project and both source metadata fields match. It uses the public canonical URL, normal submitted cleanup schedule, backups enabled, test mode off and backfill apply false.
+
+The explicit temporary-access probe now passes on that exact candidate: **wrong key 401; privately supplied new Production key 200; dryRun true; pending/failed/due 0/0/0**. No normal cleanup or email was invoked. Temporary bypass was revoked, revoked-token access returned 302, and independent project metadata shows **zero bypasses**. The local key file/directory were removed, entry server stopped and port closure verified. The tool did not inspect or print key values.
+
+All five existing alias mappings are verified preserved; public/git-main remain on maintenance and diagnostics remain on the prior protected stage. Active project cron definitions are still empty, so actual scheduler activation/invocation is **not yet certified**. The older public-origin candidate is superseded, not silently deleted. No public promotion, main merge or older real-file copy occurred. This closes the correct-key cron authentication blocker; other packet gates remain separate. [Accepted correction evidence](qa/2026-10-22-production-cron-correction-accepted.json).
+
+## 22 October 2026 — Approved cron scope split applied; new Production save pending
+
+The operator approved the controlled Production-only correction and replacement protected build/dry-run. Fresh metadata matched the plan. A **target-only** PATCH moved `CRON_SECRET` binding `EHiEaCCl6rFtGjwz` from Production+Preview to Preview only, without sending or reading a secret value. Vercel rejects a Sensitive-variable PATCH containing even an unchanged key field; that rejected request was followed by the successful target-only edit. Independent metadata lookup verifies Preview-only scope and byte-for-byte unchanged testing-override metadata. No Production key binding existed at that verification checkpoint; **do not build Production until the operator saves the prepared new Production-only Secret**.
+
+The Vercel form is prepared with CRON_SECRET, Secret type and Production only; the tool does not enter or submit the new key. A corrected local private-entry form is also prepared for a one-time test copy of that same new key. The operator must privately generate/save the new value and submit both forms; no key belongs in chat or Git. New build/dry-run approval is already included in the correction, but neither has executed. Existing immutable deployments keep their captured values; public/git-main stay on maintenance. [Scope execution evidence](qa/2026-10-22-production-cron-scope-split.json).
+
+## 22 October 2026 — Saved Production cron key rejected; private artifacts removed
+
+The operator-supplied saved key was tested only against the fixed public-origin candidate's cleanup dry-run: wrong-key **401**, supplied-key **401**. This does not establish which saved value is effective or whether the current Production value satisfies the application; authenticated cron acceptance remains open. Temporary bypass creation/revocation completed; project access absence and revoked-token HTTP **302** were verified. The private key file was removed and the loopback entry server stopped; port closure was checked. No normal cleanup, email, public promotion or key-value inspection occurred. [Actual result](qa/2026-10-22-saved-production-cron-attempt.json).
+
+Metadata-only/provider UI inspection confirms testing has its separate Preview/testing Secret, while the current unscoped CRON_SECRET is shared by Production and Preview and was last updated 20 May. Prepared an unsaved Production-only Secret form. Proposed separately approved correction: preserve the old shared value on Preview only, let the operator privately save a new Production-only key, verify scopes and rebuild exact source 082c225 as a protected public-origin candidate before retrying dry-run. Existing immutable keys remain captured; neither public reopening nor main merge is included. [Concrete correction plan](qa/2026-10-22-production-cron-correction-plan.json). [Vercel documents that environment edits affect new deployments only](https://vercel.com/docs/environment-variables/managing-environment-variables).
+
+## 22 October 2026 — Local private-entry Origin rejection fixed
+
+The operator reported Request rejected. Inspection showed the local POST failed before key validation; the private key file did not exist. A non-sensitive browser form reproduced **Origin failed / encoding passed** with Referrer-Policy no-referrer. The helper now uses **Referrer-Policy same-origin**, retaining exact Host/Origin checks, CSRF on key submission, loopback binding and owner-only storage. A browser rerun returned **Origin passed / encoding passed** without requesting or saving any key. The corrected empty private-entry page is reopened for operator retry. Syntax and ESLint pass. No Production secret, deployment, bypass token or cron request was changed/created in this fix. [Browser evidence](qa/2026-10-22-private-entry-origin-fix.json). [MDN explains the form Origin/referrer-policy interaction](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Origin).
+
+## 22 October 2026 — Private operator entry prepared for the saved Production key
+
+The operator confirms the existing Production cron key is saved privately. Added `scripts/private-cron-entry.cjs`, a temporary operator-only page bound to **127.0.0.1:3195**. It uses a password field, strict Host/Origin and CSRF checks, no-store/CSP/frame-denial headers, no external assets or logging, and an owner-only temporary directory/file outside the repository. It never echoes the key or executes the cron probe automatically. The page explains that the subsequent approved test sends the key only to the fixed BenchScout cleanup dry-run endpoint and that its temporary file is removed afterward.
+
+Syntax and ESLint pass; the local form is observed and prepared for user entry. No saved key, hosted request or new bypass is claimed at this handoff. After the operator submits the form, the reviewed probe can use its private file without reading a browser password field or putting a key in chat, arguments, logs or Git. Remove the temporary file and stop the local server after acceptance (or a terminal failure); preserve only scrubbed results. [Procedure](CRON-AUTHENTICATION-CHECK.md).
+
+## 22 October 2026 — Cron denial passed; authenticated dry-run awaits correct Production key
+
+The explicitly approved temporary-access probe reached the exact public-origin candidate: wrong cron key **401**, existing local cron key **401**. Therefore correct-key cron acceptance is **not passed**; a Production mismatch, missing/invalid effective configuration or incorrect saved local key still needs resolution. No normal cleanup, new deletion intent or email ran.
+
+Temporary access was revoked and independently verified: project bypass count **zero**, revoked token HEAD **302** to the protection gate. Creation/revocation propagation caused earlier platform-gate/transient observations; an initial helper token-format error was rejected by Vercel before creating access. The helper now uses the required 32-character format, validates returned access metadata, allows bounded propagation, reports sanitized errors, and supports an explicitly supplied private cron-secret file. Syntax, ESLint and non-network plan mode pass. No current app source/configuration or deployment was changed by these operational-helper fixes. [Full sanitized attempts and final cleanup](qa/2026-10-22-cron-authentication-attempt.json).
+
+Status: **prepared, not executed; temporary access approval pending**. Candidate: `dpl_CSoxtMv87Zm4xVw2brybZxZV3onF`, source `082c225a86a1ec582ceb2e27faf276f82b8a7994`. This operational helper does not change the frozen application or require a new app build.
+
+## Purpose and access boundary
+
+`node scripts/verify-protected-cron.cjs` prints a plan only. After explicit approval, `--confirm-temporary-access` creates one temporary Vercel **project-level** protection-bypass token, sends a deliberately wrong cron key and the existing local cron key to the fixed candidate's `/api/cron/document-cleanup?dryRun=1`, then revokes only its token. The bypass can access protected BenchScout deployments while valid; it is not endpoint-scoped. Application cron authentication still applies. Never describe it as ordinary metadata-only access or silently allow CLI curl to generate one.
+
+The existing local CRON_SECRET is present and meets the minimum length; it is never printed or passed on the command line. Its equality to the effective Production key is **unverified until a successful authenticated request**. No environment value is retrieved from the provider. The helper uses the existing Vercel CLI login for provider API calls. It does not rotate a key or disable Vercel Authentication.
+
+Vercel documents that [CLI curl retrieves or generates automation bypass tokens](https://vercel.com/docs/cli/curl). The explicit helper makes creation/revocation and evidence visible rather than relying on that implicit lifecycle. Authentication for [cron requests](https://vercel.com/docs/cron-jobs/manage-cron-jobs) remains distinct from scheduler registration and delivery.
+
+## Execution contract
+
+1. Verify exact project, Ready deployment, source SHA and immutable hostname. Stop if any existing project bypass entry is present; do not reuse, expose or revoke someone else's access.
+2. Generate a random token and save a private pending-revocation record (directory 0700/file 0600) before requesting creation. Token/API bodies travel on stdin, not command arguments; no verbose/debug/trace logging.
+3. GET the fixed cleanup dry-run with wrong cron key; require HTTP 401. GET it with the existing local key; require HTTP 200, dryRun true and nonnegative integer queue counts. Curl follows no redirects. No POST, normal worker endpoint, email, source/archive read or new cleanup intent is allowed.
+4. In finally, revoke only the chosen generated token, require zero project bypasses, and verify that the revoked token can no longer reach the candidate anonymously. Save only scrubbed results; remove the private pending record only after verification.
+5. If interrupted or revocation cannot be confirmed, stop other release actions. The private file path is reported without its contents. Run `node scripts/verify-protected-cron.cjs --revoke-pending /absolute/private/pending-revocation.json` to retry revoking that exact token and verify protection. Do not paste the file/token into chat or commit it. Process termination can prevent finally from running; automatic revocation is not guaranteed under every crash.
+
+A failed correct-key request does not authorize retrieving provider secret values, guessing keys, changing authentication or dispatching a normal cron. It requires a separately controlled correction. Report failure and cleanup evidence accurately.
+
+## Acceptance and limits
+
+Syntax, ESLint and non-network plan mode pass. No bypass has been created and no hosted request submitted by this helper at preparation time. A future successful run proves wrong-key denial and correct-key dry-run against the exact deployed candidate. It does not prove an actual provider scheduled invocation, backup-failure inbox delivery, or file deletion/retry behavior.
+
+The approved candidate build submitted the normal daily cron configuration; active project definitions were still empty at the latest provider checkpoint. Do not activate/promote simply to make this check pass. Actual registration and invocation must be observed separately through the approved cutover process. Public promotion, main merge and older-file backfill remain outside this probe.
+
+## Private key correction input
+
+If the operator has the actual existing Production cron key, they may provide it privately in an absolute local file with owner-only permissions, then invoke the reviewed helper with `--confirm-temporary-access --cron-secret-file /absolute/private/file`. The helper reads it only into process memory, never command arguments or output. Do not ask for the key in chat or commit the file. No credential replacement or extra request is authorized merely by a failed local-key test. If the key is unavailable, prepare a separately approved Production credential replacement and rebuild plan; changing a saved binding does not update immutable existing deployments.
+
+## Fixed GET-only access smoke — prepared 22 October
+
+`node scripts/verify-protected-cron.cjs --access-smoke` prints the exact twelve-check plan without reading local environment files or contacting services. Syntax, focused ESLint and plan mode pass. No new bypass or hosted acceptance result is claimed. After separate approval, adding `--confirm-temporary-access` uses the existing guarded creation/revocation lifecycle against **only** current candidate `dpl_CfjXtpKfxDeThKRc8FfrEXeCHssm`, exact source `082c225`. It requires no real password, administrator key, cron secret or valid application cookie.
+
+The checks are GET `/` and `/employer` (200 plus HTML markup); `/api/setup` and `/api/test-email` (410 plus JSON error); `/api/auth/session` without a cookie and with a deliberately invalid all-zero cookie; `/api/user`, `/api/documents?userId=qa-nonexistent-access-probe&kind=resume`, `/api/jobs/applicants?jobId=qa-nonexistent-access-probe`, `/api/readiness`, `/api/notifications` and `/api/history` (401 plus JSON error). The placeholders are fixed synthetic nonexistent references, not guessed account identifiers. Stop at the first unexpected response; never follow redirects or fall back to another deployment. Record only endpoint/status/pass metadata, not response bodies.
+
+The bypass is project-wide while valid, despite the fixed endpoint scope of this helper. It must be separately approved: the previous temporary-access authorization covered cron dry-run only. Revoke in finally and verify project bypass count zero and restored provider protection; the existing private pending-file recovery procedure still applies if interrupted. No POST, normal cron, valid login, account creation, salary write, email, file operation, database migration, promotion or main merge is included. A forged session lookup can read the session table but cannot authenticate a real user. Successful results establish hosted anonymous/forged-session rejection only; authenticated cross-owner behaviour, browser sign-in persistence and public canonical-link behaviour retain their separate evidence limits.
+
+## Fixed GET-only access smoke — accepted 22 October
+
+The separately approved twelve checks passed against exact Ready candidate `dpl_CfjXtpKfxDeThKRc8FfrEXeCHssm`, source `082c225`. Root and employer pages returned 200 with HTML; removed setup/test-email endpoints returned 410 JSON errors; all eight anonymous/forged-session checks returned 401 JSON errors. These are application responses observed past the provider protection gate, not a reinterpretation of provider redirects.
+
+Temporary access was revoked: zero project bypass entries and revoked-token HEAD 302 to protection. No valid login, account/data/file change, normal cron, email, public promotion or main merge ran. The earlier preparation section remains dated history. Browser session persistence, authenticated cross-owner operations, public-origin link behaviour and actual scheduled delivery retain their separate limits. [Scrubbed hosted results](qa/2026-10-22-protected-access-smoke.json).

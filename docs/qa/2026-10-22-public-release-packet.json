@@ -1,0 +1,54 @@
+{
+  "date": "2026-10-22",
+  "candidate": "082c225a86a1ec582ceb2e27faf276f82b8a7994",
+  "refreshedMain": "a56fba3641004184e8bd5ddee87a51eb6b5a4fec",
+  "aliases": {
+    "bench-scout-git-hotfix-legacy-containment-sholly.vercel.app": "dpl_EcY1anTy6tVPnmAoagf5WCRk2Bed",
+    "bench-scout-git-testing-sholly.vercel.app": "dpl_D6i3a87oxQ3R8Gfu98tPqCpcB2Na",
+    "bench-scout.vercel.app": "dpl_9CMj8YniwM7cWcNm8WfEzmpGowsf",
+    "bench-scout-sholly.vercel.app": "dpl_F5uCLS312DAkTGAGdUZbWqaUYYrg",
+    "bench-scout-git-main-sholly.vercel.app": "dpl_3JSXjPv2JjgTBNE3gwXVSiqJFTaV"
+  },
+  "publicOriginBuildPrepared": true,
+  "publicOriginDeploymentId": "dpl_CfjXtpKfxDeThKRc8FfrEXeCHssm",
+  "promotionReady": true,
+  "mainMergeApproved": false,
+  "rollbackDeploymentId": "dpl_3JSXjPv2JjgTBNE3gwXVSiqJFTaV",
+  "nextAction": "verify actual scheduled invocation, complete isolated timed full-service recovery drill, then controlled main integration",
+  "noApplicationMutation": true,
+  "updated": "2026-10-22",
+  "currentEvidence": "2026-10-24-cleanup-run-history.json",
+  "salaryRegressionEvidence": "2026-10-22-salary-ownership-acceptance.json",
+  "fullSuiteTestsPassed": 296,
+  "protectedAccessSmoke": {
+    "passed": true,
+    "checks": 12,
+    "accessRevoked": true,
+    "accessAbsentVerified": true,
+    "evidence": "2026-10-22-protected-access-smoke.json"
+  },
+  "authenticatedIntegration": {
+    "passed": true,
+    "checks": 8,
+    "scope": "isolated schema, real PostgreSQL, loopback HTTP, local SMTP",
+    "independentCleanupPassed": true,
+    "evidence": "2026-10-22-authenticated-subset-accepted.json"
+  },
+  "reviewUpdated": "2026-10-23",
+  "currentCutoverReview": "2026-10-23-cutover-review.json",
+  "publicReopened": true,
+  "promotionApproved": true,
+  "cutoverExecution": "2026-10-23-controlled-pilot-reopened.json",
+  "publicBrowserSession": {
+    "passed": true,
+    "profileNavigationPassed": true,
+    "fullRefreshes": 2,
+    "evidence": "2026-10-23-public-session-accepted.json"
+  },
+  "currentReleaseSource": "4eb3e2c8486cb8532aa400106d1bc306c9c8cb5a",
+  "currentPublicDeploymentId": "dpl_9CMj8YniwM7cWcNm8WfEzmpGowsf",
+  "currentRollbackDeploymentId": "dpl_EA6N74nt32g56QbkiJQWZPwMvrAt",
+  "testingPreviewEvidence": "2026-10-24-mobile-90-testing.json",
+  "olderProductionFilesBackfilled": true,
+  "productionBackfillEvidence": "2026-10-24-production-backfill-window.json"
+}

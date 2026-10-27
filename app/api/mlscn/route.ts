@@ -1,8 +1,10 @@
+import { ApiError } from "@/lib/security";
+import { withApi } from "@/lib/api";
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
 import * as cheerio from "cheerio";
 
-const prisma = new PrismaClient();
+
 
 const fetchOptions = {
 	headers: {
@@ -47,7 +49,7 @@ async function scrapeNotices() {
 				});
 			}
 		}
-	} catch (error) {
+	} catch {
 		console.error("Notice scrape skipped.");
 	}
 }
@@ -82,14 +84,14 @@ async function scrapeCPD(url: string) {
 				create: { title, location, date, cpdUnits, url: link, isManual: false },
 			});
 		}
-	} catch (error) {
+	} catch {
 		console.error("CPD scrape skipped.");
 	}
 }
 
-export async function GET() {
+export const GET = withApi("public", async () => {
 	try {
-		Promise.all([
+		await Promise.all([
 			scrapeNotices(),
 			scrapeCPD("https://www.mlscn.gov.ng/cpds/upcoming-cpd-courses"),
 		]).catch(() => {});
@@ -103,46 +105,21 @@ export async function GET() {
 			take: 10,
 		});
 
-		// 🚀 Baseline Intelligence: Feed fallback data if firewall blocked scraping
-		const finalCpd =
-			cpdEvents.length > 0
-				? cpdEvents
-				: [
-						{
-							id: "1",
-							title: "Annual AMLSN Scientific Conference",
-							location: "Abuja, FCT",
-							date: "August 12, 2026",
-							cpdUnits: 3,
-							url: "https://mlscn.gov.ng",
-						},
-						{
-							id: "2",
-							title: "Modern Hematology Automation",
-							location: "Virtual Webinar",
-							date: "June 05, 2026",
-							cpdUnits: 1,
-							url: "https://mlscn.gov.ng",
-						},
-					];
 
-		return NextResponse.json({ success: true, cpdEvents: finalCpd, news });
-	} catch (error) {
+		return NextResponse.json({ success: true, cpdEvents, news });
+	} catch (error: unknown) {
+    if (error instanceof ApiError) throw error;
 		return NextResponse.json(
 			{ error: "Failed to fetch MLSCN data" },
 			{ status: 500 },
 		);
-	} finally {
-		await prisma.$disconnect();
 	}
-}
+}, {});
 
-export async function POST(request: Request) {
+export const POST = withApi("admin", async (request: Request) => {
 	try {
-		const { type, title, location, date, cpdUnits, url, excerpt, adminSecret } =
+		const { type, title, location, date, cpdUnits, url, excerpt } =
 			await request.json();
-		if (adminSecret !== (process.env.ADMIN_SECRET || "benchscout-admin-2026"))
-			return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 		if (type === "cpd")
 			await prisma.cpdEvent.create({
 				data: {
@@ -159,12 +136,11 @@ export async function POST(request: Request) {
 				data: { title, url, date, excerpt, source: "Admin Verified" },
 			});
 		return NextResponse.json({ success: true });
-	} catch (error) {
+	} catch (error: unknown) {
+    if (error instanceof ApiError) throw error;
 		return NextResponse.json(
 			{ error: "Failed to add manual entry" },
 			{ status: 500 },
 		);
-	} finally {
-		await prisma.$disconnect();
 	}
-}
+}, {});

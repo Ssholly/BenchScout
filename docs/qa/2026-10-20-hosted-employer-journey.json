@@ -1,0 +1,253 @@
+{
+  "date": "2026-10-20",
+  "scope": "hosted synthetic employer recruitment journey",
+  "target": "https://bench-scout-git-testing-sholly.vercel.app/",
+  "applicationBaseline": "e17170d",
+  "status": "hosted UI replacement withholding, closure/history and existing-session suspension gates passed; direct HTTP and operational gates remain open",
+  "recipientAliasesApproved": true,
+  "checks": [
+    {
+      "name": "candidate role cannot enter employer portal",
+      "status": "passed",
+      "observation": "/employer redirected to /home while signed in as candidate"
+    },
+    {
+      "name": "synthetic candidate profile",
+      "status": "passed",
+      "observation": "exact fixture identity displayed in authenticated hosted profile"
+    },
+    {
+      "name": "synthetic CV upload",
+      "status": "passed",
+      "observation": "hosted file chooser upload completed and displayed synthetic PDF filename"
+    },
+    {
+      "name": "cross-tab identity changes",
+      "status": "observed",
+      "observation": "tabs returned home; existing SessionGate storage/focus safeguard confirmed; retained unchanged"
+    },
+    {
+      "name": "employer unconfirmed login gate",
+      "status": "passed",
+      "observation": "hosted employer login displays specific confirm-email rejection"
+    },
+    {
+      "name": "confirmed employer login",
+      "status": "passed",
+      "observation": "operator confirmed newest email; normal employer login succeeded"
+    },
+    {
+      "name": "unapproved posting gate",
+      "status": "passed",
+      "observation": "explicit review-required error; no vacancy created"
+    },
+    {
+      "name": "company submission and admin queue",
+      "status": "passed",
+      "observation": "synthetic evidence persisted as pending; user unlocked queue showing one company and zero vacancies"
+    },
+    {
+      "name": "directory error handling",
+      "status": "passed on hosted testing",
+      "observation": "4857fb1 deployed; pending employer sees review-required denial; Retry returns same denial with no empty-list/candidate display"
+    },
+    {
+      "name": "synthetic company approval",
+      "status": "passed",
+      "observation": "explicit operator approval; decision saved; Company reviewed and synthetic-only feedback persisted after full employer reload"
+    },
+    {
+      "name": "vacancy moderation separation",
+      "status": "partially passed",
+      "observation": "one synthetic vacancy submitted; reload shows Awaiting review, 1 vacancy, 0 published and 0 applicants; independent feed exclusion and approval pending"
+    },
+    {
+      "name": "administrator secret lifecycle",
+      "status": "observed",
+      "observation": "successful save clears secret and queue by existing UI design; retained unchanged"
+    },
+    {
+      "name": "separate vacancy approval",
+      "status": "passed",
+      "observation": "queue showed zero companies and one pending vacancy; QA-only review saved against selected current version; full employer reload showed Active and 1 published, 0 applicants"
+    },
+    {
+      "name": "candidate discovery",
+      "status": "passed",
+      "observation": "exact synthetic identity authenticated; approved fixture appeared in matches with employer-reviewed provenance and no personalised score"
+    },
+    {
+      "name": "CV-only application persistence",
+      "status": "passed",
+      "observation": "toolkit disclosed sharing; only required synthetic CV selected, summary off; after full reload one Application Sent card and role removed from matches"
+    },
+    {
+      "name": "normal UI repeat prevention",
+      "status": "passed; hosted repeated POST untested",
+      "observation": "applied role absent from matches; posting viewer has no Apply action; one persisted card"
+    },
+    {
+      "name": "later optional vault upload",
+      "status": "candidate side passed; employer denial pending",
+      "observation": "synthetic PDF uploaded to optional certificate slot after application and persisted after reload; application still lists only CV"
+    },
+    {
+      "name": "employer applicant roster",
+      "status": "passed",
+      "observation": "exact synthetic employer authenticated; 1 Applicant and one exact synthetic candidate record; summary unshared, only selected CV link"
+    },
+    {
+      "name": "selected synthetic CV access",
+      "status": "passed",
+      "observation": "application-scoped link rendered the known one-page synthetic PDF in browser"
+    },
+    {
+      "name": "unselected optional file access",
+      "status": "not verified at API level",
+      "observation": "no optional file offered in roster; direct kind=certificate request blocked by browser client; no workaround attempted"
+    },
+    {
+      "name": "future interview constraint",
+      "status": "deployed; hosted client past rejection passed",
+      "observation": "49e5108 deployed via Vercel 6ThBhP6CvRi9H6qkbpLzckENZqoC; populated past schedule displayed future-time error and remained unsaved"
+    },
+    {
+      "name": "synthetic future interview",
+      "status": "passed: persisted after full reload",
+      "observation": "fresh employer roster fetch preserved Interview Confirmed, 21 October 2026 10:00 Africa/Lagos, QA-only no-attendance location"
+    },
+    {
+      "name": "interview email receipt",
+      "status": "passed: operator confirmed",
+      "observation": "approved candidate alias received interview email with correct details"
+    },
+    {
+      "name": "narrow interview form",
+      "status": "deployed; fresh hosted responsive form check pending",
+      "observation": "87bebfd deployed via Vercel HpTxd6mR2biKSpbs5UGhBn6838Ak; lint/TypeScript/220 tests/build passed; original 320px overflow recorded, pending fixture needed to reopen scheduling form"
+    },
+    {
+      "name": "candidate interview pipeline",
+      "status": "passed",
+      "observation": "one application persisted in Interviewing with only CV selected"
+    },
+    {
+      "name": "candidate in-app interview notification",
+      "status": "passed",
+      "observation": "exact synthetic role/company, 21 October 2026 10:00 Africa/Lagos and no-attendance test location matched"
+    },
+    {
+      "name": "candidate interview calendar",
+      "status": "passed",
+      "observation": "October 21 had one matching Confirmed Interview event at 10:00 AM"
+    },
+    {
+      "name": "candidate cannot override employer calendar event",
+      "status": "passed in UI",
+      "observation": "opening synced event and saving unchanged returned Action events are managed by the employer; no edit saved"
+    },
+    {
+      "name": "synthetic withdrawal",
+      "status": "passed in candidate UI",
+      "observation": "explicit operator authorisation; application removed, role returned to matches, October 21 scheduler showed zero events"
+    },
+    {
+      "name": "fresh CV-only reapplication",
+      "status": "passed in candidate UI",
+      "observation": "one Application Sent card, zero Interviewing; available synthetic optional certificate left unchecked; CV only selected"
+    },
+    {
+      "name": "fresh employer application roster",
+      "status": "passed",
+      "observation": "exactly one pending applicant, new application-specific CV link rendered synthetic PDF; optional certificate absent; summary unshared"
+    },
+    {
+      "name": "withdrawn application CV link",
+      "status": "not verified at API level",
+      "observation": "old application-specific URL blocked by browser client; targeted log exposed no HTTP status; no bypass attempted"
+    },
+    {
+      "name": "fresh responsive interview form",
+      "status": "passed",
+      "observation": "320/390px inputs stayed within viewport at 254/324px widths; 320px visually reviewed; form closed without saving or emailing"
+    },
+    {
+      "name": "synthetic CV replacement upload",
+      "status": "passed after explicit operator approval",
+      "observation": "profile displayed replacement PDF filename; only synthetic CV replacement authorised"
+    },
+    {
+      "name": "replacement owner retrieval",
+      "status": "passed",
+      "observation": "private vault PDF preview rendered clearly labelled QA-only version-two text; no real data; one application retained"
+    },
+    {
+      "name": "replacement withheld from employer",
+      "status": "passed in hosted roster",
+      "observation": "retained applicant has no CV link after replacement; optional certificate and summary still unshared"
+    },
+    {
+      "name": "closed vacancy history",
+      "status": "passed",
+      "observation": "full reload shows closed, zero published and one applicant; approved employer could retrieve retained roster before suspension"
+    },
+    {
+      "name": "existing-session employer suspension",
+      "status": "passed in hosted UI",
+      "observation": "QA-only administrator suspension saved; existing employer session reloaded to Account suspended without another sign-in; closed status and applicant count preserved"
+    },
+    {
+      "name": "suspended roster and directory",
+      "status": "passed in hosted UI",
+      "observation": "roster and previous applicants returned explicit review-required denial with no candidate details; directory Retry preserved denial"
+    },
+    {
+      "name": "candidate history after closure and suspension",
+      "status": "passed",
+      "observation": "one Application Sent card persists; historical posting has Back to pipeline without Apply"
+    },
+    {
+      "name": "combined-state discovery exclusion",
+      "status": "observed; independent predicates not isolated",
+      "observation": "Matches loaded empty for already-applied candidate after role closure and employer suspension; no new application POST attempted"
+    }
+  ],
+  "prepared": [],
+  "pending": [
+    "candidate confirmation inbox branding and role-correct links not independently inspected",
+    "direct hosted HTTP document denials and repeated-request idempotency remain unverified under browser restriction",
+    "independent posting denial after suspension and new-application rejection after closure not exercised in this phase",
+    "physical old Blob cleanup not independently inventoried",
+    "interrupted-request acceptance and operational recovery gates",
+    "scoped fixture cleanup or continued retention decision"
+  ],
+  "productCodeChanged": true,
+  "schemaChanged": false,
+  "accountCreatedByAgent": false,
+  "emailSentByAgent": true,
+  "reviewDecisionSubmitted": true,
+  "realCandidateProfileOrDocumentsChanged": false,
+  "existingTestingCandidateSession": "synthetic candidate authenticated after operator private login",
+  "accountCreatedByOperator": "candidate and confirmed employer observed authenticated",
+  "syntheticCandidateState": "one pending application selected the previous CV version; current vault CV is synthetic version two; optional synthetic certificate retained; no new consent to share replacement",
+  "emailReceipt": {
+    "employer": "operator confirmed receipt; reported action button absent",
+    "freshFallbackMessage": "one approved resend; operator reported successful confirmation",
+    "receivedMimeAndRendering": "not inspected"
+  },
+  "syntheticEmployerState": "suspended QA simulation; one closed QA vacancy with one pending application retained",
+  "cleanup": "partial: original application withdrawn; current application, synthetic accounts, replacement CV, optional certificate, review history and closed vacancy retained; employer left suspended",
+  "layoutRelease": {
+    "commit": "7aaabef",
+    "vercel": "HMr8UtkBPqP2cdAVKZoVtmurbhiC",
+    "state": "success",
+    "finalWidths": [
+      320,
+      390,
+      1200,
+      1440
+    ],
+    "overflow": []
+  },
+  "replacementStorageCleanup": "upload success observed; prior Blob deletion not independently inventoried"
+}

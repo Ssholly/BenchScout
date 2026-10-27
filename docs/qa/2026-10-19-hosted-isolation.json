@@ -1,0 +1,23 @@
+{
+  "date": "2026-10-19",
+  "hostedLoginPersistedInTestingDatabase": true,
+  "hostedCertificatePersistedInTestingStore": true,
+  "syntheticFixtureAbsentFromNormalDatabase": true,
+  "emailDeliveryTested": false,
+  "cleanup": {
+    "privateObjectsRemoved": 1,
+    "fixtureUserAbsent": true,
+    "fixtureSessionsRemaining": 0,
+    "candidateCountAfter": 0,
+    "employerCountAfter": 0,
+    "jobCountAfter": 0,
+    "applicationCountAfter": 0
+  },
+  "codeCommit": "699b2562228773ab1030dfc4e80eafdd02ca961e",
+  "vercelStatus": "success",
+  "deploymentUrl": "https://vercel.com/sholly/bench-scout/ADL5XfXxtqHwnMkEXQnGvd8eGQk3",
+  "guardedDocumentPreviewOpened": true,
+  "fixtureConfirmationMode": "Synthetic database fixture; no email confirmation or delivery assertion",
+  "productionBindingsChanged": false,
+  "scope": "New testing deployment only; other preview branches and old deployments not certified"
+}

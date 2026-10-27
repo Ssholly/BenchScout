@@ -1,0 +1,2 @@
+ALTER TABLE "Employer" ADD COLUMN IF NOT EXISTS "emailVerificationRequired" BOOLEAN NOT NULL DEFAULT false;
+ALTER TABLE "Employer" ADD COLUMN IF NOT EXISTS "emailVerifiedAt" TIMESTAMP(3);

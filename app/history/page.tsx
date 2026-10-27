@@ -1,10 +1,13 @@
 "use client";
+import { startTransition } from "react";
+import { useMounted } from "@/lib/use-mounted";
+import type { ClientHistory } from "@/lib/types";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 
 export default function HistoryPage() {
-	const [mounted, setMounted] = useState(false);
-	const [history, setHistory] = useState<any[]>([]);
+	const mounted = useMounted();
+	const [history, setHistory] = useState<ClientHistory[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [userEmail, setUserEmail] = useState("...");
 	const [showClearModal, setShowClearModal] = useState(false);
@@ -24,17 +27,12 @@ export default function HistoryPage() {
 		setUserEmail(activeEmail);
 		setIsLoading(true);
 
-		fetch(`/api/history?email=${activeEmail}`)
+		fetch(`/api/history?email=${encodeURIComponent(activeEmail)}`)
 			.then((res) => res.json())
 			.then((data) => {
 				let myHistory = data || [];
 				if (Array.isArray(myHistory)) {
-					myHistory = myHistory.filter(
-						(h: any) =>
-							h.userEmail === activeEmail ||
-							h.email === activeEmail ||
-							(!h.userEmail && !h.email),
-					);
+					myHistory = myHistory;
 				}
 				setHistory(myHistory);
 				setIsLoading(false);
@@ -43,8 +41,7 @@ export default function HistoryPage() {
 	};
 
 	useEffect(() => {
-		setMounted(true);
-		loadHistory();
+		startTransition(() => { loadHistory(); });
 
 		window.addEventListener("userStateChanged", loadHistory);
 		return () => window.removeEventListener("userStateChanged", loadHistory);
@@ -68,26 +65,12 @@ export default function HistoryPage() {
 
 	return (
 		<section
-			className="pane active"
+			className="pane active history-page"
 			style={{
 				width: "100%",
 				fontFamily: "system-ui, -apple-system, sans-serif",
 			}}
 		>
-			<style
-				dangerouslySetInnerHTML={{
-					__html: `
-        @media screen and (max-width: 768px) {
-          .responsive-table table, .responsive-table thead, .responsive-table tbody, .responsive-table th, .responsive-table td, .responsive-table tr { display: block; }
-          .responsive-table thead tr { position: absolute; top: -9999px; left: -9999px; }
-          .responsive-table tr { margin-bottom: 1.5rem; border: 1px solid rgba(255,255,255,0.5) !important; border-radius: 16px; background: rgba(255,255,255,0.6) !important; backdrop-filter: blur(16px); box-shadow: 0 4px 16px -2px rgba(0,0,0,0.03); overflow: hidden; }
-          .responsive-table td { border: none !important; border-bottom: 1px solid rgba(0,0,0,0.03) !important; position: relative; padding: 1rem 1.25rem !important; display: flex; flex-direction: column; gap: 0.25rem; text-align: left !important; }
-          .responsive-table td:last-child { border-bottom: 0 !important; }
-          .responsive-table td::before { content: attr(data-label); font-size: 10px; font-weight: 800; text-transform: uppercase; color: #94a3b8; letter-spacing: 0.5px; margin-bottom: 4px; }
-        }
-      `,
-				}}
-			/>
 
 			{showClearModal &&
 				mounted &&
@@ -214,7 +197,7 @@ export default function HistoryPage() {
 				)}
 
 			{/* HEADER */}
-			<div
+			<div className="history-header"
 				style={{
 					display: "flex",
 					justifyContent: "space-between",
@@ -238,7 +221,7 @@ export default function HistoryPage() {
 						className="page-sub"
 						style={{ margin: "4px 0 0 0", fontSize: "14px", color: "#64748b" }}
 					>
-						Log of all automated AI scraping events.
+						Your job scans and digest deliveries.
 					</p>
 				</div>
 				{isUserLoggedIn && (
@@ -416,12 +399,13 @@ export default function HistoryPage() {
 							</tr>
 						</thead>
 						<tbody>
-							{(Array.isArray(history) ? history : []).map((run: any) => (
+							{(Array.isArray(history) ? history : []).map((run: ClientHistory) => (
 								<tr
 									key={run.id}
 									style={{ borderBottom: "1px solid rgba(0,0,0,0.05)" }}
 								>
 									<td
+										className="history-date"
 										data-label="Date & Time"
 										style={{
 											padding: "1.25rem 1.5rem",
@@ -433,6 +417,7 @@ export default function HistoryPage() {
 										{new Date(run.createdAt).toLocaleString()}
 									</td>
 									<td
+										className="history-matches"
 										data-label="Matches Found"
 										style={{
 											padding: "1.25rem 1rem",
@@ -444,6 +429,7 @@ export default function HistoryPage() {
 										{run.matches}
 									</td>
 									<td
+										className="history-email"
 										data-label="Dispatch Email"
 										style={{
 											padding: "1.25rem 1rem",
@@ -452,11 +438,12 @@ export default function HistoryPage() {
 											fontWeight: 600,
 										}}
 									>
-										{run.status === "run only"
+										<span>{run.status === "run only"
 											? "Auto-Send Disabled"
-											: userEmail}
+											: userEmail}</span>
 									</td>
 									<td
+										className="history-status"
 										data-label="Task Status"
 										style={{ padding: "1.25rem 1.5rem" }}
 									>
@@ -488,7 +475,7 @@ export default function HistoryPage() {
 								</tr>
 							))}
 							{history.length === 0 && (
-								<tr>
+								<tr className="history-empty">
 									<td
 										colSpan={4}
 										style={{

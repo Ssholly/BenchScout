@@ -1,12 +1,19 @@
+import { ApiError } from "@/lib/security";
+import { withApi } from "@/lib/api";
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
+import { startSession } from "@/lib/auth";
+import { emailField } from "@/lib/security";
 import bcrypt from "bcryptjs";
 
-const prisma = new PrismaClient();
 
-export async function POST(request: Request) {
+
+export const POST = withApi("public", async (request: Request) => {
 	try {
-		const { email, password } = await request.json();
+		const body = await request.json();
+		const email = emailField(body.email);
+		if (typeof body.password !== "string" || !body.password || Buffer.byteLength(body.password) > 72) throw new ApiError(400, "Invalid password.");
+		const password = body.password;
 
 		if (!email || !password) {
 			return NextResponse.json(
@@ -47,23 +54,24 @@ export async function POST(request: Request) {
 		}
 
 		// 3. Success! Return safe user data (NEVER return the password hash)
-		return NextResponse.json({
+		return startSession(NextResponse.json({
 			success: true,
 			user: {
+				id: user.id,
+				careerPhase: user.careerPhase,
 				name: user.name,
 				email: user.email,
 				location: user.location,
 				keywords: user.keywords,
 				minScore: user.minScore,
 			},
-		});
-	} catch (error) {
+		}), request, user.id, "candidate");
+	} catch (error: unknown) {
+    if (error instanceof ApiError) throw error;
 		console.error("Login error:", error);
 		return NextResponse.json(
 			{ error: "Internal server error." },
 			{ status: 500 },
 		);
-	} finally {
-		await prisma.$disconnect();
 	}
-}
+}, {});

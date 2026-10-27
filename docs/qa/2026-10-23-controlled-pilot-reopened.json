@@ -1,0 +1,252 @@
+{
+  "date": "2026-10-23",
+  "userApprovedControlledPilot": true,
+  "status": "public pilot reopened; public browser authenticated check pending",
+  "project": "prj_MNrDsjvBMVCY5mmPjD3tSyw7OIBs",
+  "deployment": "dpl_CfjXtpKfxDeThKRc8FfrEXeCHssm",
+  "source": "082c225a86a1ec582ceb2e27faf276f82b8a7994",
+  "preflight": {
+    "verifiedAt": "2026-10-23T14:38:36.556Z",
+    "passed": true,
+    "project": "prj_MNrDsjvBMVCY5mmPjD3tSyw7OIBs",
+    "candidate": "dpl_CfjXtpKfxDeThKRc8FfrEXeCHssm",
+    "source": "082c225a86a1ec582ceb2e27faf276f82b8a7994",
+    "rollback": "dpl_3JSXjPv2JjgTBNE3gwXVSiqJFTaV",
+    "aliases": {
+      "bench-scout-git-hotfix-legacy-containment-sholly.vercel.app": "dpl_EcY1anTy6tVPnmAoagf5WCRk2Bed",
+      "bench-scout-git-testing-sholly.vercel.app": "dpl_D2mYf5k3qc892X4TVoRZ3jnoWWjD",
+      "bench-scout.vercel.app": "dpl_3JSXjPv2JjgTBNE3gwXVSiqJFTaV",
+      "bench-scout-sholly.vercel.app": "dpl_F5uCLS312DAkTGAGdUZbWqaUYYrg",
+      "bench-scout-git-main-sholly.vercel.app": "dpl_3JSXjPv2JjgTBNE3gwXVSiqJFTaV"
+    },
+    "bypassCount": 0,
+    "protection": {
+      "deploymentType": "all_except_custom_domains"
+    },
+    "crons": {
+      "enabledAt": 1779108266469,
+      "disabledAt": null,
+      "updatedAt": 1782997611418,
+      "deploymentId": "dpl_4bTpas5uPn1jRpwGeu4eUJvX7nhZ",
+      "definitions": []
+    }
+  },
+  "promotion": {
+    "performed": true,
+    "cliExitCode": 0,
+    "rebuild": false,
+    "publicOrigin": "https://bench-scout.vercel.app",
+    "providerSuccessReported": true
+  },
+  "aliasRestoration": {
+    "gitMainMovedByPromotion": true,
+    "restoredTo": "dpl_3JSXjPv2JjgTBNE3gwXVSiqJFTaV",
+    "restoreCliExitCode": 0,
+    "testingDiagnosticsHotfixPreserved": true
+  },
+  "finalAliases": {
+    "observedAt": "2026-10-23T14:47:10.863Z",
+    "aliases": {
+      "bench-scout-git-hotfix-legacy-containment-sholly.vercel.app": "dpl_EcY1anTy6tVPnmAoagf5WCRk2Bed",
+      "bench-scout-git-testing-sholly.vercel.app": "dpl_D2mYf5k3qc892X4TVoRZ3jnoWWjD",
+      "bench-scout.vercel.app": "dpl_CfjXtpKfxDeThKRc8FfrEXeCHssm",
+      "bench-scout-sholly.vercel.app": "dpl_F5uCLS312DAkTGAGdUZbWqaUYYrg",
+      "bench-scout-git-main-sholly.vercel.app": "dpl_3JSXjPv2JjgTBNE3gwXVSiqJFTaV"
+    },
+    "pagination": {
+      "count": 5,
+      "next": null,
+      "prev": 1792597782279
+    }
+  },
+  "finalProject": {
+    "observedAt": "2026-10-23T14:48:41.318Z",
+    "id": "prj_MNrDsjvBMVCY5mmPjD3tSyw7OIBs",
+    "currentProductionDeployment": "dpl_CfjXtpKfxDeThKRc8FfrEXeCHssm",
+    "bypassCount": 0,
+    "protection": {
+      "deploymentType": "all_except_custom_domains"
+    },
+    "crons": {
+      "enabledAt": 1779108266469,
+      "disabledAt": null,
+      "updatedAt": 1792766468343,
+      "deploymentId": "dpl_CfjXtpKfxDeThKRc8FfrEXeCHssm",
+      "definitions": [
+        {
+          "host": "bench-scout-r2ldibwnk-sholly.vercel.app",
+          "path": "/api/cron/document-cleanup",
+          "schedule": "17 2 * * *"
+        }
+      ]
+    }
+  },
+  "publicSmoke": {
+    "date": "2026-10-23T14:46:07.758Z",
+    "origin": "https://bench-scout.vercel.app",
+    "deployment": "dpl_CfjXtpKfxDeThKRc8FfrEXeCHssm",
+    "checks": [
+      {
+        "path": "/",
+        "forgedSession": false,
+        "expected": 200,
+        "status": 200,
+        "passed": true,
+        "cacheControl": "public, max-age=0, must-revalidate"
+      },
+      {
+        "path": "/employer",
+        "forgedSession": false,
+        "expected": 200,
+        "status": 200,
+        "passed": true,
+        "cacheControl": "public, max-age=0, must-revalidate"
+      },
+      {
+        "path": "/api/setup",
+        "forgedSession": false,
+        "expected": 410,
+        "status": 410,
+        "passed": true,
+        "cacheControl": "public, max-age=0, must-revalidate"
+      },
+      {
+        "path": "/api/test-email",
+        "forgedSession": false,
+        "expected": 410,
+        "status": 410,
+        "passed": true,
+        "cacheControl": "public, max-age=0, must-revalidate"
+      },
+      {
+        "path": "/api/auth/session",
+        "forgedSession": false,
+        "expected": 401,
+        "status": 401,
+        "passed": true,
+        "cacheControl": "no-store"
+      },
+      {
+        "path": "/api/auth/session",
+        "forgedSession": true,
+        "expected": 401,
+        "status": 401,
+        "passed": true,
+        "cacheControl": "no-store"
+      },
+      {
+        "path": "/api/user",
+        "forgedSession": false,
+        "expected": 401,
+        "status": 401,
+        "passed": true,
+        "cacheControl": "no-store"
+      },
+      {
+        "path": "/api/documents?userId=qa-nonexistent-access-probe&kind=resume",
+        "forgedSession": false,
+        "expected": 401,
+        "status": 401,
+        "passed": true,
+        "cacheControl": "no-store"
+      },
+      {
+        "path": "/api/jobs/applicants?jobId=qa-nonexistent-access-probe",
+        "forgedSession": false,
+        "expected": 401,
+        "status": 401,
+        "passed": true,
+        "cacheControl": "no-store"
+      },
+      {
+        "path": "/api/readiness",
+        "forgedSession": false,
+        "expected": 401,
+        "status": 401,
+        "passed": true,
+        "cacheControl": "no-store"
+      },
+      {
+        "path": "/api/notifications",
+        "forgedSession": false,
+        "expected": 401,
+        "status": 401,
+        "passed": true,
+        "cacheControl": "no-store"
+      },
+      {
+        "path": "/api/history",
+        "forgedSession": false,
+        "expected": 401,
+        "status": 401,
+        "passed": true,
+        "cacheControl": "no-store"
+      },
+      {
+        "path": "/api/cron/document-cleanup?dryRun=1",
+        "forgedSession": false,
+        "expected": 401,
+        "status": 401,
+        "passed": true,
+        "cacheControl": "no-store"
+      }
+    ],
+    "passed": true,
+    "validCredentialsUsed": false,
+    "workerProcessing": false,
+    "emailDispatch": false,
+    "gitMainMaintenance": {
+      "deployment": "dpl_3JSXjPv2JjgTBNE3gwXVSiqJFTaV",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "providerAuthenticationGate": true,
+      "passed": true
+    },
+    "initialGitMainAssumption": {
+      "expectedStatus": 503,
+      "actualStatus": 302,
+      "initialOverallPass": false,
+      "correction": "Noncurrent maintenance deployment is protected after promotion; validated exact maintenance alias target plus Vercel authentication redirect instead of requiring anonymous notice."
+    }
+  },
+  "browser": {
+    "landingLoaded": true,
+    "url": "https://bench-scout.vercel.app/home",
+    "guestStateObserved": true,
+    "loginFormPrepared": true,
+    "validLoginPerformed": false
+  },
+  "recoveryRecheck": {
+    "project": "BenchScout",
+    "branch": "production",
+    "branchId": "br-cold-hall-apf2uz7z",
+    "historyHours": 6,
+    "earliestTimeDisplayed": "2026-10-23 09:38 Africa/Lagos",
+    "snapshotsPresent": false,
+    "snapshotSchedulePresent": false,
+    "restorePerformed": false
+  },
+  "scheduler": {
+    "registered": true,
+    "deploymentId": "dpl_CfjXtpKfxDeThKRc8FfrEXeCHssm",
+    "path": "/api/cron/document-cleanup",
+    "schedule": "17 2 * * *",
+    "nominalLagosTime": "03:17 daily; Hobby timing is not exact",
+    "actualScheduledInvocationObserved": false
+  },
+  "businessFixtureMutationPerformed": false,
+  "sourceOrArchiveFileOperationPerformed": false,
+  "newTestEmailSent": false,
+  "newBypassCreated": false,
+  "mainMergePerformed": false,
+  "realFileBackfillPerformed": false,
+  "rollbackRequired": false,
+  "limits": [
+    "Public-origin authenticated browser/session and link-delivery acceptance still pending.",
+    "Older three real files remain unbackfilled; six-hour database history accepted for controlled pilot; full recovery duration unmeasured.",
+    "Actual scheduled invocation remains pending.",
+    "Git-main kept on maintenance; main source remains July and must not auto-deploy.",
+    "Read-only metadata command approval review timed out once; allowed retry completed."
+  ]
+}

@@ -1,134 +1,64 @@
 import { NextResponse } from "next/server";
-import { put, del } from "@vercel/blob"; // 🚀 Added 'del' for the delete handler
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
+import { withApi } from "@/lib/api";
+import { ApiError, documentUrl } from "@/lib/security";
+import { documentFields, documentKind, resumeText, storeDocument, type DocumentKind } from "@/lib/documents";
+import { enqueueDocumentCleanup, tryDocumentCleanup } from "@/lib/document-cleanup";
 
-const prisma = new PrismaClient();
+export const maxDuration = 60;
 
-// 🚀 A Retry function to survive Neon Database "Cold Starts"
-async function withRetry<T>(
-	operation: () => Promise<T>,
-	maxRetries = 3,
-): Promise<T> {
-	for (let i = 0; i < maxRetries; i++) {
-		try {
-			return await operation();
-		} catch (error: any) {
-			if (i === maxRetries - 1) throw error;
-			console.warn(
-				`Database asleep. Retrying operation... (${i + 1}/${maxRetries})`,
-			);
-			await new Promise((res) => setTimeout(res, 1500)); // Wait 1.5s for DB to wake up
-		}
-	}
-	throw new Error("Unreachable");
+function reviewReset(kind: DocumentKind) {
+  return {
+    ...(kind === "license" ? { licenseNumber: null, licenseExpiry: null } : {}),
+    ...(["license", "provisional"].includes(kind) ? { credentialRevision: { increment: 1 }, licenseReviewRevision: null, isLicenseVerified: false, licenseReviewedAt: null, licenseReviewReference: null } : {}),
+  };
 }
+export const POST = withApi("candidate", async (request, session) => {
+  const form = await request.formData();
+  if (form.get("email") && form.get("email") !== session!.email) throw new ApiError(403, "Account identity does not match your session.");
+  const kind = documentKind(form.get("documentType"));
+  const field = documentFields[kind];
+  const user = await prisma.user.findUniqueOrThrow({ where: { id: session!.id } });
+  const blob = await storeDocument(form.get("file"), kind, user.id);
+  let committed;
+  try {
+    const parsedText = kind === "resume" ? await resumeText(blob.buffer) : undefined;
+    committed = await prisma.$transaction(async tx => {
+      const changed = await tx.user.updateMany({ where: { id: user.id, [field]: user[field] ?? null, credentialRevision: user.credentialRevision }, data: {
+        [field]: blob.url, ...reviewReset(kind), ...(kind === "resume" ? { cvParsedText: parsedText } : {}),
+      } });
+      if (!changed.count) throw new ApiError(409, "Your document changed. Refresh your profile and try again.");
+      const cleanupId = await enqueueDocumentCleanup(tx, user[field], user.id, kind);
+      return { user: await tx.user.findUniqueOrThrow({ where: { id: user.id } }), cleanupId };
+    });
+  } catch (error) {
+    // A network error during commit can have an ambiguous outcome. Never
+    // directly delete the new source: queue it and recheck current references.
+    try {
+      const cleanupId = await enqueueDocumentCleanup(prisma, blob.url, user.id, kind);
+      await tryDocumentCleanup(cleanupId);
+    } catch { console.error("Uncommitted file reconciliation needs operator attention"); }
+    throw error;
+  }
+  const cleanupPending = await tryDocumentCleanup(committed.cleanupId);
+  return NextResponse.json({ success: true, url: documentUrl(user.id, kind), user: committed.user, cleanupPending,
+    ...(kind === "resume" ? { resumeTextReady: Boolean(committed.user.cvParsedText?.trim()) } : {}),
+  });
+}, { limit: 10 });
 
-export async function POST(request: Request) {
-	try {
-		const formData = await request.formData();
-		const file = formData.get("file") as File;
-		const email = formData.get("email") as string;
-		const documentType = formData.get("documentType") as string;
-
-		if (!file || !email || !documentType) {
-			return NextResponse.json(
-				{ error: "Missing required fields" },
-				{ status: 400 },
-			);
-		}
-
-		// 🚀 THE BLOB FIX: addRandomSuffix prevents the Vercel Blob name collision entirely
-		const blob = await put(
-			`users/${email}/${documentType}-${file.name}`,
-			file,
-			{
-				access: "public",
-				addRandomSuffix: true,
-			},
-		);
-
-		const updateData: any = {};
-		if (documentType === "resume") updateData.resumeUrl = blob.url;
-		if (documentType === "degree") updateData.degreeUrl = blob.url;
-		if (documentType === "avatar") updateData.avatarUrl = blob.url;
-
-		// 🚀 SCHEMA ALIGNMENT: Save URL and reset verification status so they must confirm
-		if (documentType === "license") {
-			updateData.licenseUrl = blob.url;
-			updateData.isLicenseVerified = false;
-		}
-
-		// Execute with Retry
-		const user = await withRetry(() =>
-			prisma.user.update({
-				where: { email },
-				data: updateData,
-			}),
-		);
-
-		return NextResponse.json({ success: true, url: blob.url, user });
-	} catch (error: any) {
-		console.error("Upload/DB Error:", error);
-		return NextResponse.json(
-			{ error: error.message || "Failed to process upload." },
-			{ status: 500 },
-		);
-	} finally {
-		await prisma.$disconnect();
-	}
-}
-
-// 🚀 NEW DELETE HANDLER: Permanently wipes files from Vercel Blob & Database
-export async function DELETE(request: Request) {
-	try {
-		const { email, documentType, fileUrl } = await request.json();
-
-		if (!email || !documentType) {
-			return NextResponse.json(
-				{ error: "Missing required fields" },
-				{ status: 400 },
-			);
-		}
-
-		// 1. Delete the actual file from Vercel Cloud Storage
-		if (fileUrl) {
-			await del(fileUrl);
-		}
-
-		// 2. Prepare the database wipe command
-		const updateData: any = {};
-
-		if (documentType === "resume") updateData.resumeUrl = null;
-		if (documentType === "degree") updateData.degreeUrl = null;
-		if (documentType === "avatar") updateData.avatarUrl = null;
-
-		// Wipe all license data entirely
-		if (documentType === "license") {
-			updateData.licenseUrl = null;
-			updateData.licenseNumber = null;
-			updateData.licenseExpiry = null;
-			updateData.isLicenseVerified = false;
-		}
-
-		// 3. Execute the database update using your retry wrapper
-		const user = await withRetry(() =>
-			prisma.user.update({
-				where: { email },
-				data: updateData,
-			}),
-		);
-
-		return NextResponse.json({
-			success: true,
-			message: `${documentType} deleted successfully`,
-		});
-	} catch (error: any) {
-		console.error("Delete Error:", error);
-		return NextResponse.json(
-			{ error: "Failed to delete document from server." },
-			{ status: 500 },
-		);
-	} finally {
-		await prisma.$disconnect();
-	}
-}
+export const DELETE = withApi("candidate", async (request, session) => {
+  const body = await request.json();
+  const kind = documentKind(body.documentType);
+  const field = documentFields[kind];
+  const user = await prisma.user.findUniqueOrThrow({ where: { id: session!.id } });
+  if (!user[field]) return NextResponse.json({ success: true, cleanupPending: !!await prisma.documentCleanup.count({ where: { userId: user.id, kind } }) });
+  const cleanupId = await prisma.$transaction(async tx => {
+    const changed = await tx.user.updateMany({ where: { id: user.id, [field]: user[field] ?? null, credentialRevision: user.credentialRevision }, data: {
+      [field]: null, ...reviewReset(kind), ...(kind === "resume" ? { cvParsedText: null } : {}),
+    } });
+    if (!changed.count) throw new ApiError(409, "Your document changed. Refresh your profile and try again.");
+    return enqueueDocumentCleanup(tx, user[field], user.id, kind);
+  });
+  const cleanupPending = await tryDocumentCleanup(cleanupId);
+  return NextResponse.json({ success: true, cleanupPending });
+});

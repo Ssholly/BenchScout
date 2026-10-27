@@ -1,0 +1,65 @@
+{
+  "date": "2026-10-20",
+  "resetEmailReceipt": {
+    "recipientConfirmed": true,
+    "folder": "not specified",
+    "mailboxReadByAgent": false,
+    "passwordChanged": false,
+    "resetCompleted": false,
+    "brandingVersion": "before shared-layout update"
+  },
+  "confirmationScreenshot": {
+    "messageType": "account confirmation",
+    "displayedDate": "Oct 19",
+    "historicalBlueBDesign": true,
+    "proofOfCurrentSharedLayout": false
+  },
+  "newSharedBranding": {
+    "logo": "existing BenchScout laboratory PNG",
+    "inlineContentId": "benchscout-logo",
+    "appliesTo": [
+      "candidate confirmation",
+      "employer confirmation",
+      "password reset"
+    ],
+    "providerConfigurationChanged": false,
+    "schemaChanged": false
+  },
+  "validation": {
+    "lint": "passed",
+    "typecheck": "passed",
+    "testsPassed": 203,
+    "build": "passed",
+    "browserWidths": [
+      320,
+      390
+    ],
+    "horizontalOverflow": false,
+    "syntheticLinksOnly": true,
+    "newDesignLiveInboxRendering": {
+      "passwordReset": "recipient confirmed branding looks right",
+      "accountCreationConfirmation": "pending fresh live inbox check"
+    }
+  },
+  "recipientAddressPublished": false,
+  "deployment": {
+    "commit": "0653bcb74d06e8a03bb09b699bedbf14c4ecf6c6",
+    "status": "success",
+    "url": "https://vercel.com/sholly/bench-scout/4xsY5fvTDEDgZyJdWNY3rpWFQesh"
+  },
+  "updatedDesignLiveRequest": {
+    "type": "candidate recovery",
+    "approvedRecipient": true,
+    "submittedAfterDeployment": true,
+    "uiReturnedToLogin": true,
+    "receiptAndRendering": "Recipient confirmed latest reset email branding looks right",
+    "passwordChangedByAgent": false,
+    "additionalConfirmationEmailSent": false
+  },
+  "signupPathVerified": {
+    "uiEndpoint": "/api/auth/register",
+    "initialCandidateSignupUsesBrandedHelper": true,
+    "employerSignupUsesBrandedHelper": true,
+    "resendUsesBrandedHelper": true
+  }
+}

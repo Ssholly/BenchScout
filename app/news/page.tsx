@@ -1,13 +1,15 @@
 "use client";
+import type { ClientJob, NewsArticle } from "@/lib/types";
 import { useState, useEffect } from "react";
 
 export default function NewsInsightsPage() {
 	const [filter, setFilter] = useState("All");
-	const [newsData, setNewsData] = useState<any[]>([]);
+	const [showMarketSummary, setShowMarketSummary] = useState(false);
+	const [newsData, setNewsData] = useState<NewsArticle[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
 
-	const [mlscnNews, setMlscnNews] = useState<any[]>([]);
+	const [mlscnNews, setMlscnNews] = useState<NewsArticle[]>([]);
 
 	const [stats, setStats] = useState({
 		topLocations: [
@@ -79,7 +81,7 @@ export default function NewsInsightsPage() {
 					const now = Date.now();
 					const oneWeek = 7 * 24 * 60 * 60 * 1000;
 
-					jobs.forEach((j: any) => {
+					jobs.forEach((j: ClientJob) => {
 						const jobDate = new Date(j.createdAt).getTime();
 						const daysOld = Math.floor((now - jobDate) / (1000 * 60 * 60 * 24));
 						totalDays += daysOld;
@@ -103,7 +105,7 @@ export default function NewsInsightsPage() {
 					}
 
 					const locCounts: Record<string, number> = {};
-					jobs.forEach((j: any) => {
+					jobs.forEach((j: ClientJob) => {
 						if (j.loc) {
 							let loc = j.loc.split(",")[0].trim();
 							if (loc.toLowerCase().includes("abuja")) loc = "FCT - Abuja";
@@ -125,7 +127,7 @@ export default function NewsInsightsPage() {
 						liveLocations.length > 0 ? liveLocations[0].name : "Nigeria";
 
 					const skillCounts: Record<string, number> = {};
-					jobs.forEach((j: any) => {
+					jobs.forEach((j: ClientJob) => {
 						if (j.skills) {
 							j.skills.split(",").forEach((s: string) => {
 								const sk = s.trim();
@@ -146,13 +148,13 @@ export default function NewsInsightsPage() {
 					}));
 
 					const empCounts: Record<string, number> = {};
-					jobs.forEach((j: any) => {
+					jobs.forEach((j: ClientJob) => {
 						if (
 							j.company &&
 							j.company !== "See posting for details" &&
 							!j.company.includes("Employer")
 						) {
-							let comp = j.company.trim();
+							const comp = j.company.trim();
 							empCounts[comp] = (empCounts[comp] || 0) + 1;
 						}
 					});
@@ -161,12 +163,12 @@ export default function NewsInsightsPage() {
 						.slice(0, 3)
 						.map((e) => ({ name: e[0], count: e[1] }));
 
-					setStats({
+					setStats(previous => ({
 						topLocations:
-							liveLocations.length > 0 ? liveLocations : stats.topLocations,
-						topSkills: liveSkills.length > 0 ? liveSkills : stats.topSkills,
+							liveLocations.length > 0 ? liveLocations : previous.topLocations,
+						topSkills: liveSkills.length > 0 ? liveSkills : previous.topSkills,
 						topEmployers:
-							liveEmployers.length > 0 ? liveEmployers : stats.topEmployers,
+							liveEmployers.length > 0 ? liveEmployers : previous.topEmployers,
 						maxLocCount:
 							liveLocations.length > 0
 								? Math.max(...liveLocations.map((l) => l.count))
@@ -174,9 +176,9 @@ export default function NewsInsightsPage() {
 						avgTime: calculatedAvgTime,
 						activeSurge: calculatedSurge,
 						hotLocation: hotLoc,
-					});
+					}));
 				}
-			} catch (e) {}
+			} catch {}
 		};
 
 		const loadPage = () => {
@@ -247,6 +249,7 @@ export default function NewsInsightsPage() {
 	return (
 		<section className="pane active" style={{ paddingBottom: "4rem" }}>
 			<div
+				className="news-intro"
 				style={{
 					marginBottom: "2.5rem",
 					display: "flex",
@@ -256,7 +259,7 @@ export default function NewsInsightsPage() {
 			>
 				<div>
 					<div
-						className="page-title"
+						className="page-title news-title"
 						style={{
 							fontSize: "28px",
 							fontWeight: 900,
@@ -266,9 +269,9 @@ export default function NewsInsightsPage() {
 							gap: "12px",
 						}}
 					>
-						Market Intelligence & News
+						<span className="news-title-text">Market Intelligence & News</span>
 						{!isLoading && isUserLoggedIn && (
-							<span
+							<span className="news-live-badge"
 								style={{
 									display: "flex",
 									alignItems: "center",
@@ -385,10 +388,20 @@ export default function NewsInsightsPage() {
 				</div>
 			) : (
 				<>
+					<button
+						className="news-market-toggle"
+						aria-expanded={showMarketSummary}
+						aria-controls="news-market-summary"
+						onClick={() => setShowMarketSummary(value => !value)}
+					>
+						Market summary <span aria-hidden="true">{showMarketSummary ? "−" : "+"}</span>
+					</button>
 					<div
+						id="news-market-summary"
+						className={`news-market-grid${showMarketSummary ? " is-expanded" : ""}`}
 						style={{
 							display: "grid",
-							gridTemplateColumns: "1fr 1fr",
+							gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 280px), 1fr))",
 							gap: "1.5rem",
 							marginBottom: "2rem",
 						}}
@@ -425,7 +438,7 @@ export default function NewsInsightsPage() {
 							>
 								{stats.topLocations.map((loc) => (
 									<div
-										key={loc.name}
+										key={loc.name} className="market-stat-row"
 										style={{
 											display: "flex",
 											alignItems: "center",
@@ -524,7 +537,7 @@ export default function NewsInsightsPage() {
 							>
 								{stats.topSkills.map((skill) => (
 									<div
-										key={skill.name}
+										key={skill.name} className="market-stat-row"
 										style={{
 											display: "flex",
 											alignItems: "center",
@@ -639,7 +652,7 @@ export default function NewsInsightsPage() {
 							>
 								{stats.topEmployers.map((emp, idx) => (
 									<button
-										key={idx}
+										key={idx} className="market-employer-row"
 										onClick={() => {
 											window.location.href = `/matches?employer=${encodeURIComponent(
 												emp.name,
@@ -800,6 +813,7 @@ export default function NewsInsightsPage() {
 					</div>
 
 					<div
+						className="news-filters"
 						style={{
 							position: "sticky",
 							top: "90px", // 🚀 FIXED: Clears the 80px Topbar so it doesn't get hidden underneath it!
@@ -867,10 +881,10 @@ export default function NewsInsightsPage() {
 					/>
 
 					<div
-						className="mobile-grid"
+						className="mobile-grid news-grid"
 						style={{
 							display: "grid",
-							gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+							gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 280px), 1fr))",
 							gap: "1.5rem",
 						}}
 					>
@@ -963,19 +977,19 @@ export default function NewsInsightsPage() {
 									No articles found
 								</h3>
 								<p style={{ margin: 0, fontSize: "14px" }}>
-									We couldn't find any recent news in this category.
+									We couldn&apos;t find any recent news in this category.
 								</p>
 							</div>
 						) : (
-							filteredNews.map((article: any, index: number) => {
+							filteredNews.map((article: NewsArticle, index: number) => {
 								const catStyle = getCategoryColor(
 									article.category || "Regulation",
 								);
 								return (
-									<div
+									<a
 										key={article.id || index}
 										className="article-card"
-										onClick={() => window.open(article.url, "_blank")}
+										href={article.url} target="_blank" rel="noopener noreferrer" aria-label={`Read: ${article.title}`}
 										style={{
 											background: "rgba(255,255,255,0.6)",
 											backdropFilter: "blur(24px)",
@@ -1001,7 +1015,7 @@ export default function NewsInsightsPage() {
 												"0 4px 15px -3px rgba(0, 0, 0, 0.02)";
 										}}
 									>
-										<div
+										<div className="article-meta"
 											style={{
 												display: "flex",
 												justifyContent: "space-between",
@@ -1045,7 +1059,7 @@ export default function NewsInsightsPage() {
 										>
 											{article.title}
 										</h3>
-										<p
+										<p className="article-excerpt"
 											style={{
 												fontSize: "13px",
 												color: "#475569",
@@ -1061,12 +1075,13 @@ export default function NewsInsightsPage() {
 										>
 											{article.excerpt}
 										</p>
-										<div
+										<div className="article-footer"
 											style={{
 												display: "flex",
 												justifyContent: "space-between",
 												alignItems: "center",
 												marginTop: "auto",
+												gap: "16px",
 												paddingTop: "1.25rem",
 												borderTop: "1px solid rgba(0,0,0,0.05)",
 											}}
@@ -1076,6 +1091,9 @@ export default function NewsInsightsPage() {
 													fontSize: "12px",
 													fontWeight: 800,
 													color: "#94a3b8",
+													minWidth: 0,
+													flex: 1,
+													overflowWrap: "normal",
 												}}
 											>
 												Source:{" "}
@@ -1093,6 +1111,8 @@ export default function NewsInsightsPage() {
 													alignItems: "center",
 													gap: "4px",
 													transition: "all 0.2s",
+													flexShrink: 0,
+													whiteSpace: "nowrap",
 												}}
 											>
 												Read{" "}
@@ -1109,7 +1129,7 @@ export default function NewsInsightsPage() {
 												</svg>
 											</span>
 										</div>
-									</div>
+									</a>
 								);
 							})
 						)}

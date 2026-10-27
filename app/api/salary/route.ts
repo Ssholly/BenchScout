@@ -1,118 +1,34 @@
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
-
-export async function POST(request: Request) {
-	try {
-		const { role, location, salary, experience } = await request.json();
-
-		if (!role || !location || !salary || !experience) {
-			return NextResponse.json(
-				{ error: "Missing required fields" },
-				{ status: 400 },
-			);
-		}
-
-		const newReport = await prisma.salaryReport.create({
-			data: { role, location, salary: parseInt(salary), experience },
-		});
-
-		// 🚀 Return the ID so the frontend can save it for future edits
-		return NextResponse.json({ success: true, id: newReport.id });
-	} catch (error) {
-		return NextResponse.json(
-			{ error: "Failed to submit report" },
-			{ status: 500 },
-		);
-	} finally {
-		await prisma.$disconnect();
-	}
+import { prisma } from "@/lib/prisma";
+import { withApi } from "@/lib/api";
+import { ApiError, salaryOwnerKey, textField } from "@/lib/security";
+function reportFields(body: Record<string, unknown>) {
+  const salary = Number(body.salary);
+  if (!Number.isSafeInteger(salary) || salary < 1000 || salary > 100000000) throw new ApiError(400, "Enter a valid monthly salary in naira.");
+  return { role: textField(body.role, "role"), location: textField(body.location, "location"), experience: textField(body.experience, "experience"), salary };
 }
-
-export async function PUT(request: Request) {
-	try {
-		const { id, role, location, salary, experience } = await request.json();
-
-		if (!id)
-			return NextResponse.json({ error: "ID required" }, { status: 400 });
-
-		await prisma.salaryReport.update({
-			where: { id },
-			data: { role, location, salary: parseInt(salary), experience },
-		});
-
-		return NextResponse.json({ success: true });
-	} catch (error) {
-		return NextResponse.json(
-			{ error: "Failed to update report" },
-			{ status: 500 },
-		);
-	} finally {
-		await prisma.$disconnect();
-	}
-}
-
-export async function DELETE(request: Request) {
-	try {
-		const { id } = await request.json();
-
-		if (!id)
-			return NextResponse.json({ error: "ID required" }, { status: 400 });
-
-		await prisma.salaryReport.delete({ where: { id } });
-
-		return NextResponse.json({ success: true });
-	} catch (error) {
-		return NextResponse.json(
-			{ error: "Failed to delete report" },
-			{ status: 500 },
-		);
-	} finally {
-		await prisma.$disconnect();
-	}
-}
-
-export async function GET() {
-	try {
-		const reports = await prisma.salaryReport.findMany();
-		const jobs = await prisma.job.findMany({
-			where: { salary: { not: "Competitive" } },
-		});
-
-		let totalMonthlySalary = 0;
-		let validCount = 0;
-
-		reports.forEach((r) => {
-			totalMonthlySalary += r.salary;
-			validCount++;
-		});
-
-		jobs.forEach((j) => {
-			const nums = j.salary.replace(/,/g, "").match(/\d+/g);
-			if (nums && nums.length > 0) {
-				let val = parseInt(nums[0]);
-				if (val < 1000) val = val * 1000;
-				const monthlyVal = val >= 1000000 ? Math.round(val / 12) : val;
-
-				totalMonthlySalary += monthlyVal;
-				validCount++;
-			}
-		});
-
-		const avg = validCount > 0 ? totalMonthlySalary / validCount : 0;
-
-		return NextResponse.json({
-			average: Math.round(avg),
-			count: validCount,
-			recent: reports.slice(-10).reverse(),
-		});
-	} catch (error) {
-		return NextResponse.json(
-			{ error: "Failed to fetch salary data" },
-			{ status: 500 },
-		);
-	} finally {
-		await prisma.$disconnect();
-	}
-}
+export const POST = withApi("candidate", async (request, session) => {
+  const fields = reportFields(await request.json());
+  const ownerKey = salaryOwnerKey(session!.id);
+  const report = await prisma.salaryReport.upsert({ where: { ownerKey }, create: { ...fields, ownerKey }, update: fields });
+  return NextResponse.json({ success: true, id: report.id });
+}, { limit: 5 });
+export const PUT = withApi("candidate", async (request, session) => {
+  const body = await request.json();
+  const id = textField(body.id, "report ID");
+  const updated = await prisma.salaryReport.updateMany({ where: { id, ownerKey: salaryOwnerKey(session!.id) }, data: reportFields(body) });
+  if (!updated.count) throw new ApiError(404, "Your salary report was not found.");
+  return NextResponse.json({ success: true });
+}, { limit: 5 });
+export const DELETE = withApi("candidate", async (request, session) => {
+  const { id } = await request.json();
+  const deleted = await prisma.salaryReport.deleteMany({ where: { id: textField(id, "report ID"), ownerKey: salaryOwnerKey(session!.id) } });
+  if (!deleted.count) throw new ApiError(404, "Your salary report was not found.");
+  return NextResponse.json({ success: true });
+});
+export const GET = withApi("public", async () => {
+  const aggregate = await prisma.salaryReport.aggregate({ _avg: { salary: true }, _count: true });
+  const recent = await prisma.salaryReport.findMany({ select: { id: true, role: true, location: true, salary: true, experience: true, submittedAt: true }, orderBy: { submittedAt: "desc" }, take: 10 });
+  // Only explicit monthly contributions are used; scraped salary strings may be annual or duplicated.
+  return NextResponse.json({ average: Math.round(aggregate._avg.salary || 0), count: aggregate._count, recent, source: "Self-reported monthly salaries (NGN)", minimumSample: 5 });
+});

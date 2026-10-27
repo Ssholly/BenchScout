@@ -1,0 +1,31 @@
+{
+  "date": "2026-10-23",
+  "origin": "https://bench-scout.vercel.app",
+  "deploymentAtCutover": "dpl_CfjXtpKfxDeThKRc8FfrEXeCHssm",
+  "sourceAtCutover": "082c225a86a1ec582ceb2e27faf276f82b8a7994",
+  "ownerReportedSignedIn": true,
+  "loginPerformedByOwner": true,
+  "operatorChecks": {
+    "signedInAppliedPageObserved": true,
+    "fullRefreshOnAppliedRetainedSession": true,
+    "navigationToSettingsSucceeded": true,
+    "profilePreferencesFinishedLoading": true,
+    "fullRefreshOnSettingsRetainedSession": true,
+    "navigationBackToAppliedSucceeded": true,
+    "loginDialogAbsentAfterSettingsLoad": true
+  },
+  "passed": true,
+  "readOnlyAfterOwnerLogin": true,
+  "profileOrPreferencesSaved": false,
+  "manualDocumentOpenUploadDelete": false,
+  "passwordOrCookieValuesRead": false,
+  "accountIdentityPublished": false,
+  "newEmailRequested": false,
+  "logoutPerformed": false,
+  "limits": [
+    "Public browser session persistence and read-only profile navigation only.",
+    "No new confirmation/reset email-link delivery tested.",
+    "Production Secure-cookie attribute was not inspected.",
+    "Actual scheduled invocation remains pending; older-file backfill and main merge remain separate."
+  ]
+}

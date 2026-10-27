@@ -1,7 +1,9 @@
+import { ApiError } from "@/lib/security";
+import { withApi } from "@/lib/api";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
-export async function POST(request: Request) {
+export const POST = withApi("candidate", async (request: Request) => {
 	try {
 		const body = await request.json();
 		const { email } = body;
@@ -34,6 +36,7 @@ export async function POST(request: Request) {
 				where: {
 					userId: user.id,
 					applied: false,
+					isDirectPost: false,
 				},
 				data: {
 					status: "cleared",
@@ -45,11 +48,12 @@ export async function POST(request: Request) {
 			success: true,
 			message: "History cleared and matches hidden successfully.",
 		});
-	} catch (error) {
+	} catch (error: unknown) {
+    if (error instanceof ApiError) throw error;
 		console.error("Reset history error:", error);
 		return NextResponse.json(
 			{ success: false, error: "Failed to reset history and matches" },
 			{ status: 500 },
 		);
 	}
-}
+}, {});

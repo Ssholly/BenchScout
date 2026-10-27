@@ -1,0 +1,90 @@
+{
+  "date": "2026-10-21",
+  "timezone": "Africa/Lagos",
+  "readOnlyInventory": {
+    "targetFingerprintMatchesAcceptedProduction": true,
+    "users": 2,
+    "privateReferences": 3,
+    "uniquePrivateFiles": 3,
+    "otherReferences": 0,
+    "kinds": {
+      "resume": 1,
+      "license": 1,
+      "provisional": 0,
+      "degree": 0,
+      "result": 0,
+      "placement": 0,
+      "certificate": 0,
+      "avatar": 1
+    },
+    "realFileContentsRead": false,
+    "recordsChanged": false
+  },
+  "implementation": {
+    "productionOnly": true,
+    "requiresVerifiedTargetFingerprint": true,
+    "signedPlanBoundToInventoryAndConfiguration": true,
+    "expiryMinutes": 15,
+    "maximumAccounts": 100,
+    "maximumDistinctFiles": 10,
+    "applyDefaultOff": true,
+    "requiresLiveHooksOrApprovedEnforcedWritePause": true,
+    "testingCliStillTestingOnly": true
+  },
+  "execution": {
+    "newStagedDeployment": true,
+    "hostedGuardedPreviewRun": true,
+    "realFileBytesRead": false,
+    "realFilesCopied": 0,
+    "liveDomainChanged": false,
+    "deploymentId": "dpl_12r5Zwn4tyffsUTnH3YF9tMrNqXh",
+    "sourceCommit": "64e2f83c62d7c81b3905cdc075793255b8e7d186",
+    "providerSourceMetadataMatches": true,
+    "applyExplicitlyDisabled": true,
+    "vercelAuthenticationEnabled": true,
+    "publicAliasDeploymentUnchanged": "dpl_4bTpas5uPn1jRpwGeu4eUJvX7nhZ"
+  },
+  "remaining": [
+    "resolve live-hook/write-pause prerequisite before approving real copy",
+    "fresh reviewed inventory and explicit real-file copy approval after prerequisite is resolved"
+  ],
+  "validation": {
+    "lint": true,
+    "typecheck": true,
+    "testsPassed": 251,
+    "focusedProductionBackfillTests": 12,
+    "productionBuild": true,
+    "previewUiWidths": [
+      320,
+      390
+    ],
+    "horizontalOverflow": false,
+    "localOperatorActionsSubmitted": false,
+    "hostedGuardedPreviewPassed": true
+  },
+  "hostedPreview": {
+    "evidence": "operator-reported exact response",
+    "dryRun": true,
+    "eligibleReferences": 3,
+    "uniqueFiles": 3,
+    "blockedReferences": 0,
+    "kinds": {
+      "resume": 1,
+      "license": 1,
+      "provisional": 0,
+      "degree": 0,
+      "result": 0,
+      "placement": 0,
+      "certificate": 0,
+      "avatar": 1
+    },
+    "limit": 10,
+    "inventoryReady": true,
+    "applyEnabled": false,
+    "canApply": false,
+    "expiresAt": "2026-10-21T15:24:35.699Z",
+    "fileContentsRead": false,
+    "businessRecordsChanged": false,
+    "applicationGrantsChanged": false
+  }
+}

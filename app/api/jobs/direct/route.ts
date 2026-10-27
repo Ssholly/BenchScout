@@ -1,21 +1,21 @@
+import { ApiError } from "@/lib/security";
+import { withApi } from "@/lib/api";
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
+import { listingDetails } from "@/lib/candidate-profile";
 
-const prisma = new PrismaClient();
 
-export async function POST(request: Request) {
+
+export const POST = withApi("employer", async (request: Request, session: import("@/lib/auth").Session | null) => {
 	try {
 		const body = await request.json();
-		const {
-			role,
-			company,
-			loc,
-			salary,
-			skills,
-			jobType,
-			isMlscnApproved,
-			employerId,
-		} = body;
+		const { role, company, loc, salary, skills, jobType, employerId } = body;
+        if (body.noFees !== true) throw new ApiError(400, "Confirm that applicants will not be charged any recruitment fees.");
+        if (jobType && !["full-time", "internship", "locum", "contract", "part-time"].includes(jobType)) throw new ApiError(400, "Choose a valid vacancy type.");
+        const deadline = typeof body.deadline === "string" ? body.deadline : "";
+        if (deadline && (!/^\d{4}-\d{2}-\d{2}$/.test(deadline) || !Number.isFinite(Date.parse(deadline)) || new Date(deadline).toISOString().slice(0,10) !== deadline)) throw new ApiError(400, "Enter a valid application deadline.");
+        const requiredDocuments = typeof body.requiredDocuments === "string" ? body.requiredDocuments.trim() : "";
+        if (requiredDocuments.length > 500) throw new ApiError(400, "Document requirements must be 500 characters or fewer.");
 
 		if (!role || !company || !loc || !skills || !employerId) {
 			return NextResponse.json(
@@ -29,17 +29,18 @@ export async function POST(request: Request) {
 			data: {
 				userId: null, // 🚀 Explicitly null means it's broadcast globally to everyone!
 				role,
-				company,
+				company: session!.name,
 				loc,
 				salary: salary || "Competitive",
 				skills,
 				url: `/matches/direct/${employerId}`, // Required field restored!
-				score: 95,
+				score: 0,
 				tier: jobType === "internship" ? 2 : 1,
-				status: "active",
+				status: "pending-review",
 				applied: false,
 				jobType: jobType || "full-time",
-				isMlscnApproved: isMlscnApproved || false,
+				isMlscnApproved: false,
+                listingDetails: { deadline, requiredDocuments, noFees: true },
 				isDirectPost: true,
 				employerId,
 			},
@@ -48,9 +49,10 @@ export async function POST(request: Request) {
 		return NextResponse.json({
 			success: true,
 			job: directJob,
-			message: "Global broadcast successfully deployed.",
+			message: "Vacancy submitted for review. It will appear in matches after approval.",
 		});
-	} catch (error: any) {
+	} catch (error: unknown) {
+    if (error instanceof ApiError) throw error;
 		console.error("DIRECT POST ERROR:", error);
 		return NextResponse.json(
 			{
@@ -59,13 +61,11 @@ export async function POST(request: Request) {
 			},
 			{ status: 500 },
 		);
-	} finally {
-		await prisma.$disconnect();
 	}
-}
+}, {"verifiedEmployer":true});
 
 // 🚀 HANDLE EDITING EXISTING BROADCASTS
-export async function PATCH(request: Request) {
+export const PATCH = withApi("employer", async (request: Request) => {
 	try {
 		const body = await request.json();
 		const { jobId, role, loc, salary, skills } = body;
@@ -74,6 +74,16 @@ export async function PATCH(request: Request) {
 			return NextResponse.json({ error: "Missing Job ID" }, { status: 400 });
 		}
 
+        const previous = await prisma.job.findUniqueOrThrow({ where: { id: jobId } });
+        const details = listingDetails(previous.listingDetails);
+        if (body.deadline !== undefined) {
+          if (typeof body.deadline !== "string" || (body.deadline && (!/^\d{4}-\d{2}-\d{2}$/.test(body.deadline) || !Number.isFinite(Date.parse(body.deadline)) || new Date(body.deadline).toISOString().slice(0,10) !== body.deadline))) throw new ApiError(400, "Enter a valid application deadline.");
+          details.deadline = body.deadline;
+        }
+        if (body.requiredDocuments !== undefined) {
+          if (typeof body.requiredDocuments !== "string" || body.requiredDocuments.length > 500) throw new ApiError(400, "Invalid document requirements.");
+          details.requiredDocuments = body.requiredDocuments.trim();
+        }
 		// Update the specific job row with new details
 		const updatedJob = await prisma.job.update({
 			where: { id: jobId },
@@ -82,22 +92,23 @@ export async function PATCH(request: Request) {
 				loc,
 				salary: salary || "Competitive",
 				skills,
+                listingDetails: { ...details },
+                status: "pending-review",
 			},
 		});
 
 		return NextResponse.json({ success: true, job: updatedJob });
-	} catch (error: any) {
+	} catch (error: unknown) {
+    if (error instanceof ApiError) throw error;
 		console.error("Edit Broadcast Error:", error);
 		return NextResponse.json(
 			{ error: "Failed to update broadcast" },
 			{ status: 500 },
 		);
-	} finally {
-		await prisma.$disconnect();
 	}
-}
+}, {"job":"employer","verifiedEmployer":true});
 
-export async function DELETE(request: Request) {
+export const DELETE = withApi("employer", async (request: Request) => {
 	try {
 		const body = await request.json();
 		const { jobId, employerId } = body;
@@ -109,25 +120,25 @@ export async function DELETE(request: Request) {
 			);
 		}
 
-		// Securely delete the job only if it belongs to this employer
-		await prisma.job.deleteMany({
+		// Close discovery without cascading deletion of candidate applications/reports.
+		await prisma.job.updateMany({
 			where: {
 				id: jobId,
 				employerId: employerId,
 			},
+			data: { status: "closed" },
 		});
 
 		return NextResponse.json({
 			success: true,
-			message: "Broadcast terminated.",
+			message: "Vacancy closed. Application history preserved.",
 		});
-	} catch (error: any) {
+	} catch (error: unknown) {
+    if (error instanceof ApiError) throw error;
 		console.error("DELETE POST ERROR:", error);
 		return NextResponse.json(
 			{ success: false, error: "Failed to delete broadcast." },
 			{ status: 500 },
 		);
-	} finally {
-		await prisma.$disconnect();
 	}
-}
+}, {"job":"employer"});

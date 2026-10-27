@@ -1,5 +1,16 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useJobScan } from "@/lib/use-job-scan";
+import { startJobScan } from "@/lib/client-job-scan";
+import Toast from "@/components/Toast";
+import { startTransition } from "react";
+import type { ClientJob } from "@/lib/types";
+import { useState, useEffect, useRef } from "react";
+import ApplicationReadiness from "@/components/ApplicationReadiness";
+import LicensedCareerOverview from "@/components/LicensedCareerOverview";
+import InternDashboard from "@/components/InternDashboard";
+import { candidateProfile, lastScan } from "@/lib/candidate-profile";
+import ScanSummary from "@/components/ScanSummary";
+import HubLoading from "@/components/HubLoading";
 import DashboardAnalytics from "@/components/DashboardAnalytics";
 
 const NIGERIA_STATES = [
@@ -44,8 +55,19 @@ const NIGERIA_STATES = [
 ];
 
 export default function Dashboard() {
-	const [isScraping, setIsScraping] = useState(false);
-	const [progress, setProgress] = useState(0);
+ const profileSequence = useRef(0);
+ const jobSequence = useRef(0);
+ const profileIdentity = useRef<string | null>(null);
+ const [jobsUnavailable, setJobsUnavailable] = useState(true);
+ const [profileAsOf, setProfileAsOf] = useState<number | null>(null);
+	const [profileError, setProfileError] = useState(false);
+ const [careerPhase, setCareerPhase] = useState<string | null>(null);
+ const [licenseExpiry, setLicenseExpiry] = useState<string | null>(null);
+ const [careerProfile, setCareerProfile] = useState<unknown>({});
+ const [careerJobs, setCareerJobs] = useState<ClientJob[]>([]);
+	const scan = useJobScan();
+ const isScraping = scan.running;
+ const progress = scan.progress;
 	const [email, setEmail] = useState("");
 	const [location, setLocation] = useState("All Nigeria");
 	const [dbMinScore, setDbMinScore] = useState(75);
@@ -64,26 +86,8 @@ export default function Dashboard() {
 		type: "success" | "error";
 	} | null>(null);
 	const [lastRun, setLastRun] = useState("Never");
-	const [logs, setLogs] = useState([
-		{ time: "--:--:--", level: "IDLE", msg: "System awaiting next command..." },
-	]);
-
-	const addLog = (level: string, msg: string) => {
-		setLogs((prev) => [
-			...prev,
-			{
-				time: new Date().toLocaleTimeString([], {
-					hour: "2-digit",
-					minute: "2-digit",
-					second: "2-digit",
-				}),
-				level,
-				msg,
-			},
-		]);
-	};
-
 	const refreshJobStats = async () => {
+		const sequence = ++jobSequence.current;
 		const activeEmail = localStorage.getItem("labpro_active_user");
 		if (!activeEmail) {
 			setTotalJobs(0);
@@ -93,29 +97,27 @@ export default function Dashboard() {
 		}
 
 		try {
-			const res = await fetch(`/api/jobs?email=${activeEmail}`);
+			const res = await fetch(`/api/jobs?email=${encodeURIComponent(activeEmail)}`);
 			const data = await res.json();
+            if (sequence !== jobSequence.current || activeEmail !== localStorage.getItem("labpro_active_user")) return;
+            if (!res.ok || !Array.isArray(data)) throw new Error("Matches unavailable");
 			if (Array.isArray(data)) {
-				const activeJobs = data.filter(
-					(j: any) =>
-						j.status !== "cleared" &&
-						j.applied !== true &&
-						(j.targetEmail === activeEmail ||
-							j.userEmail === activeEmail ||
-							j.email === activeEmail ||
-							(!j.targetEmail && !j.userEmail && !j.email)),
-				);
+				const activeJobs = data;
+                setCareerJobs(data);
+                setJobsUnavailable(false);
 
 				setTotalJobs(activeJobs.length);
-				setTier1Count(activeJobs.filter((j: any) => j.tier === 1).length);
-				setTier2Count(activeJobs.filter((j: any) => j.tier === 2).length);
+				setTier1Count(activeJobs.filter((j: ClientJob) => j.tier === 1).length);
+				setTier2Count(activeJobs.filter((j: ClientJob) => j.tier === 2).length);
 			}
-		} catch (e) {}
+		} catch { setJobsUnavailable(true); }
 	};
 
 	useEffect(() => {
 		const fetchUserData = async () => {
+			const sequence = ++profileSequence.current;
 			const activeEmail = localStorage.getItem("labpro_active_user");
+            if (profileIdentity.current !== activeEmail) { setCareerPhase(null); setCareerProfile({}); profileIdentity.current = activeEmail; }
 
 			if (!activeEmail) {
 				setIsUserLoggedIn(false);
@@ -124,56 +126,60 @@ export default function Dashboard() {
 				setTier1Count(0);
 				setTier2Count(0);
 				setLastRun("—");
-				setLogs([
-					{
-						time: "--:--:--",
-						level: "AUTH",
-						msg: "Please log in to load dashboard metrics.",
-					},
-				]);
+
 				return;
 			}
 
 			setIsUserLoggedIn(true);
 
 			try {
-				const res = await fetch(`/api/user?email=${activeEmail}`);
+				const res = await fetch(`/api/user?email=${encodeURIComponent(activeEmail)}`);
 				const data = await res.json();
+                if (sequence !== profileSequence.current || activeEmail !== localStorage.getItem("labpro_active_user")) return;
+                if (!res.ok || !data.success || !data.user) throw new Error("Profile unavailable");
+                setProfileError(false);
 				if (data.success && data.user) {
 					setEmail(data.user.email);
-					setDbMinScore(data.user.minScore || 75);
-					setUserKeywords(data.user.keywords || "Medical Laboratory Scientist");
+                    setCareerPhase(data.user.careerPhase || "licensed");
+                    setCareerProfile(data.user.candidateProfile || {});
+                    setLicenseExpiry(data.user.licenseExpiry || null);
+                    const savedRun = localStorage.getItem("labpro_last_run");
+                    if (savedRun) setLastRun(savedRun);
+                    setProfileAsOf(Date.now());
+					setDbMinScore(data.user.minScore ?? 75);
+					setUserKeywords(data.user.keywords || candidateProfile(data.user.candidateProfile).specialties || "Medical Laboratory Scientist");
 
 					const dashboardFilter = localStorage.getItem(
 						"labpro_dashboard_temp_location",
 					);
-					setLocation(dashboardFilter || data.user.location || "All Nigeria");
+					setLocation(dashboardFilter || lastScan(data.user.candidateProfile)?.location || candidateProfile(data.user.candidateProfile).preferredLocations || data.user.location || "All Nigeria");
 				}
-			} catch (error) {}
+			} catch { setProfileError(true); }
 		};
 
-		refreshJobStats();
+		startTransition(() => { refreshJobStats(); });
 		fetchUserData();
 
 		const savedLastRun = localStorage.getItem("labpro_last_run");
 		const activeUser = localStorage.getItem("labpro_active_user");
-		if (savedLastRun && activeUser) setLastRun(savedLastRun);
+		if (savedLastRun && activeUser) startTransition(() => { setLastRun(savedLastRun); });
 
 		const savedT3 = localStorage.getItem("labpro_tier3");
-		if (savedT3) setIncludeTier3(savedT3 === "true");
+		if (savedT3) startTransition(() => { setIncludeTier3(savedT3 === "true"); });
 
 		const savedAuto = localStorage.getItem("labpro_auto");
-		if (savedAuto) setAutoSend(savedAuto === "true");
+		if (savedAuto) startTransition(() => { setAutoSend(savedAuto === "true"); });
 
-		window.addEventListener("userStateChanged", () => {
+		const refreshIdentity = () => {
 			setIsUserLoggedIn(!!localStorage.getItem("labpro_active_user"));
 			fetchUserData();
 			refreshJobStats();
-		});
+		};
+        window.addEventListener("userStateChanged", refreshIdentity);
 		window.addEventListener("jobsUpdated", refreshJobStats);
 
 		return () => {
-			window.removeEventListener("userStateChanged", fetchUserData);
+			window.removeEventListener("userStateChanged", refreshIdentity);
 			window.removeEventListener("jobsUpdated", refreshJobStats);
 		};
 	}, []);
@@ -210,86 +216,19 @@ export default function Dashboard() {
 			return;
 		}
 
-		setIsScraping(true);
-		setProgress(15);
-		setLogs([]);
-		addLog("INIT", `Clearing previous matches...`);
-		addLog(
-			"INIT",
-			`Aggressive scan for ${location} targeting: ${userKeywords}`,
-		);
+        await startJobScan({ targetLocation: location, includeTier3, autoSend, minScore: dbMinScore, keywords: userKeywords, strict_mls: true });
+    };
 
-		let currentProgress = 15;
-		const progressInterval = setInterval(() => {
-			currentProgress += 5;
-			if (currentProgress <= 90) setProgress(currentProgress);
-			if (currentProgress === 30)
-				addLog("INFO", "Authenticating job boards...");
-			if (currentProgress === 50)
-				addLog("INFO", "Parsing cross-platform data...");
-			if (currentProgress === 75)
-				addLog("INFO", `Filtering out matches below ${dbMinScore}%...`);
-		}, 1000);
-
-		try {
-			const response = await fetch("/api/scrape", {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({
-					targetEmail: email,
-					targetLocation: location,
-					includeTier3,
-					autoSend,
-					minScore: dbMinScore,
-					keywords: userKeywords,
-					strict_mls: true,
-				}),
-			});
-			const data = await response.json();
-			if (data.success) {
-				setProgress(100);
-				addLog("DONE", data.message);
-				showNotification(data.message);
-				const timeNow = new Date().toLocaleTimeString([], {
-					hour: "2-digit",
-					minute: "2-digit",
-				});
-				setLastRun(timeNow);
-				localStorage.setItem("labpro_last_run", timeNow);
-
-				await refreshJobStats();
-				window.dispatchEvent(new Event("jobsUpdated"));
-			} else {
-				throw new Error(data.error);
-			}
-		} catch (error: any) {
-			setProgress(0);
-			addLog("ERROR", error.message || "Scan failed.");
-			showNotification(error.message || "Scan failed.", "error");
-		} finally {
-			clearInterval(progressInterval);
-			setTimeout(() => setIsScraping(false), 2000);
-		}
-	};
-
-	const getAiRecommendation = () => {
-		if (!email)
-			return "Log in to unlock AI-driven market recommendations for your region.";
-		if (location.includes("Abuja"))
-			return 'Abuja matches are up 24%. Consider adding "Molecular Biology" to keywords.';
-		if (location.includes("Lagos"))
-			return "Lagos is seeing a 15% spike in rapid-response lab roles.";
-		if (location === "All Nigeria")
-			return "Nationwide scan active. Maximizing match volume across all hubs.";
-		return `Opportunities in ${location} are stable. We recommend running a scan early Monday mornings.`;
-	};
+	const getAiRecommendation = () => email
+    ? `Your search covers ${location}. Keep your skills and minimum score up to date to improve relevance.`
+    : "Sign in to set your search location and matching preferences.";
 
 	const iosSwitchStyle = (active: boolean) => ({
 		width: "32px",
 		height: "18px",
 		background: active ? "#1A8C7A" : "#cbd5e1", // 🚀 BRANDED TEAL TOGGLE
 		borderRadius: "20px",
-		position: "relative" as "relative",
+		position: "relative" as const,
 		cursor: "pointer",
 		transition: "all 0.2s ease",
 		display: "inline-block",
@@ -300,12 +239,15 @@ export default function Dashboard() {
 		height: "14px",
 		background: "white",
 		borderRadius: "50%",
-		position: "absolute" as "absolute",
+		position: "absolute" as const,
 		top: "2px",
 		left: active ? "16px" : "2px",
 		transition: "all 0.2s ease",
 		boxShadow: "0 1px 2px rgba(0,0,0,0.1)",
 	});
+
+ if (isUserLoggedIn && !careerPhase) return profileError ? <div role="alert"><p>Your profile is temporarily unavailable.</p><button onClick={()=>window.location.reload()}>Try again</button></div> : <HubLoading />;
+ if (isUserLoggedIn && careerPhase === "internship") return <><InternDashboard initial={careerProfile} jobs={careerJobs} onScan={runScraper} scanning={isScraping} unavailable={jobsUnavailable} location={location} locations={NIGERIA_STATES} onLocationChange={value=>{setLocation(value);localStorage.setItem("labpro_dashboard_temp_location",value);}} minScore={dbMinScore} autoSend={autoSend} onAutoSendChange={toggleAutoSend} />{toast && <Toast message={toast.message} type={toast.type} />}</>;
 
 	return (
 		<div
@@ -314,34 +256,7 @@ export default function Dashboard() {
 				fontFamily: "system-ui, -apple-system, sans-serif",
 			}}
 		>
-			{toast && (
-				<div
-					style={{
-						position: "fixed",
-						top: "24px",
-						left: "50%",
-						transform: "translateX(-50%)",
-						background:
-							toast.type === "success"
-								? "rgba(15, 23, 42, 0.85)"
-								: "rgba(153, 27, 27, 0.85)",
-						backdropFilter: "blur(12px)",
-						border: "1px solid rgba(255,255,255,0.1)",
-						color: "white",
-						padding: "12px 24px",
-						borderRadius: "30px",
-						fontSize: "13px",
-						fontWeight: 700,
-						display: "flex",
-						alignItems: "center",
-						gap: "8px",
-						boxShadow: "0 10px 25px -5px rgba(0,0,0,0.2)",
-						zIndex: 9999,
-					}}
-				>
-					{toast.type === "success" ? "✓ " : "✕ "} {toast.message}
-				</div>
-			)}
+			{toast && <Toast message={toast.message} type={toast.type} />}
 
 			{!isUserLoggedIn ? (
 				<div
@@ -423,8 +338,11 @@ export default function Dashboard() {
 				</div>
 			) : (
 				<>
+					<ApplicationReadiness />
+                    <LicensedCareerOverview initial={careerProfile} expiry={licenseExpiry} asOf={profileAsOf} />
+                    <ScanSummary profile={careerProfile}/>
 					<div
-						className="mobile-stack"
+						className="dashboard-metrics"
 						style={{ display: "flex", gap: "1rem", marginBottom: "1.5rem" }}
 					>
 						<div
@@ -470,7 +388,7 @@ export default function Dashboard() {
 											color: "#1A8C7A", // 🚀 BRANDED UP-TICK
 										}}
 									>
-										+12% ↗
+										Saved matches
 									</span>
 								)}
 							</div>
@@ -496,7 +414,7 @@ export default function Dashboard() {
 									letterSpacing: "0.5px",
 								}}
 							>
-								Tier 1 (88+)
+								Tier 1 (90+)
 							</div>
 							<div
 								style={{ display: "flex", alignItems: "baseline", gap: "8px" }}
@@ -551,7 +469,7 @@ export default function Dashboard() {
 									letterSpacing: "0.5px",
 								}}
 							>
-								Tier 2 (70-87)
+								Tier 2 (75-89)
 							</div>
 							<div
 								style={{ display: "flex", alignItems: "baseline", gap: "8px" }}
@@ -666,7 +584,7 @@ export default function Dashboard() {
 					</div>
 
 					<div
-						className="mobile-stack"
+						className="mobile-stack dashboard-scan-layout"
 						style={{
 							display: "flex",
 							gap: "1.5rem",
@@ -674,6 +592,8 @@ export default function Dashboard() {
 						}}
 					>
 						<div
+							id="run-scan"
+							className="digest-run-card"
 							style={{
 								flex: 1.3,
 								background: "white",
@@ -700,11 +620,11 @@ export default function Dashboard() {
 									margin: "0 0 1.5rem 0",
 								}}
 							>
-								Trigger the recruitment engine to scan nationwide postings.
+								Scan supported sources for matching opportunities.
 							</p>
 
 							<div
-								className="mobile-stack"
+								className="mobile-stack digest-fields"
 								style={{
 									display: "flex",
 									gap: "1rem",
@@ -754,12 +674,12 @@ export default function Dashboard() {
 											textTransform: "uppercase",
 										}}
 									>
-										Location Filter
+										Scan location
 									</label>
 									<select
 										value={location}
 										onChange={handleLocationChange}
-										disabled={!email}
+											disabled={!email || isScraping}
 										style={{
 											width: "100%",
 											background: "#f8fafc",
@@ -773,7 +693,8 @@ export default function Dashboard() {
 											cursor: email ? "pointer" : "not-allowed",
 										}}
 									>
-										{NIGERIA_STATES.map((state) => (
+										{!NIGERIA_STATES.includes(location) && <option value={location}>{location}</option>}
+{NIGERIA_STATES.map((state) => (
 											<option key={state} value={state}>
 												{state}
 											</option>
@@ -783,6 +704,7 @@ export default function Dashboard() {
 							</div>
 
 							<div
+								className="digest-options"
 								style={{
 									display: "flex",
 									gap: "1.5rem",
@@ -905,49 +827,6 @@ export default function Dashboard() {
 						>
 							<div
 								style={{
-									background: "#0f172a",
-									borderRadius: "16px",
-									padding: "1.25rem",
-									height: "240px",
-									display: "flex",
-									flexDirection: "column",
-									border: "1px solid #1e293b",
-								}}
-							>
-								<div
-									style={{
-										display: "flex",
-										flexDirection: "column",
-										gap: "6px",
-										overflowY: "auto",
-										flex: 1,
-										fontFamily: "monospace",
-										fontSize: "12px",
-									}}
-								>
-									{logs.map((l, i) => (
-										<div key={i} style={{ display: "flex", gap: "10px" }}>
-											<span style={{ color: "#475569" }}>{l.time}</span>
-											<span
-												style={{
-													color:
-														l.level === "ERROR"
-															? "#ef4444"
-															: l.level === "AUTH"
-																? "#facc15"
-																: "#1A8C7A", // 🚀 BRANDED DONE/INFO
-													fontWeight: 700,
-												}}
-											>
-												[{l.level}]
-											</span>
-											<span style={{ color: "#e2e8f0" }}>{l.msg}</span>
-										</div>
-									))}
-								</div>
-							</div>
-							<div
-								style={{
 									background: "rgba(26, 140, 122, 0.05)", // 🚀 BRANDED RECOMMENDATION BG
 									border: "1px solid rgba(26, 140, 122, 0.2)",
 									borderRadius: "16px",
@@ -962,7 +841,7 @@ export default function Dashboard() {
 										color: "#0f172a",
 									}}
 								>
-									AI Recommendation
+									Search guidance
 								</div>
 								<div
 									style={{

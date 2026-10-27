@@ -1,0 +1,40 @@
+{
+  "date": "2026-10-22",
+  "sourceCommit": "082c225a86a1ec582ceb2e27faf276f82b8a7994",
+  "sourceTree": "cef07c8440c523dab71f27e5c6ba300ac66c49b8",
+  "cleanGitArchivePrepared": true,
+  "localEnvironmentFilesCopied": false,
+  "trackedEnvironmentExampleOnly": true,
+  "projectId": "prj_MNrDsjvBMVCY5mmPjD3tSyw7OIBs",
+  "scope": "sholly",
+  "validation": {
+    "lint": true,
+    "typecheck": true,
+    "testsPassed": 276,
+    "webpackProductionBuild": true,
+    "diffCheck": true
+  },
+  "plannedDeployment": {
+    "environment": "Production, staged diagnostics only",
+    "canonicalOrigin": "https://bench-scout-sholly.vercel.app",
+    "skipPublicDomainAssignment": true,
+    "diagnosticConfig": {
+      "crons": [],
+      "buildCommand": "npm run build -- --webpack"
+    },
+    "backupEnabled": true,
+    "syntheticTestMode": false,
+    "realFileBackfillApply": false,
+    "protectedDiagnosticAliasMayMove": true,
+    "publicAndGitMainMaintenancePreserved": true
+  },
+  "deployed": false,
+  "publicPromoted": false,
+  "mainMerged": false,
+  "runtimeAcceptancePending": true,
+  "limitations": [
+    "Diagnostic canonical/configuration build must not be promoted directly to the public domain.",
+    "Later public-canonical build and scheduler acceptance require separate execution.",
+    "No provider fault injection or real-document backfill is included."
+  ]
+}

@@ -1,0 +1,222 @@
+{
+  "date": "2026-10-20",
+  "scope": "compact recruitment workspace, applicant drawer and candidate match layouts",
+  "localChecks": {
+    "lint": "passed",
+    "typescript": "passed",
+    "tests": 220,
+    "productionBuild": "passed",
+    "diffCheck": "passed"
+  },
+  "deployment": {
+    "applicationCommit": "7aaabef",
+    "state": "success",
+    "vercelDeployment": "HMr8UtkBPqP2cdAVKZoVtmurbhiC",
+    "target": "https://bench-scout-git-testing-sholly.vercel.app/"
+  },
+  "hostedGeometryAndVisualChecks": {
+    "matches": {
+      "widths": [
+        320,
+        390,
+        1200,
+        1440
+      ],
+      "measuredOverflow": [],
+      "visualInspection": "passed 320/1200/1440; 390 geometry passed",
+      "fixture": "long synthetic role/company/salary/skill labels; Applied disabled after fresh submission"
+    },
+    "employer": {
+      "formWidths": [
+        320,
+        390,
+        1200,
+        1440
+      ],
+      "rosterWidths": [
+        320,
+        390,
+        1200
+      ],
+      "measuredOverflow": [],
+      "visualInspection": "desktop posting options and roster, plus 320px roster passed; new application CV opens; old URL browser-blocked"
+    },
+    "interviewForm": {
+      "widths": [
+        320,
+        390
+      ],
+      "measuredOverflow": [],
+      "fieldWidths": {
+        "320": 254,
+        "390": 324
+      },
+      "visualInspection": "320px passed; no save or new email"
+    }
+  },
+  "widthsPlanned": [
+    320,
+    390,
+    1200,
+    1440
+  ],
+  "schemaOrConfigurationChanged": false,
+  "accessControlsChanged": false,
+  "limitations": [
+    "old/unselected document API denial status not verified because browser client blocks the request; no bypass attempted"
+  ],
+  "geometry": {
+    "matches": [
+      {
+        "overflow": [],
+        "width": 320
+      },
+      {
+        "overflow": [],
+        "width": 390
+      },
+      {
+        "overflow": [],
+        "width": 1440
+      }
+    ],
+    "employerForm": [
+      {
+        "overflow": [],
+        "width": 320
+      },
+      {
+        "overflow": [],
+        "width": 390
+      },
+      {
+        "overflow": [],
+        "width": 1200
+      },
+      {
+        "overflow": [],
+        "width": 1440
+      }
+    ],
+    "roster": [
+      {
+        "overflow": [],
+        "width": 320
+      },
+      {
+        "overflow": [],
+        "width": 390
+      },
+      {
+        "overflow": [],
+        "width": 1200
+      }
+    ],
+    "interview": [
+      {
+        "fields": [
+          {
+            "id": "interview-date",
+            "left": 33,
+            "right": 287,
+            "width": 254
+          },
+          {
+            "id": "interview-time",
+            "left": 33,
+            "right": 287,
+            "width": 254
+          }
+        ],
+        "overflow": [],
+        "width": 320
+      },
+      {
+        "fields": [
+          {
+            "id": "interview-date",
+            "left": 33,
+            "right": 357,
+            "width": 324
+          },
+          {
+            "id": "interview-time",
+            "left": 33,
+            "right": 357,
+            "width": 324
+          }
+        ],
+        "overflow": [],
+        "width": 390
+      }
+    ]
+  },
+  "finalEmployerChecks": [
+    {
+      "overflow": [],
+      "primaryFields": [
+        {
+          "id": "post-location",
+          "top": 954.171875,
+          "width": 242
+        },
+        {
+          "id": "post-salary",
+          "top": 1028.96875,
+          "width": 242
+        }
+      ],
+      "width": 320
+    },
+    {
+      "overflow": [],
+      "primaryFields": [
+        {
+          "id": "post-location",
+          "top": 825.0625,
+          "width": 312
+        },
+        {
+          "id": "post-salary",
+          "top": 899.859375,
+          "width": 312
+        }
+      ],
+      "width": 390
+    },
+    {
+      "overflow": [],
+      "primaryFields": [
+        {
+          "id": "post-location",
+          "top": 810.2421875,
+          "width": 383
+        },
+        {
+          "id": "post-salary",
+          "top": 810.2421875,
+          "width": 383
+        }
+      ],
+      "width": 1200
+    },
+    {
+      "overflow": [],
+      "primaryFields": [
+        {
+          "id": "post-location",
+          "top": 750.9765625,
+          "width": 248.328125
+        },
+        {
+          "id": "post-salary",
+          "top": 750.9765625,
+          "width": 248.3359375
+        }
+      ],
+      "width": 1440
+    }
+  ],
+  "finalVisualInspection": "final desktop posting form and 320px stacked options passed; previously inspected 320/1200px roster and 320/1200/1440px matches",
+  "temporaryViewportOverride": "reset"
+}

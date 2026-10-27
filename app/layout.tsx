@@ -1,11 +1,29 @@
+import type { Viewport } from "next";
 import "./globals.css";
+import NavigationScrollReset from "@/components/NavigationScrollReset";
+import SessionGate from "@/components/SessionGate";
 import Sidebar from "@/components/Sidebar";
 import Topbar from "@/components/Topbar";
+import ScanStatus from "@/components/ScanStatus";
 import ProfileModal from "@/components/ProfileModal";
 
 export const metadata = {
 	title: "BenchScout",
 	description: "YOUR MLS CAREER HUB",
+	applicationName: "BenchScout",
+	appleWebApp: {
+		capable: true,
+		title: "BenchScout",
+		statusBarStyle: "default",
+	},
+};
+
+// Owner-requested 90% starting scale; preserve manual pinch zoom.
+export const viewport: Viewport = {
+    width: "device-width",
+    initialScale: 0.9,
+    viewportFit: "cover",
+    themeColor: "#edf5fd",
 };
 
 export default function RootLayout({
@@ -19,7 +37,7 @@ export default function RootLayout({
 				style={{
 					margin: 0,
 					padding: 0,
-					height: "100vh",
+					height: "100dvh",
 					overflow: "hidden",
 					fontFamily:
 						"system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
@@ -48,13 +66,13 @@ export default function RootLayout({
 				{/* ========================================================= */}
 				{/* LAYER 1: Shifted & Centered Blurred Image                 */}
 				{/* ========================================================= */}
-				<div
+				<div className="app-background"
 					style={{
 						position: "absolute",
 						top: 0,
 						left: 0,
 						width: "100vw",
-						height: "100vh",
+						height: "100dvh",
 						zIndex: -2,
 						backgroundImage: "url('/IMG_5538.jpg')",
 						/* FIX: Zoom in and shift the colors towards the center */
@@ -69,13 +87,13 @@ export default function RootLayout({
 				{/* ========================================================= */}
 				{/* LAYER 2: Softer Frosted Overlay                           */}
 				{/* ========================================================= */}
-				<div
+				<div className="app-background"
 					style={{
 						position: "absolute",
 						top: 0,
 						left: 0,
 						width: "100vw",
-						height: "100vh",
+						height: "100dvh",
 						zIndex: -1,
 						/* Slightly more transparent so colors bleed through nicely */
 						background:
@@ -83,25 +101,28 @@ export default function RootLayout({
 					}}
 				/>
 
+				<SessionGate>
 				<ProfileModal />
+                <ScanStatus />
 
-				<div
+				<div className="app-shell"
 					style={{
 						display: "flex",
 						width: "100vw",
-						height: "100vh",
+						height: "100dvh",
 						overflow: "hidden",
 					}}
 				>
 					<Sidebar />
 
 					{/* 🚀 THE LAYOUT FIX: Moved the scroll zone to this parent wrapper */}
-					<div
+					<div id="page-scroll-pane"
 						style={{
 							flex: 1,
+                            minHeight: 0,
 							display: "flex",
 							flexDirection: "column",
-							height: "100vh",
+							height: "100dvh",
 							minWidth: 0,
 							overflowY:
 								"auto" /* Now the entire right side scrolls together */,
@@ -111,6 +132,7 @@ export default function RootLayout({
 					>
 						{/* The Topbar now floats naturally over the scrolling content */}
 						<Topbar />
+                        <NavigationScrollReset />
 
 						<main
 							className="main-wrapper"
@@ -124,6 +146,7 @@ export default function RootLayout({
 						</main>
 					</div>
 				</div>
+			</SessionGate>
 			</body>
 		</html>
 	);

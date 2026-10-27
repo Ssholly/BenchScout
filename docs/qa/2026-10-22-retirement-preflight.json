@@ -1,0 +1,51 @@
+{
+  "date": "2026-10-22",
+  "proposed": [
+    "dpl_5xj9zsypDUgenQQ2kLA1pgkErTqB",
+    "dpl_8DwvVxyGiP1eZScMQKgHFWms833h",
+    "dpl_BAk74C1bDcjt7DwpJty89iMWDEHb",
+    "dpl_dc6vBts5fveSJtvAE8koZYViH3wb",
+    "dpl_HFoyTia8xkmBafWn9GobsLxkddny",
+    "dpl_7GSJcy8eZ6E7EZ6Mm9brpGnTgsdo",
+    "dpl_2mu4waWBuCyUtpV2xwjBR3phenAv",
+    "dpl_39CGUEKXBMYcuqRzayWPWA1o88jk",
+    "dpl_9aV31E6hw5tPRySWfqSi4JCcVKxt",
+    "dpl_6NmrRcQzbvLsHn5K5aWbGDFYQW5n",
+    "dpl_5YxYAp6djKWTcjNxDpUAmueCLV48",
+    "dpl_H6Dw9rT5eadNUrwnefu5ua5QMEKz",
+    "dpl_G8vefGUn9bNV5Sad6Ey8ENUNciiK",
+    "dpl_5bGZTwbQrSJwzcTGfJFtnkCUzcGq",
+    "dpl_9QH3Pjw3eain9ppMoGyXUgZWBTDu",
+    "dpl_8v4grq9bWZGBDE2WpBFJff6ohdZP",
+    "dpl_2fLqixzZz5CFsPNdKf7Tp42HaRLZ",
+    "dpl_HGJeB2bwX6ScvCPVt5yW2krEakoY",
+    "dpl_BmcBVNFErseRj4gfJSLK546YF8sc",
+    "dpl_3PeQoQeWGZQEnUTPy5kxjw2ioML7",
+    "dpl_HixNVfrvP5HsAednc3RvJH7LdHgS",
+    "dpl_E5Ti5zu5U21GKjD7JdsRqMBNSmUj",
+    "dpl_4hDYmWhZFTnHN1A6dN4UpzCTpKpk",
+    "dpl_5PHdYmVGJvF5FGFyPRX7QmWyAhS7",
+    "dpl_5PiRdAhbPD7bfpeWWhfPgavNoxTc",
+    "dpl_JC4avhwBMd3hhKzM158tV9FmVCQV",
+    "dpl_GG3dTVe4kDiubUTBWVgrzt5YB7Ss",
+    "dpl_4H8V8yehZv35vmpkLPvAJvP7aySZ",
+    "dpl_BrodZCkAtc5wgoEAHXmiYaHfM9de",
+    "dpl_2mLyGKZ8WWR12dGU3pHd79A8u8nA"
+  ],
+  "currentAliasDeploymentIds": [
+    "dpl_12r5Zwn4tyffsUTnH3YF9tMrNqXh",
+    "dpl_3JSXjPv2JjgTBNE3gwXVSiqJFTaV",
+    "dpl_4bTpas5uPn1jRpwGeu4eUJvX7nhZ",
+    "dpl_D2mYf5k3qc892X4TVoRZ3jnoWWjD",
+    "dpl_EcY1anTy6tVPnmAoagf5WCRk2Bed"
+  ],
+  "activeIntersections": [],
+  "providerAliasLookupObserved": true,
+  "retirementApproved": false,
+  "deploymentsDeleted": 0,
+  "publicReopened": false,
+  "limitations": [
+    "Alias non-use does not alone prove absence of direct callers.",
+    "Old git-main deployment remains separately mapped and outside these 30."
+  ]
+}

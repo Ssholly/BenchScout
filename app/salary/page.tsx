@@ -1,4 +1,7 @@
 "use client";
+import Toast from "@/components/Toast";
+import { startTransition } from "react";
+import { useMounted } from "@/lib/use-mounted";
 import { useState, useEffect } from "react";
 
 interface SalaryData {
@@ -14,10 +17,9 @@ interface SalaryData {
 }
 
 export default function SalaryIntelligencePage() {
-	const [mounted, setMounted] = useState(false);
+	const mounted = useMounted();
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-	const [liveTier1Salary, setLiveTier1Salary] = useState("₦350k");
 
 	const [salaryData, setSalaryData] = useState<SalaryData>({
 		average: 0,
@@ -50,23 +52,21 @@ export default function SalaryIntelligencePage() {
 	};
 
 	useEffect(() => {
-		setMounted(true);
-		setIsLoggedIn(!!localStorage.getItem("labpro_active_user"));
+		startTransition(() => { setIsLoggedIn(!!localStorage.getItem("labpro_active_user")); });
 
 		const savedId = localStorage.getItem("labpro_my_salary_id");
 		if (savedId) {
-			setMySubmissionId(savedId);
+			startTransition(() => { setMySubmissionId(savedId); });
 		}
 
 		fetchSalaryData();
-		fetchLiveAnalytics();
 
 		window.addEventListener("userStateChanged", () => {
 			setIsLoggedIn(!!localStorage.getItem("labpro_active_user"));
 		});
 	}, []);
 
-	const fetchSalaryData = async () => {
+	async function fetchSalaryData() {
 		try {
 			const res = await fetch("/api/salary");
 			const data = await res.json();
@@ -76,48 +76,7 @@ export default function SalaryIntelligencePage() {
 		} catch (e) {
 			console.error(e);
 		}
-	};
-
-	const fetchLiveAnalytics = async () => {
-		try {
-			const res = await fetch("/api/jobs");
-			const jobs = await res.json();
-
-			if (Array.isArray(jobs) && jobs.length > 0) {
-				const t1Jobs = jobs.filter(
-					(j) =>
-						j.tier === 1 &&
-						j.salary &&
-						j.salary.toLowerCase() !== "competitive",
-				);
-				let totalSal = 0,
-					salCount = 0;
-
-				t1Jobs.forEach((j) => {
-					const nums = j.salary.match(/\d+/g);
-					if (nums && nums.length > 0) {
-						const avg =
-							nums.reduce((a: number, b: string) => a + parseInt(b), 0) /
-							nums.length;
-						const val = avg < 1000 ? avg * 1000 : avg;
-						totalSal += val;
-						salCount++;
-					}
-				});
-
-				if (salCount > 0) {
-					setLiveTier1Salary(`₦${Math.round(totalSal / salCount / 1000)}k`);
-				} else {
-					setLiveTier1Salary("₦350k");
-				}
-			} else {
-				setLiveTier1Salary("₦350k");
-			}
-		} catch (e) {
-			console.error(e);
-			setLiveTier1Salary("₦350k");
-		}
-	};
+	}
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -150,7 +109,7 @@ export default function SalaryIntelligencePage() {
 			} else {
 				showToast("Failed to process data.", "error");
 			}
-		} catch (e) {
+		} catch {
 			showToast("Network error.", "error");
 		} finally {
 			setIsSubmitting(false);
@@ -174,7 +133,7 @@ export default function SalaryIntelligencePage() {
 				showToast("Submission deleted securely.");
 				fetchSalaryData();
 			}
-		} catch (e) {
+		} catch {
 			showToast("Failed to delete.", "error");
 		} finally {
 			setIsSubmitting(false);
@@ -183,7 +142,7 @@ export default function SalaryIntelligencePage() {
 
 	// 🚀 DYNAMIC CHART DATA GENERATOR
 	const getChartData = () => {
-		const locationStats = (salaryData.recent || []).reduce((acc: any, curr) => {
+		const locationStats = (salaryData.recent || []).reduce<Record<string, { name: string; total: number; count: number }>>((acc, curr) => {
 			const loc = curr.location || "Unknown";
 			if (!acc[loc]) acc[loc] = { name: loc, total: 0, count: 0 };
 			acc[loc].total += curr.salary;
@@ -191,24 +150,15 @@ export default function SalaryIntelligencePage() {
 			return acc;
 		}, {});
 
-		let chartData = Object.values(locationStats)
-			.map((item: any) => ({
+		const chartData = Object.values(locationStats)
+			.map((item) => ({
 				name: item.name,
 				salary: item.total / item.count,
 			}))
 			.sort((a, b) => b.salary - a.salary)
 			.slice(0, 5); // Top 5 locations
 
-		// Fallback data to keep the UI looking premium even if the DB is empty
-		if (chartData.length === 0) {
-			chartData = [
-				{ name: "Abuja, FCT", salary: 280000 },
-				{ name: "Lagos Mainland", salary: 220000 },
-				{ name: "Port Harcourt", salary: 195000 },
-				{ name: "Kano", salary: 160000 },
-				{ name: "Enugu", salary: 145000 },
-			];
-		}
+
 		return chartData;
 	};
 
@@ -219,7 +169,7 @@ export default function SalaryIntelligencePage() {
 
 	return (
 		<section
-			className="pane active"
+			className="pane active salary-page"
 			style={{ paddingBottom: "4rem", width: "100%" }}
 		>
 			<style
@@ -241,34 +191,7 @@ export default function SalaryIntelligencePage() {
 				}}
 			/>
 
-			{toast && (
-				<div
-					style={{
-						position: "fixed",
-						top: "40px",
-						left: "50%",
-						transform: "translateX(-50%)",
-						background:
-							toast.type === "success"
-								? "rgba(15, 23, 42, 0.85)"
-								: "rgba(153, 27, 27, 0.85)",
-						backdropFilter: "blur(12px)",
-						color: "white",
-						padding: "14px 28px",
-						borderRadius: "30px",
-						fontSize: "14px",
-						fontWeight: 700,
-						display: "flex",
-						alignItems: "center",
-						gap: "10px",
-						boxShadow: "0 20px 25px -5px rgba(0,0,0,0.2)",
-						zIndex: 9999,
-						border: "1px solid rgba(255,255,255,0.1)",
-					}}
-				>
-					{toast.type === "success" ? "✓" : "✕"} {toast.message}
-				</div>
-			)}
+			{toast && <Toast message={toast.message} type={toast.type} />}
 
 			<div style={{ marginBottom: "2.5rem" }}>
 				<h1
@@ -282,8 +205,7 @@ export default function SalaryIntelligencePage() {
 					Salary Intelligence
 				</h1>
 				<p style={{ color: "#64748b", marginTop: "4px" }}>
-					Anonymous, verified monthly salary data from peers and live job market
-					analysis.
+					Self-reported monthly salaries shared by the community.
 				</p>
 			</div>
 
@@ -367,7 +289,7 @@ export default function SalaryIntelligencePage() {
 			) : (
 				<>
 					<div
-						className="mobile-stack"
+						className="mobile-stack salary-summary"
 						style={{ display: "flex", gap: "1.5rem", marginBottom: "2rem" }}
 					>
 						<div
@@ -377,11 +299,11 @@ export default function SalaryIntelligencePage() {
 								backdropFilter: "blur(16px)",
 								borderRadius: "20px",
 								border: "1px solid rgba(255,255,255,0.9)",
-								padding: "2.5rem 2rem",
+								padding: "16px 20px",
 								boxShadow: "0 10px 30px -10px rgba(11, 36, 68, 0.1)",
 								display: "flex",
 								flexDirection: "column",
-								justifyContent: "center",
+								justifyContent: "flex-start",
 								transition: "transform 0.3s ease",
 							}}
 							onMouseEnter={(e) =>
@@ -401,7 +323,7 @@ export default function SalaryIntelligencePage() {
 									margin: "0 0 16px 0",
 								}}
 							>
-								Avg. Tier 1 Base Salary
+								Community sample size
 							</h3>
 							<div
 								style={{
@@ -413,13 +335,13 @@ export default function SalaryIntelligencePage() {
 							>
 								<span
 									style={{
-										fontSize: "56px",
+										fontSize: "32px",
 										fontWeight: 900,
 										color: "#0f172a",
 										letterSpacing: "-1px",
 									}}
 								>
-									{liveTier1Salary}
+									{salaryData.count}
 								</span>
 								<span
 									style={{
@@ -445,7 +367,7 @@ export default function SalaryIntelligencePage() {
 										<polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
 										<polyline points="17 6 23 6 23 12"></polyline>
 									</svg>
-									Live
+									Reports
 								</span>
 							</div>
 							<p
@@ -457,8 +379,7 @@ export default function SalaryIntelligencePage() {
 									fontWeight: 500,
 								}}
 							>
-								Calculated dynamically from successfully parsed Tier 1 match
-								compensations across the network.
+								{salaryData.count < 5 ? "A small sample. These reports do not establish a market benchmark." : "Based on community contributions, not independently verified payslips."}
 							</p>
 						</div>
 
@@ -467,13 +388,13 @@ export default function SalaryIntelligencePage() {
 								flex: 1,
 								background: "rgba(255, 255, 255, 0.5)",
 								backdropFilter: "blur(24px)",
-								padding: "2.5rem 2rem",
+								padding: "16px 20px",
 								borderRadius: "20px",
 								border: "1px solid rgba(255, 255, 255, 0.4)",
 								boxShadow: "0 4px 20px -2px rgba(0,0,0,0.03)",
 								display: "flex",
 								flexDirection: "column",
-								justifyContent: "center",
+								justifyContent: "flex-start",
 							}}
 						>
 							<h3
@@ -486,17 +407,17 @@ export default function SalaryIntelligencePage() {
 									margin: "0 0 8px 0",
 								}}
 							>
-								Industry Average (Mixed Monthly)
+								Community Average (Monthly)
 							</h3>
 							<div
 								style={{
-									fontSize: "56px",
+									fontSize: "32px",
 									fontWeight: 900,
 									color: "#0f172a",
 									letterSpacing: "-1px",
 								}}
 							>
-								₦{Math.round((salaryData.average || 0) / 1000)}k
+								{salaryData.count >= 5 ? `₦${Math.round(salaryData.average / 1000)}k` : "—"}
 							</div>
 							<p
 								style={{
@@ -510,24 +431,24 @@ export default function SalaryIntelligencePage() {
 								<strong style={{ color: "#1A8C7A" }}>
 									{salaryData.count || 0}
 								</strong>{" "}
-								verified market sources and anonymous submissions.
+								self-reported submissions. An average is shown once there are at least five reports.
 							</p>
 						</div>
 					</div>
 
-					<div className="responsive-grid">
+					<div className="responsive-grid salary-details">
 						{/* LEFT COLUMN: THE FORM */}
 						<div
 							style={{
 								background: "rgba(255, 255, 255, 0.6)",
 								backdropFilter: "blur(24px)",
-								padding: "2rem",
+								padding: "20px",
 								borderRadius: "20px",
 								border: "1px solid rgba(255, 255, 255, 0.5)",
 								boxShadow: "0 4px 20px -2px rgba(0,0,0,0.03)",
 								display: "flex",
 								flexDirection: "column",
-								justifyContent: "center",
+								justifyContent: "flex-start",
 							}}
 						>
 							{mySubmissionId && !isEditing ? (
@@ -535,7 +456,7 @@ export default function SalaryIntelligencePage() {
 									style={{
 										display: "flex",
 										flexDirection: "column",
-										justifyContent: "center",
+										justifyContent: "flex-start",
 										textAlign: "center",
 										padding: "1rem 0",
 									}}
@@ -676,7 +597,7 @@ export default function SalaryIntelligencePage() {
 									<div
 										style={{
 											display: "grid",
-											gridTemplateColumns: "1fr 1fr",
+											gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 280px), 1fr))",
 											gap: "12px",
 										}}
 									>
@@ -781,7 +702,7 @@ export default function SalaryIntelligencePage() {
 							style={{
 								background: "rgba(255, 255, 255, 0.6)",
 								backdropFilter: "blur(24px)",
-								padding: "2rem",
+								padding: "20px",
 								borderRadius: "20px",
 								border: "1px solid rgba(255, 255, 255, 0.5)",
 								boxShadow: "0 4px 20px -2px rgba(0,0,0,0.03)",
@@ -797,7 +718,7 @@ export default function SalaryIntelligencePage() {
 									color: "#0f172a",
 								}}
 							>
-								Top Paying Regions
+								Recent Reports by Location
 							</h3>
 							<p
 								style={{
@@ -806,7 +727,7 @@ export default function SalaryIntelligencePage() {
 									color: "#64748b",
 								}}
 							>
-								Average monthly base compensation by location.
+								Averages from the most recent reports, not market benchmarks.
 							</p>
 
 							<div
@@ -814,7 +735,7 @@ export default function SalaryIntelligencePage() {
 									flex: 1,
 									display: "flex",
 									flexDirection: "column",
-									justifyContent: "center",
+									justifyContent: "flex-start",
 								}}
 							>
 								{chartData.map((data, idx) => (
@@ -882,7 +803,7 @@ export default function SalaryIntelligencePage() {
 						style={{
 							background: "rgba(255, 255, 255, 0.4)",
 							backdropFilter: "blur(24px)",
-							padding: "2rem",
+							padding: "20px",
 							borderRadius: "20px",
 							border: "1px solid rgba(255, 255, 255, 0.3)",
 							boxShadow: "0 4px 20px -2px rgba(0,0,0,0.03)",
@@ -901,7 +822,7 @@ export default function SalaryIntelligencePage() {
 						{salaryData.recent?.length === 0 ? (
 							<div
 								style={{
-									padding: "2rem",
+									padding: "20px",
 									textAlign: "center",
 									color: "#64748b",
 									fontSize: "14px",

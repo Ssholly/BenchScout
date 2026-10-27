@@ -1,0 +1,25 @@
+{
+  "date": "2026-10-22",
+  "status": "prepared; approval pending",
+  "projectId": "prj_MNrDsjvBMVCY5mmPjD3tSyw7OIBs",
+  "currentSharedBindingId": "EHiEaCCl6rFtGjwz",
+  "testingOverrideId": "dsVzehSRzUMgnZJR",
+  "steps": [
+    "Reverify exact binding metadata. Narrow the existing shared CRON_SECRET target to Preview only, preserving its stored value. If a value is required, stop without decrypting/copying it.",
+    "Operator enters and saves a new random 32+ character Production-only Secret CRON_SECRET in the prepared Vercel form and stores it privately.",
+    "Verify scopes by names/types/targets only; preserve testing override and existing Preview value.",
+    "Build a new protected public-origin artifact of exact validated source 082c225 with normal schedule, backups enabled, test mode off, backfill off and skip-domain; preserve all current aliases.",
+    "Use separately entered private key for the same approved temporary-access wrong/correct-key dry-run. Revoke temporary access and remove the key file/server after checking."
+  ],
+  "publicPromotionIncluded": false,
+  "mainMergeIncluded": false,
+  "realFileBackfillIncluded": false,
+  "scopeChangeExecuted": false,
+  "newCredentialSaved": false,
+  "newBuildCreated": false,
+  "limitations": [
+    "Existing immutable deployments retain old captured keys. This is not global credential revocation.",
+    "Any future external Production cron caller must use the new key after cutover.",
+    "New bindings require a new build; saved settings do not update existing deployments."
+  ]
+}

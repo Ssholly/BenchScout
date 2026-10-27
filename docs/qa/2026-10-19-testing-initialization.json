@@ -1,0 +1,25 @@
+{
+  "date": "2026-10-19",
+  "dedicatedEndpoint": true,
+  "database": "benchscout_testing",
+  "initialPublicTableCount": 0,
+  "migrations": [
+    "20260527000000_baseline",
+    "20261009000000_security_foundation",
+    "20261012000000_employer_email_confirmation",
+    "20261012010000_candidate_profiles",
+    "20261016000000_employer_safety",
+    "20261019000000_application_document_selection",
+    "20261019010000_candidate_review_revision"
+  ],
+  "migrationChecksumsMatch": true,
+  "emptyAccountAndApplicationCounts": {
+    "candidates": 0,
+    "employers": 0,
+    "jobs": 0,
+    "applications": 0,
+    "sessions": 0
+  },
+  "normalDatabaseModified": false,
+  "status": "passed"
+}

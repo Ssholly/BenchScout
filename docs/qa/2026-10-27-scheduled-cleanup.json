@@ -1,0 +1,93 @@
+{
+  "date": "2026-10-27",
+  "result": "scheduled execution accepted for controlled pilot",
+  "method": "read-only Vercel project metadata and CDN request logs, correlated with Production PostgreSQL operational history",
+  "productionDatabase": "neondb",
+  "neonProject": "BenchScout",
+  "neonBranch": "production",
+  "cronRegistration": {
+    "enabledAt": 1779108266469,
+    "disabledAt": null,
+    "updatedAt": 1792856760835,
+    "deploymentId": "dpl_9CMj8YniwM7cWcNm8WfEzmpGowsf",
+    "definitions": [
+      {
+        "host": "bench-scout-4ixd5y3y3-sholly.vercel.app",
+        "path": "/api/cron/document-cleanup",
+        "schedule": "17 2 * * *"
+      }
+    ]
+  },
+  "providerRequestRecords": [
+    {
+      "timestamp": "2026-10-27T02:36:49.174Z",
+      "deploymentId": "dpl_9CMj8YniwM7cWcNm8WfEzmpGowsf",
+      "environment": "production",
+      "requestHostname": "bench-scout-4ixd5y3y3-sholly.vercel.app",
+      "requestPath": "/api/cron/document-cleanup",
+      "requestMethod": "GET",
+      "httpStatus": 200,
+      "cronAgentHint": true
+    }
+  ],
+  "databaseRuns": [
+    {
+      "startedAt": "2026-10-27T02:36:50.967Z",
+      "finishedAt": "2026-10-27T02:36:51.056Z",
+      "source": "cron-endpoint",
+      "cronAgentHint": true,
+      "deploymentId": "dpl_9CMj8YniwM7cWcNm8WfEzmpGowsf",
+      "status": "SUCCEEDED",
+      "errorCode": null,
+      "attempted": 0,
+      "completed": 0,
+      "failed": 0,
+      "referenced": 0,
+      "skippedLeased": 0
+    },
+    {
+      "startedAt": "2026-10-26T02:36:50.912Z",
+      "finishedAt": "2026-10-26T02:36:51.022Z",
+      "source": "cron-endpoint",
+      "cronAgentHint": true,
+      "deploymentId": "dpl_9CMj8YniwM7cWcNm8WfEzmpGowsf",
+      "status": "SUCCEEDED",
+      "errorCode": null,
+      "attempted": 0,
+      "completed": 0,
+      "failed": 0,
+      "referenced": 0,
+      "skippedLeased": 0
+    },
+    {
+      "startedAt": "2026-10-25T02:36:51.289Z",
+      "finishedAt": "2026-10-25T02:36:51.431Z",
+      "source": "cron-endpoint",
+      "cronAgentHint": true,
+      "deploymentId": "dpl_9CMj8YniwM7cWcNm8WfEzmpGowsf",
+      "status": "SUCCEEDED",
+      "errorCode": null,
+      "attempted": 0,
+      "completed": 0,
+      "failed": 0,
+      "referenced": 0,
+      "skippedLeased": 0
+    }
+  ],
+  "queue": {
+    "rows": 0,
+    "previouslyFailed": 0,
+    "due": 0
+  },
+  "observationTriggeredCleanup": false,
+  "observationChangedBusinessRecords": false,
+  "observationDeletedFiles": false,
+  "manualRunPerformed": false,
+  "limits": [
+    "Today is corroborated by provider request metadata; 25 and 26 October have database history only in this observation.",
+    "The user agent is a hint and can be spoofed by an authorised key holder; acceptance correlates separate provider metadata, current schedule, deployment, timestamps and completed database records.",
+    "The queue was empty. This proves scheduled authenticated execution and completion with no work, not a fresh Production deletion-with-work exercise.",
+    "No permanent uptime, guaranteed minute-of-hour, future delivery or independent scheduler cryptographic attestation is claimed.",
+    "Raw request identifiers, IP/location fields and headers are retained privately outside Git and omitted here."
+  ]
+}

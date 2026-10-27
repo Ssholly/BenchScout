@@ -1,0 +1,83 @@
+# Cleanup run history — 24 October 2026
+
+Status: **approved migration and application released to Production**. Testing migration and hosted read-only acceptance passed. All thirteen public access checks passed; valid-key Production history read passed. Actual scheduled execution accepted on 27 October; see the dated observation below. The earlier three-file backup is accepted separately.
+
+## Why execution remains unverified
+
+Provider log requests could not reach the overnight run: Hobby runtime retention is one hour and older request history requires a paid entitlement. The current endpoint returned counts without storing evidence. A configured schedule and a successful manual dry run do not establish automatic execution. Vercel Hobby schedules have hourly precision, so the configured `17 2 * * *` is a daily 02:00–02:59 UTC / 03:00–03:59 Africa/Lagos window, not a guaranteed 03:17 execution.
+
+Official references reviewed 24 October: [runtime retention](https://vercel.com/docs/logs/runtime), [cron execution and timing](https://vercel.com/docs/cron-jobs/manage-cron-jobs). No plan upgrade was purchased.
+
+## Implemented behavior
+
+Authenticated cron-endpoint and explicitly confirmed administrator cleanup calls create a RUNNING operational record before processing. If the initial record cannot be stored, those entry points do not start deletion. The existing immediate post-upload cleanup path, five-item worker bounds, reference checks, leases, retry/alert rules and physical-deletion authorization are unchanged. Successful completion stores timestamps and counts. Failures persist only a generic error code; incomplete persistence/function termination can leave RUNNING and must be treated as unknown, not success. A completion-record failure can occur after cleanup; do not infer that files were retained merely from an HTTP failure or zero/default counts.
+
+Terminal status is SUCCEEDED for a complete clean result, ATTENTION for failed/referenced/leased items, or FAILED for execution/recording failure. These describe this invocation; they do not certify that the whole queue is empty. No automatic retry, new alert, watchdog or missed-run detector is added. Operator review remains required. Dry-run/status/history actions do not process files or create run records.
+
+`DocumentCleanupRun` stores a UUID, entry point, optional deployment ID, request-agent boolean hint, start/finish times, status/error code and aggregate counts. No account IDs, document URLs, keys or raw errors are stored. Rows are retained until a separately reviewed retention policy is implemented; the pilot creates about one scheduled row daily plus confirmed administrator runs. `POST /api/admin/document-cleanup` adds `action: runs`, returning only the newest 20 records under the existing administrator key, same-origin check and three-per-minute limit. Existing `status` response remains unchanged; processing responses additionally return runId. The backup-operations page adds **Check recent cleanup runs** in Pending document deletion.
+
+A `vercel-cron/1.0` agent is recorded only as a hint. A holder of the cron key can make a manual request with that header; neither the header nor this table independently proves scheduler provenance. Correlate a new cron-endpoint row, its deployment/time window and provider invocation metadata to accept actual automatic execution. Do not fabricate past runs or label a manual execution scheduled. HTTP auth/cross-origin failures occur before recording; missing rows can therefore indicate authentication failure as well as missing invocation.
+
+## Validation and applied migration
+
+Lint, strict TypeScript, all **296 tests** (nine new run-history tests) and an optimized webpack build passed. The isolated build used a blocked database destination. Tests cover wrong/missing auth, read-only no-write actions, initial-audit failure preventing work, counts/status and partial results, generic error privacy, interrupted recording, explicit admin confirmation and manual-vs-cron entry points. No real files were deleted or emails sent by tests.
+
+On Neon **BenchScout Testing**, database `benchscout_testing`, the exact SQL and a synthetic default/update case first passed within an explicitly rolled-back transaction. Readback confirmed no table remained. The additive migration then committed the empty table/index and its Prisma checksum; post-commit readback reports audit_rows=0 and checksum_matches=true. Candidate/employer/application rows and files were not part of either transaction. This SQL check does not establish hosted Prisma/HTTP execution.
+
+## Production review and rollout
+
+Production requires separate approval for the empty operational table and release. Exact migration: `20261024000000_document_cleanup_runs`; checksum recorded in [QA evidence](qa/2026-10-24-cleanup-run-history.json). Prepared guarded SQL checks `current_database() = neondb`, refuses an existing migration record, creates one table/index and records the exact checksum atomically. No existing business table is altered. Do not deploy new processing code against Production before this migration: initial audit persistence deliberately fails closed if the table is absent.
+
+After approval: verify project/branch/database mapping and apply only this migration; confirm an empty table and matching checksum. Build the exact tested revision with existing Production keys, public origin, backfill gate off and normal cleanup schedule, preserving the current public artifact for rollback and diagnostics/testing/maintenance aliases. Do not trigger processing merely to manufacture scheduled evidence. Read-only operator history should initially be empty. Observe the next daily scheduling window and inspect within provider retention for corroboration; an unfinished/failed/missing run is not accepted. Rollback can restore the prior application artifact while retaining the audit table/rows; verify the active cron registration explicitly because provider instant rollback does not itself update cron definitions. No main merge, backfill, paid upgrade or new test email is included.
+
+## Hosted testing checkpoint
+
+Exact source **4eb3e2c8486cb8532aa400106d1bc306c9c8cb5a** is Ready as **dpl_D6i3a87oxQ3R8Gfu98tPqCpcB2Na** (`bench-scout-ktqointc5-sholly.vercel.app`); original project, Preview target and exact source were verified before assigning the established testing alias. The existing synthetic session restored. The new history control was observed; a deliberately invalid administrator value returned Unauthorized and cleared the input. At 320px the new button spans x=31 to289 with 44px minimum height. Viewport override was reset. A valid-key read-only `runs` request is handed to the operator; no deletion, new run or Production migration is claimed by this checkpoint.
+
+Prisma's generated before/after schema delta exactly matches the reviewed migration. The guarded Production execution script is available for review at [SQL plan](sql/2026-10-24-production-cleanup-runs.sql); it is not applied. Production remains **dpl_EA6N74nt32g56QbkiJQWZPwMvrAt** until the additive migration and tested release are separately approved. Previous artifact EA6 is the proposed rollback; diagnostic F5 and git-main maintenance 3JS must be preserved.
+
+## Hosted valid-key acceptance
+
+The operator entered the existing testing administrator key and requested only **Check recent cleanup runs**. Independently observed the same reported success response: `runs: []` with the provenance/unfinished-outcome notice. The empty list is expected because no processing invocation was made after migration. This accepts the deployed administrator route, Prisma table read and result display; it does not establish scheduled or manual cleanup execution. The key field cleared and the deletion confirmation remained unchecked. Production migration/release remain pending approval.
+
+The proposed Production action is exactly the reviewed additive migration plus release of application source **4eb3e2c8486cb8532aa400106d1bc306c9c8cb5a**, retaining EA6 for rollback. It does not authorize a manual deletion run to manufacture scheduler evidence. Existing daily cleanup permission/schedule is unchanged; only its future run records are added. After rollout, accept actual scheduling only after correlating the next overnight invocation with provider evidence. Main merge, paid upgrades and the full-restoration drill remain separate.
+
+## Approved Production migration
+
+The owner approved the operational migration and release of exact source 4eb3e2c. Selected Neon project **BenchScout** / branch **production** / database **neondb**, distinct from BenchScout Testing. Executed the reviewed guarded transaction: one new `DocumentCleanupRun` table/index and one completed migration checksum record. Independent post-commit readback reports `neondb`, audit_rows=0 and checksum_matches=true. No existing business table or file was part of the migration. A clean archive of the exact approved source is being built in the original Vercel project with the public origin, existing keys/backup flags, apply gate off and normal cleanup schedule. Public promotion remains pending readiness checks.
+
+## Approved Production release
+
+Exact approved source **4eb3e2c8486cb8532aa400106d1bc306c9c8cb5a** was built from a clean archive without local environment files as **dpl_9CMj8YniwM7cWcNm8WfEzmpGowsf** (`bench-scout-4ixd5y3y3-sholly.vercel.app`). Original project, exact source, Production target, Ready state and absence of aliases were checked before promotion. Public `bench-scout.vercel.app` now serves this artifact; previous **dpl_EA6N74nt32g56QbkiJQWZPwMvrAt** remains rollback. The new operator screen loaded publicly. All **13 GET-only public checks passed**, including anonymous/forged-session denial and retired endpoints.
+
+Final provider readback confirms testing D6, diagnostics F5, retained hotfix EcY and git-main 3JS maintenance are preserved. The public cleanup schedule follows the new artifact with unchanged `17 2 * * *` definition. Existing Production credentials, public canonical origin and backup flags remain (enabled, test mode off, backfill apply off). Protection remains `all_except_custom_domains`, bypass count zero. No cleanup processing, real-file operation, main merge, new email or paid upgrade was performed.
+
+The next scheduling window is **25 October 2026, 03:00–03:59 Africa/Lagos** under Hobby timing precision. Inspect provider logs promptly within their retention window and compare the new cron-endpoint record/deployment/timestamp and completion counts. A missing or unfinished row does not establish success, and a manual request or agent hint alone is not independent scheduler proof. Production read-only history is prepared for private operator-key entry; its result is pending. Full-service restoration timing remains a separate drill.
+
+## Recent provider evidence path confirmed
+
+After release, a read-only CLI request-log lookup limited to the last hour succeeded on the existing plan. Its single cleanup-path request was the deliberate unauthenticated smoke dry run: HTTP 401 at 15:47:28 UTC on 9CM, not an execution pass. The earlier rejected 24-hour lookups do not mean all request metadata is unavailable; the provider rejected request records older than 12 hours. Query promptly after the next window, using a bounded range and path/deployment filters. No paid upgrade is needed for this observed recent lookup. Raw provider records remain outside Git; committed evidence contains no request IDs, IP/location metadata or raw headers.
+
+Next observation range: 25 October 02:00–03:05 UTC (03:00–04:05 Lagos), after the scheduled hour completes. Correlate a successful provider GET with the same deployment and an authenticated cron-endpoint row, matching timestamp, agent hint and terminal result. Check queue counts separately if unresolved work is reported. Do not confuse an HTTP 401, a dry-run request or a manually triggered row with an automatic scheduled pass.
+
+## Production read-only acceptance completed
+
+The operator entered the existing Production administrator key and requested only **Check recent cleanup runs**. Independently observed the same exact response: `runs: []` with the provenance/unfinished-run notice. The key field cleared and permanent-deletion confirmation remained unchecked. This accepts the released application’s administrator authentication, Production audit-table read and result display. No manual processing, source deletion, new run row or email was triggered. The empty list is expected before the next processing invocation and is not evidence of a successful automatic run. The scheduled observation window and full-restoration drill remain outstanding.
+
+## Scheduled execution accepted — 27 October 2026
+
+Read-only observation, without manual endpoint invocation or deletion processing. The live Vercel project still registers `17 2 * * *` for `/api/cron/document-cleanup` on deployment **dpl_9CMj8YniwM7cWcNm8WfEzmpGowsf**. Protection remains `all_except_custom_domains` with zero bypass tokens. No configuration or environment values were changed.
+
+The bounded CDN request query for **27 October 02:00–03:05 UTC** returned one Production GET at **02:36:49.174 UTC / 03:36:49.174 Lagos**, HTTP **200**, on the exact registered deployment/host/path, with a cron-agent hint. Pagination was complete and no intervals excluded. Runtime logs older than one hour were not needed, and no paid upgrade was requested. Raw request IDs, IP/location metadata and headers remain outside Git.
+
+In independently selected Neon project **BenchScout**, branch **production**, database **neondb**, a `BEGIN READ ONLY` transaction returned three terminal `SUCCEEDED` records from the cron endpoint:
+
+| Date | Started (Lagos) | Finished (Lagos) | Result |
+| --- | --- | --- | --- |
+| 27 October | 03:36:50.967 | 03:36:51.056 | SUCCEEDED |
+| 26 October | 03:36:50.912 | 03:36:51.022 | SUCCEEDED |
+| 25 October | 03:36:51.289 | 03:36:51.431 | SUCCEEDED |
+
+All three have the expected deployment and cron-agent hint, no error code, and zero attempted/completed/failed/referenced/skipped counts. Current queue readback: **0 rows, 0 previously failed, 0 due**. Today’s persisted start follows the provider request by about 1.8 seconds; deployment and scheduling window match. This correlation accepts actual scheduled authenticated execution/completion for the controlled pilot. Earlier two dates have database history only in this observation. User-agent hints alone remain insufficient proof; an authorised key holder can spoof them, and this is not cryptographic scheduler attestation.
+
+The queue was empty, so these runs deleted no files. This is not a new Production deletion-with-work test, nor a guarantee of future execution or exact minute timing. Existing testing worker/loss-and-restore evidence remains separate. No manual run, migration, file operation, email, deployment, main merge, bypass token or secret read was needed. Evidence: [27 October scheduled cleanup](qa/2026-10-27-scheduled-cleanup.json). The remaining technical close-out is safe integration into main, with explicit deployment safeguards.

@@ -1,0 +1,142 @@
+{
+  "date": "2026-10-21",
+  "scope": "testing encrypted automatic backup integration and synthetic provider-backed restoration",
+  "destination": "benchscout-testing-backups",
+  "access": "private",
+  "region": "iad1",
+  "creationApproval": "explicit operator action-time approval",
+  "created": true,
+  "projectConnectedByAgent": false,
+  "credentialsRevealed": false,
+  "paidUpgrade": false,
+  "realDocumentsTransferred": false,
+  "fixture": {
+    "name": "benchscout-QA-ONLY-recovery-20261021.txt",
+    "bytes": 231,
+    "sourceSha256": "ebfbf38a0948cb701794a63d2304c1e5822bce209f5da923409d92bcfc97253a",
+    "authenticatedPreviewUtf8Sha256": "ebfbf38a0948cb701794a63d2304c1e5822bce209f5da923409d92bcfc97253a",
+    "upload": "passed",
+    "previewTextIntegrity": "passed",
+    "rawDownloadedBytes": "not verified; browser download event timed out",
+    "sourceDeleted": false,
+    "restoredAfterLoss": false
+  },
+  "automaticBackupsConfigured": true,
+  "applicationCodeChanged": true,
+  "schemaChanged": false,
+  "environmentChanged": true,
+  "sameProviderLimitation": "shares Vercel account/provider with active storage; not independent disaster recovery",
+  "pending": [
+    "independent recovery-key custody check",
+    "independent account/provider disaster recovery",
+    "production enablement through separate review",
+    "separately approved real-account/Production backfill; completed backfill covers fixed synthetic candidate only"
+  ],
+  "cleanup": "hosted probe source/restoration/archive deletion submitted and inspected prefixes empty; unrelated 231-byte preview fixture retained; original candidate vault/application untouched",
+  "implementation": {
+    "commit": "2bbb903",
+    "localChecks": {
+      "lint": "passed",
+      "typecheck": "passed",
+      "tests": 230,
+      "build": "passed",
+      "operatorScreen320px": "passed"
+    },
+    "configuration": "operator saved; five Secret Preview/testing variables observed; values not read",
+    "hostedActivation": "enabled; real-provider primitive passed; normal candidate upload after activation not independently exercised",
+    "realProviderLossRestore": "passed: operator execution and independently observed hosted JSON",
+    "alertRecipientApproved": true
+  },
+  "deployment": {
+    "commit": "b7370c7",
+    "vercel": "EQQwtr3UW2XhdEVBk9z2cSLKY1Ne",
+    "state": "success",
+    "hostedInvalidKey": "Unauthorized; secret cleared",
+    "correctKeyAndLossRestore": "passed"
+  },
+  "hostedRestoration": {
+    "passed": true,
+    "sourceLossVerified": true,
+    "decryptedBytesMatch": true,
+    "restoredPrivateReadMatches": true,
+    "bytes": 85,
+    "sha256": "feee65cee1c34e5726406574fd5bb6feacc6eca1ec005bc64410b27dd7e232e2",
+    "cleanupSubmitted": true,
+    "databaseChanged": false,
+    "applicationGrantsChanged": false,
+    "secretCleared": true,
+    "evidence": "operator report and independent hosted screen observation",
+    "cleanupInventory": {
+      "testingDocumentPrefix": "qa-recovery/",
+      "testingDocumentMatches": 0,
+      "backupPrefix": "document-backups/v1/",
+      "backupMatches": 0,
+      "method": "fresh authenticated Vercel prefix searches"
+    }
+  },
+  "backfillAlertChecks": {
+    "commit": "13310fc",
+    "vercel": "GLtdVkt4f7q6b4ctzrijZiyAVoAw",
+    "deployment": "success",
+    "localChecks": "lint, TypeScript, 235 tests, production build passed",
+    "hosted320px": {
+      "viewport": 320,
+      "documentWidth": 320,
+      "controlRight": 289,
+      "overflow": false
+    },
+    "scope": "fixed known synthetic candidate only; configured approved alert recipient",
+    "backfill": "passed: independently observed hosted counts after private existing-key entry",
+    "alertSubmission": "passed: hosted response independently observed",
+    "inboxReceipt": "passed: approved recipient explicitly confirmed receipt",
+    "alertResult": {
+      "alertSubmitted": true,
+      "documentDataIncluded": false,
+      "secretCleared": true,
+      "failureInduced": false
+    },
+    "backfillRejectedAttempt": {
+      "error": "Unauthorized",
+      "observedHosted": true,
+      "storageHandlerReached": false,
+      "secretRead": false,
+      "guardChanged": false
+    },
+    "backfillResult": {
+      "eligible": 2,
+      "verified": 2,
+      "stalePurged": 0,
+      "failed": 0,
+      "skipped": 0,
+      "passed": true,
+      "databaseChanged": false,
+      "applicationGrantsChanged": false,
+      "secretCleared": true
+    },
+    "requestedTestingChecks": "both passed: fixed-QA backfill and recipient-confirmed alert"
+  },
+  "retainedArchives": "three current QA vault files/archives after the normal degree-slot upload; two-file backfill and earlier probe cleanup remain dated evidence",
+  "normalCandidateUpload": {
+    "passed": true,
+    "kind": "degree",
+    "emptyBeforeUpload": true,
+    "fixture": "QA-ONLY-automatic-backup-upload.pdf",
+    "bytes": 659,
+    "sha256": "1bd201f4d02fbd95819e5adc23d6ae956bb2b26dda419070168cfae7dcc25c5f",
+    "persistedAfterReload": true,
+    "guardedOwnerPreview": "known synthetic PDF rendered",
+    "newEncryptedObjectBytes": 723,
+    "encryptedObjectsObserved": 3,
+    "applicationCount": 1,
+    "applicationSelectionStill": "CV only",
+    "existingFileReplaced": false,
+    "aiRequest": false
+  },
+  "anonymousBackupAccess": {
+    "passed": true,
+    "method": "unsigned GET; curl default configuration disabled; no cookies or authentication",
+    "httpStatus": 403,
+    "responseBytes": 10,
+    "privateUrlRecorded": false
+  }
+}

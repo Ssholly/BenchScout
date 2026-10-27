@@ -1,0 +1,1490 @@
+{
+  "date": "2026-10-22",
+  "inventoryCount": 76,
+  "inventoryComplete": true,
+  "groups": [
+    {
+      "source": "eb5d08f6327cab231616af22b17311682a2f94a7",
+      "deployments": [
+        {
+          "id": "dpl_J44njmwk3r1Thj3ytuydU2PzPYw1",
+          "state": "BUILDING",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": true,
+        "durableCleanupWorker": true,
+        "backfillApplyEndpoint": true,
+        "containment": false
+      }
+    },
+    {
+      "source": "334fc089f5ba4a5b569cb77e7261ef6ac2d3025a",
+      "deployments": [
+        {
+          "id": "dpl_5oynUKc7qkxrp3NHYN1zwoBYqqyE",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": true,
+        "durableCleanupWorker": true,
+        "backfillApplyEndpoint": true,
+        "containment": false
+      }
+    },
+    {
+      "source": "c21797c885ec5a63454ce513090352f354a382c4",
+      "deployments": [
+        {
+          "id": "dpl_Ear1JHEzp5yhQgG7zBrXUt5zHPy9",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": true,
+        "durableCleanupWorker": true,
+        "backfillApplyEndpoint": true,
+        "containment": false
+      }
+    },
+    {
+      "source": "3a0382ca31aadc54873e3eec8e1692ae97022e85",
+      "deployments": [
+        {
+          "id": "dpl_C8veWKBAFj7Ch3bvrKw13HGztoHj",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": true,
+        "durableCleanupWorker": true,
+        "backfillApplyEndpoint": true,
+        "containment": false
+      }
+    },
+    {
+      "source": "d093f41eb83bb25b5cda986019030342e4ffd5c7",
+      "deployments": [
+        {
+          "id": "dpl_6bKibqfqzcSvArnC5SQAtJ4LuQTU",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": true,
+        "durableCleanupWorker": true,
+        "backfillApplyEndpoint": true,
+        "containment": false
+      }
+    },
+    {
+      "source": "a3b3cf7f7ecb6f847d24324d07221d7387982ffb",
+      "deployments": [
+        {
+          "id": "dpl_D2mYf5k3qc892X4TVoRZ3jnoWWjD",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        },
+        {
+          "id": "dpl_3L4uk65722oz6rkdYdSktaBmKhgo",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": true,
+        "durableCleanupWorker": true,
+        "backfillApplyEndpoint": true,
+        "containment": false
+      }
+    },
+    {
+      "source": "5df7507f7ba20adbd042c0d0fa49693d2065134b",
+      "deployments": [
+        {
+          "id": "dpl_DKy7T4FD5JtcfidJPxnjFqz37QgF",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": true,
+        "durableCleanupWorker": false,
+        "backfillApplyEndpoint": true,
+        "containment": false
+      }
+    },
+    {
+      "source": "475cd9c5b39c76c2a68125f2922bcdf254011276",
+      "deployments": [
+        {
+          "id": "dpl_9dYEM4XQvZzwXM59eddpCbNdyatY",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": true,
+        "durableCleanupWorker": false,
+        "backfillApplyEndpoint": true,
+        "containment": false
+      }
+    },
+    {
+      "source": "336c6edf06f8e8a3f0a3fafb43f81feac9c1546f",
+      "deployments": [
+        {
+          "id": "dpl_EcY1anTy6tVPnmAoagf5WCRk2Bed",
+          "state": "READY",
+          "target": null,
+          "branch": "hotfix/legacy-containment"
+        },
+        {
+          "id": "dpl_3JSXjPv2JjgTBNE3gwXVSiqJFTaV",
+          "state": "READY",
+          "target": "production",
+          "branch": null
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": false,
+        "candidateUploadWrapper": false,
+        "privateStoreHelper": false,
+        "backupBeforeCommitHelper": false,
+        "durableCleanupWorker": false,
+        "backfillApplyEndpoint": false,
+        "containment": true
+      }
+    },
+    {
+      "source": "0aa1f14340e176e45df80feab88d4e9a27e902bb",
+      "deployments": [
+        {
+          "id": "dpl_BqoQfnixmys87RCKd6a3bzSHMRue",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": true,
+        "durableCleanupWorker": false,
+        "backfillApplyEndpoint": true,
+        "containment": false
+      }
+    },
+    {
+      "source": "0482553b1ba65feb654eea8f593a6e7ee3bddf3a",
+      "deployments": [
+        {
+          "id": "dpl_GTBJFGiGZHRVoUXNtn2gh1GCWAMB",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": true,
+        "durableCleanupWorker": false,
+        "backfillApplyEndpoint": true,
+        "containment": false
+      }
+    },
+    {
+      "source": "eba00029547fdbd23348aad7ee9adf726934e569",
+      "deployments": [
+        {
+          "id": "dpl_7VZ18iaDJD9JqtC1bve8YnbDSzFk",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": true,
+        "durableCleanupWorker": false,
+        "backfillApplyEndpoint": true,
+        "containment": false
+      }
+    },
+    {
+      "source": "a2d377360f6e0942866cab9648dbf4d3600b5a75",
+      "deployments": [
+        {
+          "id": "dpl_oUjigFvcJ9CWuLMd9Wap4tkRo2rx",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": true,
+        "durableCleanupWorker": false,
+        "backfillApplyEndpoint": true,
+        "containment": false
+      }
+    },
+    {
+      "source": "21037266f084d25ee65247eed7840f0ae0295aef",
+      "deployments": [
+        {
+          "id": "dpl_5YkC8Pq99osYxMdLVMNXPdoQmiQp",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": true,
+        "durableCleanupWorker": false,
+        "backfillApplyEndpoint": true,
+        "containment": false
+      }
+    },
+    {
+      "source": "64e2f83c62d7c81b3905cdc075793255b8e7d186",
+      "deployments": [
+        {
+          "id": "dpl_12r5Zwn4tyffsUTnH3YF9tMrNqXh",
+          "state": "READY",
+          "target": "production",
+          "branch": null
+        },
+        {
+          "id": "dpl_68r8xrttBz57LFTZtFw7jD5JWx6n",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": true,
+        "durableCleanupWorker": false,
+        "backfillApplyEndpoint": true,
+        "containment": false
+      }
+    },
+    {
+      "source": "46a40c19df4b107f17aaba8e308d63f0bbdb86f6",
+      "deployments": [
+        {
+          "id": "dpl_5pDMCUZ4ApYjzAxLLcvTSJ7jvQZm",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": true,
+        "durableCleanupWorker": false,
+        "backfillApplyEndpoint": false,
+        "containment": false
+      }
+    },
+    {
+      "source": "af78f2790fd1b4773906a92c4492ad31d965e166",
+      "deployments": [
+        {
+          "id": "dpl_75R8YCbgDN2BSZNqfBRc4DCiuD4E",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": true,
+        "durableCleanupWorker": false,
+        "backfillApplyEndpoint": false,
+        "containment": false
+      }
+    },
+    {
+      "source": "3fff7883aadce45bc474427ecc0e63cc363baaf3",
+      "deployments": [
+        {
+          "id": "dpl_J8Mnp5o7zaAYF7GjfAMCh4VFcJaJ",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": true,
+        "durableCleanupWorker": false,
+        "backfillApplyEndpoint": false,
+        "containment": false
+      }
+    },
+    {
+      "source": "ebc835493f3206c08d04c8c2cccd479be58b7d4e",
+      "deployments": [
+        {
+          "id": "dpl_3haizdHoL85JHSdfSNRKSCw5TuCD",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": true,
+        "durableCleanupWorker": false,
+        "backfillApplyEndpoint": false,
+        "containment": false
+      }
+    },
+    {
+      "source": "b399b13c47041653fb6649bcc6abb06bef377a09",
+      "deployments": [
+        {
+          "id": "dpl_DPiKDzuQWSeDPnxD22PdnJ4jZ59Y",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": true,
+        "durableCleanupWorker": false,
+        "backfillApplyEndpoint": false,
+        "containment": false
+      }
+    },
+    {
+      "source": "fedca2da73ed98515df04ba4e8f4dc05ed9e5eb6",
+      "deployments": [
+        {
+          "id": "dpl_hEMnFAJj9259HEe4EcNN9Un5DykC",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": true,
+        "durableCleanupWorker": false,
+        "backfillApplyEndpoint": false,
+        "containment": false
+      }
+    },
+    {
+      "source": "2dc428dde748280c195c3f5b7ff1ae746eecfb5c",
+      "deployments": [
+        {
+          "id": "dpl_9BSyrbsUyeRaseT8oVNYZH5sBrkc",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": true,
+        "durableCleanupWorker": false,
+        "backfillApplyEndpoint": false,
+        "containment": false
+      }
+    },
+    {
+      "source": "dc227333cde796438f88d4cb4fb406efe2a31087",
+      "deployments": [
+        {
+          "id": "dpl_EFB1ezuF3q5tonXs3xTnMiGy9CuT",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": true,
+        "durableCleanupWorker": false,
+        "backfillApplyEndpoint": false,
+        "containment": false
+      }
+    },
+    {
+      "source": "48536e13b7b2ff2dea008cad8db3b29c56f03b33",
+      "deployments": [
+        {
+          "id": "dpl_7deKsRuSVHUGbpPA1Yy7qBnxHqLE",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": true,
+        "durableCleanupWorker": false,
+        "backfillApplyEndpoint": false,
+        "containment": false
+      }
+    },
+    {
+      "source": "d08c6befbfda65c0af7aa0ceda4f2c5aeb9d9e62",
+      "deployments": [
+        {
+          "id": "dpl_UETW5gYpwf6tBFkuFXB2GAWmbVY6",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": true,
+        "durableCleanupWorker": false,
+        "backfillApplyEndpoint": false,
+        "containment": false
+      }
+    },
+    {
+      "source": "cc9f7ddd95fb5d3acbf9b4d51b9f5ed1190d1057",
+      "deployments": [
+        {
+          "id": "dpl_7SgZzqru7N4HDKWFkPmLjB4rx5MR",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": true,
+        "durableCleanupWorker": false,
+        "backfillApplyEndpoint": false,
+        "containment": false
+      }
+    },
+    {
+      "source": "2d4a0b54eafaad6ab2c0e8dd416c061de6c7402c",
+      "deployments": [
+        {
+          "id": "dpl_2fAyVzQfQLErsyVqe3yMRnAGB8HX",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": true,
+        "durableCleanupWorker": false,
+        "backfillApplyEndpoint": false,
+        "containment": false
+      }
+    },
+    {
+      "source": "1315c04a01525ae562246d293fc6d02eca800ebb",
+      "deployments": [
+        {
+          "id": "dpl_CLAmgYnXjfjPBPnLaWhZsvyGNhUE",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": true,
+        "durableCleanupWorker": false,
+        "backfillApplyEndpoint": false,
+        "containment": false
+      }
+    },
+    {
+      "source": "b9cd227a6815dfef5c61d87ed74f29e8460d08f8",
+      "deployments": [
+        {
+          "id": "dpl_5q1uxgx4H5DR5iwNdP5pXTctt5F7",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": true,
+        "durableCleanupWorker": false,
+        "backfillApplyEndpoint": false,
+        "containment": false
+      }
+    },
+    {
+      "source": "cc09f2f80c30dcbfc8474139d114f0856f0d6257",
+      "deployments": [
+        {
+          "id": "dpl_FHfyfRrp2rTcmBfsnEcmGKmg2M7P",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": true,
+        "durableCleanupWorker": false,
+        "backfillApplyEndpoint": false,
+        "containment": false
+      }
+    },
+    {
+      "source": "13310fc40d34c269a333d088cb3af2df537af56f",
+      "deployments": [
+        {
+          "id": "dpl_GLtdVkt4f7q6b4ctzrijZiyAVoAw",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": true,
+        "durableCleanupWorker": false,
+        "backfillApplyEndpoint": false,
+        "containment": false
+      }
+    },
+    {
+      "source": "c5cd73a8c4b897e562081458fd13bdb4a95b4d64",
+      "deployments": [
+        {
+          "id": "dpl_AtrNwgqEXQ6V9LbVAeKpGvmC6Jqs",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": true,
+        "durableCleanupWorker": false,
+        "backfillApplyEndpoint": false,
+        "containment": false
+      }
+    },
+    {
+      "source": "c41ec67d2a571a8e6baf9d8c11f7021e77798a59",
+      "deployments": [
+        {
+          "id": "dpl_Ep1WNjsWNE7LCHhoeEGeZ1L7W18c",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": true,
+        "durableCleanupWorker": false,
+        "backfillApplyEndpoint": false,
+        "containment": false
+      }
+    },
+    {
+      "source": "b7370c74cd7d871613f830468048a060c54ab1df",
+      "deployments": [
+        {
+          "id": "dpl_EQQwtr3UW2XhdEVBk9z2cSLKY1Ne",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": true,
+        "durableCleanupWorker": false,
+        "backfillApplyEndpoint": false,
+        "containment": false
+      }
+    },
+    {
+      "source": "2bbb903865590d01f0c65fe526790e4dfb032d09",
+      "deployments": [
+        {
+          "id": "dpl_CwSULwXawoCW9yFjRYhz5Vzpz2vD",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": true,
+        "durableCleanupWorker": false,
+        "backfillApplyEndpoint": false,
+        "containment": false
+      }
+    },
+    {
+      "source": "7132beb24218c6d1f55c9e90b0309374acc07659",
+      "deployments": [
+        {
+          "id": "dpl_uh7dwaVBo6xePtPkW9xE8xZbyQM5",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": false,
+        "durableCleanupWorker": false,
+        "backfillApplyEndpoint": false,
+        "containment": false
+      }
+    },
+    {
+      "source": "2370254b1ec972f1a3be79d19b5a37abf7e9e84c",
+      "deployments": [
+        {
+          "id": "dpl_2Ccirt1w6JMrPvwb4Qr56NwaMcPm",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": false,
+        "durableCleanupWorker": false,
+        "backfillApplyEndpoint": false,
+        "containment": false
+      }
+    },
+    {
+      "source": "5f5c3e3fb26a358f08ffebd4dd95a056e44412e6",
+      "deployments": [
+        {
+          "id": "dpl_7HKnXv2WEcrrxuXaA5G1WhRQKwR5",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": false,
+        "durableCleanupWorker": false,
+        "backfillApplyEndpoint": false,
+        "containment": false
+      }
+    },
+    {
+      "source": "d8ebb25e659bdb5f8a559d6b1d22bfcb0e61d8c3",
+      "deployments": [
+        {
+          "id": "dpl_9fERAjnNHYkcXYaV9tN7vjUaddm2",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": false,
+        "durableCleanupWorker": false,
+        "backfillApplyEndpoint": false,
+        "containment": false
+      }
+    },
+    {
+      "source": "4f09a8008f927ae45a814c7466b0076d0278a8cc",
+      "deployments": [
+        {
+          "id": "dpl_3ipxtknHamSeTp5nQdHWYhkMC4gh",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": false,
+        "durableCleanupWorker": false,
+        "backfillApplyEndpoint": false,
+        "containment": false
+      }
+    },
+    {
+      "source": "c8a30611e8e879291936402445adee136ed5d43d",
+      "deployments": [
+        {
+          "id": "dpl_HVyxSZ48XWM4asE3SKQRxoa1yVze",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": false,
+        "durableCleanupWorker": false,
+        "backfillApplyEndpoint": false,
+        "containment": false
+      }
+    },
+    {
+      "source": "614dc8de8073dce3bf49c7d3a0caca6e7e6c6d16",
+      "deployments": [
+        {
+          "id": "dpl_94rwqt9fdkYi4XreU1PTNepGXAsQ",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": false,
+        "durableCleanupWorker": false,
+        "backfillApplyEndpoint": false,
+        "containment": false
+      }
+    },
+    {
+      "source": "b5fb0256365bbc7000610f55141f13c9fa60ff3e",
+      "deployments": [
+        {
+          "id": "dpl_2AuG12G7SMhbec1HjP5gdDn99wHr",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": false,
+        "durableCleanupWorker": false,
+        "backfillApplyEndpoint": false,
+        "containment": false
+      }
+    },
+    {
+      "source": "7aaabef4df77937d420d96157070c7dd902cc1c8",
+      "deployments": [
+        {
+          "id": "dpl_HMr8UtkBPqP2cdAVKZoVtmurbhiC",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": false,
+        "durableCleanupWorker": false,
+        "backfillApplyEndpoint": false,
+        "containment": false
+      }
+    },
+    {
+      "source": "5e96bbbdfeafdf3906e72aafac364d0d9e7e7f76",
+      "deployments": [
+        {
+          "id": "dpl_DFTtg6eb3MR9t178u1TVtS7f4UKA",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": false,
+        "durableCleanupWorker": false,
+        "backfillApplyEndpoint": false,
+        "containment": false
+      }
+    },
+    {
+      "source": "e0d9e356ed0f3a0a0f2cc968d04e8902f6cb9210",
+      "deployments": [
+        {
+          "id": "dpl_5zsmCk98kgzs9JUja3BLqTXdZWfn",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": false,
+        "durableCleanupWorker": false,
+        "backfillApplyEndpoint": false,
+        "containment": false
+      }
+    },
+    {
+      "source": "1ae04d418f1220cef5cc5634c5871ec4644dd9b3",
+      "deployments": [
+        {
+          "id": "dpl_CDwuLasqjP5ZEdXVafGMG3GAgsh7",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": false,
+        "durableCleanupWorker": false,
+        "backfillApplyEndpoint": false,
+        "containment": false
+      }
+    },
+    {
+      "source": "c61c04717db05f0343e865e7a6620f636b24d09a",
+      "deployments": [
+        {
+          "id": "dpl_AkoXTjyFRYrwHErpcLbiPw5N95v3",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": false,
+        "durableCleanupWorker": false,
+        "backfillApplyEndpoint": false,
+        "containment": false
+      }
+    },
+    {
+      "source": "87bebfd639698f4c03cc1a3157ad88487dd95407",
+      "deployments": [
+        {
+          "id": "dpl_HpTxd6mR2biKSpbs5UGhBn6838Ak",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": false,
+        "durableCleanupWorker": false,
+        "backfillApplyEndpoint": false,
+        "containment": false
+      }
+    },
+    {
+      "source": "49e5108baba77bffcc44d5466a38bcd7b1e86c4d",
+      "deployments": [
+        {
+          "id": "dpl_6ThBhP6CvRi9H6qkbpLzckENZqoC",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": false,
+        "durableCleanupWorker": false,
+        "backfillApplyEndpoint": false,
+        "containment": false
+      }
+    },
+    {
+      "source": "e18f34849eace74b024ab55ff456cf3aaecfa8a0",
+      "deployments": [
+        {
+          "id": "dpl_AcSSW6qvEnXwKDLwQMfyhBVY4uZs",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": false,
+        "durableCleanupWorker": false,
+        "backfillApplyEndpoint": false,
+        "containment": false
+      }
+    },
+    {
+      "source": "eae3f3406133166b0e567076de4f3ffcbf4a4be4",
+      "deployments": [
+        {
+          "id": "dpl_99R7REEstYZ75ry7yPgdvJopUU5G",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": false,
+        "durableCleanupWorker": false,
+        "backfillApplyEndpoint": false,
+        "containment": false
+      }
+    },
+    {
+      "source": "f228b288fa7409dcad2c6e5e67091ace415f8e4a",
+      "deployments": [
+        {
+          "id": "dpl_2DkwJSVuEfRT641ThhEAQJz26ARx",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": false,
+        "durableCleanupWorker": false,
+        "backfillApplyEndpoint": false,
+        "containment": false
+      }
+    },
+    {
+      "source": "5320bda4a289d2670c5ee6054d5c06ad39645fbf",
+      "deployments": [
+        {
+          "id": "dpl_82nRy8RF1e6dR9hxb69zHFyaR649",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": false,
+        "durableCleanupWorker": false,
+        "backfillApplyEndpoint": false,
+        "containment": false
+      }
+    },
+    {
+      "source": "4857fb1967bf7d9a6a567b518b2067c37882fca1",
+      "deployments": [
+        {
+          "id": "dpl_5yC26qaDDXZo2LYgAbw6U2PgaQUY",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": false,
+        "durableCleanupWorker": false,
+        "backfillApplyEndpoint": false,
+        "containment": false
+      }
+    },
+    {
+      "source": "88dd81f482da2c88008d8ede75732cbecb2f60e7",
+      "deployments": [
+        {
+          "id": "dpl_EUqccb3Ca9K5GJ8tj9sX6EbrSEff",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": false,
+        "durableCleanupWorker": false,
+        "backfillApplyEndpoint": false,
+        "containment": false
+      }
+    },
+    {
+      "source": "11a40d9ebf2426780e0e0f1c56318c43a858e39d",
+      "deployments": [
+        {
+          "id": "dpl_4HsPwdcY92x81AnyHRwati1oXd2J",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": false,
+        "durableCleanupWorker": false,
+        "backfillApplyEndpoint": false,
+        "containment": false
+      }
+    },
+    {
+      "source": "ec434fec99d59b6eee04f09447d9be17e5f6c79a",
+      "deployments": [
+        {
+          "id": "dpl_7G8CeSQAtvasLK3vK6a4BafyijUM",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": false,
+        "durableCleanupWorker": false,
+        "backfillApplyEndpoint": false,
+        "containment": false
+      }
+    },
+    {
+      "source": "c035fa409e5bd34dc31ef74a9283fad50b2e5713",
+      "deployments": [
+        {
+          "id": "dpl_EEUhQhavM4yqZ5jfb5aZAsgmG8rj",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": false,
+        "durableCleanupWorker": false,
+        "backfillApplyEndpoint": false,
+        "containment": false
+      }
+    },
+    {
+      "source": "e17170d634385998cb04cb63031a9a7c076f2068",
+      "deployments": [
+        {
+          "id": "dpl_CD1zsnx7QrajbGB5shy1s3sXCwdB",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": false,
+        "durableCleanupWorker": false,
+        "backfillApplyEndpoint": false,
+        "containment": false
+      }
+    },
+    {
+      "source": "70faf55f2323385479a357bb30b165af24865278",
+      "deployments": [
+        {
+          "id": "dpl_Ds33bhWjU8aypgFgBo2F8PWznNZF",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": false,
+        "durableCleanupWorker": false,
+        "backfillApplyEndpoint": false,
+        "containment": false
+      }
+    },
+    {
+      "source": "4b274152170b49be256cdb3e3e3e19de4cb74010",
+      "deployments": [
+        {
+          "id": "dpl_HbPnrcwX7fRu8NMyhNaT1QRyh7w8",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": false,
+        "durableCleanupWorker": false,
+        "backfillApplyEndpoint": false,
+        "containment": false
+      }
+    },
+    {
+      "source": "4ab04465fb3d071becccbfc787af9af1af156948",
+      "deployments": [
+        {
+          "id": "dpl_GVbMbVc56CtxHRCupuwmgZnWEQYX",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": false,
+        "durableCleanupWorker": false,
+        "backfillApplyEndpoint": false,
+        "containment": false
+      }
+    },
+    {
+      "source": "0653bcb74d06e8a03bb09b699bedbf14c4ecf6c6",
+      "deployments": [
+        {
+          "id": "dpl_4xsY5fvTDEDgZyJdWNY3rpWFQesh",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": false,
+        "durableCleanupWorker": false,
+        "backfillApplyEndpoint": false,
+        "containment": false
+      }
+    },
+    {
+      "source": "0fe70fb812d5936d3e98a6ebcac5e96cc6a72564",
+      "deployments": [
+        {
+          "id": "dpl_6PSTHmHJEPjRWvRVH99TJerVP3SA",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": false,
+        "durableCleanupWorker": false,
+        "backfillApplyEndpoint": false,
+        "containment": false
+      }
+    },
+    {
+      "source": "1540e5cbd310824b0cc95e274448a0a1974f0527",
+      "deployments": [
+        {
+          "id": "dpl_H5D5fivhDQLZuNVaMmgYLV9tY7s2",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": false,
+        "durableCleanupWorker": false,
+        "backfillApplyEndpoint": false,
+        "containment": false
+      }
+    },
+    {
+      "source": "4fe3d212f5cfa390c807a1d29ae9dbde124e7339",
+      "deployments": [
+        {
+          "id": "dpl_DpfEPoeKcrVwU53HdN1bWkqFYGH9",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": false,
+        "durableCleanupWorker": false,
+        "backfillApplyEndpoint": false,
+        "containment": false
+      }
+    },
+    {
+      "source": "d6424ed494f301e8d7ded005c0c5c9ba52411aee",
+      "deployments": [
+        {
+          "id": "dpl_AyiQF19739GQG6jJWqp2eGMHXN4s",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": false,
+        "durableCleanupWorker": false,
+        "backfillApplyEndpoint": false,
+        "containment": false
+      }
+    },
+    {
+      "source": "c050bc5eaae78e3d6f582d0da2dbdd97ecf79917",
+      "deployments": [
+        {
+          "id": "dpl_Bs3Z9gmrvbe4S3imQEz6vYe78Gsg",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": false,
+        "durableCleanupWorker": false,
+        "backfillApplyEndpoint": false,
+        "containment": false
+      }
+    },
+    {
+      "source": "b847e8ba1fe1c60d17dac8fe1d16a6340189c2d2",
+      "deployments": [
+        {
+          "id": "dpl_8xjMWd5LxcdCr7HnCKXdKcBSShQS",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": false,
+        "durableCleanupWorker": false,
+        "backfillApplyEndpoint": false,
+        "containment": false
+      }
+    },
+    {
+      "source": "da068bec511229a21dbcd05af006bb934118d9f6",
+      "deployments": [
+        {
+          "id": "dpl_7FLcKgxaV8tWxZUbocxubPyM96Sb",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": false,
+        "durableCleanupWorker": false,
+        "backfillApplyEndpoint": false,
+        "containment": false
+      }
+    },
+    {
+      "source": "6ba1b67e3da340505e9c1603c489700a3e7ff716",
+      "deployments": [
+        {
+          "id": "dpl_CcmRX5PP6La6cxXtAgr9YzeUf9GX",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": false,
+        "durableCleanupWorker": false,
+        "backfillApplyEndpoint": false,
+        "containment": false
+      }
+    },
+    {
+      "source": "699b2562228773ab1030dfc4e80eafdd02ca961e",
+      "deployments": [
+        {
+          "id": "dpl_ADL5XfXxtqHwnMkEXQnGvd8eGQk3",
+          "state": "READY",
+          "target": null,
+          "branch": "testing"
+        }
+      ],
+      "markers": {
+        "setupHandlerPresent": true,
+        "candidateUploadWrapper": true,
+        "privateStoreHelper": true,
+        "backupBeforeCommitHelper": false,
+        "durableCleanupWorker": false,
+        "backfillApplyEndpoint": false,
+        "containment": false
+      }
+    }
+  ],
+  "limitations": [
+    "Source markers are a bounded classification, not a new full security audit.",
+    "Git ancestry does not independently verify stored deployment connection values.",
+    "A setup route marker does not mean destructive setup behavior; current disabled routes are included."
+  ]
+}

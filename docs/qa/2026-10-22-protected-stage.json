@@ -1,0 +1,59 @@
+{
+  "date": "2026-10-22",
+  "operatorApproved": true,
+  "sourceCommit": "082c225a86a1ec582ceb2e27faf276f82b8a7994",
+  "deploymentId": "dpl_F5uCLS312DAkTGAGdUZbWqaUYYrg",
+  "immutableUrl": "https://bench-scout-8vrlhm9fq-sholly.vercel.app",
+  "projectId": "prj_MNrDsjvBMVCY5mmPjD3tSyw7OIBs",
+  "readyState": "READY",
+  "target": "production",
+  "canonicalOrigin": "https://bench-scout-sholly.vercel.app",
+  "diagnosticLocalConfig": {
+    "crons": [],
+    "buildCommand": "npm run build -- --webpack"
+  },
+  "providerCronDefinitionsEmpty": true,
+  "cronMetadataNote": "Project retains its older cron deploymentId but definitions are empty; this is not scheduler invocation acceptance.",
+  "vercelAuthenticationReportedByCli": true,
+  "standardProtection": "all_except_custom_domains",
+  "aliasesAfter": {
+    "bench-scout-git-hotfix-legacy-containment-sholly.vercel.app": "dpl_EcY1anTy6tVPnmAoagf5WCRk2Bed",
+    "bench-scout-git-testing-sholly.vercel.app": "dpl_D2mYf5k3qc892X4TVoRZ3jnoWWjD",
+    "bench-scout.vercel.app": "dpl_3JSXjPv2JjgTBNE3gwXVSiqJFTaV",
+    "bench-scout-sholly.vercel.app": "dpl_F5uCLS312DAkTGAGdUZbWqaUYYrg",
+    "bench-scout-git-main-sholly.vercel.app": "dpl_3JSXjPv2JjgTBNE3gwXVSiqJFTaV"
+  },
+  "onlyDiagnosticAliasChanged": true,
+  "hostedAdminControlsObserved": true,
+  "invalidKeyRejected": true,
+  "correctKeyReadinessPending": false,
+  "correctKeyQueueCountsPending": false,
+  "realFileBackfillExecuted": false,
+  "realFilesChanged": false,
+  "mainMerged": false,
+  "publicReopened": false,
+  "runtimeReadiness": {
+    "evidence": "operator-reported response",
+    "date": "2026-10-22",
+    "databaseConnected": true,
+    "configuredDatabaseMatches": true,
+    "targetFingerprint": "c64b6f363fb232aaaa9650261e30b563fc2f67af452df65caa89f00f40f458ab",
+    "matchesPreviouslyVerifiedProductionTarget": true,
+    "environment": "production",
+    "buildCommit": null,
+    "sourceIdentityEvidence": "provider auditSourceCommit and githubCommitSha; runtime buildCommit is null",
+    "backupEnabled": true,
+    "backupConfigured": true,
+    "alertConfigured": true,
+    "testModeOff": true,
+    "businessRecordsChanged": false
+  },
+  "runtimeQueueStatus": {
+    "date": "2026-10-22",
+    "evidence": "operator-reported response",
+    "pending": 0,
+    "failed": 0,
+    "due": 0,
+    "workerProcessingRequested": false
+  }
+}

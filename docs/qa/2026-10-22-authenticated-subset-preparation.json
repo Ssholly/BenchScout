@@ -1,0 +1,19 @@
+{
+  "date": "2026-10-22",
+  "scope": "prepared authenticated local HTTP / real PostgreSQL subset; not hosted Vercel",
+  "script": "scripts/run-acceptance.cjs",
+  "commandAfterExplicitApproval": "node scripts/run-acceptance.cjs --auth-only --run",
+  "checks": {
+    "syntax": true,
+    "focusedEslint": true,
+    "configurationPreflight": true
+  },
+  "execution": "rejected before process creation by automatic approval review",
+  "reason": "Configured Production database; new create/drop QA schema and synthetic account mutation needs explicit user approval.",
+  "databaseMutationPerformed": false,
+  "hostedAuthenticationAccepted": false,
+  "privateStorageUsed": false,
+  "externalEmailSent": false,
+  "releaseBuildChanged": false,
+  "publicPromotionPerformed": false
+}

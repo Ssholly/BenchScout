@@ -1,0 +1,155 @@
+{
+  "scope": "isolated PostgreSQL schema; real HTTP and private Blob; local SMTP capture",
+  "startedAt": "2026-10-19T14:30:41.325Z",
+  "finishedAt": "2026-10-19T14:59:36.775Z",
+  "checks": [
+    {
+      "name": "isolated schema migrations and empty account boundary",
+      "status": "passed",
+      "elapsedMs": 35172
+    },
+    {
+      "name": "isolated HTTP server and local-only mail transport",
+      "status": "passed",
+      "elapsedMs": 12842
+    },
+    {
+      "name": "candidate signup, captured confirmation and blocked unverified login",
+      "status": "passed",
+      "elapsedMs": 34210
+    },
+    {
+      "name": "employer confirmation stays separate from company approval",
+      "status": "passed",
+      "elapsedMs": 31054
+    },
+    {
+      "name": "private CV, license and provisional uploads with owner and cross-account reads",
+      "status": "passed",
+      "elapsedMs": 18907
+    },
+    {
+      "name": "licensed, seeking and in-training profiles persist through HTTP",
+      "status": "passed",
+      "elapsedMs": 9168
+    },
+    {
+      "name": "real-database candidate review compare-and-set permits only one competing decision",
+      "status": "passed",
+      "elapsedMs": 4568
+    },
+    {
+      "name": "real-database audit failure rolls back candidate approval",
+      "status": "passed",
+      "elapsedMs": 8623
+    },
+    {
+      "name": "company and vacancy moderation with stage-aware discovery",
+      "status": "passed",
+      "elapsedMs": 28066
+    },
+    {
+      "name": "selected document submissions, duplicates and scoped employer access",
+      "status": "passed",
+      "elapsedMs": 35694
+    },
+    {
+      "name": "unrelated employer and candidate IDs cannot borrow application access",
+      "status": "passed",
+      "elapsedMs": 5737
+    },
+    {
+      "name": "interview persists, notifies the candidate and delivers to captured SMTP",
+      "status": "passed",
+      "elapsedMs": 6555
+    },
+    {
+      "name": "closure preserves history; withdrawal removes only its application grant",
+      "status": "passed",
+      "elapsedMs": 8548
+    },
+    {
+      "name": "replacement never shares the new file and removes the previous private object",
+      "status": "passed",
+      "elapsedMs": 13080
+    },
+    {
+      "name": "last withdrawal revokes access; private deletion removes owner access and stored object",
+      "status": "passed",
+      "elapsedMs": 7111
+    },
+    {
+      "name": "suspension blocks existing employer sessions, submissions and document reads",
+      "status": "passed",
+      "elapsedMs": 6726
+    },
+    {
+      "name": "logout revokes the actual persisted session",
+      "status": "passed",
+      "elapsedMs": 1102
+    },
+    {
+      "name": "no synthetic accounts were written to the normal schema",
+      "status": "passed",
+      "elapsedMs": 1320
+    },
+    {
+      "name": "direct private Blob URL denies anonymous access",
+      "status": "passed",
+      "httpStatus": 403
+    }
+  ],
+  "cleanup": {
+    "privateFiles": {
+      "status": "passed",
+      "removed": 7
+    },
+    "schema": "removed",
+    "method": "Scoped operator cleanup after non-interactive stdin closed"
+  },
+  "limitations": [
+    "Not a hosted Vercel acceptance run",
+    "SMTP capture does not establish external inbox delivery",
+    "No backup/restore or load certification"
+  ],
+  "status": "passed",
+  "scriptedMailCaptured": 6,
+  "browser": {
+    "syntheticAccountsOnly": true,
+    "viewports": [
+      "320x568",
+      "390x844"
+    ],
+    "candidateSubmissionAndSelectedDocuments": "passed",
+    "employerSelectedLinksAndGuardedPdf": "passed",
+    "interviewAndCandidateNotification": "passed",
+    "withdrawal": "passed",
+    "fileChooserCertificateUpload": "passed after user enabled extension file-URL permission",
+    "employerDocumentAfterWithdrawal": 403,
+    "ownerDocumentAfterWithdrawal": 200,
+    "unscoredEmployerFeedSummary": "passed"
+  },
+  "normalSchemaPublicDocumentInventory": {
+    "referencedPublicObjects": 0,
+    "documentBearingAccounts": 2,
+    "mode": "read-only dry run",
+    "doesNotEstablishOrphanAbsence": true
+  },
+  "testingAliasAnonymousSessionRequest": {
+    "status": 302,
+    "redirectHost": "vercel.com",
+    "redirectPath": "/sso-api"
+  },
+  "validation": {
+    "testsPassed": 199,
+    "lint": "passed",
+    "typecheck": "passed",
+    "productionBuild": "passed"
+  },
+  "remainingLaunchGates": [
+    "Hosted Preview/Production database separation",
+    "Real external inbox delivery",
+    "Backup/restore",
+    "Remaining interrupted-request acceptance and operational readiness"
+  ]
+}

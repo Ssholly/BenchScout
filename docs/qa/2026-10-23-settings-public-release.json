@@ -1,0 +1,117 @@
+{
+  "deployment": "dpl_3mF9yJiLtE45yXzXyMoshdiHUbCx",
+  "source": "3ecf30313f2dbfb069040abc0961cdd9a5de7767",
+  "checks": [
+    {
+      "path": "/",
+      "status": 200,
+      "expected": 200,
+      "forged": false,
+      "passed": true
+    },
+    {
+      "path": "/employer",
+      "status": 200,
+      "expected": 200,
+      "forged": false,
+      "passed": true
+    },
+    {
+      "path": "/api/setup",
+      "status": 410,
+      "expected": 410,
+      "forged": false,
+      "passed": true
+    },
+    {
+      "path": "/api/test-email",
+      "status": 410,
+      "expected": 410,
+      "forged": false,
+      "passed": true
+    },
+    {
+      "path": "/api/auth/session",
+      "status": 401,
+      "expected": 401,
+      "forged": false,
+      "passed": true
+    },
+    {
+      "path": "/api/auth/session",
+      "status": 401,
+      "expected": 401,
+      "forged": true,
+      "passed": true
+    },
+    {
+      "path": "/api/user",
+      "status": 401,
+      "expected": 401,
+      "forged": false,
+      "passed": true
+    },
+    {
+      "path": "/api/documents?userId=qa-nonexistent-access-probe&kind=resume",
+      "status": 401,
+      "expected": 401,
+      "forged": false,
+      "passed": true
+    },
+    {
+      "path": "/api/jobs/applicants?jobId=qa-nonexistent-access-probe",
+      "status": 401,
+      "expected": 401,
+      "forged": false,
+      "passed": true
+    },
+    {
+      "path": "/api/readiness",
+      "status": 401,
+      "expected": 401,
+      "forged": false,
+      "passed": true
+    },
+    {
+      "path": "/api/notifications",
+      "status": 401,
+      "expected": 401,
+      "forged": false,
+      "passed": true
+    },
+    {
+      "path": "/api/history",
+      "status": 401,
+      "expected": 401,
+      "forged": false,
+      "passed": true
+    },
+    {
+      "path": "/api/cron/document-cleanup?dryRun=1",
+      "status": 401,
+      "expected": 401,
+      "forged": false,
+      "passed": true
+    }
+  ],
+  "passed": true,
+  "date": "2026-10-23",
+  "ownerApprovedExactSource": true,
+  "publicUrl": "https://bench-scout.vercel.app",
+  "existingSessionRestoredAfterRefresh": true,
+  "preferencesLoaded": true,
+  "warmNavigationMs": 893,
+  "samples": 1,
+  "includesAutomationOverhead": true,
+  "dataOrFilesChanged": false,
+  "mainMerged": false,
+  "mobileChangesIncluded": false,
+  "cronRegistered": {
+    "deployment": "dpl_3mF9yJiLtE45yXzXyMoshdiHUbCx",
+    "schedule": "17 2 * * *",
+    "actualInvocationObserved": false
+  },
+  "bypassCount": 0,
+  "gitMain": "maintenance",
+  "testingAndDiagnosticsPreserved": true
+}

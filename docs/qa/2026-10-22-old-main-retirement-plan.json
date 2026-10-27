@@ -1,0 +1,28 @@
+{
+  "date": "2026-10-22",
+  "status": "prepared, approval pending",
+  "oldDeploymentId": "dpl_4bTpas5uPn1jRpwGeu4eUJvX7nhZ",
+  "oldImmutableHostname": "bench-scout-jedrpyruu-sholly.vercel.app",
+  "oldSource": "a56fba3641004184e8bd5ddee87a51eb6b5a4fec",
+  "projectVerified": true,
+  "affectedAlias": "bench-scout-git-main-sholly.vercel.app",
+  "replacementDeploymentId": "dpl_3JSXjPv2JjgTBNE3gwXVSiqJFTaV",
+  "replacementSource": "336c6edf06f8e8a3f0a3fafb43f81feac9c1546f",
+  "replacementReady": true,
+  "proposedSteps": [
+    "Recheck current aliases and both deployment identities.",
+    "Assign only git-main alias to existing maintenance deployment.",
+    "Verify git-main mapping and terminal maintenance response without invoking legacy setup/debug GETs.",
+    "Verify no alias references the old July deployment, then remove that exact ID using --safe.",
+    "Verify provider inventory absence and immutable homepage DEPLOYMENT_NOT_FOUND; verify kept aliases."
+  ],
+  "databaseOrStorageMutationIncluded": false,
+  "mainMergeIncluded": false,
+  "publicReopeningIncluded": false,
+  "deletionExecuted": false,
+  "aliasChangeExecuted": false,
+  "limitations": [
+    "Other remaining historical deployments and their credentials are outside this one-build retirement.",
+    "This action does not by itself certify global writer isolation."
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "date": "2026-10-22T10:02:38.897Z",
+  "project": "prj_MNrDsjvBMVCY5mmPjD3tSyw7OIBs",
+  "deployment": "dpl_CSoxtMv87Zm4xVw2brybZxZV3onF",
+  "source": "082c225a86a1ec582ceb2e27faf276f82b8a7994",
+  "scope": "wrong-key and correct-key dry-run only",
+  "accessCreated": true,
+  "accessRevoked": true,
+  "workerProcessing": false,
+  "emailDispatch": false,
+  "passed": false,
+  "generatedTokenMatchesRequested": true,
+  "wrongKeyStatus": 401,
+  "correctKeyStatus": 401,
+  "error": "Correct-key dry-run was not accepted; verify the existing local key matches Production.",
+  "revokedAccessHttpStatus": 302,
+  "accessAbsentVerified": true,
+  "dateOfRecord": "2026-10-22",
+  "keySource": "operator-supplied private file, not local default",
+  "privateKeyFileRemoved": true,
+  "privateEntryServerStopped": true,
+  "localPortClosedVerified": true,
+  "correctKeyAcceptance": false,
+  "productionBindingMetadataOnly": [
+    {
+      "id": "dsVzehSRzUMgnZJR",
+      "key": "CRON_SECRET",
+      "type": "sensitive",
+      "target": [
+        "preview"
+      ],
+      "gitBranch": "testing",
+      "createdAt": 1792424623151,
+      "updatedAt": 1792424623151
+    },
+    {
+      "id": "EHiEaCCl6rFtGjwz",
+      "key": "CRON_SECRET",
+      "type": "sensitive",
+      "target": [
+        "production",
+        "preview"
+      ],
+      "gitBranch": null,
+      "createdAt": 1779107859580,
+      "updatedAt": 1779288581395
+    }
+  ],
+  "credentialValuesInspected": false,
+  "replacementNotExecuted": true
+}

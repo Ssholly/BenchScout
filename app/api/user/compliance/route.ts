@@ -1,13 +1,17 @@
+import { currentCredentialReview } from "@/lib/credential-review";
+import { ApiError, textField } from "@/lib/security";
+import { withApi } from "@/lib/api";
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
 
-const prisma = new PrismaClient();
+
 
 // 🚀 POST HANDLER: Captures the user clicking "Confirm & Activate" inside the layout view
-export async function POST(request: Request) {
+export const POST = withApi("candidate", async (request: Request) => {
 	try {
 		const body = await request.json();
-		let { email, licenseNumber, expiryDate } = body;
+		const { email, expiryDate } = body;
+		const licenseNumber = textField(body.licenseNumber, "license number", 100);
 
 		if (!email || !licenseNumber || !expiryDate) {
 			return NextResponse.json(
@@ -30,26 +34,31 @@ export async function POST(request: Request) {
 			data: {
 				licenseNumber,
 				licenseExpiry: formattedDate,
-				isLicenseVerified: true,
+				isLicenseVerified: false,
+				licenseReviewedAt: null,
+				licenseReviewReference: null,
+                licenseReviewRevision: null,
+                credentialRevision: { increment: 1 },
 			},
 		});
 
 		return NextResponse.json({ success: true, user });
-	} catch (error: any) {
+	} catch (error: unknown) {
+    if (error instanceof ApiError) throw error;
 		console.error("Compliance registration error:", error);
 		return NextResponse.json(
 			{
 				error:
-					error.message ||
+					(error instanceof Error ? error.message : "Request failed") ||
 					"Failed to finalize structural compliance properties.",
 			},
 			{ status: 500 },
 		);
 	}
-}
+}, {});
 
 // 🚀 GET HANDLER: Calculates dates and tracks parameters for the frontend dashboard
-export async function GET(request: Request) {
+export const GET = withApi("candidate", async (request: Request) => {
 	try {
 		const { searchParams } = new URL(request.url);
 		const email = searchParams.get("email");
@@ -68,12 +77,14 @@ export async function GET(request: Request) {
 				licenseNumber: true,
 				cpdPoints: true,
 				isLicenseVerified: true,
+				licenseReviewedAt: true,
+                credentialRevision: true, licenseReviewRevision: true, careerPhase: true, candidateProfile: true,
 				name: true,
 			},
 		});
 
 		if (!user || !user.licenseExpiry) {
-			return NextResponse.json({ status: "UNCONFIGURED" });
+			return NextResponse.json({ success: true, status: "UNCONFIGURED" });
 		}
 
 		const expiryDate = new Date(user.licenseExpiry);
@@ -103,10 +114,12 @@ export async function GET(request: Request) {
 			licenseNumber: user.licenseNumber,
 			cpdPoints: user.cpdPoints,
 			cpdPercent: cpdProgress,
-			isVerified: user.isLicenseVerified,
+			isVerified: currentCredentialReview(user),
+			verificationStatus: currentCredentialReview(user) ? "reviewed" : "self_reported",
 			name: user.name,
 		});
-	} catch (error: any) {
-		return NextResponse.json({ error: error.message }, { status: 500 });
+	} catch (error: unknown) {
+    if (error instanceof ApiError) throw error;
+		return NextResponse.json({ error: (error instanceof Error ? error.message : "Request failed") }, { status: 500 });
 	}
-}
+}, {});

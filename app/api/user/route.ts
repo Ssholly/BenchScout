@@ -1,10 +1,16 @@
+import { applicationDocumentOptions } from "@/lib/application-documents";
+import { withApi } from "@/lib/api";
+import { ApiError, textField } from "@/lib/security";
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
+import { candidateProfile } from "@/lib/candidate-profile";
+import { sharedProfessionalSummary } from "@/lib/professional-summary";
+import { roleKeywords, validRoleKeywords } from "@/lib/role-keywords";
 
-const prisma = new PrismaClient();
+
 
 // GET: Fetch the specific logged-in user by their email
-export async function GET(request: Request) {
+export const GET = withApi("candidate", async (request: Request, session) => {
 	try {
 		const { searchParams } = new URL(request.url);
 		const email = searchParams.get("email");
@@ -13,33 +19,37 @@ export async function GET(request: Request) {
 			return NextResponse.json({ error: "No email provided" }, { status: 400 });
 		}
 
-		// Look up the EXACT user by email, not just the first one
-		const user = await prisma.user.findFirst({
-			where: { email: email },
-		});
+		// The guard already loaded and verified this exact session owner. Reuse that
+		// request's snapshot instead of making a third sequential database query.
+		const user = session!.candidateAccount;
 
 		if (!user) {
 			return NextResponse.json({ error: "No user found" }, { status: 404 });
 		}
 
-		return NextResponse.json({ success: true, user });
-	} catch (error) {
+		return NextResponse.json({ success: true, user, applicationDocuments: applicationDocumentOptions(user), professionalSummary: sharedProfessionalSummary(user), uploadsAvailable: Boolean(process.env.BLOB_PRIVATE_READ_WRITE_TOKEN) });
+	} catch (error: unknown) {
+    if (error instanceof ApiError) throw error;
 		console.error("Failed to fetch user:", error);
 		return NextResponse.json(
 			{ error: "Failed to fetch user" },
 			{ status: 500 },
 		);
-	} finally {
-		await prisma.$disconnect();
 	}
-}
+}, { candidateAccount: true });
 
 // POST: Update the specific user's settings when they click "Update Profile"
-export async function POST(request: Request) {
+export const POST = withApi("candidate", async (request: Request) => {
 	try {
 		const body = await request.json();
 		// 🚀 Added avatarUrl to the destructured payload
-		const { name, email, location, keywords, minScore, avatarUrl } = body;
+		const { name, email, location, keywords, minScore } = body;
+		textField(name, "name");
+		textField(location, "location");
+		if (!Number.isInteger(minScore) || minScore < 0 || minScore > 100) throw new ApiError(400, "Match score must be between 0 and 100.");
+		if (keywords != null && !(typeof keywords === "string" || (Array.isArray(keywords) && keywords.every(value => typeof value === "string")))) throw new ApiError(400, "Invalid keywords.");
+        const normalizedKeywords = keywords == null ? undefined : roleKeywords(keywords);
+        if (normalizedKeywords && !validRoleKeywords(normalizedKeywords)) throw new ApiError(400, "Use at most 60 keywords, each 100 characters or fewer.");
 
 		if (!email) {
 			return NextResponse.json(
@@ -62,27 +72,30 @@ export async function POST(request: Request) {
 
 		// 2. Update ONLY that specific user in the database
 		await prisma.user.update({
-			where: { id: user.id },
+			where: { id: user.id, credentialRevision: user.credentialRevision ?? 0 },
 			data: {
 				name: name,
+                ...(user.name !== name ? {credentialRevision:{increment:1},licenseReviewRevision:null,isLicenseVerified:false,licenseReviewedAt:null,licenseReviewReference:null} : {}),
 				location: location,
+                ...(user.location !== location ? {candidateProfile:candidateProfile(user.candidateProfile)} : {}),
 				// Safely handle keywords whether they arrive as an array or a string
-				keywords: Array.isArray(keywords) ? keywords.join(", ") : keywords,
+				keywords: normalizedKeywords?.join(", "),
 				minScore: minScore,
 				// 🚀 Added avatarUrl mapping here
-				avatarUrl: avatarUrl !== undefined ? avatarUrl : undefined,
-			},
-		});
 
-		console.log("Successfully updated profile for:", email);
+			},
+		}).catch((error: unknown) => {
+            if (error && typeof error === "object" && "code" in error && error.code === "P2025") throw new ApiError(409, "Your credential record changed. Refresh before saving your profile again.");
+            throw error;
+        });
+
 		return NextResponse.json({ success: true });
-	} catch (error) {
+	} catch (error: unknown) {
+    if (error instanceof ApiError) throw error;
 		console.error("Failed to update profile:", error);
 		return NextResponse.json(
 			{ success: false, error: "Database error" },
 			{ status: 500 },
 		);
-	} finally {
-		await prisma.$disconnect();
 	}
-}
+}, {});

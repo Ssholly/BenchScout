@@ -1,0 +1,45 @@
+{
+  "date": "2026-10-22",
+  "operatorApprovedCorrection": true,
+  "scopeUpdateApplied": true,
+  "updatedBindingId": "EHiEaCCl6rFtGjwz",
+  "scopeRequest": {
+    "target": [
+      "preview"
+    ]
+  },
+  "secretValueInUpdateRequest": false,
+  "secretValueRead": false,
+  "testingOverrideMetadataUnchanged": true,
+  "after": [
+    {
+      "id": "dsVzehSRzUMgnZJR",
+      "key": "CRON_SECRET",
+      "type": "sensitive",
+      "target": [
+        "preview"
+      ],
+      "gitBranch": "testing",
+      "createdAt": 1792424623151,
+      "updatedAt": 1792424623151
+    },
+    {
+      "id": "EHiEaCCl6rFtGjwz",
+      "key": "CRON_SECRET",
+      "type": "sensitive",
+      "target": [
+        "preview"
+      ],
+      "gitBranch": null,
+      "createdAt": 1779107859580,
+      "updatedAt": 1792664028213
+    }
+  ],
+  "productionBindingAwaitingOperatorSaveAtVerification": true,
+  "newProductionSecretSaved": false,
+  "newBuildCreated": false,
+  "privateTestCopyFormPrepared": true,
+  "publicReopened": false,
+  "mainMerged": false,
+  "providerConstraint": "Sensitive-variable PATCH rejects the key field even if unchanged; successful request included target only."
+}

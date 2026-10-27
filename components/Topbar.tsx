@@ -1,24 +1,45 @@
 "use client";
+import { notificationTarget } from "@/lib/notification-target";
+import { startTransition } from "react";
+import { useMounted } from "@/lib/use-mounted";
+import type { ClientJob, ClientNotification, NotificationView } from "@/lib/types";
 import { useState, useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
+import Image from "next/image";
+import { HOME_MENU_ON_DEMAND } from "@/lib/home-navigation";
 import { createPortal } from "react-dom";
 
 export default function Topbar() {
 	const router = useRouter();
+	const pathname = usePathname();
+	const isHomeNavigation = HOME_MENU_ON_DEMAND && pathname === "/home";
+	const [menuOpen, setMenuOpen] = useState(false);
+	useEffect(() => {
+		const update = (event: Event) => setMenuOpen(Boolean((event as CustomEvent<boolean>).detail));
+		window.addEventListener("navigationMenuChanged", update);
+		return () => window.removeEventListener("navigationMenuChanged", update);
+	}, []);
 	const notifRef = useRef<HTMLDivElement>(null);
 
-	const [mounted, setMounted] = useState(false);
+	const mounted = useMounted();
 	const [isOnline, setIsOnline] = useState(true);
 	const [hasNotifications, setHasNotifications] = useState(false);
 	const [showNotifs, setShowNotifs] = useState(false);
+ const [notificationError, setNotificationError] = useState("");
 	const [searchQuery, setSearchQuery] = useState("");
 	const [isSearchActive, setIsSearchActive] = useState(false);
 	const [showHelp, setShowHelp] = useState(false);
 	const [helpView, setHelpView] = useState<"menu" | "docs" | "api">("menu");
+    useEffect(() => {
+      if (!showHelp) return;
+      const close = (event: KeyboardEvent) => { if (event.key === "Escape") setShowHelp(false); };
+      window.addEventListener("keydown", close);
+      return () => window.removeEventListener("keydown", close);
+    }, [showHelp]);
 
-	const [allJobs, setAllJobs] = useState<any[]>([]);
-	const [searchResults, setSearchResults] = useState<any[]>([]);
-	const [notifications, setNotifications] = useState<any[]>([]);
+	const [allJobs, setAllJobs] = useState<ClientJob[]>([]);
+	const [searchResults, setSearchResults] = useState<ClientJob[]>([]);
+	const [notifications, setNotifications] = useState<NotificationView[]>([]);
 	const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
 
 	// 🚀 Fetch real notifications from the database
@@ -39,20 +60,20 @@ export default function Topbar() {
 			const res = await fetch("/api/jobs");
 			const data = await res.json();
 			if (Array.isArray(data)) {
-				setAllJobs(data.filter((j: any) => j.applied !== true));
+				setAllJobs(data);
 			}
-		} catch (e) {
+		} catch {
 			console.error("Failed to fetch jobs for search bar");
 		}
 
 		// 2. Fetch LIVE Employer Notifications
 		try {
-			const notifRes = await fetch(`/api/notifications?email=${activeEmail}`);
+			const notifRes = await fetch(`/api/notifications?email=${encodeURIComponent(activeEmail)}`);
 			if (notifRes.ok) {
 				const notifData = await notifRes.json();
 				if (notifData.success && notifData.notifications.length > 0) {
 					// Map database notifications to UI format
-					const mappedNotifs = notifData.notifications.map((n: any) => {
+					const mappedNotifs = notifData.notifications.map((n: ClientNotification) => {
 						const dateObj = new Date(n.createdAt);
 						const timeString = dateObj.toLocaleTimeString([], {
 							hour: "2-digit",
@@ -71,27 +92,26 @@ export default function Topbar() {
 					setNotifications(mappedNotifs);
 
 					// Check if any are unread to trigger the red badge
-					const hasUnread = mappedNotifs.some((n: any) => !n.isRead);
+					const hasUnread = mappedNotifs.some((n: NotificationView) => !n.isRead);
 					setHasNotifications(hasUnread);
 				} else {
 					setNotifications([]);
 					setHasNotifications(false);
 				}
 			}
-		} catch (e) {
+		} catch {
 			console.error("Failed to fetch notifications");
 		}
 	};
 
 	useEffect(() => {
-		setMounted(true);
-		fetchSearchAndNotifData();
+		startTransition(() => { fetchSearchAndNotifData(); });
 
 		window.addEventListener("userStateChanged", fetchSearchAndNotifData);
 		window.addEventListener("jobsUpdated", fetchSearchAndNotifData);
 		window.addEventListener("refreshNotifications", fetchSearchAndNotifData);
 
-		setIsOnline(navigator.onLine);
+		startTransition(() => { setIsOnline(navigator.onLine); });
 		const handleStatus = () => setIsOnline(navigator.onLine);
 		window.addEventListener("online", handleStatus);
 		window.addEventListener("offline", handleStatus);
@@ -123,22 +143,23 @@ export default function Topbar() {
 
 	const handleMarkAsRead = async (e: React.MouseEvent) => {
 		e.stopPropagation();
-		setHasNotifications(false);
+        setNotificationError("");
+        try {
+            const response = await fetch("/api/notifications/mark-read", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({}) });
+            if (!response.ok) throw new Error();
+            setHasNotifications(false);
+            setNotifications(previous => previous.map(notification => ({ ...notification, isRead: true })));
+        } catch { setNotificationError("Couldn’t mark notifications as read. Please retry."); }
+    };
 
-		// Optimistically update UI
-		setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
-
-		try {
-			const activeEmail = localStorage.getItem("labpro_active_user");
-			await fetch("/api/notifications/mark-read", {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ email: activeEmail }),
-			});
-		} catch (err) {
-			console.error("Failed to mark notifications as read");
-		}
-	};
+    const openNotification = (notification: NotificationView) => {
+        clearSearch();
+        setShowNotifs(false);
+        router.push(notificationTarget(notification, allJobs));
+        void fetch("/api/notifications/mark-read", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ notificationId: notification.id }) })
+            .then(response => { if (response.ok) window.dispatchEvent(new Event("refreshNotifications")); })
+            .catch(() => { setNotificationError("Couldn’t mark the notification as read. Please retry."); });
+    };
 
 	const handleHelpClick = () => {
 		setHelpView("menu");
@@ -189,7 +210,7 @@ export default function Topbar() {
 
 	return (
 		<header
-			className="global-topbar"
+			className={`global-topbar ${isHomeNavigation ? "home-topbar" : ""}`}
 			style={{
 				width: "100%",
 				position: "sticky",
@@ -201,14 +222,28 @@ export default function Topbar() {
 				dangerouslySetInnerHTML={{
 					__html: `
         .hamburger-btn { display: none; }
+        .home-topbar .hamburger-btn { display: flex !important; align-items: center; gap: 6px; min-height: 40px; padding: 6px 10px !important; margin-right: 14px; border: 1px solid #dce6ee !important; border-radius: 10px; background: rgba(255,255,255,.8) !important; font: inherit; font-size: 13px; font-weight: 600; flex-shrink: 0; }
+        .home-topbar .hamburger-btn svg { width: 20px; height: 20px; }
+        .home-topbar-brand { display: flex; align-items: center; gap: 8px; margin-right: clamp(32px, 5vw, 72px); color: #0B2444; font-family: 'Fraunces', serif; font-size: 28px; font-weight: 600; white-space: nowrap; flex-shrink: 0; }
+        .home-topbar-brand span span { color: #1A8C7A; }
+        .home-topbar .search-wrapper { flex: 1; min-width: 0; max-width: 420px; }
         .hide-desktop { display: none; }
         
-        @media (max-width: 768px) {
+        @media (max-width: 900px) {
+          .home-topbar-brand { display: none; }
+          .home-topbar .search-wrapper { max-width: 180px !important; }
           .hamburger-btn { display: flex !important; margin-right: 12px; }
           .hide-desktop { display: flex !important; }
           .hide-mobile { display: none !important; }
           
           .topbar-content { padding: 0 1rem !important; height: 70px !important; }
+          .topbar-content { display: grid !important; grid-template-columns: 84px minmax(0, 1fr) 84px; align-items: center; }
+          .topbar-left { display: contents !important; }
+          .topbar-content .hamburger-btn { grid-column: 1; grid-row: 1; justify-self: start; margin-right: 0 !important; }
+          .topbar-content .search-wrapper { grid-column: 2; grid-row: 1; justify-self: center; width: 100% !important; min-width: 0; }
+          .topbar-actions { grid-column: 3; grid-row: 1; justify-self: end; }
+          .search-wrapper input { padding-right: 12px !important; }
+          .search-wrapper:has(button[aria-label="Clear search"]) input { padding-right: 36px !important; }
           .search-wrapper { max-width: 180px !important; }
           .pane { padding: 1.25rem !important; }
           .page-title { font-size: 24px !important; }
@@ -216,6 +251,17 @@ export default function Topbar() {
           .mobile-stack { flex-direction: column !important; gap: 1.5rem !important; }
           .mobile-stack > div { width: 100% !important; min-width: 100% !important; max-width: 100% !important; flex: none !important; }
           .mobile-grid { grid-template-columns: 1fr !important; gap: 1.5rem !important; }
+        }
+        @media (max-width: 600px) {
+          .home-topbar .hamburger-btn { padding: 8px !important; gap: 6px; margin-right: 10px; min-height: 44px; }
+          .home-topbar .hamburger-btn svg { width: 20px; height: 20px; }
+          .home-topbar .search-wrapper input { padding-right: 12px !important; }
+          .home-topbar .search-wrapper:has(button[aria-label="Clear search"]) input { padding-right: 36px !important; }
+        }
+        @media (max-width: 360px) {
+          .global-topbar .search-wrapper > svg { left: 12px !important; }
+          .global-topbar .search-wrapper input { padding-left: 38px !important; padding-right: 8px !important; }
+          .global-topbar .search-wrapper:has(button[aria-label="Clear search"]) input { padding-right: 36px !important; }
         }
       `,
 				}}
@@ -254,16 +300,20 @@ export default function Topbar() {
 					width: "100%",
 				}}
 			>
-				<div
+				<div className="topbar-left"
 					style={{
 						display: "flex",
 						alignItems: "center",
 						width: "100%",
-						maxWidth: "420px",
+						maxWidth: isHomeNavigation ? "900px" : "420px",
+						minWidth: 0,
 					}}
 				>
 					<button
 						className="hamburger-btn"
+                        aria-label="Toggle navigation menu"
+						aria-expanded={menuOpen}
+						aria-controls="app-navigation"
 						onClick={() => window.dispatchEvent(new Event("toggleMobileMenu"))}
 						style={{
 							background: "none",
@@ -285,7 +335,9 @@ export default function Topbar() {
 							<line x1="3" y1="6" x2="21" y2="6" />
 							<line x1="3" y1="18" x2="21" y2="18" />
 						</svg>
+						{isHomeNavigation && <span>Menu</span>}
 					</button>
+					{isHomeNavigation && <div className="home-topbar-brand"><Image src="/icon.svg" alt="" width={30} height={40} /><span>Bench<span>Scout</span></span></div>}
 
 					<div
 						className="search-wrapper"
@@ -311,7 +363,8 @@ export default function Topbar() {
 						</svg>
 						<input
 							type="text"
-							placeholder="Search matches or logs..."
+							placeholder="Search"
+                            aria-label="Search your matches"
 							value={searchQuery}
 							onChange={handleSearchChange}
 							style={{
@@ -341,7 +394,8 @@ export default function Topbar() {
 						/>
 						{searchQuery && (
 							<button
-								onClick={clearSearch}
+								aria-label="Clear search"
+                                onClick={clearSearch}
 								style={{
 									position: "absolute",
 									right: "12px",
@@ -371,6 +425,7 @@ export default function Topbar() {
 
 						{isSearchActive && (
 							<div
+								className="search-results-panel"
 								style={{
 									position: "absolute",
 									top: "50px",
@@ -385,6 +440,7 @@ export default function Topbar() {
 								}}
 							>
 								<div
+									className="search-results-heading"
 									style={{
 										padding: "8px 16px",
 										background: "#f8fafc",
@@ -395,7 +451,7 @@ export default function Topbar() {
 										letterSpacing: "0.5px",
 									}}
 								>
-									Quick Results for "{searchQuery}"
+									Quick Results for &quot;{searchQuery}&quot;
 								</div>
 
 								{!isUserLoggedIn ? (
@@ -435,6 +491,7 @@ export default function Topbar() {
 								) : searchResults.length > 0 ? (
 									searchResults.map((job) => (
 										<div
+											className="search-result"
 											key={job.id}
 											onClick={handleResultClick}
 											onMouseEnter={(e) =>
@@ -451,6 +508,7 @@ export default function Topbar() {
 											}}
 										>
 											<div
+												className="search-result-row"
 												style={{
 													display: "flex",
 													alignItems: "flex-start",
@@ -458,6 +516,7 @@ export default function Topbar() {
 												}}
 											>
 												<span
+													className="search-result-tier"
 													style={{
 														background:
 															job.tier === 1
@@ -481,7 +540,7 @@ export default function Topbar() {
 												>
 													TIER {job.tier}
 												</span>
-												<div>
+												<div className="search-result-details">
 													<div
 														style={{
 															fontSize: "13px",
@@ -508,7 +567,7 @@ export default function Topbar() {
 											fontSize: "13px",
 										}}
 									>
-										No jobs found matching "{searchQuery}"
+										No jobs found matching &quot;{searchQuery}&quot;
 									</div>
 								)}
 
@@ -541,7 +600,7 @@ export default function Topbar() {
 					</div>
 				</div>
 
-				<div style={{ display: "flex", alignItems: "center", gap: "1.5rem" }}>
+				<div className="topbar-actions" style={{ display: "flex", alignItems: "center", gap: "1.5rem" }}>
 					<div
 						className="hide-mobile"
 						style={{
@@ -572,7 +631,8 @@ export default function Topbar() {
 
 					<div style={{ position: "relative" }} ref={notifRef}>
 						<button
-							onClick={handleNotificationClick}
+							aria-label="Notifications"
+                            onClick={handleNotificationClick}
 							style={{
 								background: "none",
 								border: "none",
@@ -612,7 +672,7 @@ export default function Topbar() {
 						</button>
 
 						{showNotifs && (
-							<div
+							<div className="notification-panel"
 								style={{
 									position: "absolute",
 									top: "45px",
@@ -668,16 +728,19 @@ export default function Topbar() {
 									)}
 								</div>
 								<div style={{ overflowY: "auto" }}>
+                                    {notificationError && <p role="alert" style={{padding:"8px 20px",fontSize:12,color:"#b91c1c"}}>{notificationError}</p>}
 									{/* 🚀 FIXED: Only map out UNREAD notifications dynamically */}
 									{notifications.filter((n) => !n.isRead).length > 0 ? (
 										notifications
 											.filter((n) => !n.isRead)
 											.map((notif) => (
-												<div
+												<button
 													key={notif.id}
-													onClick={handleResultClick}
+													type="button"
+                                                    onClick={() => openNotification(notif)}
 													style={{
 														padding: "16px 20px",
+                                                    width: "100%", border: "none", textAlign: "left", font: "inherit",
 														display: "flex",
 														gap: "12px",
 														background: "#f0fdf4",
@@ -729,7 +792,7 @@ export default function Topbar() {
 															{notif.time}
 														</p>
 													</div>
-												</div>
+												</button>
 											))
 									) : (
 										<div style={{ padding: "40px 20px", textAlign: "center" }}>
@@ -753,7 +816,7 @@ export default function Topbar() {
 													fontWeight: 600,
 												}}
 											>
-												You're all caught up!
+												You&apos;re all caught up!
 											</p>
 										</div>
 									)}
@@ -763,7 +826,8 @@ export default function Topbar() {
 					</div>
 
 					<button
-						onClick={handleHelpClick}
+						aria-label="Help"
+                        onClick={handleHelpClick}
 						style={{
 							background: "none",
 							border: "none",
@@ -804,31 +868,36 @@ export default function Topbar() {
 				showHelp &&
 				createPortal(
 					<div
+						className="help-backdrop"
 						onClick={() => setShowHelp(false)}
 						style={{
 							position: "fixed",
 							top: 0,
 							left: 0,
 							width: "100vw",
-							height: "100vh",
-							background: "rgba(15, 23, 42, 0.2)",
-							backdropFilter: "blur(32px)",
-							WebkitBackdropFilter: "blur(32px)",
+							height: "100dvh",
+							background: "transparent",
+							backdropFilter: "none",
+							WebkitBackdropFilter: "none",
 							zIndex: 99999,
 							animation: "fadeInOverlay 0.2s ease-out forwards",
 						}}
 					>
 						<div
+							className="help-popover"
+							role="dialog"
+							aria-label="Help and support"
 							onClick={(e) => e.stopPropagation()}
 							style={{
 								position: "absolute",
 								top: "85px",
-								right: "2.5rem",
+								right: "1rem",
 								background: "rgba(255, 255, 255, 0.98)",
 								width: "400px",
-								maxWidth: "90vw",
+								maxWidth: "calc(100vw - 2rem)",
+                                maxHeight: "calc(100dvh - 100px)",
 								borderRadius: "20px",
-								overflow: "hidden",
+								overflowY: "auto",
 								boxShadow: "0 30px 60px -15px rgba(0, 0, 0, 0.3)",
 								border: "1px solid rgba(255,255,255,0.8)",
 								display: "flex",
@@ -906,6 +975,7 @@ export default function Topbar() {
 									</div>
 								</div>
 								<button
+									aria-label="Close help"
 									onClick={() => setShowHelp(false)}
 									style={{
 										background: "#f1f5f9",
@@ -1110,7 +1180,7 @@ export default function Topbar() {
 															color: "#0f172a",
 														}}
 													>
-														API Integrations
+														Service availability
 													</div>
 													<div
 														style={{
@@ -1119,7 +1189,7 @@ export default function Topbar() {
 															marginTop: "2px",
 														}}
 													>
-														Connect your external keys.
+														Uploads, scanning, and email.
 													</div>
 												</div>
 											</div>
@@ -1165,7 +1235,7 @@ export default function Topbar() {
 													marginBottom: "4px",
 												}}
 											>
-												Tier 1 (88-100%)
+												Tier 1 (90-100%)
 											</div>
 											High priority matches. These jobs contain nearly all your
 											desired keywords and are within your primary location hub.
@@ -1186,7 +1256,7 @@ export default function Topbar() {
 													marginBottom: "4px",
 												}}
 											>
-												Tier 2 (70-87%)
+												Tier 2 (75-89%)
 											</div>
 											Strong fits. These positions match the core criteria but
 											may be in adjacent locations or missing secondary
@@ -1208,7 +1278,7 @@ export default function Topbar() {
 													marginBottom: "4px",
 												}}
 											>
-												Tier 3 (&lt;70%)
+												Tier 3 (&lt;75%)
 											</div>
 											Potential opportunities. These fall below your standard
 											threshold but are preserved in the system for manual
@@ -1217,78 +1287,11 @@ export default function Topbar() {
 									</div>
 								)}
 								{helpView === "api" && (
-									<div
-										style={{
-											fontSize: "14px",
-											color: "#475569",
-											lineHeight: "1.6",
-										}}
-									>
-										<p style={{ marginTop: 0 }}>
-											To enable automated background scraping and email
-											delivery, you must configure your keys in the System
-											Settings page.
-										</p>
-										<h4
-											style={{
-												color: "#0f172a",
-												fontSize: "15px",
-												fontWeight: 800,
-												marginTop: "1.5rem",
-												marginBottom: "8px",
-											}}
-										>
-											1. Anthropic API Key
-										</h4>
-										<p style={{ margin: 0 }}>
-											Required for the AI to parse unstructured job descriptions
-											into structured data. Generate this key from your{" "}
-											<a
-												href="https://console.anthropic.com/"
-												target="_blank"
-												rel="noopener noreferrer"
-												style={{
-													color: "#1A8C7A",
-													textDecoration: "none",
-													fontWeight: 800,
-												}}
-											>
-												Anthropic Developer Console
-											</a>
-											.
-										</p>
-										<h4
-											style={{
-												color: "#0f172a",
-												fontSize: "15px",
-												fontWeight: 800,
-												marginTop: "1.5rem",
-												marginBottom: "8px",
-											}}
-										>
-											2. Gmail App Password
-										</h4>
-										<p style={{ margin: 0 }}>
-											Required for the system to dispatch the Automated Job
-											Digest to your inbox. Regular passwords will not work.
-										</p>
-										<ol
-											style={{
-												paddingLeft: "1.25rem",
-												marginTop: "8px",
-												marginBottom: 0,
-											}}
-										>
-											<li>Go to your Google Account Settings.</li>
-											<li>Navigate to Security &gt; 2-Step Verification.</li>
-											<li>Scroll down to "App Passwords".</li>
-											<li>
-												Generate a new 16-digit code and paste it into the
-												Settings page.
-											</li>
-										</ol>
-									</div>
-								)}
+                                    <div style={{ fontSize: 14, color: "#475569", lineHeight: 1.6 }}>
+                                      <p>Scanning, AI tools, private document uploads, and email delivery are managed by BenchScout. You do not need to enter your own API keys or email password.</p>
+                                      <p>If a service is unavailable, the app shows an explanation. Your saved profile and applications remain available.</p>
+                                    </div>
+                                )}
 							</div>
 
 							{helpView === "menu" && (

@@ -1,0 +1,157 @@
+{
+  "date": "2026-10-21",
+  "status": "approved containment active on public domain; hardened release still pending",
+  "containment": {
+    "branch": "hotfix/legacy-containment",
+    "commit": "336c6edf06f8e8a3f0a3fafb43f81feac9c1546f",
+    "base": "a56fba3641004184e8bd5ddee87a51eb6b5a4fec",
+    "pushed": true,
+    "legacyAppRoutesRemoved": true,
+    "terminal503": true,
+    "databaseStorageMailCalls": false,
+    "environmentValuesReadByHandler": false,
+    "unitTests": 12,
+    "builtHttpCases": 70,
+    "normalizationRedirects": 7,
+    "lint": true,
+    "typecheck": true,
+    "productionBuild": true,
+    "mobileWidths": [
+      320,
+      390
+    ],
+    "horizontalOverflow": false,
+    "publicDeploymentPerformed": true,
+    "deploymentId": "dpl_3JSXjPv2JjgTBNE3gwXVSiqJFTaV",
+    "providerSourceMetadataMatches": true,
+    "liveVerification": {
+      "capturedAt": "2026-10-21T15:44:32.616Z",
+      "aliases": [
+        {
+          "alias": "bench-scout-git-testing-sholly.vercel.app",
+          "deploymentId": "dpl_GTBJFGiGZHRVoUXNtn2gh1GCWAMB"
+        },
+        {
+          "alias": "bench-scout.vercel.app",
+          "deploymentId": "dpl_3JSXjPv2JjgTBNE3gwXVSiqJFTaV"
+        },
+        {
+          "alias": "bench-scout-sholly.vercel.app",
+          "deploymentId": "dpl_12r5Zwn4tyffsUTnH3YF9tMrNqXh"
+        },
+        {
+          "alias": "bench-scout-git-main-sholly.vercel.app",
+          "deploymentId": "dpl_4bTpas5uPn1jRpwGeu4eUJvX7nhZ"
+        }
+      ],
+      "checks": [
+        {
+          "method": "GET",
+          "path": "/",
+          "status": 503,
+          "noStore": true,
+          "retryAfter": "300",
+          "expectedNoticeOrError": true
+        },
+        {
+          "method": "GET",
+          "path": "/settings",
+          "status": 503,
+          "noStore": true,
+          "retryAfter": "300",
+          "expectedNoticeOrError": true
+        },
+        {
+          "method": "GET",
+          "path": "/api/upload",
+          "status": 503,
+          "noStore": true,
+          "retryAfter": "300",
+          "expectedNoticeOrError": true
+        },
+        {
+          "method": "POST",
+          "path": "/api/upload",
+          "status": 503,
+          "noStore": true,
+          "retryAfter": "300",
+          "expectedNoticeOrError": true
+        },
+        {
+          "method": "DELETE",
+          "path": "/api/upload",
+          "status": 503,
+          "noStore": true,
+          "retryAfter": "300",
+          "expectedNoticeOrError": true
+        },
+        {
+          "method": "POST",
+          "path": "/api/reset",
+          "status": 503,
+          "noStore": true,
+          "retryAfter": "300",
+          "expectedNoticeOrError": true
+        },
+        {
+          "method": "POST",
+          "path": "/api/setup",
+          "status": 503,
+          "noStore": true,
+          "retryAfter": "300",
+          "expectedNoticeOrError": true
+        },
+        {
+          "method": "OPTIONS",
+          "path": "/api/cron/daily-digest",
+          "status": 503,
+          "noStore": true,
+          "retryAfter": "300",
+          "expectedNoticeOrError": true
+        },
+        {
+          "method": "POST",
+          "path": "/api/test-email",
+          "status": 503,
+          "noStore": true,
+          "retryAfter": "300",
+          "expectedNoticeOrError": true
+        },
+        {
+          "method": "GET",
+          "path": "/api/auth/login",
+          "status": 503,
+          "noStore": true,
+          "retryAfter": "300",
+          "expectedNoticeOrError": true
+        }
+      ],
+      "passed": true,
+      "databaseOrStorageMutationSubmitted": false,
+      "unsafeLegacyGetHandlersInvoked": false
+    },
+    "testingPreservedMetadata": {
+      "deploymentId": "dpl_GTBJFGiGZHRVoUXNtn2gh1GCWAMB",
+      "branch": "testing",
+      "sourceCommit": "0482553b1ba65feb654eea8f593a6e7ee3bddf3a",
+      "readyState": "READY"
+    }
+  },
+  "hardenedRelease": {
+    "newFailureBoundaryTests": 6,
+    "allApplicationTestsPassed": 257,
+    "fullProviderInterruptionAcceptance": false,
+    "durableCleanupReconciliationStillOpen": true
+  },
+  "execution": {
+    "mainMerge": false,
+    "publicAliasChanged": true,
+    "filesCopiedOrDeleted": 0,
+    "databaseMigrations": 0,
+    "credentialsChanged": false,
+    "emailsSent": 0,
+    "oldDeploymentsDeleted": 0,
+    "diagnosticAliasTemporarilyAutoAssignedThenRestored": true,
+    "mainAliasRetainsOldProtectedRelease": true
+  }
+}

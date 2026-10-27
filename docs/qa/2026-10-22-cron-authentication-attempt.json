@@ -1,0 +1,97 @@
+{
+  "date": "2026-10-22",
+  "operatorApprovedTemporaryAccess": true,
+  "candidateDeployment": "dpl_CSoxtMv87Zm4xVw2brybZxZV3onF",
+  "wrongKeyDenialStatus": 401,
+  "availableLocalKeyStatus": 401,
+  "authenticatedDryRunAccepted": false,
+  "effectiveProductionKeyValidityUnverified": true,
+  "finalProjectBypassCount": 0,
+  "revokedTokenHttpStatus": 302,
+  "temporaryAccessAbsentVerified": true,
+  "workerProcessing": false,
+  "emailsSent": false,
+  "publicReopened": false,
+  "mainMerged": false,
+  "attempts": [
+    {
+      "date": "2026-10-22T09:16:24.673Z",
+      "project": "prj_MNrDsjvBMVCY5mmPjD3tSyw7OIBs",
+      "deployment": "dpl_CSoxtMv87Zm4xVw2brybZxZV3onF",
+      "source": "082c225a86a1ec582ceb2e27faf276f82b8a7994",
+      "scope": "wrong-key and correct-key dry-run only",
+      "accessCreated": false,
+      "accessRevoked": false,
+      "workerProcessing": false,
+      "emailDispatch": false,
+      "passed": false,
+      "error": "Vercel API request failed: PATCH /v1/projects/prj_MNrDsjvBMVCY5mmPjD3tSyw7OIBs/protection-bypass",
+      "revocationError": "Vercel API request failed: PATCH /v1/projects/prj_MNrDsjvBMVCY5mmPjD3tSyw7OIBs/protection-bypass"
+    },
+    {
+      "date": "2026-10-22T09:19:08.003Z",
+      "project": "prj_MNrDsjvBMVCY5mmPjD3tSyw7OIBs",
+      "deployment": "dpl_CSoxtMv87Zm4xVw2brybZxZV3onF",
+      "source": "082c225a86a1ec582ceb2e27faf276f82b8a7994",
+      "scope": "wrong-key and correct-key dry-run only",
+      "accessCreated": false,
+      "accessRevoked": false,
+      "workerProcessing": false,
+      "emailDispatch": false,
+      "passed": false,
+      "error": "Vercel API request failed: PATCH /v1/projects/prj_MNrDsjvBMVCY5mmPjD3tSyw7OIBs/protection-bypass; Error: Invalid value for `generate.secret` provided. Must be a string with a length of 32 characters. Cannot include special characters. (400)",
+      "revocationRequestError": "Vercel API request failed: PATCH /v1/projects/prj_MNrDsjvBMVCY5mmPjD3tSyw7OIBs/protection-bypass; Error: The specified automation bypass does not exist. (404)",
+      "revokedAccessHttpStatus": 302,
+      "accessAbsentVerified": true
+    },
+    {
+      "date": "2026-10-22T09:19:46.858Z",
+      "project": "prj_MNrDsjvBMVCY5mmPjD3tSyw7OIBs",
+      "deployment": "dpl_CSoxtMv87Zm4xVw2brybZxZV3onF",
+      "source": "082c225a86a1ec582ceb2e27faf276f82b8a7994",
+      "scope": "wrong-key and correct-key dry-run only",
+      "accessCreated": true,
+      "accessRevoked": true,
+      "workerProcessing": false,
+      "emailDispatch": false,
+      "passed": false,
+      "wrongKeyStatus": 302,
+      "error": "Wrong-key denial did not return 401.",
+      "revokedAccessHttpStatus": 302,
+      "accessAbsentVerified": true
+    },
+    {
+      "date": "2026-10-22T09:21:27.191Z",
+      "project": "prj_MNrDsjvBMVCY5mmPjD3tSyw7OIBs",
+      "deployment": "dpl_CSoxtMv87Zm4xVw2brybZxZV3onF",
+      "source": "082c225a86a1ec582ceb2e27faf276f82b8a7994",
+      "scope": "wrong-key and correct-key dry-run only",
+      "accessCreated": true,
+      "accessRevoked": false,
+      "workerProcessing": false,
+      "emailDispatch": false,
+      "passed": false,
+      "generatedTokenMatchesRequested": true,
+      "wrongKeyStatus": 401,
+      "correctKeyStatus": 401,
+      "error": "Correct-key dry-run was not accepted; verify the existing local key matches Production.",
+      "revokedAccessHttpStatus": 200,
+      "revocationError": "Revoked token still appears to access the deployment."
+    }
+  ],
+  "finalRevocationVerification": {
+    "projectBypassCount": 0,
+    "revokedTokenChecks": [
+      302
+    ],
+    "protectionRestored": true
+  },
+  "helperCorrections": [
+    "provider requires 32-character token; initial 64-character format rejected without access creation",
+    "check returned token and allow creation/revocation propagation",
+    "report sanitized provider failures and verify absent access independently",
+    "optional private Production cron-secret file; never output its value"
+  ],
+  "helperSyntaxAndEslintPassed": true,
+  "nextRequiredInput": "Whether the operator has the existing Production CRON_SECRET saved; do not paste it into chat."
+}
