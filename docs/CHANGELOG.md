@@ -729,3 +729,7 @@ Entries describe implemented changes and their verified release state. Earlier w
 ### 2026-10-27 — Isolated recovery database verified
 
 - Observed owner-created testing recovery branch, invalidated copied credentials inside it and verified nine migration checksums plus QA relationships. Bound a fresh private entry form to the new endpoint and verified browser submission without credentials. File recovery and integrated app verification remain pending; no Production action.
+
+### 2026-10-27 — Integrated testing recovery rehearsal passed
+
+- Added bounded operator helper and completed actual recovery-branch/three-file/local production-mode HTTP checks (64 assertions), with no Production access or external mail. Automated run: 40.838 seconds; creation-to-completion: 15m54.739s including setup/waits, not a Production RTO. Temporary credentials/TLS key removed and local services stopped. Three restored QA files await scoped cleanup. See [rehearsal](RECOVERY-DRILL-2026-10-27.md) and [results](qa/2026-10-27-recovery-drill.json).

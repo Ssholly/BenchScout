@@ -19,3 +19,7 @@ On resuming after owner confirmed possession of the existing testing key, the br
 Verified the selected recovery branch and its endpoint before executing the copied-credential expiry transaction. The transaction committed: three session rows and one reset-token row updated. Readback: zero active copied sessions/confirmation/reset links; nine matching/completed migrations and zero unfinished; zero orphan applications; one QA candidate with current CV/degree/certificate references; one closed QA vacancy; one suspended/unverified QA employer; zero cleanup run rows. Source testing and Production were not targeted.
 
 Updated the private form endpoint allowlist to this new recovery endpoint and restarted it on loopback. A credential-free browser POST passed the local origin/CSRF check. The five-field form awaits private operator entry; no stored secret values were read, no archive was decrypted and no file or application restoration has yet passed. The previous rejection now has fixed field-specific explanations.
+
+## Integrated outcome — 27 October
+
+The corrected private entry succeeded and the bounded integrated testing drill passed. See [final rehearsal evidence](RECOVERY-DRILL-2026-10-27.md) for exact checks, timing limits, credential removal and pending QA-file cleanup. Earlier incomplete attempts are retained as history.
