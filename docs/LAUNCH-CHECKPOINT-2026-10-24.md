@@ -32,3 +32,7 @@ The bounded integrated testing restoration drill passed: isolated current databa
 ### Recovery rehearsal closed
 
 Owner-approved cleanup removed exactly the three new QA recovery PDFs after detaching their references only in the disposable copy. Provider UI confirmed the unique prefix empty. The integrated testing drill and its cleanup are complete; the database remains subject to its original one-day expiry. Next: hosted automatic cleanup evidence, then safe main integration.
+
+## 27 October automatic cleanup accepted
+
+Read-only Production database history shows successful cron-endpoint completions on 25, 26 and 27 October. Today's completion correlates with an independent Vercel HTTP 200 request on the configured deployment inside the daily window. Queue counts are all zero; no files were processed. Scheduled authenticated execution is accepted for the pilot with the evidence limits in [run history](CLEANUP-RUN-HISTORY-2026-10-24.md) and [structured observation](qa/2026-10-27-scheduled-cleanup.json). No manual processing or Production change was performed. Recovery rehearsal and scheduler observation are now closed; next is safe main integration, then employer pilot materials and onboarding.

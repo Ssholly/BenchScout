@@ -737,3 +737,7 @@ Entries describe implemented changes and their verified release state. Earlier w
 ### 2026-10-27 — Recovery QA cleanup completed
 
 - After explicit approval, detached only the three restored-file references in the disposable recovery database and deleted exactly their manifest-matched QA PDFs from testing storage. Provider UI confirmed the prefix empty; retained application count 1 and active recovery sessions 0. Original source files/backups and Production were not targeted. Rehearsal closed; existing database auto-expiry retained.
+
+### 2026-10-27 — Production scheduled cleanup verified
+
+- Correlated today's Vercel HTTP 200 cron request with its completed Production audit record; database also retains successful daily runs for 25/26 October. Queue has zero rows/failed/due work; no files were deleted. Read-only observation only, with no keys revealed, manual execution, environment change or deployment. Recovery/scheduler close-out now complete; safe main integration next. See [evidence](qa/2026-10-27-scheduled-cleanup.json).

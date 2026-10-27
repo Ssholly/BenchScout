@@ -1,6 +1,6 @@
 # Cleanup run history — 24 October 2026
 
-Status: **approved migration and application released to Production**. Testing migration and hosted read-only acceptance passed. All thirteen public access checks passed; valid-key Production history read passed. Actual scheduled execution remains unverified. The earlier three-file backup is accepted separately.
+Status: **approved migration and application released to Production**. Testing migration and hosted read-only acceptance passed. All thirteen public access checks passed; valid-key Production history read passed. Actual scheduled execution accepted on 27 October; see the dated observation below. The earlier three-file backup is accepted separately.
 
 ## Why execution remains unverified
 
@@ -63,3 +63,21 @@ Next observation range: 25 October 02:00–03:05 UTC (03:00–04:05 Lagos), afte
 ## Production read-only acceptance completed
 
 The operator entered the existing Production administrator key and requested only **Check recent cleanup runs**. Independently observed the same exact response: `runs: []` with the provenance/unfinished-run notice. The key field cleared and permanent-deletion confirmation remained unchecked. This accepts the released application’s administrator authentication, Production audit-table read and result display. No manual processing, source deletion, new run row or email was triggered. The empty list is expected before the next processing invocation and is not evidence of a successful automatic run. The scheduled observation window and full-restoration drill remain outstanding.
+
+## Scheduled execution accepted — 27 October 2026
+
+Read-only observation, without manual endpoint invocation or deletion processing. The live Vercel project still registers `17 2 * * *` for `/api/cron/document-cleanup` on deployment **dpl_9CMj8YniwM7cWcNm8WfEzmpGowsf**. Protection remains `all_except_custom_domains` with zero bypass tokens. No configuration or environment values were changed.
+
+The bounded CDN request query for **27 October 02:00–03:05 UTC** returned one Production GET at **02:36:49.174 UTC / 03:36:49.174 Lagos**, HTTP **200**, on the exact registered deployment/host/path, with a cron-agent hint. Pagination was complete and no intervals excluded. Runtime logs older than one hour were not needed, and no paid upgrade was requested. Raw request IDs, IP/location metadata and headers remain outside Git.
+
+In independently selected Neon project **BenchScout**, branch **production**, database **neondb**, a `BEGIN READ ONLY` transaction returned three terminal `SUCCEEDED` records from the cron endpoint:
+
+| Date | Started (Lagos) | Finished (Lagos) | Result |
+| --- | --- | --- | --- |
+| 27 October | 03:36:50.967 | 03:36:51.056 | SUCCEEDED |
+| 26 October | 03:36:50.912 | 03:36:51.022 | SUCCEEDED |
+| 25 October | 03:36:51.289 | 03:36:51.431 | SUCCEEDED |
+
+All three have the expected deployment and cron-agent hint, no error code, and zero attempted/completed/failed/referenced/skipped counts. Current queue readback: **0 rows, 0 previously failed, 0 due**. Today’s persisted start follows the provider request by about 1.8 seconds; deployment and scheduling window match. This correlation accepts actual scheduled authenticated execution/completion for the controlled pilot. Earlier two dates have database history only in this observation. User-agent hints alone remain insufficient proof; an authorised key holder can spoof them, and this is not cryptographic scheduler attestation.
+
+The queue was empty, so these runs deleted no files. This is not a new Production deletion-with-work test, nor a guarantee of future execution or exact minute timing. Existing testing worker/loss-and-restore evidence remains separate. No manual run, migration, file operation, email, deployment, main merge, bypass token or secret read was needed. Evidence: [27 October scheduled cleanup](qa/2026-10-27-scheduled-cleanup.json). The remaining technical close-out is safe integration into main, with explicit deployment safeguards.
