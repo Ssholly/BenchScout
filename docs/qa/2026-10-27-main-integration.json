@@ -1,0 +1,39 @@
+{
+  "date": "2026-10-27",
+  "status": "validated local integration preparation; not merged",
+  "baseMain": "a56fba3641004184e8bd5ddee87a51eb6b5a4fec",
+  "testingBase": "b7d852f6096f44991b1d65aab1f1f612c015525b",
+  "branch": "release/main-integration-20261027",
+  "liveRuntimeSource": "4eb3e2c8486cb8532aa400106d1bc306c9c8cb5a",
+  "runtimePathsEqualLive": true,
+  "validation": {
+    "lint": true,
+    "typescript": true,
+    "tests": 301,
+    "testsFailed": 0,
+    "webpackProductionBuild": true,
+    "blockedDatabaseDuringValidation": true,
+    "localEnvironmentFilesAbsent": true,
+    "officialGitAndCronSchemaSections": true,
+    "wholeSchemaValidation": false,
+    "wholeSchemaLimit": "Upstream draft-04 declaration contains unrelated incompatible newer keywords; scoped sections validated."
+  },
+  "deploymentGuard": {
+    "crons": [
+      {
+        "path": "/api/cron/document-cleanup",
+        "schedule": "17 2 * * *"
+      }
+    ],
+    "$schema": "https://openapi.vercel.sh/vercel.json",
+    "git": {
+      "deploymentEnabled": {
+        "main": false,
+        "release/main-integration-20261027": false
+      }
+    }
+  },
+  "mainMerged": false,
+  "productionChanged": false,
+  "draftPr": null
+}

@@ -1,3 +1,15 @@
 {
-  "crons": [{ "path": "/api/cron/document-cleanup", "schedule": "17 2 * * *" }]
+  "crons": [
+    {
+      "path": "/api/cron/document-cleanup",
+      "schedule": "17 2 * * *"
+    }
+  ],
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "git": {
+    "deploymentEnabled": {
+      "main": false,
+      "release/main-integration-20261027": false
+    }
+  }
 }

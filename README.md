@@ -133,3 +133,5 @@ Recruitment screens and responsive layout: [compact employer workspace and match
 - [Integrated testing recovery rehearsal — 27 October 2026](docs/RECOVERY-DRILL-2026-10-27.md) — passed bounded database, three synthetic documents and real HTTP access checks; approved QA cleanup completed and limits recorded.
 
 - [Production scheduled cleanup verified — 27 October 2026](docs/CLEANUP-RUN-HISTORY-2026-10-24.md#scheduled-execution-accepted--27-october-2026) — correlated provider request and completed database record; empty queue, no manual execution.
+
+- [Safe main integration — 27 October 2026](docs/MAIN-INTEGRATION-2026-10-27.md) — source integration is separated from public release using explicit Git deployment controls.

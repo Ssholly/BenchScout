@@ -741,3 +741,11 @@ Entries describe implemented changes and their verified release state. Earlier w
 ### 2026-10-27 — Production scheduled cleanup verified
 
 - Correlated today's Vercel HTTP 200 cron request with its completed Production audit record; database also retains successful daily runs for 25/26 October. Queue has zero rows/failed/due work; no files were deleted. Read-only observation only, with no keys revealed, manual execution, environment change or deployment. Recovery/scheduler close-out now complete; safe main integration next. See [evidence](qa/2026-10-27-scheduled-cleanup.json).
+
+### 2026-10-27 — Safe main integration prepared
+
+- Prepared an isolated integration branch bringing the reviewed testing history to main. Added branch-specific Vercel Git deployment suppression for main and that integration branch, retaining the daily cleanup definition and other branch behaviour. Source checks/build, remote suppression evidence and merge approval remain pending; no main merge, Production release, environment or data change. See [integration plan](MAIN-INTEGRATION-2026-10-27.md).
+
+### 2026-10-27 — Main integration source checks passed
+
+- Isolated candidate passed lint, TypeScript, all 301 tests, webpack production build and relevant official Vercel Git/cron schema validation. Runtime/migrations match live reviewed source 4eb3e2c. Main and Production remain unchanged; exact branch suppression and draft PR review are next.
