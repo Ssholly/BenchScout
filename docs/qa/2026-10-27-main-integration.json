@@ -1,0 +1,113 @@
+{
+  "date": "2026-10-27",
+  "status": "approved branch published and draft PR created; not merged",
+  "baseMain": "a56fba3641004184e8bd5ddee87a51eb6b5a4fec",
+  "testingBase": "b7d852f6096f44991b1d65aab1f1f612c015525b",
+  "branch": "release/main-integration-20261027",
+  "liveRuntimeSource": "4eb3e2c8486cb8532aa400106d1bc306c9c8cb5a",
+  "runtimePathsEqualLive": true,
+  "validation": {
+    "lint": true,
+    "typescript": true,
+    "tests": 301,
+    "testsFailed": 0,
+    "webpackProductionBuild": true,
+    "blockedDatabaseDuringValidation": true,
+    "localEnvironmentFilesAbsent": true,
+    "officialGitAndCronSchemaSections": true,
+    "wholeSchemaValidation": false,
+    "wholeSchemaLimit": "Upstream draft-04 declaration contains unrelated incompatible newer keywords; scoped sections validated."
+  },
+  "deploymentGuard": {
+    "crons": [
+      {
+        "path": "/api/cron/document-cleanup",
+        "schedule": "17 2 * * *"
+      }
+    ],
+    "$schema": "https://openapi.vercel.sh/vercel.json",
+    "git": {
+      "deploymentEnabled": {
+        "main": false,
+        "release/main-integration-20261027": false
+      }
+    }
+  },
+  "mainMerged": false,
+  "productionChanged": false,
+  "draftPr": {
+    "number": 1,
+    "url": "https://github.com/Ssholly/BenchScout/pull/1",
+    "draft": true,
+    "merged": false,
+    "mergeable": true,
+    "base": "main",
+    "baseSha": "a56fba3641004184e8bd5ddee87a51eb6b5a4fec",
+    "headSha": "b5939ebadcb8376453bae2f3df75c281f1e71860",
+    "commits": 151,
+    "changedFiles": 348
+  },
+  "validatedCodeAndGuardCommit": "175375779299c536af5e89a9e30c173c159410b9",
+  "mergeTreeEqualsCandidate": true,
+  "mergeConflicts": false,
+  "vercelRootDirectory": null,
+  "vercelProductionBranch": "main",
+  "automaticDomainAssignmentCurrentlyEnabled": true,
+  "publicCleanupDeploymentUnchanged": "dpl_9CMj8YniwM7cWcNm8WfEzmpGowsf",
+  "protectionBypassCount": 0,
+  "remotePublicationBlocked": false,
+  "publicationBlockReason": "Automatic review requires explicit approval for publication of the new branch and operational documentation to the public repository.",
+  "remoteIntegrationBranchExists": true,
+  "remoteMainUnchanged": true,
+  "remoteTestingUnchanged": true,
+  "publishedHead": "b5939ebadcb8376453bae2f3df75c281f1e71860",
+  "priorPublicationRejectionResolvedByExplicitApproval": true,
+  "deploymentSuppression": {
+    "candidateMatchesInLatest20": [],
+    "exactCommitProviderUi": "No deployments match the current filters.",
+    "githubCommitStatuses": 0,
+    "githubCheckRuns": 0,
+    "limit": "No deployment observed for exact candidate; future main-merge outcome needs separate verification."
+  },
+  "projectAfterPublication": {
+    "crons": {
+      "enabledAt": 1779108266469,
+      "disabledAt": null,
+      "updatedAt": 1792856760835,
+      "deploymentId": "dpl_9CMj8YniwM7cWcNm8WfEzmpGowsf",
+      "definitions": [
+        {
+          "host": "bench-scout-4ixd5y3y3-sholly.vercel.app",
+          "path": "/api/cron/document-cleanup",
+          "schedule": "17 2 * * *"
+        }
+      ]
+    },
+    "productionBranch": "main",
+    "bypassCount": 0
+  },
+  "aliasesAfterPublication": [
+    {
+      "alias": "bench-scout-git-hotfix-legacy-containment-sholly.vercel.app",
+      "deploymentId": "dpl_EcY1anTy6tVPnmAoagf5WCRk2Bed"
+    },
+    {
+      "alias": "bench-scout-git-testing-sholly.vercel.app",
+      "deploymentId": "dpl_D6i3a87oxQ3R8Gfu98tPqCpcB2Na"
+    },
+    {
+      "alias": "bench-scout.vercel.app",
+      "deploymentId": "dpl_9CMj8YniwM7cWcNm8WfEzmpGowsf"
+    },
+    {
+      "alias": "bench-scout-sholly.vercel.app",
+      "deploymentId": "dpl_F5uCLS312DAkTGAGdUZbWqaUYYrg"
+    },
+    {
+      "alias": "bench-scout-git-main-sholly.vercel.app",
+      "deploymentId": "dpl_3JSXjPv2JjgTBNE3gwXVSiqJFTaV"
+    }
+  ],
+  "deploymentGuardConfigurationScope": "Published PR head only; main is still July source.",
+  "newOutcomeDocumentationPublicationPending": true
+}

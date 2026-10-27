@@ -741,3 +741,7 @@ Entries describe implemented changes and their verified release state. Earlier w
 ### 2026-10-27 — Production scheduled cleanup verified
 
 - Correlated today's Vercel HTTP 200 cron request with its completed Production audit record; database also retains successful daily runs for 25/26 October. Queue has zero rows/failed/due work; no files were deleted. Read-only observation only, with no keys revealed, manual execution, environment change or deployment. Recovery/scheduler close-out now complete; safe main integration next. See [evidence](qa/2026-10-27-scheduled-cleanup.json).
+
+### 2026-10-27 — Main integration draft PR published
+
+- Approved exact integration head b5939eb is published as [draft PR #1](https://github.com/Ssholly/BenchScout/pull/1). Provider exact-commit filtering/recent inventory show no deployment; all five aliases and cleanup registration remain unchanged. No merge or Production action. New outcome documentation is local only pending separate publication approval; the approved PR head stays unchanged. See [integration record](MAIN-INTEGRATION-2026-10-27.md).

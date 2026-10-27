@@ -1,0 +1,7 @@
+Main still contains the July application source, while the validated recruitment application is already serving the controlled pilot. This PR brings the reviewed testing history onto main: authenticated candidate/employer flows, employer and vacancy review, private application-document sharing, responsive profile screens, encrypted document recovery, and audited cleanup.
+
+The application/runtime and migration files match live reviewed source `4eb3e2c`; later additions are operational tooling, tests and evidence. `vercel.json` disables automatic Git deployments for main and this integration branch, preserving the daily cleanup definition. Public release remains a separate staged-build and promotion decision.
+
+Validation: lint, strict TypeScript, all 301 tests, optimized webpack production build and relevant official Vercel Git/cron schema sections passed in an isolated checkout with no local environment files and a blocked database. The merge-tree check has no conflicts. Recovery and scheduled-cleanup acceptance are linked in `docs/MAIN-INTEGRATION-2026-10-27.md`.
+
+No database migration execution, credential/configuration mutation, file operation or public promotion is included in merging this source history. Before merging, verify the exact head and Git deployment-suppression evidence; after merging, verify main, the unchanged public deployment/aliases and active cleanup registration.

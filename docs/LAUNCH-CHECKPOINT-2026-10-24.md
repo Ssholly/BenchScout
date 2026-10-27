@@ -36,3 +36,7 @@ Owner-approved cleanup removed exactly the three new QA recovery PDFs after deta
 ## 27 October automatic cleanup accepted
 
 Read-only Production database history shows successful cron-endpoint completions on 25, 26 and 27 October. Today's completion correlates with an independent Vercel HTTP 200 request on the configured deployment inside the daily window. Queue counts are all zero; no files were processed. Scheduled authenticated execution is accepted for the pilot with the evidence limits in [run history](CLEANUP-RUN-HISTORY-2026-10-24.md) and [structured observation](qa/2026-10-27-scheduled-cleanup.json). No manual processing or Production change was performed. Recovery rehearsal and scheduler observation are now closed; next is safe main integration, then employer pilot materials and onboarding.
+
+## 27 October main integration ready for merge review
+
+Published b5939eb is [draft PR #1](https://github.com/Ssholly/BenchScout/pull/1), with the Git deployment guard, 301 tests/lint/type/build passed and no provider deployment observed. Main remains July source; aliases/cron unchanged. Marking ready/merging and publishing the local documentation outcome require the next scoped approval. See [integration evidence](MAIN-INTEGRATION-2026-10-27.md).
