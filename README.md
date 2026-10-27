@@ -130,4 +130,4 @@ The [BenchScout business and launch proposal](docs/proposals/BenchScout_Business
 
 Recruitment screens and responsive layout: [compact employer workspace and matches](docs/RECRUITMENT-LAYOUT.md).
 
-- [Integrated testing recovery rehearsal — 27 October 2026](docs/RECOVERY-DRILL-2026-10-27.md) — passed bounded database, three synthetic documents and real HTTP access checks; limits and remaining cleanup recorded.
+- [Integrated testing recovery rehearsal — 27 October 2026](docs/RECOVERY-DRILL-2026-10-27.md) — passed bounded database, three synthetic documents and real HTTP access checks; approved QA cleanup completed and limits recorded.

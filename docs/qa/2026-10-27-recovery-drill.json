@@ -115,7 +115,7 @@
     "Copied sessions expired and checked in SQL; HTTP expiry check used a newly seeded expired synthetic token.",
     "Replacement revocation, closed history and suspended-employer denial checked; no new withdrawal/reapplication performed.",
     "Same provider/account storage; provider/account loss and encryption-key loss not exercised.",
-    "Three new QA recovery files remain pending scoped cleanup; original sources and encrypted backups were preserved."
+    "Three new QA recovery files were removed after scoped owner approval; original sources and encrypted backups were preserved."
   ],
   "postShutdownPortsVerifiedClosed": [
     3196,
@@ -132,6 +132,7 @@
     "activeRecoverySessions": 0,
     "retainedApplicationCount": 1,
     "originalFilesAndEncryptedArchivesTargeted": false,
-    "databaseExpiryUnchanged": true
+    "databaseExpiryUnchanged": true,
+    "verifiedAt": "2026-10-27T07:52:07Z"
   }
 }
