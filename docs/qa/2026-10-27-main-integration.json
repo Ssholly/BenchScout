@@ -35,5 +35,18 @@
   },
   "mainMerged": false,
   "productionChanged": false,
-  "draftPr": null
+  "draftPr": null,
+  "validatedCodeAndGuardCommit": "175375779299c536af5e89a9e30c173c159410b9",
+  "mergeTreeEqualsCandidate": true,
+  "mergeConflicts": false,
+  "vercelRootDirectory": null,
+  "vercelProductionBranch": "main",
+  "automaticDomainAssignmentCurrentlyEnabled": true,
+  "publicCleanupDeploymentUnchanged": "dpl_9CMj8YniwM7cWcNm8WfEzmpGowsf",
+  "protectionBypassCount": 0,
+  "remotePublicationBlocked": true,
+  "publicationBlockReason": "Automatic review requires explicit approval for publication of the new branch and operational documentation to the public repository.",
+  "remoteIntegrationBranchExists": false,
+  "remoteMainUnchanged": true,
+  "remoteTestingUnchanged": true
 }
