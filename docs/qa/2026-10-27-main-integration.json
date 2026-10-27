@@ -1,6 +1,6 @@
 {
   "date": "2026-10-27",
-  "status": "approved branch published and draft PR created; not merged",
+  "status": "owner-approved main merge completed and post-merge provider checks passed",
   "baseMain": "a56fba3641004184e8bd5ddee87a51eb6b5a4fec",
   "testingBase": "b7d852f6096f44991b1d65aab1f1f612c015525b",
   "branch": "release/main-integration-20261027",
@@ -33,19 +33,21 @@
       }
     }
   },
-  "mainMerged": false,
+  "mainMerged": true,
   "productionChanged": false,
   "draftPr": {
     "number": 1,
     "url": "https://github.com/Ssholly/BenchScout/pull/1",
-    "draft": true,
-    "merged": false,
+    "draft": false,
+    "merged": true,
     "mergeable": true,
     "base": "main",
     "baseSha": "a56fba3641004184e8bd5ddee87a51eb6b5a4fec",
     "headSha": "b5939ebadcb8376453bae2f3df75c281f1e71860",
     "commits": 151,
-    "changedFiles": 348
+    "changedFiles": 348,
+    "state": "closed",
+    "mergeCommit": "c5f5e86c745a2f1c00b407848c148330fe7ff5d7"
   },
   "validatedCodeAndGuardCommit": "175375779299c536af5e89a9e30c173c159410b9",
   "mergeTreeEqualsCandidate": true,
@@ -108,6 +110,54 @@
       "deploymentId": "dpl_3JSXjPv2JjgTBNE3gwXVSiqJFTaV"
     }
   ],
-  "deploymentGuardConfigurationScope": "Published PR head only; main is still July source.",
-  "newOutcomeDocumentationPublicationPending": true
+  "deploymentGuardConfigurationScope": "Now on merged main, with automatic Git deployments disabled for main and the integration branch.",
+  "newOutcomeDocumentationPublicationPending": false,
+  "mergeCommit": "c5f5e86c745a2f1c00b407848c148330fe7ff5d7",
+  "mergedAt": "2026-10-27T09:02:45Z",
+  "mergeHead": "b5939ebadcb8376453bae2f3df75c281f1e71860",
+  "mergeBase": "a56fba3641004184e8bd5ddee87a51eb6b5a4fec",
+  "mergedTreeEqualsReviewedHead": true,
+  "localMainFastForwarded": true,
+  "projectAfterMerge": {
+    "productionBranch": "main",
+    "crons": {
+      "enabledAt": 1779108266469,
+      "disabledAt": null,
+      "updatedAt": 1792856760835,
+      "deploymentId": "dpl_9CMj8YniwM7cWcNm8WfEzmpGowsf",
+      "definitions": [
+        {
+          "host": "bench-scout-4ixd5y3y3-sholly.vercel.app",
+          "path": "/api/cron/document-cleanup",
+          "schedule": "17 2 * * *"
+        }
+      ]
+    },
+    "bypassCount": 0
+  },
+  "aliasesAfterMerge": [
+    {
+      "alias": "bench-scout-git-hotfix-legacy-containment-sholly.vercel.app",
+      "deploymentId": "dpl_EcY1anTy6tVPnmAoagf5WCRk2Bed"
+    },
+    {
+      "alias": "bench-scout-git-testing-sholly.vercel.app",
+      "deploymentId": "dpl_D6i3a87oxQ3R8Gfu98tPqCpcB2Na"
+    },
+    {
+      "alias": "bench-scout.vercel.app",
+      "deploymentId": "dpl_9CMj8YniwM7cWcNm8WfEzmpGowsf"
+    },
+    {
+      "alias": "bench-scout-sholly.vercel.app",
+      "deploymentId": "dpl_F5uCLS312DAkTGAGdUZbWqaUYYrg"
+    },
+    {
+      "alias": "bench-scout-git-main-sholly.vercel.app",
+      "deploymentId": "dpl_3JSXjPv2JjgTBNE3gwXVSiqJFTaV"
+    }
+  ],
+  "allFiveAliasesPreserved": true,
+  "mergedCommitProviderUi": "No deployments match the current filters.",
+  "newOutcomeDocumentationPublicationApproved": true
 }

@@ -1,5 +1,7 @@
 # Main integration — 27 October 2026
 
+**Current status: owner-approved PR #1 merged; provider checks passed.** Main is c5f5e86. Public service remains on the existing reviewed deployment. Earlier preparation checkpoints below are dated history.
+
 ## Prepared scope
 
 Replace the old July source on main with the validated testing history, keeping the currently served Production artifact unchanged. Current remote main is a56fba3641004184e8bd5ddee87a51eb6b5a4fec; its merge base with testing is itself, so the integration has no source conflicts. Starting testing head: b7d852f. Runtime source and migrations match the currently deployed reviewed application source 4eb3e2c8486cb8532aa400106d1bc306c9c8cb5a; later changes are operational helpers, their tests and documentation. No new runtime schema migration is introduced by this integration.
@@ -35,3 +37,13 @@ Provider exact-commit filtering shows **No deployments match the current filters
 All five aliases remain unchanged: public 9CM, testing D6, diagnostics F5, git-main maintenance 3JS and retained hotfix EcY. Active cron remains 9CM with 17 2 * * *, Production branch main, bypass count zero. A concurrent read-only provider query stalled; bounded follow-up reads/dashboard completed successfully. No deployment, promotion, main merge, database/file operation, credential change or mail occurred.
 
 Automatic approval review separately rejected publication of this new outcome-documentation commit to testing because the owner's approval named only b5939eb and draft creation. The new outcome is recorded locally and remains unpublished until explicit approval. The approved PR head is unchanged. The next approval can bundle marking PR #1 ready/merging the exact head into main with publication of this documentation-only record to testing; do not include a public rebuild/promotion or data/credential changes. Abort on head/base drift and verify aliases/schedule after merging.
+
+## Approved merge completed — 27 October 2026
+
+Owner explicitly approved marking [PR #1](https://github.com/Ssholly/BenchScout/pull/1) ready, merging exact head b5939eb into unchanged base a56fba3, and publicly publishing documentation commit 9e5e11a plus documentation-only completion records to testing. Fresh GitHub and Git ref checks matched both exact refs before proceeding. Used the signed-in owner browser to mark ready and confirm a normal merge commit; no branch was deleted.
+
+GitHub reports the PR successfully merged and closed at **10:02:45 Lagos** as **c5f5e86c745a2f1c00b407848c148330fe7ff5d7**. Remote and local main now point to this merge. Its tree exactly equals the reviewed PR head; application/runtime/migration paths still have zero diff from accepted live source 4eb3e2c. The merge preserves the full testing history and root Vercel main=false/integration-branch=false deployment controls. No repeat tests/build were needed after the tree-equality check; the already-passed 301 tests, lint, TypeScript and isolated webpack build apply to the same runtime/guard source.
+
+Provider exact-merge-commit filtering shows **No deployments match the current filters** for c5f5e86. Independent provider readback confirms all five alias mappings unchanged: public 9CM, testing D6, diagnostics F5, git-main maintenance 3JS, retained hotfix EcY. Current cleanup registration remains deployment 9CM, path /api/cron/document-cleanup, schedule 17 2 * * *; no bypass token is present. This accepts source-only integration without an automatic Production replacement. A file-level guard can be changed later and does not stop an explicitly authorised manual CLI release; future releases still need the documented staged-build/promotion workflow.
+
+No new Production build/promotion, migration, database/file operation, credential change or email was performed. New completion documentation is published on testing under the owner's explicit permission; the merged PR head is not amended. Root testing remains the working documentation branch and local main was fast-forwarded. Recovery drill, automatic-cleanup observation and main-source integration are complete within their recorded limits. The next plan item is employer pilot materials/onboarding, with no new infrastructure expansion implied.

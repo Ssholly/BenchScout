@@ -40,3 +40,7 @@ Read-only Production database history shows successful cron-endpoint completions
 ## 27 October main integration ready for merge review
 
 Published b5939eb is [draft PR #1](https://github.com/Ssholly/BenchScout/pull/1), with the Git deployment guard, 301 tests/lint/type/build passed and no provider deployment observed. Main remains July source; aliases/cron unchanged. Marking ready/merging and publishing the local documentation outcome require the next scoped approval. See [integration evidence](MAIN-INTEGRATION-2026-10-27.md).
+
+## 27 October technical close-out complete
+
+Owner-approved PR #1 merged into main as c5f5e86. Exact resulting tree matches the reviewed head; the provider shows no new deployment, all five aliases and cleanup registration unchanged. Main now contains the validated application history with automatic Git deployment disabled. The recovery drill, scheduler observation and safe main integration are closed within their documented limits. Next: employer pilot pack, pitch materials and onboarding; infrastructure changes require an identified need.

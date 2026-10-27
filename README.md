@@ -134,4 +134,4 @@ Recruitment screens and responsive layout: [compact employer workspace and match
 
 - [Production scheduled cleanup verified — 27 October 2026](docs/CLEANUP-RUN-HISTORY-2026-10-24.md#scheduled-execution-accepted--27-october-2026) — correlated provider request and completed database record; empty queue, no manual execution.
 
-- [Main integration draft PR #1](https://github.com/Ssholly/BenchScout/pull/1) — [review/evidence](docs/MAIN-INTEGRATION-2026-10-27.md); source-only merge remains pending approval.
+- [Merged main integration PR #1](https://github.com/Ssholly/BenchScout/pull/1) — [review and completion evidence](docs/MAIN-INTEGRATION-2026-10-27.md); main updated, live app and cleanup schedule preserved.

@@ -745,3 +745,7 @@ Entries describe implemented changes and their verified release state. Earlier w
 ### 2026-10-27 — Main integration draft PR published
 
 - Approved exact integration head b5939eb is published as [draft PR #1](https://github.com/Ssholly/BenchScout/pull/1). Provider exact-commit filtering/recent inventory show no deployment; all five aliases and cleanup registration remain unchanged. No merge or Production action. New outcome documentation is local only pending separate publication approval; the approved PR head stays unchanged. See [integration record](MAIN-INTEGRATION-2026-10-27.md).
+
+### 2026-10-27 — Reviewed source merged into main
+
+- Owner-approved PR #1 merged as c5f5e86 with its exact reviewed tree and Git deployment guard. Provider exact-commit filter shows no deployment; all five aliases and active daily cleanup registration remain unchanged. No Production release or data/credential operation. Published the explicitly approved completion records on testing. See [main integration](MAIN-INTEGRATION-2026-10-27.md).
