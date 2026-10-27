@@ -91,7 +91,7 @@
   "archivesVerifiedAt": "2026-10-27T07:39:28.893Z",
   "filesRestoredAt": "2026-10-27T07:39:33.832Z",
   "restoredPrefix": "qa-full-recovery/20261027/586d4c2e-ae6e-4705-a03d-b9b1241dafbb",
-  "cleanupRequired": true,
+  "cleanupRequired": false,
   "mailAttempts": 0,
   "cronConfigured": false,
   "httpChecksCompletedAt": "2026-10-27T07:39:58.262Z",
@@ -122,5 +122,16 @@
     3970,
     3971,
     3972
-  ]
+  ],
+  "cleanup": {
+    "ownerApproved": true,
+    "exactManifestPathsMatchedInProviderUi": true,
+    "restoredQaPdfsDeleted": 3,
+    "exactPrefixEmptyInProviderUi": true,
+    "recoveryFixtureDetached": 1,
+    "activeRecoverySessions": 0,
+    "retainedApplicationCount": 1,
+    "originalFilesAndEncryptedArchivesTargeted": false,
+    "databaseExpiryUnchanged": true
+  }
 }

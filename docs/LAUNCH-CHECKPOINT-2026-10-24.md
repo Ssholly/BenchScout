@@ -28,3 +28,7 @@ Links: [business proposal](proposals/BenchScout_Business_and_Launch_Proposal.md)
 ## 27 October close-out progress
 
 The bounded integrated testing restoration drill passed: isolated current database copy, three synthetic encrypted archives restored to private testing storage, and actual local production-mode HTTP access decisions. Automated segment 40.838 seconds; provider creation through completion 15m54.739s including setup/operator waits. These measurements are not a Production RTO. Temporary secrets were removed and all four local service ports were independently confirmed closed. Exact scenario limits and evidence: [27 October rehearsal](RECOVERY-DRILL-2026-10-27.md). Only three newly restored QA files await scoped cleanup; hosted automatic cleanup evidence and safe main integration remain the next technical priorities. No Production release or new business feature was introduced.
+
+### Recovery rehearsal closed
+
+Owner-approved cleanup removed exactly the three new QA recovery PDFs after detaching their references only in the disposable copy. Provider UI confirmed the unique prefix empty. The integrated testing drill and its cleanup are complete; the database remains subject to its original one-day expiry. Next: hosted automatic cleanup evidence, then safe main integration.

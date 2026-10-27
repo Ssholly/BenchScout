@@ -49,3 +49,9 @@ This exercise covers a current testing snapshot and three synthetic current file
 1. Obtain scoped authorization and remove only the three restored QA PDFs; retain source files and encrypted archives. Let the disposable database expire under its existing one-day setting.
 2. Verify an actual automatic cleanup run with recorded evidence; this drill did not invoke or prove the hosted schedule.
 3. Integrate reviewed source into main under deployment safeguards, then return to employer pilot materials and onboarding. No main merge or public release is part of this rehearsal.
+
+## Approved cleanup completed — 27 October
+
+Owner explicitly approved detaching and permanently deleting only the three restored QA PDFs. In the independently verified recovery branch, executed a transaction guarded by the testing database name, exact unique recovery prefix on all three fields and absence of application selections pointing to that prefix. Post-commit readback: one QA fixture with all three restored references detached; zero active recovery sessions; one retained application. No source testing or Production database was used.
+
+In benchscout-testing-documents, filtered to the approved unique prefix and compared all three displayed object paths to the private restoration manifest before selection. The provider deletion dialog contained exactly the approved CV (680 bytes), degree (659 bytes) and certificate (659 bytes). Submitted only that deletion, then observed **There are no blobs that match your search** for the exact prefix. Original testing documents and encrypted archives were not deletion targets. The recovery branch retains its existing automatic expiry; it was not manually deleted. Temporary credentials are already removed, services stopped, and this rehearsal is closed with the scenario limitations above.
