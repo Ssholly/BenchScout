@@ -713,3 +713,19 @@ Entries describe implemented changes and their verified release state. Earlier w
 - Consolidates the proposed employer-funded model, market positioning, revenue options, adoption, onboarding, data pipeline, trust controls, launch audit, business/domain/regulatory preparation, five-employer pilot, campaign economics, measurement, 90-day roadmap, operating responsibilities, risks and partnership request.
 - Separates implemented product capabilities and recorded validation from proposed work, planning assumptions and pending hosted deployment. Includes dated official/public sources and project evidence.
 - This is a planning and pitch artifact. It does not register a business, purchase a domain, approve a budget, contact employers, change application behaviour or deploy code.
+
+### 2026-10-24 — Private recovery form submission correction
+
+- Corrected the loopback helper referrer policy so same-origin browser POSTs pass the existing origin gate; added and verified a credential-free browser connection check. Credential re-entry and integrated recovery acceptance remain pending. See TIMED-RECOVERY-DRILL-2026-10-24.md. No Production release.
+
+### 2026-10-25 — Recovery restart preparation
+
+- Preserved the first incomplete drill as historical evidence; stopped its credential form and prepared a fresh one-day testing copy for owner approval. Added fixed field-specific private-entry errors with secret non-disclosure coverage; five focused tests passed. No Production change or recovery pass. See [recovery restart](RECOVERY-RESTART-2026-10-25.md).
+
+### 2026-10-27 — Recovery rehearsal resumed
+
+- Verified the old temporary recovery branch is absent and prepared today's isolated testing copy for owner approval. No database/file recovery or Production operation performed. Updated the restart record.
+
+### 2026-10-27 — Isolated recovery database verified
+
+- Observed owner-created testing recovery branch, invalidated copied credentials inside it and verified nine migration checksums plus QA relationships. Bound a fresh private entry form to the new endpoint and verified browser submission without credentials. File recovery and integrated app verification remain pending; no Production action.
