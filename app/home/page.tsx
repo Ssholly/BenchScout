@@ -1,4 +1,5 @@
 "use client";
+import { FooterSupportButton } from "@/components/FooterSupport";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
@@ -478,7 +479,7 @@ export default function HomePage() {
                position: absolute;
                inset: 0;
                border-radius: 16px;
-               background: rgba(255, 255, 255, 0.15);
+               background: var(--appearance-surface-rgba255255255015);
                backdrop-filter: blur(5px);
                opacity: 0;
                z-index: -2;
@@ -490,11 +491,11 @@ export default function HomePage() {
                box-shadow: 0 15px 45px rgba(11, 36, 68, 0.1);
             }
             .premium-feature-card:hover h3 {
-               color: #1A8C7A !important;
+               color: var(--appearance-ink-1a8c7a) !important;
             }
             .premium-feature-card:hover svg {
                transform: scale(1.1);
-               color: #1A8C7A !important;
+               color: var(--appearance-ink-1a8c7a) !important;
                transition: transform 0.4s ease, color 0.4s ease;
             }
 
@@ -562,12 +563,12 @@ export default function HomePage() {
 									cx="26"
 									cy="22"
 									r="13.5"
-									stroke="#0B2444"
+									stroke="var(--appearance-ink-0b2444)"
 									strokeWidth="2.5"
 								/>
 								<path
 									d="M34.5 13.5 A13.5 13.5 0 0 1 39 22"
-									stroke="#1A8C7A"
+									stroke="var(--appearance-ink-1a8c7a)"
 									strokeWidth="2.5"
 									strokeLinecap="round"
 								/>
@@ -576,14 +577,14 @@ export default function HomePage() {
 									cx="26"
 									cy="22"
 									r="3.5"
-									fill="#1A8C7A"
+									fill="var(--appearance-ink-1a8c7a)"
 								/>
 								<circle
 									className="lens-shine"
 									cx="21.5"
 									cy="17.5"
 									r="1.5"
-									fill="#22B89F"
+									fill="var(--appearance-ink-22b89f)"
 									opacity="0.5"
 								/>
 								<line
@@ -591,7 +592,7 @@ export default function HomePage() {
 									y1="35.5"
 									x2="26"
 									y2="43"
-									stroke="#0B2444"
+									stroke="var(--appearance-ink-0b2444)"
 									strokeWidth="2.5"
 									strokeLinecap="round"
 								/>
@@ -600,7 +601,7 @@ export default function HomePage() {
 									y1="43"
 									x2="35"
 									y2="43"
-									stroke="#0B2444"
+									stroke="var(--appearance-ink-0b2444)"
 									strokeWidth="2.5"
 									strokeLinecap="round"
 								/>
@@ -609,7 +610,7 @@ export default function HomePage() {
 									y1="43"
 									x2="18.5"
 									y2="47"
-									stroke="#0B2444"
+									stroke="var(--appearance-ink-0b2444)"
 									strokeWidth="2"
 									strokeLinecap="round"
 								/>
@@ -618,7 +619,7 @@ export default function HomePage() {
 									y1="43"
 									x2="33.5"
 									y2="47"
-									stroke="#0B2444"
+									stroke="var(--appearance-ink-0b2444)"
 									strokeWidth="2"
 									strokeLinecap="round"
 								/>
@@ -631,11 +632,11 @@ export default function HomePage() {
 								fontSize: "clamp(1.75rem, 6vw, 4.75rem)",
 								fontWeight: 600,
 								letterSpacing: "-0.04em",
-								color: "#0B2444",
+								color: "var(--appearance-ink-0b2444)",
 								lineHeight: "1",
 							}}
 						>
-							Bench<span style={{ color: "#1A8C7A" }}>Scout</span>
+							Bench<span style={{ color: "var(--appearance-ink-1a8c7a)" }}>Scout</span>
 						</div>
 					</div>
 
@@ -643,7 +644,7 @@ export default function HomePage() {
 						style={{
 							fontSize: "clamp(1.5rem, 4.5vw, 3.5rem)",
 							fontWeight: 900,
-							color: "#0f172a",
+							color: "var(--appearance-ink-0f172a)",
 							letterSpacing: "-1.5px",
 							margin: "0 0 1rem 0",
 							lineHeight: 1.05,
@@ -652,6 +653,7 @@ export default function HomePage() {
 						The Career Hub for
 						<br />
 						<span
+							className="home-title-gradient"
 							style={{
 								background: "linear-gradient(90deg, #0B2444 0%, #1A8C7A 100%)",
 								WebkitBackgroundClip: "text",
@@ -665,7 +667,7 @@ export default function HomePage() {
 						className="home-intro"
 						style={{
 							fontSize: "1.2rem",
-							color: "#64748b",
+							color: "var(--appearance-ink-64748b)",
 							maxWidth: "650px",
 							margin: "0 auto 3rem auto",
 							lineHeight: 1.6,
@@ -685,7 +687,7 @@ export default function HomePage() {
 						onClick={() => setTourStep(1)}
 						className={HOME_MENU_ON_DEMAND ? "home-explore-secondary" : "explore-cta-button"}
 						style={{
-							color: HOME_MENU_ON_DEMAND ? "#0B2444" : "white",
+							color: HOME_MENU_ON_DEMAND ? "var(--appearance-ink-0b2444)" : "white",
 							padding: "18px 36px",
 							borderRadius: "14px",
 							fontSize: "16px",
@@ -771,14 +773,14 @@ export default function HomePage() {
 								className="premium-feature-card"
 								style={featureCardStyle}
 							>
-								<div style={{ color: "#0f172a", marginBottom: "1rem" }}>
+								<div style={{ color: "var(--appearance-ink-0f172a)", marginBottom: "1rem" }}>
 									<Icon size={36} stroke={2} />
 								</div>
 								<h3
 									style={{
 										margin: "0 0 0.75rem 0",
 										fontSize: "1.25rem",
-										color: "#0f172a",
+										color: "var(--appearance-ink-0f172a)",
 										fontWeight: 800,
 										transition: "0.2s",
 										letterSpacing: "-0.3px",
@@ -789,7 +791,7 @@ export default function HomePage() {
 								<p
 									style={{
 										margin: 0,
-										color: "#64748b",
+										color: "var(--appearance-ink-64748b)",
 										lineHeight: 1.5,
 										fontSize: "14px",
 										fontWeight: 500,
@@ -806,6 +808,7 @@ export default function HomePage() {
             <footer className="home-footer">
                 <div><strong><span>Bench</span><span>Scout</span></strong><span>Your MLS career hub</span></div>
                 <small>© {new Date().getFullYear()} BenchScout. All rights reserved.</small>
+                <FooterSupportButton />
             </footer>
 
 			{tourOpen && createPortal(

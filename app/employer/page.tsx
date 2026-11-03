@@ -467,10 +467,10 @@ export default function EmployerGateway() {
 	};
 
 	const boxStyle = {
-		background: "rgba(255, 255, 255, 0.6)",
+		background: "var(--appearance-surface-rgba25525525506)",
 		backdropFilter: "blur(20px)",
 		borderRadius: "24px",
-		border: "1px solid rgba(255, 255, 255, 0.4)",
+		border: "1px solid var(--appearance-edge-rgba25525525504)",
 		boxShadow: "0 10px 40px -10px rgba(11, 36, 68, 0.05)",
 		padding: "2.5rem",
 		width: "100%",
@@ -478,13 +478,13 @@ export default function EmployerGateway() {
 	};
 	const inputStyle = {
 		width: "100%",
-		background: "white",
-		border: "1px solid #e2e8f0",
+		background: "var(--appearance-surface-white)",
+		border: "1px solid var(--appearance-edge-e2e8f0)",
 		borderRadius: "10px",
 		padding: "12px 14px",
 		fontSize: "14px",
 		outline: "none",
-		color: "#0f172a",
+		color: "var(--appearance-ink-0f172a)",
 		fontWeight: 600,
 		marginTop: "6px",
 		marginBottom: "16px",
@@ -526,7 +526,7 @@ export default function EmployerGateway() {
 						<div
 							className="employer-dialog employer-panel" role="dialog" aria-modal="true" aria-label="Employer dialog"
 							style={{
-								background: "white",
+								background: "var(--appearance-surface-white)",
 								width: "100%",
 								maxWidth: "420px",
 								borderRadius: "24px",
@@ -549,7 +549,7 @@ export default function EmployerGateway() {
 										style={{
 											fontSize: "18px",
 											fontWeight: 850,
-											color: "#0f172a",
+											color: "var(--appearance-ink-0f172a)",
 											margin: 0,
 										}}
 									>
@@ -559,7 +559,7 @@ export default function EmployerGateway() {
 										style={{
 											margin: "4px 0 0 0",
 											fontSize: "12px",
-											color: "#64748b",
+											color: "var(--appearance-ink-64748b)",
 										}}
 									>
 										Choose an active vacancy for this candidate.
@@ -570,7 +570,7 @@ export default function EmployerGateway() {
 										setScoutTargetModal({ isOpen: false, user: null })
 									}
 									style={{
-										background: "#f1f5f9",
+										background: "var(--appearance-surface-f1f5f9)",
 										border: "none",
 										width: "32px",
 										height: "32px",
@@ -579,7 +579,7 @@ export default function EmployerGateway() {
 										alignItems: "center",
 										justifyContent: "center",
 										cursor: "pointer",
-										color: "#64748b",
+										color: "var(--appearance-ink-64748b)",
 									}}
 								>
 									<svg
@@ -621,10 +621,10 @@ export default function EmployerGateway() {
 												font: "inherit", textAlign: "left", width: "100%",
 												padding: "14px 16px",
 												background: isAlreadySent
-													? "rgba(241, 245, 249, 0.5)"
-													: "#f8fafc",
+													? "var(--appearance-surface-rgba24124524905)"
+													: "var(--appearance-surface-f8fafc)",
 												border: "1px solid",
-												borderColor: isAlreadySent ? "transparent" : "#e2e8f0",
+												borderColor: isAlreadySent ? "transparent" : "var(--appearance-edge-e2e8f0)",
 												borderRadius: "12px",
 												cursor: unavailable || isAlreadySent || invitingId !== null ? "not-allowed" : "pointer",
 												display: "flex",
@@ -636,13 +636,13 @@ export default function EmployerGateway() {
 											onMouseEnter={(e) => {
 												if (!unavailable && !isAlreadySent) {
 													e.currentTarget.style.borderColor = "#1A8C7A";
-													e.currentTarget.style.background = "#e6fcf5";
+													e.currentTarget.style.background = "var(--appearance-surface-e6fcf5)";
 												}
 											}}
 											onMouseLeave={(e) => {
 												if (!unavailable && !isAlreadySent) {
-													e.currentTarget.style.borderColor = "#e2e8f0";
-													e.currentTarget.style.background = "#f8fafc";
+													e.currentTarget.style.borderColor = "var(--appearance-edge-e2e8f0)";
+													e.currentTarget.style.background = "var(--appearance-surface-f8fafc)";
 												}
 											}}
 										>
@@ -650,7 +650,7 @@ export default function EmployerGateway() {
 												<div
 													style={{
 														fontWeight: 800,
-														color: "#0f172a",
+														color: "var(--appearance-ink-0f172a)",
 														fontSize: "13.5px",
 													}}
 												>
@@ -659,7 +659,7 @@ export default function EmployerGateway() {
 												<div
 													style={{
 														fontSize: "11px",
-														color: "#64748b",
+														color: "var(--appearance-ink-64748b)",
 														marginTop: "4px",
 													}}
 												>
@@ -671,8 +671,8 @@ export default function EmployerGateway() {
 													style={{
 														fontSize: "11px",
 														fontWeight: 800,
-														color: "#1A8C7A",
-														background: "#e6fcf5",
+														color: "var(--appearance-ink-1a8c7a)",
+														background: "var(--appearance-surface-e6fcf5)",
 														padding: "4px 8px",
 														borderRadius: "6px",
 													}}
@@ -714,8 +714,8 @@ export default function EmployerGateway() {
 						<div
 							className="employer-dialog employer-panel" role="dialog" aria-modal="true" aria-label="Employer dialog"
 							style={{
-								background: "rgba(255, 255, 255, 0.95)",
-								border: "1px solid rgba(255, 255, 255, 0.5)",
+								background: "var(--appearance-surface-rgba255255255095)",
+								border: "1px solid var(--appearance-edge-rgba25525525505)",
 								width: "100%",
 								maxWidth: "450px",
 								borderRadius: "24px",
@@ -738,16 +738,16 @@ export default function EmployerGateway() {
 										style={{
 											fontSize: "19px",
 											fontWeight: 850,
-											color: "#0f172a",
+											color: "var(--appearance-ink-0f172a)",
 											margin: "0 0 4px 0",
 											letterSpacing: "-0.2px",
 										}}
 									>
 										Schedule Interview
 									</h3>
-									<p style={{ margin: 0, fontSize: "13px", color: "#64748b" }}>
+									<p style={{ margin: 0, fontSize: "13px", color: "var(--appearance-ink-64748b)" }}>
 										Locking in schedule for{" "}
-										<strong style={{ color: "#0f172a" }}>
+										<strong style={{ color: "var(--appearance-ink-0f172a)" }}>
 											{interviewModal.candidateName}
 										</strong>
 									</p>
@@ -757,7 +757,7 @@ export default function EmployerGateway() {
 										setInterviewModal({ ...interviewModal, isOpen: false })
 									}
 									style={{
-										background: "#f1f5f9",
+										background: "var(--appearance-surface-f1f5f9)",
 										border: "none",
 										width: "32px",
 										height: "32px",
@@ -766,7 +766,7 @@ export default function EmployerGateway() {
 										alignItems: "center",
 										justifyContent: "center",
 										cursor: "pointer",
-										color: "#64748b",
+										color: "var(--appearance-ink-64748b)",
 										transition: "0.2s",
 									}}
 								>
@@ -790,7 +790,7 @@ export default function EmployerGateway() {
 											style={{
 												fontSize: "11px",
 												fontWeight: 800,
-												color: "#64748b",
+												color: "var(--appearance-ink-64748b)",
 												letterSpacing: "0.5px",
 												textTransform: "uppercase",
 											}}
@@ -816,7 +816,7 @@ export default function EmployerGateway() {
 											style={{
 												fontSize: "11px",
 												fontWeight: 800,
-												color: "#64748b",
+												color: "var(--appearance-ink-64748b)",
 												letterSpacing: "0.5px",
 												textTransform: "uppercase",
 											}}
@@ -842,7 +842,7 @@ export default function EmployerGateway() {
 									style={{
 										fontSize: "11px",
 										fontWeight: 800,
-										color: "#64748b",
+										color: "var(--appearance-ink-64748b)",
 										letterSpacing: "0.5px",
 										textTransform: "uppercase",
 									}}
@@ -864,8 +864,8 @@ export default function EmployerGateway() {
 								/>
 								<div
 									style={{
-										background: "#e6fcf5",
-										border: "1px solid #a7f3d0",
+										background: "var(--appearance-surface-e6fcf5)",
+										border: "1px solid var(--appearance-edge-a7f3d0)",
 										padding: "12px",
 										borderRadius: "8px",
 										marginTop: "8px",
@@ -880,7 +880,7 @@ export default function EmployerGateway() {
 										height="18"
 										viewBox="0 0 24 24"
 										fill="none"
-										stroke="#1A8C7A"
+										stroke="var(--appearance-ink-1a8c7a)"
 										strokeWidth="2"
 										style={{ flexShrink: 0, marginTop: "2px" }}
 									>
@@ -891,7 +891,7 @@ export default function EmployerGateway() {
 										style={{
 											margin: 0,
 											fontSize: "12px",
-											color: "#065f46",
+											color: "var(--appearance-ink-065f46)",
 											lineHeight: "1.5",
 										}}
 									>
@@ -949,8 +949,8 @@ export default function EmployerGateway() {
 						<div
 							className="employer-dialog employer-panel" role="dialog" aria-modal="true" aria-label="Employer dialog"
 							style={{
-								background: "rgba(255, 255, 255, 0.95)",
-								border: "1px solid rgba(255, 255, 255, 0.5)",
+								background: "var(--appearance-surface-rgba255255255095)",
+								border: "1px solid var(--appearance-edge-rgba25525525505)",
 								width: "100%",
 								maxWidth: "450px",
 								borderRadius: "24px",
@@ -972,7 +972,7 @@ export default function EmployerGateway() {
 									style={{
 										fontSize: "19px",
 										fontWeight: 850,
-										color: "#0f172a",
+										color: "var(--appearance-ink-0f172a)",
 										margin: 0,
 										letterSpacing: "-0.2px",
 									}}
@@ -982,7 +982,7 @@ export default function EmployerGateway() {
 								<button
 									aria-label="Close dialog" onClick={() => setEditModal({ ...editModal, isOpen: false })}
 									style={{
-										background: "#f1f5f9",
+										background: "var(--appearance-surface-f1f5f9)",
 										border: "none",
 										width: "32px",
 										height: "32px",
@@ -991,7 +991,7 @@ export default function EmployerGateway() {
 										alignItems: "center",
 										justifyContent: "center",
 										cursor: "pointer",
-										color: "#64748b",
+										color: "var(--appearance-ink-64748b)",
 										transition: "0.2s",
 									}}
 								>
@@ -1013,7 +1013,7 @@ export default function EmployerGateway() {
 									style={{
 										fontSize: "11px",
 										fontWeight: 800,
-										color: "#64748b",
+										color: "var(--appearance-ink-64748b)",
 										letterSpacing: "0.5px",
 										textTransform: "uppercase",
 									}}
@@ -1033,7 +1033,7 @@ export default function EmployerGateway() {
 									style={{
 										fontSize: "11px",
 										fontWeight: 800,
-										color: "#64748b",
+										color: "var(--appearance-ink-64748b)",
 										letterSpacing: "0.5px",
 										textTransform: "uppercase",
 									}}
@@ -1053,7 +1053,7 @@ export default function EmployerGateway() {
 									style={{
 										fontSize: "11px",
 										fontWeight: 800,
-										color: "#64748b",
+										color: "var(--appearance-ink-64748b)",
 										letterSpacing: "0.5px",
 										textTransform: "uppercase",
 									}}
@@ -1072,7 +1072,7 @@ export default function EmployerGateway() {
 									style={{
 										fontSize: "11px",
 										fontWeight: 800,
-										color: "#64748b",
+										color: "var(--appearance-ink-64748b)",
 										letterSpacing: "0.5px",
 										textTransform: "uppercase",
 									}}
@@ -1088,8 +1088,8 @@ export default function EmployerGateway() {
 									style={inputStyle}
 									required
 								/>
-								<label style={{fontSize:12,color:"#64748b"}}>Deadline (optional)<input type="date" value={editModal.deadline} onChange={event=>setEditModal({...editModal,deadline:event.target.value})} style={inputStyle} /></label>
-<label style={{fontSize:12,color:"#64748b"}}>Required documents<input value={editModal.requiredDocuments} maxLength={500} onChange={event=>setEditModal({...editModal,requiredDocuments:event.target.value})} style={inputStyle} /></label>
+								<label style={{fontSize:12,color:"var(--appearance-ink-64748b)"}}>Deadline (optional)<input type="date" value={editModal.deadline} onChange={event=>setEditModal({...editModal,deadline:event.target.value})} style={inputStyle} /></label>
+<label style={{fontSize:12,color:"var(--appearance-ink-64748b)"}}>Required documents<input value={editModal.requiredDocuments} maxLength={500} onChange={event=>setEditModal({...editModal,requiredDocuments:event.target.value})} style={inputStyle} /></label>
 <button
 									type="submit"
 									disabled={loading}
@@ -1141,8 +1141,8 @@ export default function EmployerGateway() {
 						<div
 							className="employer-dialog employer-panel" role="dialog" aria-modal="true" aria-label="Employer dialog"
 							style={{
-								background: "rgba(255, 255, 255, 0.8)",
-								border: "1px solid rgba(255, 255, 255, 0.5)",
+								background: "var(--appearance-surface-rgba25525525508)",
+								border: "1px solid var(--appearance-edge-rgba25525525505)",
 								width: "100%",
 								maxWidth: "380px",
 								borderRadius: "24px",
@@ -1163,7 +1163,7 @@ export default function EmployerGateway() {
 									alignItems: "center",
 									justifyContent: "center",
 									margin: "0 auto 16px auto",
-									color: "#ef4444",
+									color: "var(--appearance-ink-ef4444)",
 								}}
 							>
 								<svg
@@ -1183,7 +1183,7 @@ export default function EmployerGateway() {
 								style={{
 									fontSize: "19px",
 									fontWeight: 850,
-									color: "#0f172a",
+									color: "var(--appearance-ink-0f172a)",
 									margin: "0 0 8px 0",
 									letterSpacing: "-0.2px",
 								}}
@@ -1193,7 +1193,7 @@ export default function EmployerGateway() {
 							<p
 								style={{
 									fontSize: "14px",
-									color: "#475569",
+									color: "var(--appearance-ink-475569)",
 									margin: "0 0 24px 0",
 									lineHeight: "1.5",
 									fontWeight: 550,
@@ -1209,8 +1209,8 @@ export default function EmployerGateway() {
 										padding: "12px",
 										borderRadius: "12px",
 										border: "1px solid rgba(0,0,0,0.05)",
-										background: "rgba(255,255,255,0.9)",
-										color: "#334155",
+										background: "var(--appearance-surface-rgba25525525509)",
+										color: "var(--appearance-ink-334155)",
 										fontWeight: 700,
 										fontSize: "14px",
 										cursor: "pointer",
@@ -1277,13 +1277,13 @@ export default function EmployerGateway() {
 							className="employer-drawer" role="dialog" aria-modal="true" aria-label="Applicant roster"
 							style={{
 								position: "relative",
-								background: "rgba(248, 250, 252, 0.9)",
+								background: "var(--appearance-surface-rgba24825025209)",
 								backdropFilter: "blur(40px)",
 								WebkitBackdropFilter: "blur(40px)",
 								width: "100%",
 								maxWidth: "460px",
 								height: "100dvh",
-								borderLeft: "1px solid rgba(255, 255, 255, 0.7)",
+								borderLeft: "1px solid var(--appearance-edge-rgba25525525507)",
 								display: "flex",
 								flexDirection: "column",
 								boxShadow: "-20px 0 60px rgba(15, 23, 42, 0.08)",
@@ -1308,7 +1308,7 @@ export default function EmployerGateway() {
 											margin: 0,
 											fontSize: "20px",
 											fontWeight: 850,
-											color: "#0f172a",
+											color: "var(--appearance-ink-0f172a)",
 											letterSpacing: "-0.3px",
 										}}
 									>
@@ -1318,7 +1318,7 @@ export default function EmployerGateway() {
 										style={{
 											margin: "4px 0 0 0",
 											fontSize: "13px",
-											color: "#1A8C7A",
+											color: "var(--appearance-ink-1a8c7a)",
 											fontWeight: 700,
 										}}
 									>
@@ -1367,13 +1367,13 @@ export default function EmployerGateway() {
 												);
 											}}
 											style={{
-												background: "white",
-												border: "1px solid #cbd5e1",
+												background: "var(--appearance-surface-white)",
+												border: "1px solid var(--appearance-edge-cbd5e1)",
 												borderRadius: "8px",
 												padding: "6px 12px",
 												fontSize: "12px",
 												fontWeight: 800,
-												color: "#334155",
+												color: "var(--appearance-ink-334155)",
 												cursor: "pointer",
 												display: "flex",
 												alignItems: "center",
@@ -1399,8 +1399,8 @@ export default function EmployerGateway() {
 											setDrawer((prev) => ({ ...prev, isOpen: false }))
 										}
 										style={{
-											background: "white",
-											border: "1px solid #e2e8f0",
+											background: "var(--appearance-surface-white)",
+											border: "1px solid var(--appearance-edge-e2e8f0)",
 											width: "32px",
 											height: "32px",
 											borderRadius: "50%",
@@ -1408,7 +1408,7 @@ export default function EmployerGateway() {
 											alignItems: "center",
 											justifyContent: "center",
 											cursor: "pointer",
-											color: "#64748b",
+											color: "var(--appearance-ink-64748b)",
 											boxShadow: "0 2px 6px rgba(0,0,0,0.02)",
 										}}
 									>
@@ -1445,7 +1445,7 @@ export default function EmployerGateway() {
 											alignItems: "center",
 											justifyContent: "center",
 											height: "50vh",
-											color: "#64748b",
+											color: "var(--appearance-ink-64748b)",
 											fontSize: "13px",
 											fontWeight: 700,
 										}}
@@ -1453,7 +1453,7 @@ export default function EmployerGateway() {
 										Extracting Candidate Profiles...
 									</div>
 								) : drawer.error ? (
-									<div role="alert" className="employer-panel" style={{ padding: "1.25rem", background: "#fff7ed", border: "1px solid #fed7aa", borderRadius: "16px", color: "#9a3412", fontSize: "14px", lineHeight: 1.6, overflowWrap: "anywhere" }}>
+									<div role="alert" className="employer-panel" style={{ padding: "1.25rem", background: "var(--appearance-surface-fff7ed)", border: "1px solid var(--appearance-edge-fed7aa)", borderRadius: "16px", color: "var(--appearance-ink-9a3412)", fontSize: "14px", lineHeight: 1.6, overflowWrap: "anywhere" }}>
 										{drawer.error}
 									</div>
 								) : drawer.applicants.length === 0 ? (
@@ -1462,14 +1462,14 @@ export default function EmployerGateway() {
 										style={{
 											textAlign: "center",
 											padding: "3rem",
-											background: "white",
+											background: "var(--appearance-surface-white)",
 											borderRadius: "16px",
-											border: "1px solid #e2e8f0",
+											border: "1px solid var(--appearance-edge-e2e8f0)",
 										}}
 									>
 										<p
 											style={{
-												color: "#64748b",
+												color: "var(--appearance-ink-64748b)",
 												fontSize: "13px",
 												fontWeight: 600,
 												margin: 0,
@@ -1490,8 +1490,8 @@ export default function EmployerGateway() {
 										>
 											<div
 												style={{
-													background: "white",
-													border: "1px solid #e2e8f0",
+													background: "var(--appearance-surface-white)",
+													border: "1px solid var(--appearance-edge-e2e8f0)",
 													borderRadius: "16px",
 													padding: "1.25rem",
 													boxShadow: "0 4px 20px rgba(0,0,0,0.02)",
@@ -1505,8 +1505,8 @@ export default function EmployerGateway() {
 														width: "38px",
 														height: "38px",
 														borderRadius: "50%",
-														background: "#e0f2fe",
-														color: "#0369a1",
+														background: "var(--appearance-surface-e0f2fe)",
+														color: "var(--appearance-ink-0369a1)",
 														display: "flex",
 														alignItems: "center",
 														justifyContent: "center",
@@ -1523,7 +1523,7 @@ export default function EmployerGateway() {
 														style={{
 															fontSize: "14px",
 															fontWeight: 800,
-															color: "#0f172a",
+															color: "var(--appearance-ink-0f172a)",
 														}}
 													>
 														{app.user.name || "Candidate"}
@@ -1531,19 +1531,19 @@ export default function EmployerGateway() {
 													<div
 														style={{
 															fontSize: "11px",
-															color: "#64748b",
+															color: "var(--appearance-ink-64748b)",
 															fontWeight: 600,
 															marginTop: "1px",
 														}}
 													>
-														{app.user.email}<div style={{fontSize:11,color:"#1A8C7A",marginTop:4}}>{careerLabel(app.user.careerPhase,{placementStage:app.user.placementStage})} · {app.user.isLicenseVerified ? "Credentials reviewed" : (app.user.careerPhase === "internship" ? app.user.provisionalUrl : app.user.licenseUrl) ? "Credentials self-reported" : "Credentials not shared"}</div>
+														{app.user.email}<div style={{fontSize:11,color:"var(--appearance-ink-1a8c7a)",marginTop:4}}>{careerLabel(app.user.careerPhase,{placementStage:app.user.placementStage})} · {app.user.isLicenseVerified ? "Credentials reviewed" : (app.user.careerPhase === "internship" ? app.user.provisionalUrl : app.user.licenseUrl) ? "Credentials self-reported" : "Credentials not shared"}</div>
 													</div>
 												</div>
 											</div>
 											<div
 												style={{
-													background: "white",
-													border: "1px solid #e2e8f0",
+													background: "var(--appearance-surface-white)",
+													border: "1px solid var(--appearance-edge-e2e8f0)",
 													borderRadius: "16px",
 													padding: "1.25rem",
 													boxShadow: "0 4px 20px rgba(0,0,0,0.02)",
@@ -1557,7 +1557,7 @@ export default function EmployerGateway() {
 													style={{
 														fontSize: "11px",
 														fontWeight: 800,
-														color: "#94a3b8",
+														color: "var(--appearance-ink-94a3b8)",
 														textTransform: "uppercase",
 														letterSpacing: "0.5px",
 														margin: "0 0 4px 0",
@@ -1565,12 +1565,12 @@ export default function EmployerGateway() {
 												>
 													Shared application documents
 												</h4>
-												<p style={{fontSize:12,color:"#64748b",lineHeight:1.5}}>Only documents selected for this application appear here. Replaced or deleted files are unavailable.</p>
+												<p style={{fontSize:12,color:"var(--appearance-ink-64748b)",lineHeight:1.5}}>Only documents selected for this application appear here. Replaced or deleted files are unavailable.</p>
 {app.user.degreeUrl && <a href={app.user.degreeUrl} target="_blank" rel="noopener noreferrer">Degree certificate ↗</a>}
 {app.user.placementLetterUrl && <a href={app.user.placementLetterUrl} target="_blank" rel="noopener noreferrer">Placement letter ↗</a>}
 {app.user.certificateUrl && <a href={app.user.certificateUrl} target="_blank" rel="noopener noreferrer">Additional certificate ↗</a>}
-{app.user.provisionalUrl && <a href={app.user.provisionalUrl} target="_blank" rel="noopener noreferrer" style={{color:"#1A8C7A",fontSize:13}}>Provisional license ↗</a>}
-{app.user.statementOfResultUrl && <a href={app.user.statementOfResultUrl} target="_blank" rel="noopener noreferrer" style={{color:"#1A8C7A",fontSize:13}}>Statement of result ↗</a>}
+{app.user.provisionalUrl && <a href={app.user.provisionalUrl} target="_blank" rel="noopener noreferrer" style={{color:"var(--appearance-ink-1a8c7a)",fontSize:13}}>Provisional license ↗</a>}
+{app.user.statementOfResultUrl && <a href={app.user.statementOfResultUrl} target="_blank" rel="noopener noreferrer" style={{color:"var(--appearance-ink-1a8c7a)",fontSize:13}}>Statement of result ↗</a>}
 {app.user.resumeUrl && (
 													<a
 														href={app.user.resumeUrl}
@@ -1580,18 +1580,18 @@ export default function EmployerGateway() {
 															display: "flex",
 															alignItems: "center",
 															justifyContent: "space-between",
-															background: "#f8fafc",
+															background: "var(--appearance-surface-f8fafc)",
 															padding: "10px 14px",
 															borderRadius: "12px",
 															textDecoration: "none",
-															border: "1px solid #e2e8f0",
+															border: "1px solid var(--appearance-edge-e2e8f0)",
 														}}
 													>
 														<span
 															style={{
 																fontSize: "13px",
 																fontWeight: 700,
-																color: "#334155",
+																color: "var(--appearance-ink-334155)",
 																display: "flex",
 																alignItems: "center",
 																gap: "8px",
@@ -1613,7 +1613,7 @@ export default function EmployerGateway() {
 														<span
 															style={{
 																fontSize: "12px",
-																color: "#0058bc",
+																color: "var(--appearance-ink-0058bc)",
 																fontWeight: 800,
 															}}
 														>
@@ -1631,17 +1631,17 @@ export default function EmployerGateway() {
 															display: "flex",
 															alignItems: "center",
 															justifyContent: "space-between",
-															background: "#e6fcf5",
+															background: "var(--appearance-surface-e6fcf5)",
 															padding: "10px 14px",
 															borderRadius: "12px",
-															border: "1px solid #a7f3d0",
+															border: "1px solid var(--appearance-edge-a7f3d0)",
 														}}
 													>
 														<span
 															style={{
 																fontSize: "13px",
 																fontWeight: 800,
-																color: "#1A8C7A",
+																color: "var(--appearance-ink-1a8c7a)",
 																display: "flex",
 																alignItems: "center",
 																gap: "8px",
@@ -1670,7 +1670,7 @@ export default function EmployerGateway() {
 														<span
 															style={{
 																fontSize: "11px",
-																color: "#1A8C7A",
+																color: "var(--appearance-ink-1a8c7a)",
 																fontWeight: 800,
 															}}
 														>
@@ -1684,17 +1684,17 @@ export default function EmployerGateway() {
 															display: "flex",
 															alignItems: "center",
 															justifyContent: "space-between",
-															background: "#f0fdf4",
+															background: "var(--appearance-surface-f0fdf4)",
 															padding: "10px 14px",
 															borderRadius: "12px",
-															border: "1px solid #bbf7d0",
+															border: "1px solid var(--appearance-edge-bbf7d0)",
 														}}
 													>
 														<span
 															style={{
 																fontSize: "13px",
 																fontWeight: 800,
-																color: "#166534",
+																color: "var(--appearance-ink-166534)",
 																display: "flex",
 																alignItems: "center",
 																gap: "8px",
@@ -1716,7 +1716,7 @@ export default function EmployerGateway() {
 														<span
 															style={{
 																fontSize: "11px",
-																color: "#166534",
+																color: "var(--appearance-ink-166534)",
 																fontWeight: 800,
 															}}
 														>
@@ -1729,17 +1729,17 @@ export default function EmployerGateway() {
 															display: "flex",
 															alignItems: "center",
 															justifyContent: "space-between",
-															background: "rgba(248, 250, 252, 0.5)",
+															background: "var(--appearance-surface-rgba24825025205)",
 															padding: "10px 14px",
 															borderRadius: "12px",
-															border: "1px solid rgba(241, 245, 249, 0.5)",
+															border: "1px solid var(--appearance-edge-rgba24124524905)",
 														}}
 													>
 														<span
 															style={{
 																fontSize: "13px",
 																fontWeight: 600,
-																color: "#94a3b8",
+																color: "var(--appearance-ink-94a3b8)",
 																display: "flex",
 																alignItems: "center",
 																gap: "8px",
@@ -1761,7 +1761,7 @@ export default function EmployerGateway() {
 														<span
 															style={{
 																fontSize: "11px",
-																color: "#94a3b8",
+																color: "var(--appearance-ink-94a3b8)",
 																fontWeight: 700,
 															}}
 														>
@@ -1772,8 +1772,8 @@ export default function EmployerGateway() {
 											</div>
 											<div
 												style={{
-													background: "white",
-													border: "1px solid #e2e8f0",
+													background: "var(--appearance-surface-white)",
+													border: "1px solid var(--appearance-edge-e2e8f0)",
 													borderRadius: "16px",
 													padding: "1rem",
 													boxShadow: "0 4px 20px rgba(0,0,0,0.02)",
@@ -1788,9 +1788,9 @@ export default function EmployerGateway() {
 																flex: 1,
 																padding: "12px",
 																borderRadius: "12px",
-																background: "#f8fafc",
-																border: "1px solid #e2e8f0",
-																color: "#64748b",
+																background: "var(--appearance-surface-f8fafc)",
+																border: "1px solid var(--appearance-edge-e2e8f0)",
+																color: "var(--appearance-ink-64748b)",
 																fontWeight: 700,
 																fontSize: "13px",
 																cursor: "pointer",
@@ -1831,15 +1831,15 @@ export default function EmployerGateway() {
 															flexDirection: "column",
 															gap: "6px",
 															alignItems: "center",
-															background: "#e6fcf5",
-															border: "1px solid #a7f3d0",
+															background: "var(--appearance-surface-e6fcf5)",
+															border: "1px solid var(--appearance-edge-a7f3d0)",
 															padding: "12px",
 															borderRadius: "12px",
 														}}
 													>
 														<div
 															style={{
-																color: "#1A8C7A",
+																color: "var(--appearance-ink-1a8c7a)",
 																fontWeight: 800,
 																fontSize: "13px",
 															}}
@@ -1851,7 +1851,7 @@ export default function EmployerGateway() {
 																style={{
 																	fontSize: "12px",
 																	fontWeight: 600,
-																	color: "#64748b",
+																	color: "var(--appearance-ink-64748b)",
 																}}
 															>
 																{app.interviewDate} @ {app.interviewTime}
@@ -1862,13 +1862,13 @@ export default function EmployerGateway() {
 													<div
 														style={{
 															textAlign: "center",
-															color: "#ef4444",
+															color: "var(--appearance-ink-ef4444)",
 															fontWeight: 800,
 															fontSize: "13px",
-															background: "#fef2f2",
+															background: "var(--appearance-surface-fef2f2)",
 															padding: "12px",
 															borderRadius: "12px",
-															border: "1px solid #fecaca",
+															border: "1px solid var(--appearance-edge-fecaca)",
 														}}
 													>
 														✕ Candidate Pipelines Terminated
@@ -1909,7 +1909,7 @@ export default function EmployerGateway() {
 								style={{
 									fontSize: "28px",
 									fontWeight: 900,
-									color: "#0B2444",
+									color: "var(--appearance-ink-0b2444)",
 									margin: 0,
 								}}
 							>
@@ -1917,7 +1917,7 @@ export default function EmployerGateway() {
 							</h1>
 							<p
 								style={{
-									color: "#64748b",
+									color: "var(--appearance-ink-64748b)",
 									margin: "4px 0 0 0",
 									fontSize: "14px",
 								}}
@@ -1928,9 +1928,9 @@ export default function EmployerGateway() {
 						<button
 							onClick={handleLogout}
 							style={{
-								background: "#fef2f2",
-								border: "1px solid #fecaca",
-								color: "#ef4444",
+								background: "var(--appearance-surface-fef2f2)",
+								border: "1px solid var(--appearance-edge-fecaca)",
+								color: "var(--appearance-ink-ef4444)",
 								padding: "10px 20px",
 								borderRadius: "8px",
 								fontWeight: 700,
@@ -1969,8 +1969,8 @@ export default function EmployerGateway() {
 								cursor: "pointer",
 								transition: "0.2s cubic-bezier(0.16, 1, 0.3, 1)",
 								background:
-									activeTab === "broadcasts" ? "white" : "transparent",
-								color: activeTab === "broadcasts" ? "#0B2444" : "#64748b",
+									activeTab === "broadcasts" ? "var(--appearance-surface-white)" : "transparent",
+								color: activeTab === "broadcasts" ? "var(--appearance-ink-0b2444)" : "var(--appearance-ink-64748b)",
 								boxShadow:
 									activeTab === "broadcasts"
 										? "0 4px 12px rgba(0,0,0,0.05)"
@@ -1990,8 +1990,8 @@ export default function EmployerGateway() {
 								fontWeight: 800,
 								cursor: "pointer",
 								transition: "0.2s cubic-bezier(0.16, 1, 0.3, 1)",
-								background: activeTab === "crm" ? "white" : "transparent",
-								color: activeTab === "crm" ? "#0B2444" : "#64748b",
+								background: activeTab === "crm" ? "var(--appearance-surface-white)" : "transparent",
+								color: activeTab === "crm" ? "var(--appearance-ink-0b2444)" : "var(--appearance-ink-64748b)",
 								boxShadow:
 									activeTab === "crm" ? "0 4px 12px rgba(0,0,0,0.05)" : "none",
 							}}
@@ -2009,8 +2009,8 @@ export default function EmployerGateway() {
 								fontWeight: 800,
 								cursor: "pointer",
 								transition: "0.2s cubic-bezier(0.16, 1, 0.3, 1)",
-								background: activeTab === "invites" ? "white" : "transparent",
-								color: activeTab === "invites" ? "#0B2444" : "#64748b",
+								background: activeTab === "invites" ? "var(--appearance-surface-white)" : "transparent",
+								color: activeTab === "invites" ? "var(--appearance-ink-0b2444)" : "var(--appearance-ink-64748b)",
 								boxShadow:
 									activeTab === "invites"
 										? "0 4px 12px rgba(0,0,0,0.05)"
@@ -2035,10 +2035,10 @@ export default function EmployerGateway() {
 								<div
 									className="employer-panel employer-post-card"
 									style={{
-										background: "white",
+										background: "var(--appearance-surface-white)",
 										borderRadius: "20px",
 										padding: "2rem",
-										border: "1px solid #f1f5f9",
+										border: "1px solid var(--appearance-edge-f1f5f9)",
 										boxShadow: "0 4px 12px rgba(0,0,0,0.01)",
 									}}
 								>
@@ -2046,7 +2046,7 @@ export default function EmployerGateway() {
 										style={{
 											fontSize: "18px",
 											fontWeight: 800,
-											color: "#0f172a",
+											color: "var(--appearance-ink-0f172a)",
 											margin: "0 0 1.5rem 0",
 										}}
 									>
@@ -2076,21 +2076,21 @@ export default function EmployerGateway() {
 												display: "grid",
 												gap: "12px",
 												marginBottom: "1.5rem",
-												background: "#f8fafc",
+												background: "var(--appearance-surface-f8fafc)",
 												padding: "12px",
 												borderRadius: "10px",
-												border: "1px solid #e2e8f0",
+												border: "1px solid var(--appearance-edge-e2e8f0)",
 											}}
 										>
 											<div className="employer-vacancy-extra" style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(min(100%,160px),1fr))",gap:12,marginBottom:0}}>
-<label style={{fontSize:12,color:"#64748b",minWidth:0}}>Deadline (optional)<input type="date" value={deadline} onChange={event=>setDeadline(event.target.value)} style={{display:"block",boxSizing:"border-box",width:"100%",minWidth:0,padding:10,border:"1px solid #e2e8f0",borderRadius:10,marginTop:6,font:"inherit"}} /></label>
-<label style={{fontSize:12,color:"#64748b",minWidth:0}}>Required documents<input value={requiredDocuments} maxLength={500} onChange={event=>setRequiredDocuments(event.target.value)} placeholder="CV, provisional license…" style={{display:"block",boxSizing:"border-box",width:"100%",minWidth:0,padding:10,border:"1px solid #e2e8f0",borderRadius:10,marginTop:6,font:"inherit"}} /></label>
+<label style={{fontSize:12,color:"var(--appearance-ink-64748b)",minWidth:0}}>Deadline (optional)<input type="date" value={deadline} onChange={event=>setDeadline(event.target.value)} style={{display:"block",boxSizing:"border-box",width:"100%",minWidth:0,padding:10,border:"1px solid var(--appearance-edge-e2e8f0)",borderRadius:10,marginTop:6,font:"inherit"}} /></label>
+<label style={{fontSize:12,color:"var(--appearance-ink-64748b)",minWidth:0}}>Required documents<input value={requiredDocuments} maxLength={500} onChange={event=>setRequiredDocuments(event.target.value)} placeholder="CV, provisional license…" style={{display:"block",boxSizing:"border-box",width:"100%",minWidth:0,padding:10,border:"1px solid var(--appearance-edge-e2e8f0)",borderRadius:10,marginTop:6,font:"inherit"}} /></label>
 </div>
-<label style={{display:"grid",gap:6,fontSize:12,color:"#64748b"}}>Vacancy type
-<select value={jobType} onChange={event=>setJobType(event.target.value)} style={{minWidth:0,padding:"9px 12px",border:"1px solid #e2e8f0",borderRadius:10,background:"#f8fafc",color:"#0b2444",font:"inherit"}}>
+<label style={{display:"grid",gap:6,fontSize:12,color:"var(--appearance-ink-64748b)"}}>Vacancy type
+<select value={jobType} onChange={event=>setJobType(event.target.value)} style={{minWidth:0,padding:"9px 12px",border:"1px solid var(--appearance-edge-e2e8f0)",borderRadius:10,background:"var(--appearance-surface-f8fafc)",color:"var(--appearance-ink-0b2444)",font:"inherit"}}>
 <option value="full-time">Licensed scientist · Permanent</option><option value="internship">Internship placement</option><option value="locum">Licensed scientist · Locum</option><option value="contract">Licensed scientist · Contract</option><option value="part-time">Licensed scientist · Part-time</option>
 </select></label>
-											{jobType === "internship" && <p style={{fontSize:11,color:"#64748b",lineHeight:1.6,margin:0}}>Internship-site approval is shown only after independent review of official MLSCN evidence.</p>}
+											{jobType === "internship" && <p style={{fontSize:11,color:"var(--appearance-ink-64748b)",lineHeight:1.6,margin:0}}>Internship-site approval is shown only after independent review of official MLSCN evidence.</p>}
 										</div>
 										<label className="employer-no-fees" style={{display:"flex",gap:8,fontSize:12,lineHeight:1.6,marginBottom:14}}><input type="checkbox" required checked={noFees} onChange={event => setNoFees(event.target.checked)} />I am authorised to recruit for this role. Applicants will not be charged application, interview, placement or processing fees.</label>
 										<button
@@ -2127,7 +2127,7 @@ export default function EmployerGateway() {
 									style={{
 										fontSize: "20px",
 										fontWeight: 800,
-										color: "#0f172a",
+										color: "var(--appearance-ink-0f172a)",
 										marginBottom: "1.5rem",
 										display: "flex",
 										alignItems: "center",
@@ -2137,8 +2137,8 @@ export default function EmployerGateway() {
 									<span className="vacancy-heading-text">Vacancies</span>
 									<span className="vacancy-count"
 										style={{
-											background: "#e2e8f0",
-											color: "#475569",
+											background: "var(--appearance-surface-e2e8f0)",
+											color: "var(--appearance-ink-475569)",
 											fontSize: "12px",
 											padding: "2px 8px",
 											borderRadius: "20px",
@@ -2153,12 +2153,12 @@ export default function EmployerGateway() {
 										style={{
 											padding: "3rem",
 											textAlign: "center",
-											color: "#64748b",
+											color: "var(--appearance-ink-64748b)",
 											fontSize: "14px",
 											fontWeight: 600,
-											background: "rgba(255,255,255,0.4)",
+											background: "var(--appearance-surface-rgba25525525504)",
 											borderRadius: "16px",
-											border: "1px solid rgba(255,255,255,0.3)",
+											border: "1px solid var(--appearance-edge-rgba25525525503)",
 										}}
 									>
 										Syncing network listings...
@@ -2169,14 +2169,14 @@ export default function EmployerGateway() {
 										style={{
 											padding: "4rem",
 											textAlign: "center",
-											background: "rgba(255,255,255,0.4)",
+											background: "var(--appearance-surface-rgba25525525504)",
 											borderRadius: "16px",
-											border: "1px solid rgba(255,255,255,0.3)",
+											border: "1px solid var(--appearance-edge-rgba25525525503)",
 										}}
 									>
 										<p
 											style={{
-												color: "#64748b",
+												color: "var(--appearance-ink-64748b)",
 												fontSize: "15px",
 												margin: 0,
 												fontWeight: 600,
@@ -2189,9 +2189,9 @@ export default function EmployerGateway() {
 								) : (
 									<div className="employer-vacancies"
 										style={{
-											background: "white",
+											background: "var(--appearance-surface-white)",
 											borderRadius: "20px",
-											border: "1px solid #f1f5f9",
+											border: "1px solid var(--appearance-edge-f1f5f9)",
 											boxShadow: "0 4px 12px rgba(0,0,0,0.02)",
 											overflow: "hidden",
 										}}
@@ -2205,8 +2205,8 @@ export default function EmployerGateway() {
 										>
 											<thead
 												style={{
-													background: "#f8fafc",
-													borderBottom: "1px solid #e2e8f0",
+													background: "var(--appearance-surface-f8fafc)",
+													borderBottom: "1px solid var(--appearance-edge-e2e8f0)",
 												}}
 											>
 												<tr>
@@ -2215,7 +2215,7 @@ export default function EmployerGateway() {
 															padding: "16px 24px",
 															fontSize: "11px",
 															fontWeight: 800,
-															color: "#64748b",
+															color: "var(--appearance-ink-64748b)",
 															textTransform: "uppercase",
 															letterSpacing: "0.5px",
 														}}
@@ -2227,7 +2227,7 @@ export default function EmployerGateway() {
 															padding: "16px 24px",
 															fontSize: "11px",
 															fontWeight: 800,
-															color: "#64748b",
+															color: "var(--appearance-ink-64748b)",
 															textTransform: "uppercase",
 															letterSpacing: "0.5px",
 														}}
@@ -2239,7 +2239,7 @@ export default function EmployerGateway() {
 															padding: "16px 24px",
 															fontSize: "11px",
 															fontWeight: 800,
-															color: "#64748b",
+															color: "var(--appearance-ink-64748b)",
 															textTransform: "uppercase",
 															letterSpacing: "0.5px",
 														}}
@@ -2251,7 +2251,7 @@ export default function EmployerGateway() {
 															padding: "16px 24px",
 															fontSize: "11px",
 															fontWeight: 800,
-															color: "#64748b",
+															color: "var(--appearance-ink-64748b)",
 															textTransform: "uppercase",
 															letterSpacing: "0.5px",
 															textAlign: "right",
@@ -2265,13 +2265,13 @@ export default function EmployerGateway() {
 												{postedJobs.map((job) => (
 													<tr
 														key={job.id}
-														style={{ borderBottom: "1px solid #f1f5f9" }}
+														style={{ borderBottom: "1px solid var(--appearance-edge-f1f5f9)" }}
 													>
 														<td className="vacancy-role" data-label="Role" style={{ padding: "16px 24px" }}>
 															<div
 																style={{
 																	fontWeight: 800,
-																	color: "#0f172a",
+																	color: "var(--appearance-ink-0f172a)",
 																	fontSize: "14px",
 																	marginBottom: "4px",
 																}}
@@ -2292,8 +2292,8 @@ export default function EmployerGateway() {
 																		<span
 																			key={i}
 																			style={{
-																				background: "#f1f5f9",
-																				color: "#475569",
+																				background: "var(--appearance-surface-f1f5f9)",
+																				color: "var(--appearance-ink-475569)",
 																				padding: "2px 6px",
 																				borderRadius: "4px",
 																				fontSize: "10px",
@@ -2308,7 +2308,7 @@ export default function EmployerGateway() {
 														<td className="vacancy-location" data-label="Location"
 															style={{
 																padding: "16px 24px",
-																color: "#475569",
+																color: "var(--appearance-ink-475569)",
 																fontSize: "13px",
 																fontWeight: 600,
 															}}
@@ -2327,9 +2327,9 @@ export default function EmployerGateway() {
 															>
 																<span className="vacancy-status-badge" data-status={job.status}
 																	style={{
-																		background: "#e6fcf5",
-																		color: "#1A8C7A",
-																		border: "1px solid #a7f3d0",
+																		background: "var(--appearance-surface-e6fcf5)",
+																		color: "var(--appearance-ink-1a8c7a)",
+																		border: "1px solid var(--appearance-edge-a7f3d0)",
 																		padding: "4px 10px",
 																		borderRadius: "20px",
 																		fontSize: "11px",
@@ -2360,7 +2360,7 @@ export default function EmployerGateway() {
 																		padding: 0,
 																		fontSize: "12px",
 																		fontWeight: 700,
-																		color: "#0B2444",
+																		color: "var(--appearance-ink-0b2444)",
 																		display: "flex",
 																		alignItems: "center",
 																		gap: "6px",
@@ -2419,9 +2419,9 @@ export default function EmployerGateway() {
 																		})
 																	}
 																	style={{
-																		background: "#f8fafc",
-																		color: "#475569",
-																		border: "1px solid #e2e8f0",
+																		background: "var(--appearance-surface-f8fafc)",
+																		color: "var(--appearance-ink-475569)",
+																		border: "1px solid var(--appearance-edge-e2e8f0)",
 																		padding: "6px 12px",
 																		borderRadius: "6px",
 																		fontSize: "11px",
@@ -2440,9 +2440,9 @@ export default function EmployerGateway() {
 																		})
 																	}
 																	style={{
-																		background: "#fef2f2",
-																		color: "#ef4444",
-																		border: "1px solid #fecaca",
+																		background: "var(--appearance-surface-fef2f2)",
+																		color: "var(--appearance-ink-ef4444)",
+																		border: "1px solid var(--appearance-edge-fecaca)",
 																		padding: "6px 12px",
 																		borderRadius: "6px",
 																		fontSize: "11px",
@@ -2468,10 +2468,10 @@ export default function EmployerGateway() {
 						<div
 							className="employer-panel employer-talent-panel"
 							style={{
-								background: "white",
+								background: "var(--appearance-surface-white)",
 								borderRadius: "24px",
 								padding: "2.5rem",
-								border: "1px solid #f1f5f9",
+								border: "1px solid var(--appearance-edge-f1f5f9)",
 								boxShadow: "0 4px 24px rgba(0,0,0,0.01)",
 							}}
 						>
@@ -2490,7 +2490,7 @@ export default function EmployerGateway() {
 										style={{
 											fontSize: "20px",
 											fontWeight: 850,
-											color: "#0B2444",
+											color: "var(--appearance-ink-0b2444)",
 											margin: 0,
 										}}
 									>
@@ -2500,7 +2500,7 @@ export default function EmployerGateway() {
 										style={{
 											margin: "4px 0 0 0",
 											fontSize: "13px",
-											color: "#64748b",
+											color: "var(--appearance-ink-64748b)",
 										}}
 									>
 										Invite previous applicants from your organization’s
@@ -2515,9 +2515,9 @@ export default function EmployerGateway() {
 											padding: "10px 36px 10px 16px",
 											fontSize: "13px",
 											fontWeight: 700,
-											color: "#334155",
-											background: "#f8fafc",
-											border: "1px solid #e2e8f0",
+											color: "var(--appearance-ink-334155)",
+											background: "var(--appearance-surface-f8fafc)",
+											border: "1px solid var(--appearance-edge-e2e8f0)",
 											borderRadius: "10px",
 											outline: "none",
 											cursor: "pointer",
@@ -2535,7 +2535,7 @@ export default function EmployerGateway() {
 										height="12"
 										viewBox="0 0 24 24"
 										fill="none"
-										stroke="#64748b"
+										stroke="var(--appearance-ink-64748b)"
 										strokeWidth="3"
 										style={{
 											position: "absolute",
@@ -2555,7 +2555,7 @@ export default function EmployerGateway() {
 									style={{
 										textAlign: "center",
 										padding: "4rem",
-										color: "#64748b",
+										color: "var(--appearance-ink-64748b)",
 										fontWeight: 700,
 										fontSize: "14px",
 									}}
@@ -2563,9 +2563,9 @@ export default function EmployerGateway() {
 									Loading your applicant directory...
 								</div>
 							) : crmError ? (
-                                <div role="alert" style={{padding:"1.25rem",background:"#fff7ed",border:"1px solid #fed7aa",borderRadius:12,color:"#9a3412"}}>
+                                <div role="alert" style={{padding:"1.25rem",background:"var(--appearance-surface-fff7ed)",border:"1px solid var(--appearance-edge-fed7aa)",borderRadius:12,color:"var(--appearance-ink-9a3412)"}}>
                                   <p style={{margin:"0 0 12px",lineHeight:1.5}}>{crmError}</p>
-                                  <button type="button" onClick={fetchTalentDirectory} style={{padding:"8px 14px",border:"1px solid #fdba74",borderRadius:8,background:"white",color:"#9a3412",fontWeight:700,cursor:"pointer"}}>Retry loading applicants</button>
+                                  <button type="button" onClick={fetchTalentDirectory} style={{padding:"8px 14px",border:"1px solid var(--appearance-edge-fdba74)",borderRadius:8,background:"var(--appearance-surface-white)",color:"var(--appearance-ink-9a3412)",fontWeight:700,cursor:"pointer"}}>Retry loading applicants</button>
                                 </div>
                             ) : talentPool.length === 0 ? (
 								<div
@@ -2573,15 +2573,15 @@ export default function EmployerGateway() {
 									style={{
 										textAlign: "center",
 										padding: "4rem",
-										background: "#f8fafc",
+										background: "var(--appearance-surface-f8fafc)",
 										borderRadius: "16px",
-										border: "1px dashed #e2e8f0",
+										border: "1px dashed var(--appearance-edge-e2e8f0)",
 									}}
 								>
 									<p
 										style={{
 											margin: 0,
-											color: "#64748b",
+											color: "var(--appearance-ink-64748b)",
 											fontSize: "14px",
 											fontWeight: 600,
 										}}
@@ -2606,8 +2606,8 @@ export default function EmployerGateway() {
 													alignItems: "center",
 													justifyContent: "space-between",
 													padding: "1.25rem",
-													background: "#f8fafc",
-													border: "1px solid #e2e8f0",
+													background: "var(--appearance-surface-f8fafc)",
+													border: "1px solid var(--appearance-edge-e2e8f0)",
 													flexWrap: "wrap",
 													gap: "1rem",
 													borderRadius: "16px",
@@ -2643,7 +2643,7 @@ export default function EmployerGateway() {
 															style={{
 																fontSize: "15px",
 																fontWeight: 800,
-																color: "#0f172a",
+																color: "var(--appearance-ink-0f172a)",
 																display: "flex",
 																alignItems: "center",
 																gap: "8px",
@@ -2655,8 +2655,8 @@ export default function EmployerGateway() {
 																	style={{
 																		fontSize: "10px",
 																		fontWeight: 800,
-																		color: "#1A8C7A",
-																		background: "#e6fcf5",
+																		color: "var(--appearance-ink-1a8c7a)",
+																		background: "var(--appearance-surface-e6fcf5)",
 																		padding: "2px 6px",
 																		borderRadius: "4px",
 																	}}
@@ -2668,12 +2668,12 @@ export default function EmployerGateway() {
 														<div className="employer-talent-email"
 															style={{
 																fontSize: "12px",
-																color: "#64748b",
+																color: "var(--appearance-ink-64748b)",
 																marginTop: "2px",
 																fontWeight: 550,
 															}}
 														>
-															{user.email}<div style={{fontSize:11,color:"#1A8C7A",fontWeight:500,marginTop:3}}>{careerLabel(user.careerPhase,{placementStage:user.placementStage})}</div>
+															{user.email}<div style={{fontSize:11,color:"var(--appearance-ink-1a8c7a)",fontWeight:500,marginTop:3}}>{careerLabel(user.careerPhase,{placementStage:user.placementStage})}</div>
 														</div>
 													</div>
 												</div>
@@ -2693,9 +2693,9 @@ export default function EmployerGateway() {
 																textDecoration: "none",
 																fontSize: "12px",
 																fontWeight: 700,
-																color: "#475569",
-																background: "white",
-																border: "1px solid #cbd5e1",
+																color: "var(--appearance-ink-475569)",
+																background: "var(--appearance-surface-white)",
+																border: "1px solid var(--appearance-edge-cbd5e1)",
 																padding: "8px 14px",
 																borderRadius: "8px",
 																transition: "0.2s",
@@ -2738,10 +2738,10 @@ export default function EmployerGateway() {
 						<div
 							className="employer-panel"
 							style={{
-								background: "white",
+								background: "var(--appearance-surface-white)",
 								borderRadius: "24px",
 								padding: "2.5rem",
-								border: "1px solid #f1f5f9",
+								border: "1px solid var(--appearance-edge-f1f5f9)",
 								boxShadow: "0 4px 24px rgba(0,0,0,0.01)",
 							}}
 						>
@@ -2760,7 +2760,7 @@ export default function EmployerGateway() {
 										style={{
 											fontSize: "20px",
 											fontWeight: 850,
-											color: "#0B2444",
+											color: "var(--appearance-ink-0b2444)",
 											margin: 0,
 										}}
 									>
@@ -2770,7 +2770,7 @@ export default function EmployerGateway() {
 										style={{
 											margin: "4px 0 0 0",
 											fontSize: "13px",
-											color: "#64748b",
+											color: "var(--appearance-ink-64748b)",
 										}}
 									>
 										Track your direct recruitment outreaches.
@@ -2784,7 +2784,7 @@ export default function EmployerGateway() {
 									style={{
 										textAlign: "center",
 										padding: "4rem",
-										color: "#64748b",
+										color: "var(--appearance-ink-64748b)",
 										fontWeight: 700,
 										fontSize: "14px",
 									}}
@@ -2797,15 +2797,15 @@ export default function EmployerGateway() {
 									style={{
 										textAlign: "center",
 										padding: "4rem",
-										background: "#f8fafc",
+										background: "var(--appearance-surface-f8fafc)",
 										borderRadius: "16px",
-										border: "1px dashed #e2e8f0",
+										border: "1px dashed var(--appearance-edge-e2e8f0)",
 									}}
 								>
 									<p
 										style={{
 											margin: 0,
-											color: "#64748b",
+											color: "var(--appearance-ink-64748b)",
 											fontSize: "14px",
 											fontWeight: 600,
 										}}
@@ -2829,8 +2829,8 @@ export default function EmployerGateway() {
 												alignItems: "center",
 												justifyContent: "space-between",
 												padding: "1.25rem",
-												background: "#f8fafc",
-												border: "1px solid #e2e8f0",
+												background: "var(--appearance-surface-f8fafc)",
+												border: "1px solid var(--appearance-edge-e2e8f0)",
 												flexWrap: "wrap",
 												gap: "1rem",
 												borderRadius: "16px",
@@ -2866,7 +2866,7 @@ export default function EmployerGateway() {
 														style={{
 															fontSize: "15px",
 															fontWeight: 800,
-															color: "#0f172a",
+															color: "var(--appearance-ink-0f172a)",
 															display: "flex",
 															alignItems: "center",
 															gap: "8px",
@@ -2878,8 +2878,8 @@ export default function EmployerGateway() {
 																style={{
 																	fontSize: "10px",
 																	fontWeight: 800,
-																	color: "#1A8C7A",
-																	background: "#e6fcf5",
+																	color: "var(--appearance-ink-1a8c7a)",
+																	background: "var(--appearance-surface-e6fcf5)",
 																	padding: "2px 6px",
 																	borderRadius: "4px",
 																}}
@@ -2891,13 +2891,13 @@ export default function EmployerGateway() {
 													<div
 														style={{
 															fontSize: "12px",
-															color: "#64748b",
+															color: "var(--appearance-ink-64748b)",
 															marginTop: "2px",
 															fontWeight: 550,
 														}}
 													>
 														Invited for:{" "}
-														<strong style={{ color: "#0f172a" }}>
+														<strong style={{ color: "var(--appearance-ink-0f172a)" }}>
 															{record.jobRole}
 														</strong>
 													</div>
@@ -2919,9 +2919,9 @@ export default function EmployerGateway() {
 															textDecoration: "none",
 															fontSize: "12px",
 															fontWeight: 700,
-															color: "#475569",
-															background: "white",
-															border: "1px solid #cbd5e1",
+															color: "var(--appearance-ink-475569)",
+															background: "var(--appearance-surface-white)",
+															border: "1px solid var(--appearance-edge-cbd5e1)",
 															padding: "8px 14px",
 															borderRadius: "8px",
 															transition: "0.2s",
@@ -2934,9 +2934,9 @@ export default function EmployerGateway() {
 													style={{
 														padding: "8px 16px",
 														borderRadius: "8px",
-														border: "1px solid #a7f3d0",
-														background: "#e6fcf5",
-														color: "#1A8C7A",
+														border: "1px solid var(--appearance-edge-a7f3d0)",
+														background: "var(--appearance-surface-e6fcf5)",
+														color: "var(--appearance-ink-1a8c7a)",
 														fontSize: "12px",
 														fontWeight: 800,
 													}}
@@ -2967,14 +2967,14 @@ export default function EmployerGateway() {
 								style={{
 									fontSize: "24px",
 									fontWeight: 900,
-									color: "#0B2444",
+									color: "var(--appearance-ink-0b2444)",
 									margin: 0,
 								}}
 							>
 								BenchScout B2B
 							</h2>
 							<p
-								style={{ color: "#64748b", fontSize: "14px", marginTop: "4px" }}
+								style={{ color: "var(--appearance-ink-64748b)", fontSize: "14px", marginTop: "4px" }}
 							>
 								Post laboratory roles and manage applications from one workspace. Employer review is required before publishing.
 							</p>
@@ -2982,9 +2982,9 @@ export default function EmployerGateway() {
 						{error && (
 							<div
 								style={{
-									background: "#fef2f2",
-									border: "1px solid #fca5a5",
-									color: "#b91c1c",
+									background: "var(--appearance-surface-fef2f2)",
+									border: "1px solid var(--appearance-edge-fca5a5)",
+									color: "var(--appearance-ink-b91c1c)",
 									padding: "12px",
 									borderRadius: "8px",
 									fontSize: "13px",
@@ -3003,7 +3003,7 @@ export default function EmployerGateway() {
 										style={{
 											fontSize: "11px",
 											fontWeight: 800,
-											color: "#64748b",
+											color: "var(--appearance-ink-64748b)",
 											letterSpacing: "0.5px",
 										}}
 									>
@@ -3021,7 +3021,7 @@ export default function EmployerGateway() {
 										style={{
 											fontSize: "11px",
 											fontWeight: 800,
-											color: "#64748b",
+											color: "var(--appearance-ink-64748b)",
 											letterSpacing: "0.5px",
 										}}
 									>
@@ -3040,7 +3040,7 @@ export default function EmployerGateway() {
 								style={{
 									fontSize: "11px",
 									fontWeight: 800,
-									color: "#64748b",
+									color: "var(--appearance-ink-64748b)",
 									letterSpacing: "0.5px",
 								}}
 							>
@@ -3060,7 +3060,7 @@ export default function EmployerGateway() {
 								style={{
 									fontSize: "11px",
 									fontWeight: 800,
-									color: "#64748b",
+									color: "var(--appearance-ink-64748b)",
 									letterSpacing: "0.5px",
 								}}
 							>
@@ -3076,8 +3076,8 @@ export default function EmployerGateway() {
 								style={inputStyle}
 								required
 							/>
-							{view === "login" && <button type="button" onClick={() => window.dispatchEvent(new CustomEvent("openProfileModal", { detail: { mode: "forgot", role: "employer", email } }))} style={{ display: "block", marginLeft: "auto", padding: "8px 0", border: "none", background: "none", color: "#1A8C7A", font: "inherit", fontSize: 13, cursor: "pointer" }}>Forgot password?</button>}
-							{view === "login" && <button type="button" onClick={() => { if (!email) { setError("Enter your email address first."); return; } window.dispatchEvent(new CustomEvent("openProfileModal", { detail: { mode: "verify-sent", role: "employer", email } })); }} style={{ display: "block", marginLeft: "auto", padding: "8px 0", border: "none", background: "none", color: "#1A8C7A", font: "inherit", fontSize: 13, cursor: "pointer" }}>Resend confirmation</button>}
+							{view === "login" && <button type="button" onClick={() => window.dispatchEvent(new CustomEvent("openProfileModal", { detail: { mode: "forgot", role: "employer", email } }))} style={{ display: "block", marginLeft: "auto", padding: "8px 0", border: "none", background: "none", color: "var(--appearance-ink-1a8c7a)", font: "inherit", fontSize: 13, cursor: "pointer" }}>Forgot password?</button>}
+							{view === "login" && <button type="button" onClick={() => { if (!email) { setError("Enter your email address first."); return; } window.dispatchEvent(new CustomEvent("openProfileModal", { detail: { mode: "verify-sent", role: "employer", email } })); }} style={{ display: "block", marginLeft: "auto", padding: "8px 0", border: "none", background: "none", color: "var(--appearance-ink-1a8c7a)", font: "inherit", fontSize: 13, cursor: "pointer" }}>Resend confirmation</button>}
 							<button
 								type="submit"
 								disabled={loading}
@@ -3109,14 +3109,14 @@ export default function EmployerGateway() {
 								fontWeight: 600,
 							}}
 						>
-							<span style={{ color: "#64748b" }}>
+							<span style={{ color: "var(--appearance-ink-64748b)" }}>
 								{view === "login"
 									? "New to BenchScout? "
 									: "Already verified node? "}
 							</span>
 							<span
 								onClick={() => setView(view === "login" ? "register" : "login")}
-								style={{ color: "#1A8C7A", cursor: "pointer" }}
+								style={{ color: "var(--appearance-ink-1a8c7a)", cursor: "pointer" }}
 							>
 								{view === "login" ? "Create employer account" : "Log in"}
 							</span>

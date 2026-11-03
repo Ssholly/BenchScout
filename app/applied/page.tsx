@@ -42,29 +42,29 @@ function AppliedPipeline() {
 
 	// 🚀 BRAND UPDATED COLUMNS
 	const columns: Column[] = [
-		{ id: "rejected", title: "Closed / Rejected", color: "#64748b", bgColor: "#f1f5f9" },
+		{ id: "rejected", title: "Closed / Rejected", color: "var(--appearance-ink-64748b)", bgColor: "#f1f5f9" },
 		{
 			id: "saved",
 			title: "Saved / Shortlisted",
-			color: "#64748b",
+			color: "var(--appearance-ink-64748b)",
 			bgColor: "rgba(241, 245, 249, 0.5)",
 		},
 		{
 			id: "applied",
 			title: "Application Sent",
-			color: "#0B2444",
+			color: "var(--appearance-ink-0b2444)",
 			bgColor: "rgba(11, 36, 68, 0.05)",
 		},
 		{
 			id: "interviewing",
 			title: "Interviewing",
-			color: "#eab308",
+			color: "var(--appearance-ink-eab308)",
 			bgColor: "rgba(254, 249, 195, 0.5)",
 		},
 		{
 			id: "offer",
 			title: "Offer / Hired",
-			color: "#1A8C7A",
+			color: "var(--appearance-ink-1a8c7a)",
 			bgColor: "rgba(26, 140, 122, 0.05)",
 		},
 	];
@@ -195,7 +195,7 @@ function AppliedPipeline() {
 						margin: 0,
 						fontSize: "28px",
 						fontWeight: 900,
-						color: "#0f172a",
+						color: "var(--appearance-ink-0f172a)",
 						letterSpacing: "-0.5px",
 					}}
 				>
@@ -203,7 +203,7 @@ function AppliedPipeline() {
 				</h1>
 				<p
 					className="page-sub"
-					style={{ margin: "4px 0 0 0", fontSize: "14px", color: "#64748b" }}
+					style={{ margin: "4px 0 0 0", fontSize: "14px", color: "var(--appearance-ink-64748b)" }}
 				>
 					Keep each application up to date using its stage selector.
 				</p>
@@ -214,10 +214,10 @@ function AppliedPipeline() {
 					style={{
 						padding: "4rem",
 						textAlign: "center",
-						background: "rgba(255,255,255,0.5)",
+						background: "var(--appearance-surface-rgba25525525505)",
 						backdropFilter: "blur(16px)",
 						borderRadius: "16px",
-						border: "1px solid rgba(255, 255, 255, 0.3)",
+						border: "1px solid var(--appearance-edge-rgba25525525503)",
 						boxShadow: "0 4px 20px -2px rgba(0, 0, 0, 0.03)",
 					}}
 				>
@@ -225,13 +225,13 @@ function AppliedPipeline() {
 						style={{
 							width: "64px",
 							height: "64px",
-							background: "rgba(241, 245, 249, 0.8)",
+							background: "var(--appearance-surface-rgba24124524908)",
 							borderRadius: "50%",
 							display: "flex",
 							alignItems: "center",
 							justifyContent: "center",
 							margin: "0 auto 1rem auto",
-							color: "#64748b",
+							color: "var(--appearance-ink-64748b)",
 						}}
 					>
 						<svg
@@ -252,7 +252,7 @@ function AppliedPipeline() {
 						style={{
 							margin: "0 0 8px 0",
 							fontSize: "18px",
-							color: "#0f172a",
+							color: "var(--appearance-ink-0f172a)",
 							fontWeight: 800,
 						}}
 					>
@@ -260,7 +260,7 @@ function AppliedPipeline() {
 					</h2>
 					<p
 						style={{
-							color: "#64748b",
+							color: "var(--appearance-ink-64748b)",
 							fontSize: "14px",
 							maxWidth: "400px",
 							margin: "0 auto 24px auto",
@@ -292,7 +292,7 @@ function AppliedPipeline() {
 						padding: "4rem",
 						textAlign: "center",
 						fontFamily: "monospace",
-						color: "#94a3b8",
+						color: "var(--appearance-ink-94a3b8)",
 					}}
 				>
 					Loading your applications…
@@ -335,14 +335,14 @@ function AppliedPipeline() {
 									height: "100%",
 									minHeight: "500px",
 									background: isOver
-										? "rgba(255, 255, 255, 0.6)"
-										: "rgba(255, 255, 255, 0.3)",
+										? "var(--appearance-surface-rgba25525525506)"
+										: "var(--appearance-surface-rgba25525525503)",
 									backdropFilter: "blur(24px)",
 									WebkitBackdropFilter: "blur(24px)",
 									borderRadius: "20px",
 									border: isOver
 										? `2px dashed ${col.color}`
-										: "1px solid rgba(255, 255, 255, 0.4)",
+										: "1px solid var(--appearance-edge-rgba25525525504)",
 									padding: "1.25rem",
 									display: "flex",
 									flexDirection: "column",
@@ -379,7 +379,7 @@ function AppliedPipeline() {
 												margin: 0,
 												fontSize: "14px",
 												fontWeight: 800,
-												color: "#0f172a",
+												color: "var(--appearance-ink-0f172a)",
 											}}
 										>
 											{col.title}
@@ -389,8 +389,8 @@ function AppliedPipeline() {
 										style={{
 											fontSize: "12px",
 											fontWeight: 800,
-											color: "#64748b",
-											background: "white",
+											color: "var(--appearance-ink-64748b)",
+											background: "var(--appearance-surface-white)",
 											padding: "2px 8px",
 											borderRadius: "12px",
 											boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
@@ -418,11 +418,11 @@ function AppliedPipeline() {
 											onDragEnd={(e) => handleDragEnd(e, card.id)}
 
 											style={{
-												background: "rgba(255, 255, 255, 0.95)",
+												background: "var(--appearance-surface-rgba255255255095)",
 												borderRadius: "16px",
 												padding: "1rem",
 												cursor: "pointer",
-												border: "1px solid rgba(255,255,255,0.8)",
+												border: "1px solid var(--appearance-edge-rgba25525525508)",
 												boxShadow: "0 4px 12px -2px rgba(0,0,0,0.05)",
 												transition: "box-shadow 0.2s ease, transform 0.2s ease",
 												position: "relative",
@@ -445,7 +445,7 @@ function AppliedPipeline() {
 													position: "absolute",
 													top: "12px",
 													right: "12px",
-													background: "rgba(241, 245, 249, 0.8)",
+													background: "var(--appearance-surface-rgba24124524908)",
 													border: "none",
 													width: "22px",
 													height: "22px",
@@ -454,18 +454,18 @@ function AppliedPipeline() {
 													alignItems: "center",
 													justifyContent: "center",
 													cursor: "pointer",
-													color: "#94a3b8",
+													color: "var(--appearance-ink-94a3b8)",
 													transition: "all 0.2s ease",
 													zIndex: 2,
 												}}
 												onMouseEnter={(e) => {
-													e.currentTarget.style.background = "#fef2f2";
-													e.currentTarget.style.color = "#ef4444";
+													e.currentTarget.style.background = "var(--appearance-surface-fef2f2)";
+													e.currentTarget.style.color = "var(--appearance-ink-ef4444)";
 												}}
 												onMouseLeave={(e) => {
 													e.currentTarget.style.background =
-														"rgba(241, 245, 249, 0.8)";
-													e.currentTarget.style.color = "#94a3b8";
+														"var(--appearance-surface-rgba24124524908)";
+													e.currentTarget.style.color = "var(--appearance-ink-94a3b8)";
 												}}
 											>
 												<svg
@@ -496,16 +496,16 @@ function AppliedPipeline() {
 													style={{
 														background:
 															card.tier === 1
-																? "#e6fcf5"
+																? "var(--appearance-surface-e6fcf5)"
 																: card.tier === 2
-																	? "#e0e7ff"
-																	: "#f1f5f9",
+																	? "var(--appearance-surface-e0e7ff)"
+																	: "var(--appearance-surface-f1f5f9)",
 														color:
 															card.tier === 1
-																? "#1A8C7A"
+																? "var(--appearance-ink-1a8c7a)"
 																: card.tier === 2
-																	? "#0B2444"
-																	: "#64748b",
+																	? "var(--appearance-ink-0b2444)"
+																	: "var(--appearance-ink-64748b)",
 														fontSize: "9px",
 														padding: "3px 6px",
 														borderRadius: "4px",
@@ -521,7 +521,7 @@ function AppliedPipeline() {
 													margin: "0 0 4px 0",
 													fontSize: "14px",
 													fontWeight: 800,
-													color: "#0f172a",
+													color: "var(--appearance-ink-0f172a)",
 													lineHeight: "1.3",
 													paddingRight: "20px",
 												}}
@@ -532,13 +532,13 @@ function AppliedPipeline() {
 												style={{
 													margin: "0 0 12px 0",
 													fontSize: "12px",
-													color: "#64748b",
+													color: "var(--appearance-ink-64748b)",
 													fontWeight: 500,
 												}}
 											>
 												{card.company}
 											</p>
-                                        {card.isDirectPost && <p style={{fontSize:12,color:"#475569",lineHeight:1.5,margin:"0 0 12px"}}>Documents selected at submission: {card.selectedDocuments?.map(kind=>({resume:"CV",license:"Practising license",provisional:"Provisional license",degree:"Degree certificate",result:"Statement of result",placement:"Placement letter",certificate:"Additional certificate"} as Record<string,string>)[kind] || kind).join(", ") || "No document record"}. Replaced or deleted files are no longer accessible.</p>}
+                                        {card.isDirectPost && <p style={{fontSize:12,color:"var(--appearance-ink-475569)",lineHeight:1.5,margin:"0 0 12px"}}>Documents selected at submission: {card.selectedDocuments?.map(kind=>({resume:"CV",license:"Practising license",provisional:"Provisional license",degree:"Degree certificate",result:"Statement of result",placement:"Placement letter",certificate:"Additional certificate"} as Record<string,string>)[kind] || kind).join(", ") || "No document record"}. Replaced or deleted files are no longer accessible.</p>}
 
 
 											<div
@@ -546,7 +546,7 @@ function AppliedPipeline() {
 													display: "flex",
 													justifyContent: "space-between",
 													alignItems: "center",
-													borderTop: "1px solid #f1f5f9",
+													borderTop: "1px solid var(--appearance-edge-f1f5f9)",
 													paddingTop: "12px",
 												}}
 											>
@@ -555,7 +555,7 @@ function AppliedPipeline() {
 														display: "flex",
 														alignItems: "center",
 														gap: "4px",
-														color: "#64748b",
+														color: "var(--appearance-ink-64748b)",
 													}}
 												>
 													<svg
@@ -594,7 +594,7 @@ function AppliedPipeline() {
 														style={{
 															fontSize: "11px",
 															fontWeight: 800,
-															color: "#0f172a",
+															color: "var(--appearance-ink-0f172a)",
 														}}
 													>
 														{card.salary}
@@ -604,7 +604,7 @@ function AppliedPipeline() {
 														height="14"
 														viewBox="0 0 24 24"
 														fill="none"
-														stroke="#1A8C7A"
+														stroke="var(--appearance-ink-1a8c7a)"
 														strokeWidth="2.5"
 														strokeLinecap="round"
 														strokeLinejoin="round"
@@ -616,10 +616,10 @@ function AppliedPipeline() {
 												</div>
 											</div>
                                             <button className="pipeline-posting-button" onClick={() => setViewingPosting(card)}>View posting</button>
-                                            {card.isDirectPost && <p style={{ fontSize: 12, color: "#64748b", margin: "12px 0 0" }}>Stage updated by the employer.</p>}
-                                            {!card.isDirectPost && <label style={{ display: "block", marginTop: 12, fontSize: 12, color: "#64748b" }} onClick={event => event.stopPropagation()}>
+                                            {card.isDirectPost && <p style={{ fontSize: 12, color: "var(--appearance-ink-64748b)", margin: "12px 0 0" }}>Stage updated by the employer.</p>}
+                                            {!card.isDirectPost && <label style={{ display: "block", marginTop: 12, fontSize: 12, color: "var(--appearance-ink-64748b)" }} onClick={event => event.stopPropagation()}>
                                               Application stage
-                                              <select disabled={updatingId !== null} aria-label={`Application stage for ${card.role}`} value={card.columnId} onChange={event => void moveCard(card.id, event.target.value)} style={{ width: "100%", marginTop: 6, padding: 10, borderRadius: 8, border: "1px solid #dbe2ea", background: "white", color: "#0B2444" }}>
+                                              <select disabled={updatingId !== null} aria-label={`Application stage for ${card.role}`} value={card.columnId} onChange={event => void moveCard(card.id, event.target.value)} style={{ width: "100%", marginTop: 6, padding: 10, borderRadius: 8, border: "1px solid var(--appearance-edge-dbe2ea)", background: "var(--appearance-surface-white)", color: "var(--appearance-ink-0b2444)" }}>
                                                 {columns.map(column => <option key={column.id} value={column.id}>{column.title}</option>)}
                                               </select>
                                             </label>}
@@ -630,12 +630,12 @@ function AppliedPipeline() {
 										<div
 											style={{
 												height: "100px",
-												border: "2px dashed rgba(255,255,255,0.5)",
+												border: "2px dashed var(--appearance-edge-rgba25525525505)",
 												borderRadius: "16px",
 												display: "flex",
 												alignItems: "center",
 												justifyContent: "center",
-												color: "#94a3b8",
+												color: "var(--appearance-ink-94a3b8)",
 												fontSize: "12px",
 												fontWeight: 600,
 											}}

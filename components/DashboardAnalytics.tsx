@@ -82,12 +82,12 @@ export default function DashboardAnalytics() {
 	}, []);
 
 	const networks = [
-		{ name: "Indeed", status: "SOURCE", color: "#64748b" },
-		{ name: "LinkedIn", status: "SOURCE", color: "#64748b" },
-		{ name: "MyJobMag", status: "SOURCE", color: "#64748b" },
-		{ name: "HotNigerianJobs", status: "SOURCE", color: "#64748b" },
-		{ name: "SmartRecruiters", status: "SOURCE", color: "#64748b" },
-        { name: "Jobberman", status: "SOURCE", color: "#64748b" },
+		{ name: "Indeed", status: "SOURCE", color: "var(--appearance-ink-64748b)" },
+		{ name: "LinkedIn", status: "SOURCE", color: "var(--appearance-ink-64748b)" },
+		{ name: "MyJobMag", status: "SOURCE", color: "var(--appearance-ink-64748b)" },
+		{ name: "HotNigerianJobs", status: "SOURCE", color: "var(--appearance-ink-64748b)" },
+		{ name: "SmartRecruiters", status: "SOURCE", color: "var(--appearance-ink-64748b)" },
+        { name: "Jobberman", status: "SOURCE", color: "var(--appearance-ink-64748b)" },
 	];
 
 	return (
@@ -100,8 +100,8 @@ export default function DashboardAnalytics() {
 				className="match-volume-card"
 				style={{
 					flex: 2,
-					background: "white",
-					border: "1px solid #f1f5f9",
+					background: "var(--appearance-surface-white)",
+					border: "1px solid var(--appearance-edge-f1f5f9)",
 					borderRadius: "16px",
 					padding: "1.75rem",
 					boxShadow: "0 4px 6px -1px rgba(0,0,0,0.02)",
@@ -120,17 +120,17 @@ export default function DashboardAnalytics() {
 							style={{
 								fontSize: "16px",
 								fontWeight: 800,
-								color: "#0f172a",
+								color: "var(--appearance-ink-0f172a)",
 								margin: "0 0 4px 0",
 							}}
 						>
 							Match Volume
 						</h3>
-						<p style={{ fontSize: "12px", color: "#64748b", margin: 0 }}>
+						<p style={{ fontSize: "12px", color: "var(--appearance-ink-64748b)", margin: 0 }}>
 							Trailing 7-day activity
 						</p>
 					</div>
-					<div style={{ fontSize: "16px", fontWeight: 800, color: "#0058bc" }}>
+					<div style={{ fontSize: "16px", fontWeight: 800, color: "var(--appearance-ink-0058bc)" }}>
 						Saved data
 					</div>
 				</div>
@@ -157,7 +157,7 @@ export default function DashboardAnalytics() {
 							flexDirection: "column",
 							justifyContent: "space-between",
 							paddingBottom: "30px",
-							color: "#94a3b8",
+							color: "var(--appearance-ink-94a3b8)",
 							fontSize: "10px",
 							fontWeight: 600,
 						}}
@@ -190,7 +190,7 @@ export default function DashboardAnalytics() {
 								style={{
 									width: "100%",
 									height: "1px",
-									borderTop: "1px dashed #e2e8f0",
+									borderTop: "1px dashed var(--appearance-edge-e2e8f0)",
 								}}
 							></div>
 						))}
@@ -263,7 +263,7 @@ export default function DashboardAnalytics() {
 											position: "absolute",
 											bottom: "-25px",
 											fontSize: "11px",
-											color: "#64748b",
+											color: "var(--appearance-ink-64748b)",
 											fontWeight: 600,
 										}}
 									>
@@ -281,8 +281,8 @@ export default function DashboardAnalytics() {
 				className="search-sources-card"
 				style={{
 					flex: 1,
-					background: "white",
-					border: "1px solid #f1f5f9",
+					background: "var(--appearance-surface-white)",
+					border: "1px solid var(--appearance-edge-f1f5f9)",
 					borderRadius: "16px",
 					padding: "1.75rem",
 					boxShadow: "0 4px 6px -1px rgba(0,0,0,0.02)",
@@ -292,7 +292,7 @@ export default function DashboardAnalytics() {
 					style={{
 						fontSize: "14px",
 						fontWeight: 800,
-						color: "#0f172a",
+						color: "var(--appearance-ink-0f172a)",
 						margin: "0 0 1.5rem 0",
 						display: "flex",
 						alignItems: "center",
@@ -302,8 +302,8 @@ export default function DashboardAnalytics() {
 					Search Sources
 					<span
 						style={{
-							background: "#fef2f2",
-							color: "#ef4444",
+							background: "var(--appearance-surface-fef2f2)",
+							color: "var(--appearance-ink-ef4444)",
 							padding: "2px 6px",
 							borderRadius: "4px",
 							fontSize: "9px",
@@ -324,11 +324,11 @@ export default function DashboardAnalytics() {
 								justifyContent: "space-between",
 								alignItems: "center",
 								paddingBottom: "1rem",
-								borderBottom: "1px solid #f1f5f9",
+								borderBottom: "1px solid var(--appearance-edge-f1f5f9)",
 							}}
 						>
 							<span
-								style={{ fontSize: "13px", fontWeight: 700, color: "#334155" }}
+								style={{ fontSize: "13px", fontWeight: 700, color: "var(--appearance-ink-334155)" }}
 							>
 								{net.name}
 							</span>

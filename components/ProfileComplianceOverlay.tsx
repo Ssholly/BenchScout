@@ -35,7 +35,7 @@ export default function ProfileComplianceOverlay({
 			return {
 				text: "#dc2626",
 				bg: "rgba(220, 38, 38, 0.05)",
-				border: "rgba(220, 38, 38, 0.15)",
+				border: "var(--appearance-edge-rgba2203838015)",
 				progressBg: "linear-gradient(90deg, #ef4444, #dc2626)",
 				badge: "CRITICAL",
 				message: "Action required: License renewal timeline is critically low.",
@@ -45,7 +45,7 @@ export default function ProfileComplianceOverlay({
 			return {
 				text: "#d97706",
 				bg: "rgba(217, 119, 6, 0.05)",
-				border: "rgba(217, 119, 6, 0.15)",
+				border: "var(--appearance-edge-rgba2171196015)",
 				progressBg: "linear-gradient(90deg, #f59e0b, #d97706)",
 				badge: "AMBER ALERT",
 				message: "Approaching renewal deadline. Verify CPD progress.",
@@ -94,13 +94,13 @@ export default function ProfileComplianceOverlay({
 					width: "100%",
 					maxWidth: "420px",
 					height: "100%",
-					background: "rgba(255, 255, 255, 0.85)",
+					background: "var(--appearance-surface-rgba255255255085)",
 					backdropFilter: "blur(40px)",
 					WebkitBackdropFilter: "blur(40px)",
 					boxShadow:
 						"-10px 10px 40px rgba(0,0,0,0.06), inset 1px 1px 0 rgba(255,255,255,0.8)",
 					borderRadius: "28px",
-					border: "1px solid rgba(255,255,255,0.5)",
+					border: "1px solid var(--appearance-edge-rgba25525525505)",
 					padding: "2rem",
 					display: "flex",
 					flexDirection: "column",
@@ -130,7 +130,7 @@ export default function ProfileComplianceOverlay({
 								margin: 0,
 								fontSize: "20px",
 								fontWeight: 900,
-								color: "#0f172a",
+								color: "var(--appearance-ink-0f172a)",
 							}}
 						>
 							Compliance Hub
@@ -139,7 +139,7 @@ export default function ProfileComplianceOverlay({
 							style={{
 								margin: "2px 0 0 0",
 								fontSize: "12px",
-								color: "#64748b",
+								color: "var(--appearance-ink-64748b)",
 							}}
 						>
 							Live MLSCN certification profile.
@@ -150,22 +150,22 @@ export default function ProfileComplianceOverlay({
 						aria-label="Close compliance hub"
 						style={{
 							border: "none",
-							background: "rgba(255,255,255,0.6)",
+							background: "var(--appearance-surface-rgba25525525506)",
 							boxShadow: "0 2px 8px rgba(0,0,0,0.02)",
 							width: "36px",
 							height: "36px",
 							borderRadius: "50%",
 							cursor: "pointer",
-							color: "#64748b",
+							color: "var(--appearance-ink-64748b)",
 							fontWeight: "bold",
 							display: "flex",
 							alignItems: "center",
 							justifyContent: "center",
 							transition: "0.2s",
 						}}
-						onMouseEnter={(e) => (e.currentTarget.style.background = "white")}
+						onMouseEnter={(e) => (e.currentTarget.style.background = "var(--appearance-surface-white)")}
 						onMouseLeave={(e) =>
-							(e.currentTarget.style.background = "rgba(255,255,255,0.6)")
+							(e.currentTarget.style.background = "var(--appearance-surface-rgba25525525506)")
 						}
 					>
 						<svg
@@ -185,7 +185,7 @@ export default function ProfileComplianceOverlay({
 				{loading ? (
 					<div
 						style={{
-							color: "#64748b",
+							color: "var(--appearance-ink-64748b)",
 							fontSize: "13px",
 							textAlign: "center",
 							marginTop: "2rem",
@@ -198,15 +198,15 @@ export default function ProfileComplianceOverlay({
 						style={{
 							textAlign: "center",
 							padding: "3rem 0",
-							background: "rgba(255,255,255,0.5)",
+							background: "var(--appearance-surface-rgba25525525505)",
 							borderRadius: "20px",
-							border: "1px dashed #cbd5e1",
+							border: "1px dashed var(--appearance-edge-cbd5e1)",
 						}}
 					>
-						<p style={{ fontSize: "13px", color: "#64748b", margin: 0 }}>
+						<p style={{ fontSize: "13px", color: "var(--appearance-ink-64748b)", margin: 0 }}>
 							No verified license found.
 						</p>
-						<p style={{ fontSize: "11px", color: "#94a3b8", marginTop: "8px" }}>
+						<p style={{ fontSize: "11px", color: "var(--appearance-ink-94a3b8)", marginTop: "8px" }}>
 							Upload your license in Settings to activate tracking.
 						</p>
 					</div>
@@ -263,7 +263,7 @@ export default function ProfileComplianceOverlay({
 									style={{
 										margin: 0,
 										fontSize: "11px",
-										color: "#475569",
+										color: "var(--appearance-ink-475569)",
 										lineHeight: "1.4",
 									}}
 								>
@@ -318,9 +318,9 @@ export default function ProfileComplianceOverlay({
 									alignItems: "center",
 									gap: "12px",
 									padding: "1rem 1.25rem",
-									background: "rgba(255,255,255,0.6)",
+									background: "var(--appearance-surface-rgba25525525506)",
 									borderRadius: "20px",
-									border: "1px solid rgba(255,255,255,0.8)",
+									border: "1px solid var(--appearance-edge-rgba25525525508)",
 									boxShadow: "0 8px 20px rgba(0,0,0,0.01)",
 								}}
 							>
@@ -348,7 +348,7 @@ export default function ProfileComplianceOverlay({
 											margin: 0,
 											fontSize: "14px",
 											fontWeight: 800,
-											color: "#0f172a",
+											color: "var(--appearance-ink-0f172a)",
 										}}
 									>
 										{data.name}
@@ -366,7 +366,7 @@ export default function ProfileComplianceOverlay({
 											height="12"
 											viewBox="0 0 24 24"
 											fill="none"
-											stroke="#16a34a"
+											stroke="var(--appearance-ink-16a34a)"
 											strokeWidth="3"
 										>
 											<polyline points="20 6 9 17 4 12"></polyline>
@@ -375,7 +375,7 @@ export default function ProfileComplianceOverlay({
 											style={{
 												margin: 0,
 												fontSize: "10px",
-												color: "#16a34a",
+												color: "var(--appearance-ink-16a34a)",
 												fontWeight: 800,
 												letterSpacing: "0.5px",
 											}}
@@ -391,8 +391,8 @@ export default function ProfileComplianceOverlay({
 								style={{
 									padding: "1.25rem",
 									borderRadius: "20px",
-									background: "rgba(255,255,255,0.6)",
-									border: "1px solid rgba(255,255,255,0.8)",
+									background: "var(--appearance-surface-rgba25525525506)",
+									border: "1px solid var(--appearance-edge-rgba25525525508)",
 									boxShadow: "0 8px 20px rgba(0,0,0,0.01)",
 								}}
 							>
@@ -402,12 +402,12 @@ export default function ProfileComplianceOverlay({
 										justifyContent: "space-between",
 										fontSize: "11px",
 										fontWeight: 700,
-										color: "#64748b",
+										color: "var(--appearance-ink-64748b)",
 										marginBottom: "6px",
 									}}
 								>
 									<span>RENEWAL TIMELINE</span>
-									<span style={{ color: "#0f172a", fontWeight: 800 }}>
+									<span style={{ color: "var(--appearance-ink-0f172a)", fontWeight: 800 }}>
 										Reg: {data.licenseNumber}
 									</span>
 								</div>
@@ -434,7 +434,7 @@ export default function ProfileComplianceOverlay({
 								<span
 									style={{
 										fontSize: "10px",
-										color: "#94a3b8",
+										color: "var(--appearance-ink-94a3b8)",
 										fontWeight: 600,
 									}}
 								>
@@ -447,8 +447,8 @@ export default function ProfileComplianceOverlay({
 								style={{
 									padding: "1.25rem",
 									borderRadius: "20px",
-									background: "rgba(255,255,255,0.6)",
-									border: "1px solid rgba(255,255,255,0.8)",
+									background: "var(--appearance-surface-rgba25525525506)",
+									border: "1px solid var(--appearance-edge-rgba25525525508)",
 									boxShadow: "0 8px 20px rgba(0,0,0,0.01)",
 								}}
 							>
@@ -458,12 +458,12 @@ export default function ProfileComplianceOverlay({
 										justifyContent: "space-between",
 										fontSize: "11px",
 										fontWeight: 700,
-										color: "#64748b",
+										color: "var(--appearance-ink-64748b)",
 										marginBottom: "8px",
 									}}
 								>
 									<span>ANNUAL CPD TARGET</span>
-									<span style={{ color: "#0058bc", fontWeight: 800 }}>
+									<span style={{ color: "var(--appearance-ink-0058bc)", fontWeight: 800 }}>
 										{data.cpdPoints} credits recorded (tracking target: 30)
 									</span>
 								</div>
@@ -493,12 +493,12 @@ export default function ProfileComplianceOverlay({
 								onClick={() => (window.location.href = "/settings")}
 								style={{
 									marginTop: "auto",
-									background: "white",
-									border: "1px solid #e2e8f0",
+									background: "var(--appearance-surface-white)",
+									border: "1px solid var(--appearance-edge-e2e8f0)",
 									padding: "14px",
 									borderRadius: "14px",
 									fontWeight: 800,
-									color: "#0f172a",
+									color: "var(--appearance-ink-0f172a)",
 									cursor: "pointer",
 									transition: "0.2s",
 									boxShadow: "0 2px 10px rgba(0,0,0,0.02)",

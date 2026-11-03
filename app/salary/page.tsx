@@ -198,13 +198,13 @@ export default function SalaryIntelligencePage() {
 					style={{
 						fontSize: "28px",
 						fontWeight: 900,
-						color: "#0f172a",
+						color: "var(--appearance-ink-0f172a)",
 						margin: 0,
 					}}
 				>
 					Salary Intelligence
 				</h1>
-				<p style={{ color: "#64748b", marginTop: "4px" }}>
+				<p style={{ color: "var(--appearance-ink-64748b)", marginTop: "4px" }}>
 					Self-reported monthly salaries shared by the community.
 				</p>
 			</div>
@@ -214,10 +214,10 @@ export default function SalaryIntelligencePage() {
 					style={{
 						padding: "4rem",
 						textAlign: "center",
-						background: "rgba(255,255,255,0.4)",
+						background: "var(--appearance-surface-rgba25525525504)",
 						backdropFilter: "blur(24px)",
 						borderRadius: "20px",
-						border: "1px solid rgba(255, 255, 255, 0.3)",
+						border: "1px solid var(--appearance-edge-rgba25525525503)",
 						boxShadow: "0 4px 20px -2px rgba(0, 0, 0, 0.03)",
 					}}
 				>
@@ -225,13 +225,13 @@ export default function SalaryIntelligencePage() {
 						style={{
 							width: "64px",
 							height: "64px",
-							background: "rgba(241, 245, 249, 0.8)",
+							background: "var(--appearance-surface-rgba24124524908)",
 							borderRadius: "50%",
 							display: "flex",
 							alignItems: "center",
 							justifyContent: "center",
 							margin: "0 auto 1rem auto",
-							color: "#64748b",
+							color: "var(--appearance-ink-64748b)",
 						}}
 					>
 						<svg
@@ -252,7 +252,7 @@ export default function SalaryIntelligencePage() {
 						style={{
 							margin: "0 0 8px 0",
 							fontSize: "18px",
-							color: "#0f172a",
+							color: "var(--appearance-ink-0f172a)",
 							fontWeight: 800,
 						}}
 					>
@@ -260,7 +260,7 @@ export default function SalaryIntelligencePage() {
 					</h2>
 					<p
 						style={{
-							color: "#64748b",
+							color: "var(--appearance-ink-64748b)",
 							fontSize: "14px",
 							maxWidth: "400px",
 							margin: "0 auto 24px auto",
@@ -295,10 +295,10 @@ export default function SalaryIntelligencePage() {
 						<div
 							style={{
 								flex: 1,
-								background: "rgba(255,255,255,0.8)",
+								background: "var(--appearance-surface-rgba25525525508)",
 								backdropFilter: "blur(16px)",
 								borderRadius: "20px",
-								border: "1px solid rgba(255,255,255,0.9)",
+								border: "1px solid var(--appearance-edge-rgba25525525509)",
 								padding: "16px 20px",
 								boxShadow: "0 10px 30px -10px rgba(11, 36, 68, 0.1)",
 								display: "flex",
@@ -317,7 +317,7 @@ export default function SalaryIntelligencePage() {
 								style={{
 									fontSize: "12px",
 									fontWeight: 800,
-									color: "#94a3b8",
+									color: "var(--appearance-ink-94a3b8)",
 									textTransform: "uppercase",
 									letterSpacing: "1px",
 									margin: "0 0 16px 0",
@@ -337,7 +337,7 @@ export default function SalaryIntelligencePage() {
 									style={{
 										fontSize: "32px",
 										fontWeight: 900,
-										color: "#0f172a",
+										color: "var(--appearance-ink-0f172a)",
 										letterSpacing: "-1px",
 									}}
 								>
@@ -347,11 +347,11 @@ export default function SalaryIntelligencePage() {
 									style={{
 										fontSize: "13px",
 										fontWeight: 800,
-										color: "#1A8C7A",
+										color: "var(--appearance-ink-1a8c7a)",
 										display: "flex",
 										alignItems: "center",
 										gap: "4px",
-										background: "#e6fcf5",
+										background: "var(--appearance-surface-e6fcf5)",
 										padding: "4px 10px",
 										borderRadius: "20px",
 									}}
@@ -373,7 +373,7 @@ export default function SalaryIntelligencePage() {
 							<p
 								style={{
 									fontSize: "13px",
-									color: "#64748b",
+									color: "var(--appearance-ink-64748b)",
 									margin: 0,
 									lineHeight: "1.5",
 									fontWeight: 500,
@@ -386,11 +386,11 @@ export default function SalaryIntelligencePage() {
 						<div
 							style={{
 								flex: 1,
-								background: "rgba(255, 255, 255, 0.5)",
+								background: "var(--appearance-surface-rgba25525525505)",
 								backdropFilter: "blur(24px)",
 								padding: "16px 20px",
 								borderRadius: "20px",
-								border: "1px solid rgba(255, 255, 255, 0.4)",
+								border: "1px solid var(--appearance-edge-rgba25525525504)",
 								boxShadow: "0 4px 20px -2px rgba(0,0,0,0.03)",
 								display: "flex",
 								flexDirection: "column",
@@ -400,7 +400,7 @@ export default function SalaryIntelligencePage() {
 							<h3
 								style={{
 									fontSize: "11px",
-									color: "#64748b",
+									color: "var(--appearance-ink-64748b)",
 									fontWeight: 800,
 									textTransform: "uppercase",
 									letterSpacing: "1px",
@@ -413,7 +413,7 @@ export default function SalaryIntelligencePage() {
 								style={{
 									fontSize: "32px",
 									fontWeight: 900,
-									color: "#0f172a",
+									color: "var(--appearance-ink-0f172a)",
 									letterSpacing: "-1px",
 								}}
 							>
@@ -421,14 +421,14 @@ export default function SalaryIntelligencePage() {
 							</div>
 							<p
 								style={{
-									color: "#64748b",
+									color: "var(--appearance-ink-64748b)",
 									fontSize: "13px",
 									margin: "8px 0 0 0",
 									fontWeight: 500,
 								}}
 							>
 								Aggregated from{" "}
-								<strong style={{ color: "#1A8C7A" }}>
+								<strong style={{ color: "var(--appearance-ink-1a8c7a)" }}>
 									{salaryData.count || 0}
 								</strong>{" "}
 								self-reported submissions. An average is shown once there are at least five reports.
@@ -440,11 +440,11 @@ export default function SalaryIntelligencePage() {
 						{/* LEFT COLUMN: THE FORM */}
 						<div
 							style={{
-								background: "rgba(255, 255, 255, 0.6)",
+								background: "var(--appearance-surface-rgba25525525506)",
 								backdropFilter: "blur(24px)",
 								padding: "20px",
 								borderRadius: "20px",
-								border: "1px solid rgba(255, 255, 255, 0.5)",
+								border: "1px solid var(--appearance-edge-rgba25525525505)",
 								boxShadow: "0 4px 20px -2px rgba(0,0,0,0.03)",
 								display: "flex",
 								flexDirection: "column",
@@ -465,13 +465,13 @@ export default function SalaryIntelligencePage() {
 										style={{
 											width: "48px",
 											height: "48px",
-											background: "#e6fcf5",
+											background: "var(--appearance-surface-e6fcf5)",
 											borderRadius: "50%",
 											display: "flex",
 											alignItems: "center",
 											justifyContent: "center",
 											margin: "0 auto 16px auto",
-											color: "#1A8C7A",
+											color: "var(--appearance-ink-1a8c7a)",
 										}}
 									>
 										<svg
@@ -492,14 +492,14 @@ export default function SalaryIntelligencePage() {
 											fontSize: "18px",
 											fontWeight: 800,
 											marginBottom: "8px",
-											color: "#0f172a",
+											color: "var(--appearance-ink-0f172a)",
 										}}
 									>
 										Submission Active
 									</h3>
 									<p
 										style={{
-											color: "#64748b",
+											color: "var(--appearance-ink-64748b)",
 											fontSize: "13px",
 											marginBottom: "24px",
 										}}
@@ -517,10 +517,10 @@ export default function SalaryIntelligencePage() {
 											onClick={() => setIsEditing(true)}
 											style={{
 												padding: "10px 24px",
-												background: "white",
-												border: "1px solid #cbd5e1",
+												background: "var(--appearance-surface-white)",
+												border: "1px solid var(--appearance-edge-cbd5e1)",
 												borderRadius: "8px",
-												color: "#0f172a",
+												color: "var(--appearance-ink-0f172a)",
 												fontWeight: 700,
 												cursor: "pointer",
 												transition: "0.2s",
@@ -533,10 +533,10 @@ export default function SalaryIntelligencePage() {
 											disabled={isSubmitting}
 											style={{
 												padding: "10px 24px",
-												background: "#fef2f2",
-												border: "1px solid #fecaca",
+												background: "var(--appearance-surface-fef2f2)",
+												border: "1px solid var(--appearance-edge-fecaca)",
 												borderRadius: "8px",
-												color: "#ef4444",
+												color: "var(--appearance-ink-ef4444)",
 												fontWeight: 700,
 												cursor: isSubmitting ? "wait" : "pointer",
 												transition: "0.2s",
@@ -562,7 +562,7 @@ export default function SalaryIntelligencePage() {
 													fontSize: "18px",
 													fontWeight: 800,
 													margin: "0 0 4px 0",
-													color: "#0f172a",
+													color: "var(--appearance-ink-0f172a)",
 												}}
 											>
 												{isEditing ? "Update Your Data" : "Contribute Data"}
@@ -571,7 +571,7 @@ export default function SalaryIntelligencePage() {
 												style={{
 													margin: 0,
 													fontSize: "13px",
-													color: "#64748b",
+													color: "var(--appearance-ink-64748b)",
 												}}
 											>
 												Strengthen the analytics securely.
@@ -584,7 +584,7 @@ export default function SalaryIntelligencePage() {
 												style={{
 													background: "none",
 													border: "none",
-													color: "#64748b",
+													color: "var(--appearance-ink-64748b)",
 													fontSize: "12px",
 													fontWeight: 700,
 													cursor: "pointer",
@@ -609,11 +609,11 @@ export default function SalaryIntelligencePage() {
 												setFormData({ ...formData, role: e.target.value })
 											}
 											style={{
-												background: "rgba(255,255,255,0.9)",
+												background: "var(--appearance-surface-rgba25525525509)",
 												border: "1px solid rgba(0,0,0,0.05)",
 												padding: "14px",
 												borderRadius: "10px",
-												color: "#0f172a",
+												color: "var(--appearance-ink-0f172a)",
 												fontSize: "13px",
 												outline: "none",
 											}}
@@ -626,11 +626,11 @@ export default function SalaryIntelligencePage() {
 												setFormData({ ...formData, location: e.target.value })
 											}
 											style={{
-												background: "rgba(255,255,255,0.9)",
+												background: "var(--appearance-surface-rgba25525525509)",
 												border: "1px solid rgba(0,0,0,0.05)",
 												padding: "14px",
 												borderRadius: "10px",
-												color: "#0f172a",
+												color: "var(--appearance-ink-0f172a)",
 												fontSize: "13px",
 												outline: "none",
 											}}
@@ -644,11 +644,11 @@ export default function SalaryIntelligencePage() {
 												setFormData({ ...formData, salary: e.target.value })
 											}
 											style={{
-												background: "rgba(255,255,255,0.9)",
+												background: "var(--appearance-surface-rgba25525525509)",
 												border: "1px solid rgba(0,0,0,0.05)",
 												padding: "14px",
 												borderRadius: "10px",
-												color: "#0f172a",
+												color: "var(--appearance-ink-0f172a)",
 												fontSize: "13px",
 												outline: "none",
 											}}
@@ -661,11 +661,11 @@ export default function SalaryIntelligencePage() {
 												setFormData({ ...formData, experience: e.target.value })
 											}
 											style={{
-												background: "rgba(255,255,255,0.9)",
+												background: "var(--appearance-surface-rgba25525525509)",
 												border: "1px solid rgba(0,0,0,0.05)",
 												padding: "14px",
 												borderRadius: "10px",
-												color: "#0f172a",
+												color: "var(--appearance-ink-0f172a)",
 												fontSize: "13px",
 												outline: "none",
 											}}
@@ -700,11 +700,11 @@ export default function SalaryIntelligencePage() {
 						{/* RIGHT COLUMN: 🚀 NEW PURE CSS GLASS CHART */}
 						<div
 							style={{
-								background: "rgba(255, 255, 255, 0.6)",
+								background: "var(--appearance-surface-rgba25525525506)",
 								backdropFilter: "blur(24px)",
 								padding: "20px",
 								borderRadius: "20px",
-								border: "1px solid rgba(255, 255, 255, 0.5)",
+								border: "1px solid var(--appearance-edge-rgba25525525505)",
 								boxShadow: "0 4px 20px -2px rgba(0,0,0,0.03)",
 								display: "flex",
 								flexDirection: "column",
@@ -715,7 +715,7 @@ export default function SalaryIntelligencePage() {
 									fontSize: "18px",
 									fontWeight: 800,
 									margin: "0 0 4px 0",
-									color: "#0f172a",
+									color: "var(--appearance-ink-0f172a)",
 								}}
 							>
 								Recent Reports by Location
@@ -724,7 +724,7 @@ export default function SalaryIntelligencePage() {
 								style={{
 									margin: "0 0 1.5rem 0",
 									fontSize: "13px",
-									color: "#64748b",
+									color: "var(--appearance-ink-64748b)",
 								}}
 							>
 								Averages from the most recent reports, not market benchmarks.
@@ -752,7 +752,7 @@ export default function SalaryIntelligencePage() {
 												width: "110px",
 												fontSize: "12px",
 												fontWeight: 700,
-												color: "#475569",
+												color: "var(--appearance-ink-475569)",
 												whiteSpace: "nowrap",
 												overflow: "hidden",
 												textOverflow: "ellipsis",
@@ -787,7 +787,7 @@ export default function SalaryIntelligencePage() {
 												textAlign: "right",
 												fontSize: "13px",
 												fontWeight: 800,
-												color: "#0f172a",
+												color: "var(--appearance-ink-0f172a)",
 											}}
 										>
 											₦{(data.salary / 1000).toFixed(0)}k
@@ -801,11 +801,11 @@ export default function SalaryIntelligencePage() {
 					{/* RECENT SUBMISSIONS TABLE */}
 					<div
 						style={{
-							background: "rgba(255, 255, 255, 0.4)",
+							background: "var(--appearance-surface-rgba25525525504)",
 							backdropFilter: "blur(24px)",
 							padding: "20px",
 							borderRadius: "20px",
-							border: "1px solid rgba(255, 255, 255, 0.3)",
+							border: "1px solid var(--appearance-edge-rgba25525525503)",
 							boxShadow: "0 4px 20px -2px rgba(0,0,0,0.03)",
 						}}
 					>
@@ -814,7 +814,7 @@ export default function SalaryIntelligencePage() {
 								fontSize: "16px",
 								fontWeight: 800,
 								marginBottom: "1rem",
-								color: "#0f172a",
+								color: "var(--appearance-ink-0f172a)",
 							}}
 						>
 							Recent Community Submissions
@@ -824,7 +824,7 @@ export default function SalaryIntelligencePage() {
 								style={{
 									padding: "20px",
 									textAlign: "center",
-									color: "#64748b",
+									color: "var(--appearance-ink-64748b)",
 									fontSize: "14px",
 								}}
 							>
@@ -842,7 +842,7 @@ export default function SalaryIntelligencePage() {
 									<thead>
 										<tr
 											style={{
-												color: "#94a3b8",
+												color: "var(--appearance-ink-94a3b8)",
 												fontSize: "10px",
 												textTransform: "uppercase",
 												letterSpacing: "1px",
@@ -879,7 +879,7 @@ export default function SalaryIntelligencePage() {
 													style={{
 														padding: "16px 10px",
 														fontWeight: 800,
-														color: "#0f172a",
+														color: "var(--appearance-ink-0f172a)",
 														fontSize: "14px",
 													}}
 												>
@@ -888,7 +888,7 @@ export default function SalaryIntelligencePage() {
 												<td
 													style={{
 														padding: "16px 10px",
-														color: "#64748b",
+														color: "var(--appearance-ink-64748b)",
 														fontSize: "13px",
 													}}
 												>
@@ -897,13 +897,13 @@ export default function SalaryIntelligencePage() {
 												<td
 													style={{
 														padding: "16px 10px",
-														color: "#64748b",
+														color: "var(--appearance-ink-64748b)",
 														fontSize: "13px",
 													}}
 												>
 													<span
 														style={{
-															background: "rgba(255,255,255,0.8)",
+															background: "var(--appearance-surface-rgba25525525508)",
 															padding: "4px 8px",
 															borderRadius: "6px",
 															border: "1px solid rgba(0,0,0,0.05)",
@@ -916,7 +916,7 @@ export default function SalaryIntelligencePage() {
 													style={{
 														padding: "16px 10px",
 														fontWeight: 900,
-														color: "#1A8C7A",
+														color: "var(--appearance-ink-1a8c7a)",
 														fontSize: "15px",
 														textAlign: "right",
 													}}

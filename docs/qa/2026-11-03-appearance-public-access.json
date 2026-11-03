@@ -1,0 +1,132 @@
+{
+  "observedAt": "2026-11-03T14:29:34.353677+00:00",
+  "source": "fbe30bca81c4dde82db4de0399fd11108ef0f22c",
+  "deployment": "dpl_9Lz7xwRxeX37mGxwAQdVMiCaoiF7",
+  "checks": [
+    {
+      "path": "/",
+      "status": 200,
+      "expected": 200,
+      "forged": false,
+      "passed": true
+    },
+    {
+      "path": "/employer",
+      "status": 200,
+      "expected": 200,
+      "forged": false,
+      "passed": true
+    },
+    {
+      "path": "/api/setup",
+      "status": 410,
+      "expected": 410,
+      "forged": false,
+      "passed": true
+    },
+    {
+      "path": "/api/test-email",
+      "status": 410,
+      "expected": 410,
+      "forged": false,
+      "passed": true
+    },
+    {
+      "path": "/api/auth/session",
+      "status": 401,
+      "expected": 401,
+      "forged": false,
+      "passed": true
+    },
+    {
+      "path": "/api/auth/session",
+      "status": 401,
+      "expected": 401,
+      "forged": true,
+      "passed": true
+    },
+    {
+      "path": "/api/user",
+      "status": 401,
+      "expected": 401,
+      "forged": false,
+      "passed": true
+    },
+    {
+      "path": "/api/documents?userId=qa-nonexistent-access-probe&kind=resume",
+      "status": 401,
+      "expected": 401,
+      "forged": false,
+      "passed": true
+    },
+    {
+      "path": "/api/jobs/applicants?jobId=qa-nonexistent-access-probe",
+      "status": 401,
+      "expected": 401,
+      "forged": false,
+      "passed": true
+    },
+    {
+      "path": "/api/readiness",
+      "status": 401,
+      "expected": 401,
+      "forged": false,
+      "passed": true
+    },
+    {
+      "path": "/api/notifications",
+      "status": 401,
+      "expected": 401,
+      "forged": false,
+      "passed": true
+    },
+    {
+      "path": "/api/history",
+      "status": 401,
+      "expected": 401,
+      "forged": false,
+      "passed": true
+    },
+    {
+      "path": "/api/cron/document-cleanup?dryRun=1",
+      "status": 401,
+      "expected": 401,
+      "forged": false,
+      "passed": true
+    }
+  ],
+  "passed": true,
+  "mutationsPerformed": false,
+  "rollbackDeployment": "dpl_9CMj8YniwM7cWcNm8WfEzmpGowsf",
+  "sourceChecks": {
+    "lint": true,
+    "typecheck": true,
+    "testsPassed": 306,
+    "sourceFilesCompared": 231,
+    "sourceDifferences": 0,
+    "productionBuildReady": true
+  },
+  "provider": {
+    "productionTarget": "dpl_9Lz7xwRxeX37mGxwAQdVMiCaoiF7",
+    "cleanupDeployment": "dpl_9Lz7xwRxeX37mGxwAQdVMiCaoiF7",
+    "schedule": "17 2 * * *",
+    "protection": "all_except_custom_domains",
+    "bypassCount": 0,
+    "nonPublicAliasesPreserved": true
+  },
+  "browser": {
+    "lightPersistsAfterReload": true,
+    "headerFadePx": 32,
+    "pinnedStatusStyleTagCount": 0,
+    "helpKeyboardDisclosure": true,
+    "helpPosition": "static",
+    "phone320DocumentWidth": 320,
+    "footerControlHeight": 36,
+    "sameFooterTop": true,
+    "nativeProductionVerified": false
+  },
+  "newEmailsSent": false,
+  "databaseMigration": false,
+  "gitMainMerged": false,
+  "actualScheduledInvocationObserved": false
+}

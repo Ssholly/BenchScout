@@ -82,7 +82,7 @@ export default function HistoryPage() {
 							left: 0,
 							right: 0,
 							bottom: 0,
-							background: "rgba(248, 250, 252, 0.7)",
+							background: "var(--appearance-surface-rgba24825025207)",
 							backdropFilter: "blur(8px)",
 							zIndex: 99999,
 							display: "flex",
@@ -93,7 +93,7 @@ export default function HistoryPage() {
 					>
 						<div
 							style={{
-								background: "white",
+								background: "var(--appearance-surface-white)",
 								width: "100%",
 								maxWidth: "400px",
 								borderRadius: "20px",
@@ -105,7 +105,7 @@ export default function HistoryPage() {
 						>
 							<div
 								style={{
-									background: "#fef2f2",
+									background: "var(--appearance-surface-fef2f2)",
 									width: "48px",
 									height: "48px",
 									borderRadius: "50%",
@@ -113,7 +113,7 @@ export default function HistoryPage() {
 									alignItems: "center",
 									justifyContent: "center",
 									margin: "0 auto 16px auto",
-									color: "#ef4444",
+									color: "var(--appearance-ink-ef4444)",
 								}}
 							>
 								<svg
@@ -136,7 +136,7 @@ export default function HistoryPage() {
 								style={{
 									fontSize: "18px",
 									fontWeight: 800,
-									color: "#0f172a",
+									color: "var(--appearance-ink-0f172a)",
 									margin: "0 0 8px 0",
 								}}
 							>
@@ -145,7 +145,7 @@ export default function HistoryPage() {
 							<p
 								style={{
 									fontSize: "14px",
-									color: "#64748b",
+									color: "var(--appearance-ink-64748b)",
 									margin: "0 0 24px 0",
 									lineHeight: "1.5",
 								}}
@@ -166,9 +166,9 @@ export default function HistoryPage() {
 										flex: 1,
 										padding: "10px",
 										borderRadius: "10px",
-										border: "1px solid #e2e8f0",
-										background: "white",
-										color: "#475569",
+										border: "1px solid var(--appearance-edge-e2e8f0)",
+										background: "var(--appearance-surface-white)",
+										color: "var(--appearance-ink-475569)",
 										fontWeight: 700,
 										cursor: "pointer",
 									}}
@@ -212,14 +212,14 @@ export default function HistoryPage() {
 							fontSize: "28px",
 							fontWeight: 800,
 							margin: 0,
-							color: "#0f172a",
+							color: "var(--appearance-ink-0f172a)",
 						}}
 					>
 						Run History
 					</h2>
 					<p
 						className="page-sub"
-						style={{ margin: "4px 0 0 0", fontSize: "14px", color: "#64748b" }}
+						style={{ margin: "4px 0 0 0", fontSize: "14px", color: "var(--appearance-ink-64748b)" }}
 					>
 						Your job scans and digest deliveries.
 					</p>
@@ -228,10 +228,10 @@ export default function HistoryPage() {
 					<button
 						onClick={() => setShowClearModal(true)}
 						style={{
-							background: "rgba(255, 255, 255, 0.6)",
+							background: "var(--appearance-surface-rgba25525525506)",
 							backdropFilter: "blur(12px)",
-							color: "#ef4444",
-							border: "1px solid rgba(254, 202, 202, 0.5)",
+							color: "var(--appearance-ink-ef4444)",
+							border: "1px solid var(--appearance-edge-rgba25420220205)",
 							padding: "8px 16px",
 							borderRadius: "8px",
 							fontWeight: 700,
@@ -250,10 +250,10 @@ export default function HistoryPage() {
 					style={{
 						padding: "4rem",
 						textAlign: "center",
-						background: "rgba(255,255,255,0.5)",
+						background: "var(--appearance-surface-rgba25525525505)",
 						backdropFilter: "blur(16px)",
 						borderRadius: "16px",
-						border: "1px solid rgba(255, 255, 255, 0.3)",
+						border: "1px solid var(--appearance-edge-rgba25525525503)",
 						boxShadow: "0 4px 20px -2px rgba(0, 0, 0, 0.03)",
 					}}
 				>
@@ -261,13 +261,13 @@ export default function HistoryPage() {
 						style={{
 							width: "64px",
 							height: "64px",
-							background: "rgba(241, 245, 249, 0.8)",
+							background: "var(--appearance-surface-rgba24124524908)",
 							borderRadius: "50%",
 							display: "flex",
 							alignItems: "center",
 							justifyContent: "center",
 							margin: "0 auto 1rem auto",
-							color: "#64748b",
+							color: "var(--appearance-ink-64748b)",
 						}}
 					>
 						<svg
@@ -288,7 +288,7 @@ export default function HistoryPage() {
 						style={{
 							margin: "0 0 8px 0",
 							fontSize: "18px",
-							color: "#0f172a",
+							color: "var(--appearance-ink-0f172a)",
 							fontWeight: 800,
 						}}
 					>
@@ -296,7 +296,7 @@ export default function HistoryPage() {
 					</h2>
 					<p
 						style={{
-							color: "#64748b",
+							color: "var(--appearance-ink-64748b)",
 							fontSize: "14px",
 							maxWidth: "400px",
 							margin: "0 auto 24px auto",
@@ -322,18 +322,18 @@ export default function HistoryPage() {
 					</button>
 				</div>
 			) : isLoading ? (
-				<div style={{ padding: "4rem", textAlign: "center", color: "#94a3b8" }}>
+				<div style={{ padding: "4rem", textAlign: "center", color: "var(--appearance-ink-94a3b8)" }}>
 					Loading...
 				</div>
 			) : (
 				<div
 					className="responsive-table"
 					style={{
-						background: "rgba(255, 255, 255, 0.5)",
+						background: "var(--appearance-surface-rgba25525525505)",
 						backdropFilter: "blur(24px)",
 						WebkitBackdropFilter: "blur(24px)",
 						borderRadius: "16px",
-						border: "1px solid rgba(255, 255, 255, 0.3)",
+						border: "1px solid var(--appearance-edge-rgba25525525503)",
 						overflow: "hidden",
 						boxShadow: "0 4px 20px -2px rgba(0, 0, 0, 0.03)",
 					}}
@@ -347,7 +347,7 @@ export default function HistoryPage() {
 					>
 						<thead
 							style={{
-								background: "rgba(255, 255, 255, 0.4)",
+								background: "var(--appearance-surface-rgba25525525504)",
 								borderBottom: "1px solid rgba(0,0,0,0.05)",
 							}}
 						>
@@ -356,7 +356,7 @@ export default function HistoryPage() {
 									style={{
 										padding: "1rem 1.5rem",
 										fontSize: "11px",
-										color: "#94a3b8",
+										color: "var(--appearance-ink-94a3b8)",
 										textTransform: "uppercase",
 										fontWeight: 800,
 									}}
@@ -367,7 +367,7 @@ export default function HistoryPage() {
 									style={{
 										padding: "1rem",
 										fontSize: "11px",
-										color: "#94a3b8",
+										color: "var(--appearance-ink-94a3b8)",
 										textTransform: "uppercase",
 										fontWeight: 800,
 									}}
@@ -378,7 +378,7 @@ export default function HistoryPage() {
 									style={{
 										padding: "1rem",
 										fontSize: "11px",
-										color: "#94a3b8",
+										color: "var(--appearance-ink-94a3b8)",
 										textTransform: "uppercase",
 										fontWeight: 800,
 									}}
@@ -389,7 +389,7 @@ export default function HistoryPage() {
 									style={{
 										padding: "1rem 1.5rem",
 										fontSize: "11px",
-										color: "#94a3b8",
+										color: "var(--appearance-ink-94a3b8)",
 										textTransform: "uppercase",
 										fontWeight: 800,
 									}}
@@ -410,7 +410,7 @@ export default function HistoryPage() {
 										style={{
 											padding: "1.25rem 1.5rem",
 											fontSize: "14px",
-											color: "#0f172a",
+											color: "var(--appearance-ink-0f172a)",
 											fontWeight: 600,
 										}}
 									>
@@ -423,7 +423,7 @@ export default function HistoryPage() {
 											padding: "1.25rem 1rem",
 											fontSize: "14px",
 											fontWeight: 800,
-											color: "#0f172a",
+											color: "var(--appearance-ink-0f172a)",
 										}}
 									>
 										{run.matches}
@@ -434,7 +434,7 @@ export default function HistoryPage() {
 										style={{
 											padding: "1.25rem 1rem",
 											fontSize: "13px",
-											color: "#64748b",
+											color: "var(--appearance-ink-64748b)",
 											fontWeight: 600,
 										}}
 									>
@@ -452,16 +452,16 @@ export default function HistoryPage() {
 											style={{
 												background:
 													run.status === "failed"
-														? "rgba(254, 242, 242, 0.8)"
+														? "var(--appearance-surface-rgba25424224208)"
 														: run.status === "run only"
-															? "rgba(241, 245, 249, 0.8)"
-															: "rgba(230, 252, 245, 0.8)", // 🚀 BRANDED TEAL/GREEN BG
+															? "var(--appearance-surface-rgba24124524908)"
+															: "var(--appearance-surface-rgba23025224508)", // 🚀 BRANDED TEAL/GREEN BG
 												color:
 													run.status === "failed"
-														? "#ef4444"
+														? "var(--appearance-ink-ef4444)"
 														: run.status === "run only"
-															? "#64748b"
-															: "#1A8C7A", // 🚀 BRANDED TEAL TEXT
+															? "var(--appearance-ink-64748b)"
+															: "var(--appearance-ink-1a8c7a)", // 🚀 BRANDED TEAL TEXT
 												padding: "4px 8px",
 												borderRadius: "6px",
 												fontSize: "11px",
@@ -481,7 +481,7 @@ export default function HistoryPage() {
 										style={{
 											padding: "3rem",
 											textAlign: "center",
-											color: "#94a3b8",
+											color: "var(--appearance-ink-94a3b8)",
 											fontSize: "14px",
 										}}
 									>

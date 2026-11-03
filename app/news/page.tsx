@@ -13,10 +13,10 @@ export default function NewsInsightsPage() {
 
 	const [stats, setStats] = useState({
 		topLocations: [
-			{ name: "FCT - Abuja", count: 0, color: "#0B2444" },
-			{ name: "Lagos", count: 0, color: "#1A8C7A" },
+			{ name: "FCT - Abuja", count: 0, color: "var(--appearance-ink-0b2444)" },
+			{ name: "Lagos", count: 0, color: "var(--appearance-ink-1a8c7a)" },
 		],
-		topSkills: [{ name: "MLS", percent: 0, color: "#1A8C7A" }],
+		topSkills: [{ name: "MLS", percent: 0, color: "var(--appearance-ink-1a8c7a)" }],
 		topEmployers: [
 			{ name: "EHA Clinics", count: 0 },
 			{ name: "Synlab Nigeria", count: 0 },
@@ -263,7 +263,7 @@ export default function NewsInsightsPage() {
 						style={{
 							fontSize: "28px",
 							fontWeight: 900,
-							color: "#0f172a",
+							color: "var(--appearance-ink-0f172a)",
 							display: "flex",
 							alignItems: "center",
 							gap: "12px",
@@ -276,8 +276,8 @@ export default function NewsInsightsPage() {
 									display: "flex",
 									alignItems: "center",
 									gap: "6px",
-									background: "#fef2f2",
-									color: "#ef4444",
+									background: "var(--appearance-surface-fef2f2)",
+									color: "var(--appearance-ink-ef4444)",
 									padding: "4px 10px",
 									borderRadius: "20px",
 									fontSize: "11px",
@@ -303,7 +303,7 @@ export default function NewsInsightsPage() {
 					</div>
 					<div
 						className="page-sub"
-						style={{ color: "#64748b", marginTop: "4px" }}
+						style={{ color: "var(--appearance-ink-64748b)", marginTop: "4px" }}
 					>
 						Regulatory updates, hiring velocity, and real-time market movers.
 					</div>
@@ -315,10 +315,10 @@ export default function NewsInsightsPage() {
 					style={{
 						padding: "4rem",
 						textAlign: "center",
-						background: "rgba(255,255,255,0.4)",
+						background: "var(--appearance-surface-rgba25525525504)",
 						backdropFilter: "blur(24px)",
 						borderRadius: "20px",
-						border: "1px solid rgba(255, 255, 255, 0.3)",
+						border: "1px solid var(--appearance-edge-rgba25525525503)",
 						boxShadow: "0 4px 20px -2px rgba(0, 0, 0, 0.03)",
 					}}
 				>
@@ -326,13 +326,13 @@ export default function NewsInsightsPage() {
 						style={{
 							width: "64px",
 							height: "64px",
-							background: "rgba(241, 245, 249, 0.8)",
+							background: "var(--appearance-surface-rgba24124524908)",
 							borderRadius: "50%",
 							display: "flex",
 							alignItems: "center",
 							justifyContent: "center",
 							margin: "0 auto 1rem auto",
-							color: "#64748b",
+							color: "var(--appearance-ink-64748b)",
 						}}
 					>
 						<svg
@@ -353,7 +353,7 @@ export default function NewsInsightsPage() {
 						style={{
 							margin: "0 0 8px 0",
 							fontSize: "18px",
-							color: "#0f172a",
+							color: "var(--appearance-ink-0f172a)",
 							fontWeight: 800,
 						}}
 					>
@@ -361,7 +361,7 @@ export default function NewsInsightsPage() {
 					</h2>
 					<p
 						style={{
-							color: "#64748b",
+							color: "var(--appearance-ink-64748b)",
 							fontSize: "14px",
 							maxWidth: "400px",
 							margin: "0 auto 24px auto",
@@ -409,10 +409,10 @@ export default function NewsInsightsPage() {
 						{/* HUB CARD */}
 						<div
 							style={{
-								background: "rgba(255,255,255,0.5)",
+								background: "var(--appearance-surface-rgba25525525505)",
 								backdropFilter: "blur(24px)",
 								borderRadius: "20px",
-								border: "1px solid rgba(255,255,255,0.4)",
+								border: "1px solid var(--appearance-edge-rgba25525525504)",
 								padding: "1.75rem",
 								boxShadow: "0 10px 30px -10px rgba(11, 36, 68, 0.05)",
 							}}
@@ -421,7 +421,7 @@ export default function NewsInsightsPage() {
 								style={{
 									fontSize: "12px",
 									fontWeight: 800,
-									color: "#94a3b8",
+									color: "var(--appearance-ink-94a3b8)",
 									textTransform: "uppercase",
 									letterSpacing: "1px",
 									margin: "0 0 16px 0",
@@ -450,7 +450,7 @@ export default function NewsInsightsPage() {
 												width: "100px",
 												fontSize: "12px",
 												fontWeight: 700,
-												color: "#334155",
+												color: "var(--appearance-ink-334155)",
 												whiteSpace: "nowrap",
 												overflow: "hidden",
 												textOverflow: "ellipsis",
@@ -461,7 +461,7 @@ export default function NewsInsightsPage() {
 										<div
 											style={{
 												flex: 1,
-												background: "#f1f5f9",
+												background: "var(--appearance-surface-f1f5f9)",
 												height: "8px",
 												borderRadius: "4px",
 												overflow: "hidden",
@@ -483,7 +483,7 @@ export default function NewsInsightsPage() {
 														top: 0,
 														bottom: 0,
 														width: "10px",
-														background: "rgba(255,255,255,0.3)",
+														background: "var(--appearance-surface-rgba25525525503)",
 														filter: "blur(2px)",
 													}}
 												></div>
@@ -495,7 +495,7 @@ export default function NewsInsightsPage() {
 												textAlign: "right",
 												fontSize: "12px",
 												fontWeight: 900,
-												color: "#0f172a",
+												color: "var(--appearance-ink-0f172a)",
 											}}
 										>
 											{loc.count}
@@ -508,10 +508,10 @@ export default function NewsInsightsPage() {
 						{/* KEYWORDS CARD */}
 						<div
 							style={{
-								background: "rgba(255,255,255,0.5)",
+								background: "var(--appearance-surface-rgba25525525505)",
 								backdropFilter: "blur(24px)",
 								borderRadius: "20px",
-								border: "1px solid rgba(255,255,255,0.4)",
+								border: "1px solid var(--appearance-edge-rgba25525525504)",
 								padding: "1.75rem",
 								boxShadow: "0 10px 30px -10px rgba(26, 140, 122, 0.05)",
 							}}
@@ -520,7 +520,7 @@ export default function NewsInsightsPage() {
 								style={{
 									fontSize: "12px",
 									fontWeight: 800,
-									color: "#94a3b8",
+									color: "var(--appearance-ink-94a3b8)",
 									textTransform: "uppercase",
 									letterSpacing: "1px",
 									margin: "0 0 16px 0",
@@ -549,7 +549,7 @@ export default function NewsInsightsPage() {
 												width: "110px",
 												fontSize: "12px",
 												fontWeight: 700,
-												color: "#334155",
+												color: "var(--appearance-ink-334155)",
 												whiteSpace: "nowrap",
 												overflow: "hidden",
 												textOverflow: "ellipsis",
@@ -560,7 +560,7 @@ export default function NewsInsightsPage() {
 										<div
 											style={{
 												flex: 1,
-												background: "#f1f5f9",
+												background: "var(--appearance-surface-f1f5f9)",
 												height: "8px",
 												borderRadius: "4px",
 												overflow: "hidden",
@@ -582,7 +582,7 @@ export default function NewsInsightsPage() {
 														top: 0,
 														bottom: 0,
 														width: "10px",
-														background: "rgba(255,255,255,0.3)",
+														background: "var(--appearance-surface-rgba25525525503)",
 														filter: "blur(2px)",
 													}}
 												></div>
@@ -594,7 +594,7 @@ export default function NewsInsightsPage() {
 												textAlign: "right",
 												fontSize: "12px",
 												fontWeight: 900,
-												color: "#0f172a",
+												color: "var(--appearance-ink-0f172a)",
 											}}
 										>
 											{skill.percent}%
@@ -607,10 +607,10 @@ export default function NewsInsightsPage() {
 						{/* EMPLOYERS CARD */}
 						<div
 							style={{
-								background: "rgba(255,255,255,0.5)",
+								background: "var(--appearance-surface-rgba25525525505)",
 								backdropFilter: "blur(24px)",
 								borderRadius: "20px",
-								border: "1px solid rgba(255,255,255,0.4)",
+								border: "1px solid var(--appearance-edge-rgba25525525504)",
 								padding: "1.75rem",
 								boxShadow: "0 10px 30px -10px rgba(11, 36, 68, 0.05)",
 							}}
@@ -619,7 +619,7 @@ export default function NewsInsightsPage() {
 								style={{
 									fontSize: "12px",
 									fontWeight: 800,
-									color: "#0B2444",
+									color: "var(--appearance-ink-0b2444)",
 									textTransform: "uppercase",
 									letterSpacing: "1px",
 									margin: "0 0 16px 0",
@@ -659,7 +659,7 @@ export default function NewsInsightsPage() {
 											)}`;
 										}}
 										style={{
-											background: "white",
+											background: "var(--appearance-surface-white)",
 											width: "100%",
 											padding: "12px",
 											borderRadius: "12px",
@@ -682,7 +682,7 @@ export default function NewsInsightsPage() {
 											style={{
 												fontSize: "13px",
 												fontWeight: 800,
-												color: "#0f172a",
+												color: "var(--appearance-ink-0f172a)",
 												whiteSpace: "nowrap",
 												overflow: "hidden",
 												textOverflow: "ellipsis",
@@ -693,8 +693,8 @@ export default function NewsInsightsPage() {
 										</div>
 										<span
 											style={{
-												background: "#e6fcf5",
-												color: "#1A8C7A",
+												background: "var(--appearance-surface-e6fcf5)",
+												color: "var(--appearance-ink-1a8c7a)",
 												padding: "4px 8px",
 												borderRadius: "6px",
 												fontSize: "11px",
@@ -712,10 +712,10 @@ export default function NewsInsightsPage() {
 						{/* VELOCITY CARD */}
 						<div
 							style={{
-								background: "rgba(255,255,255,0.5)",
+								background: "var(--appearance-surface-rgba25525525505)",
 								backdropFilter: "blur(24px)",
 								borderRadius: "20px",
-								border: "1px solid rgba(255,255,255,0.4)",
+								border: "1px solid var(--appearance-edge-rgba25525525504)",
 								padding: "1.75rem",
 								boxShadow: "0 10px 30px -10px rgba(26, 140, 122, 0.05)",
 							}}
@@ -724,7 +724,7 @@ export default function NewsInsightsPage() {
 								style={{
 									fontSize: "12px",
 									fontWeight: 800,
-									color: "#0f172a",
+									color: "var(--appearance-ink-0f172a)",
 									textTransform: "uppercase",
 									letterSpacing: "1px",
 									margin: "0 0 20px 0",
@@ -743,7 +743,7 @@ export default function NewsInsightsPage() {
 									<div
 										style={{
 											fontSize: "10px",
-											color: "#94a3b8",
+											color: "var(--appearance-ink-94a3b8)",
 											fontWeight: 800,
 											textTransform: "uppercase",
 										}}
@@ -754,14 +754,14 @@ export default function NewsInsightsPage() {
 										style={{
 											fontSize: "24px",
 											fontWeight: 900,
-											color: "#0f172a",
+											color: "var(--appearance-ink-0f172a)",
 										}}
 									>
 										{stats.avgTime}{" "}
 										<span
 											style={{
 												fontSize: "12px",
-												color: "#64748b",
+												color: "var(--appearance-ink-64748b)",
 												fontWeight: 600,
 											}}
 										>
@@ -773,7 +773,7 @@ export default function NewsInsightsPage() {
 									<div
 										style={{
 											fontSize: "10px",
-											color: "#94a3b8",
+											color: "var(--appearance-ink-94a3b8)",
 											fontWeight: 800,
 											textTransform: "uppercase",
 										}}
@@ -784,7 +784,7 @@ export default function NewsInsightsPage() {
 										style={{
 											fontSize: "24px",
 											fontWeight: 900,
-											color: stats.activeSurge >= 0 ? "#15803d" : "#ef4444",
+											color: stats.activeSurge >= 0 ? "var(--appearance-ink-15803d)" : "var(--appearance-ink-ef4444)",
 										}}
 									>
 										{stats.activeSurge > 0 ? "+" : ""}
@@ -795,8 +795,8 @@ export default function NewsInsightsPage() {
 							<div
 								style={{
 									fontSize: "12px",
-									color: "#475569",
-									background: "white",
+									color: "var(--appearance-ink-475569)",
+									background: "var(--appearance-surface-white)",
 									padding: "10px",
 									borderRadius: "8px",
 									border: "1px solid rgba(0,0,0,0.05)",
@@ -804,7 +804,7 @@ export default function NewsInsightsPage() {
 								}}
 							>
 								Clinical Diagnostics roles in{" "}
-								<strong style={{ color: "#0B2444" }}>
+								<strong style={{ color: "var(--appearance-ink-0b2444)" }}>
 									{stats.hotLocation}
 								</strong>{" "}
 								are driving current market momentum.
@@ -832,12 +832,12 @@ export default function NewsInsightsPage() {
 								padding: "10px 16px",
 								msOverflowStyle: "none",
 								scrollbarWidth: "none",
-								background: "rgba(255, 255, 255, 0.6)",
+								background: "var(--appearance-surface-rgba25525525506)",
 								backdropFilter: "blur(24px)",
 								WebkitBackdropFilter: "blur(24px)",
 								borderRadius: "100px",
 								boxShadow: "0 10px 30px -5px rgba(0, 0, 0, 0.08)",
-								border: "1px solid rgba(255, 255, 255, 0.6)",
+								border: "1px solid var(--appearance-edge-rgba25525525506)",
 								pointerEvents: "auto",
 								maxWidth: "100%",
 							}}
@@ -852,7 +852,7 @@ export default function NewsInsightsPage() {
 										disabled={isLoading}
 										style={{
 											background: isActive ? catColors.solid : "transparent",
-											color: isActive ? "white" : "#475569",
+											color: isActive ? "white" : "var(--appearance-ink-475569)",
 											border: "none",
 											padding: "8px 20px",
 											borderRadius: "30px",
@@ -876,7 +876,7 @@ export default function NewsInsightsPage() {
 
 					<style
 						dangerouslySetInnerHTML={{
-							__html: `@keyframes pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.2); } 100% { opacity: 1; transform: scale(1); } } @keyframes shimmer { 0% { background-position: -1000px 0; } 100% { background-position: 1000px 0; } } .skeleton { background: rgba(255,255,255,0.5); background-image: linear-gradient(90deg, rgba(255,255,255,0) 0px, rgba(255,255,255,0.8) 40px, rgba(255,255,255,0) 80px); background-size: 1000px 100%; animation: shimmer 2s infinite linear; border-radius: 6px; } .article-card:hover .read-more { color: #1A8C7A !important; padding-right: 4px; } ::-webkit-scrollbar { display: none; }`,
+							__html: `@keyframes pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.2); } 100% { opacity: 1; transform: scale(1); } } @keyframes shimmer { 0% { background-position: -1000px 0; } 100% { background-position: 1000px 0; } } .skeleton { background: var(--appearance-surface-rgba25525525505); background-image: linear-gradient(90deg, rgba(255,255,255,0) 0px, var(--appearance-surface-rgba25525525508) 40px, rgba(255,255,255,0) 80px); background-size: 1000px 100%; animation: shimmer 2s infinite linear; border-radius: 6px; } .article-card:hover .read-more { color: var(--appearance-ink-1a8c7a) !important; padding-right: 4px; } ::-webkit-scrollbar { display: none; }`,
 						}}
 					/>
 
@@ -893,9 +893,9 @@ export default function NewsInsightsPage() {
 								<div
 									key={i}
 									style={{
-										background: "rgba(255,255,255,0.5)",
+										background: "var(--appearance-surface-rgba25525525505)",
 										borderRadius: "20px",
-										border: "1px solid rgba(255,255,255,0.4)",
+										border: "1px solid var(--appearance-edge-rgba25525525504)",
 										padding: "1.5rem",
 										height: "240px",
 										display: "flex",
@@ -958,18 +958,18 @@ export default function NewsInsightsPage() {
 									gridColumn: "1 / -1",
 									padding: "6rem",
 									textAlign: "center",
-									color: "#64748b",
-									background: "rgba(255,255,255,0.4)",
+									color: "var(--appearance-ink-64748b)",
+									background: "var(--appearance-surface-rgba25525525504)",
 									backdropFilter: "blur(24px)",
 									borderRadius: "24px",
-									border: "1px solid rgba(255, 255, 255, 0.3)",
+									border: "1px solid var(--appearance-edge-rgba25525525503)",
 								}}
 							>
 								<div style={{ fontSize: "48px", marginBottom: "1rem" }}>📰</div>
 								<h3
 									style={{
 										margin: "0 0 8px 0",
-										color: "#0f172a",
+										color: "var(--appearance-ink-0f172a)",
 										fontSize: "18px",
 										fontWeight: 800,
 									}}
@@ -991,10 +991,10 @@ export default function NewsInsightsPage() {
 										className="article-card"
 										href={article.url} target="_blank" rel="noopener noreferrer" aria-label={`Read: ${article.title}`}
 										style={{
-											background: "rgba(255,255,255,0.6)",
+											background: "var(--appearance-surface-rgba25525525506)",
 											backdropFilter: "blur(24px)",
 											borderRadius: "20px",
-											border: "1px solid rgba(255,255,255,0.5)",
+											border: "1px solid var(--appearance-edge-rgba25525525505)",
 											padding: "1.5rem",
 											display: "flex",
 											flexDirection: "column",
@@ -1040,7 +1040,7 @@ export default function NewsInsightsPage() {
 											<span
 												style={{
 													fontSize: "12px",
-													color: "#94a3b8",
+													color: "var(--appearance-ink-94a3b8)",
 													fontWeight: 700,
 												}}
 											>
@@ -1051,7 +1051,7 @@ export default function NewsInsightsPage() {
 											style={{
 												fontSize: "16px",
 												fontWeight: 800,
-												color: "#0f172a",
+												color: "var(--appearance-ink-0f172a)",
 												margin: "0 0 10px 0",
 												lineHeight: "1.4",
 												letterSpacing: "-0.2px",
@@ -1062,7 +1062,7 @@ export default function NewsInsightsPage() {
 										<p className="article-excerpt"
 											style={{
 												fontSize: "13px",
-												color: "#475569",
+												color: "var(--appearance-ink-475569)",
 												margin: "0 0 1.5rem 0",
 												lineHeight: "1.6",
 												flex: 1,
@@ -1090,21 +1090,21 @@ export default function NewsInsightsPage() {
 												style={{
 													fontSize: "12px",
 													fontWeight: 800,
-													color: "#94a3b8",
+													color: "var(--appearance-ink-94a3b8)",
 													minWidth: 0,
 													flex: 1,
 													overflowWrap: "normal",
 												}}
 											>
 												Source:{" "}
-												<span style={{ color: "#0f172a" }}>
+												<span style={{ color: "var(--appearance-ink-0f172a)" }}>
 													{article.source || "MLSCN"}
 												</span>
 											</span>
 											<span
 												className="read-more"
 												style={{
-													color: "#0B2444",
+													color: "var(--appearance-ink-0b2444)",
 													fontSize: "13px",
 													fontWeight: 800,
 													display: "flex",

@@ -5,9 +5,10 @@ import { useMounted } from "@/lib/use-mounted";
 import type { ClientJob, ClientNotification, NotificationView } from "@/lib/types";
 import { useState, useEffect, useRef } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import Image from "next/image";
+import BrandMark from "@/components/BrandMark";
 import { HOME_MENU_ON_DEMAND } from "@/lib/home-navigation";
 import { createPortal } from "react-dom";
+import AppearanceToggle from "@/components/AppearanceToggle";
 
 export default function Topbar() {
 	const router = useRouter();
@@ -222,20 +223,20 @@ export default function Topbar() {
 				dangerouslySetInnerHTML={{
 					__html: `
         .hamburger-btn { display: none; }
-        .home-topbar .hamburger-btn { display: flex !important; align-items: center; gap: 6px; min-height: 40px; padding: 6px 10px !important; margin-right: 14px; border: 1px solid #dce6ee !important; border-radius: 10px; background: rgba(255,255,255,.8) !important; font: inherit; font-size: 13px; font-weight: 600; flex-shrink: 0; }
+        .home-topbar .hamburger-btn { display: flex !important; align-items: center; gap: 6px; min-height: 40px; padding: 6px 10px !important; margin-right: 14px; border: 1px solid var(--appearance-edge-dce6ee) !important; border-radius: 10px; background: var(--appearance-surface-rgba2552552558) !important; font: inherit; font-size: 13px; font-weight: 600; flex-shrink: 0; }
         .home-topbar .hamburger-btn svg { width: 20px; height: 20px; }
-        .home-topbar-brand { display: flex; align-items: center; gap: 8px; margin-right: clamp(32px, 5vw, 72px); color: #0B2444; font-family: 'Fraunces', serif; font-size: 28px; font-weight: 600; white-space: nowrap; flex-shrink: 0; }
-        .home-topbar-brand span span { color: #1A8C7A; }
+        .home-topbar-brand { display: flex; align-items: center; gap: 8px; margin-right: clamp(32px, 5vw, 72px); color: var(--appearance-ink-0b2444); font-family: 'Fraunces', serif; font-size: 28px; font-weight: 600; white-space: nowrap; flex-shrink: 0; }
+        .home-topbar-brand span span { color: var(--appearance-ink-1a8c7a); }
         .home-topbar .search-wrapper { flex: 1; min-width: 0; max-width: 420px; }
         .hide-desktop { display: none; }
-        
+
         @media (max-width: 900px) {
           .home-topbar-brand { display: none; }
           .home-topbar .search-wrapper { max-width: 180px !important; }
           .hamburger-btn { display: flex !important; margin-right: 12px; }
           .hide-desktop { display: flex !important; }
           .hide-mobile { display: none !important; }
-          
+
           .topbar-content { padding: 0 1rem !important; height: 70px !important; }
           .topbar-content { display: grid !important; grid-template-columns: 84px minmax(0, 1fr) 84px; align-items: center; }
           .topbar-left { display: contents !important; }
@@ -247,7 +248,7 @@ export default function Topbar() {
           .search-wrapper { max-width: 180px !important; }
           .pane { padding: 1.25rem !important; }
           .page-title { font-size: 24px !important; }
-          
+
           .mobile-stack { flex-direction: column !important; gap: 1.5rem !important; }
           .mobile-stack > div { width: 100% !important; min-width: 100% !important; max-width: 100% !important; flex: none !important; }
           .mobile-grid { grid-template-columns: 1fr !important; gap: 1.5rem !important; }
@@ -268,7 +269,7 @@ export default function Topbar() {
 			/>
 
 			{/* 🚀 THE MAGIC SEAMLESS GLASS FADE 🚀 */}
-			<div
+			<div className="topbar-glass-fade"
 				style={{
 					position: "absolute",
 					top: 0,
@@ -277,7 +278,7 @@ export default function Topbar() {
 					height:
 						"120px" /* Drops lower than the 80px nav to create a smooth fade zone */,
 					background:
-						"linear-gradient(to bottom, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0) 100%)",
+						"linear-gradient(to bottom, var(--appearance-surface-rgba25525525507) 0%, rgba(255,255,255,0) 100%)",
 					backdropFilter: "blur(24px)",
 					WebkitBackdropFilter: "blur(24px)",
 					maskImage: "linear-gradient(to bottom, black 55%, transparent 100%)",
@@ -319,7 +320,7 @@ export default function Topbar() {
 							background: "none",
 							border: "none",
 							cursor: "pointer",
-							color: "#0f172a",
+							color: "var(--appearance-ink-0f172a)",
 							padding: "0",
 						}}
 					>
@@ -337,7 +338,7 @@ export default function Topbar() {
 						</svg>
 						{isHomeNavigation && <span>Menu</span>}
 					</button>
-					{isHomeNavigation && <div className="home-topbar-brand"><Image src="/icon.svg" alt="" width={30} height={40} /><span>Bench<span>Scout</span></span></div>}
+					{isHomeNavigation && <div className="home-topbar-brand"><BrandMark /><span>Bench<span>Scout</span></span></div>}
 
 					<div
 						className="search-wrapper"
@@ -348,7 +349,7 @@ export default function Topbar() {
 							height="18"
 							viewBox="0 0 24 24"
 							fill="none"
-							stroke="#64748b"
+							stroke="var(--appearance-ink-64748b)"
 							strokeWidth="2"
 							style={{
 								position: "absolute",
@@ -369,12 +370,12 @@ export default function Topbar() {
 							onChange={handleSearchChange}
 							style={{
 								width: "100%",
-								background: "rgba(255,255,255,0.6)",
-								border: "1px solid rgba(255,255,255,0.8)",
+								background: "var(--appearance-surface-rgba25525525506)",
+								border: "1px solid var(--appearance-edge-rgba25525525508)",
 								borderRadius: "30px",
 								padding: "10px 40px 10px 44px",
 								fontSize: "14px",
-								color: "#0f172a",
+								color: "var(--appearance-ink-0f172a)",
 								outline: "none",
 								transition: "all 0.2s",
 								position: "relative",
@@ -382,13 +383,13 @@ export default function Topbar() {
 								boxShadow: "0 8px 20px rgba(0,0,0,0.03)",
 							}}
 							onFocus={(e) => {
-								e.target.style.background = "rgba(255,255,255,0.9)";
-								e.target.style.borderColor = "rgba(255,255,255,1)";
+								e.target.style.background = "var(--appearance-surface-rgba25525525509)";
+								e.target.style.borderColor = "var(--appearance-edge-rgba2552552551)";
 								if (searchQuery.trim().length > 0) setIsSearchActive(true);
 							}}
 							onBlur={(e) => {
-								e.target.style.background = "rgba(255,255,255,0.6)";
-								e.target.style.borderColor = "rgba(255,255,255,0.8)";
+								e.target.style.background = "var(--appearance-surface-rgba25525525506)";
+								e.target.style.borderColor = "var(--appearance-edge-rgba25525525508)";
 								setTimeout(() => setIsSearchActive(false), 200);
 							}}
 						/>
@@ -403,7 +404,7 @@ export default function Topbar() {
 									transform: "translateY(-50%)",
 									background: "none",
 									border: "none",
-									color: "#94a3b8",
+									color: "var(--appearance-ink-94a3b8)",
 									cursor: "pointer",
 									zIndex: 2,
 									padding: "4px",
@@ -431,9 +432,9 @@ export default function Topbar() {
 									top: "50px",
 									left: 0,
 									width: "100%",
-									background: "white",
+									background: "var(--appearance-surface-white)",
 									borderRadius: "12px",
-									border: "1px solid #e2e8f0",
+									border: "1px solid var(--appearance-edge-e2e8f0)",
 									overflow: "hidden",
 									boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)",
 									zIndex: 50,
@@ -443,10 +444,10 @@ export default function Topbar() {
 									className="search-results-heading"
 									style={{
 										padding: "8px 16px",
-										background: "#f8fafc",
+										background: "var(--appearance-surface-f8fafc)",
 										fontSize: "11px",
 										fontWeight: 800,
-										color: "#94a3b8",
+										color: "var(--appearance-ink-94a3b8)",
 										textTransform: "uppercase",
 										letterSpacing: "0.5px",
 									}}
@@ -459,7 +460,7 @@ export default function Topbar() {
 										style={{
 											padding: "24px 16px",
 											textAlign: "center",
-											color: "#64748b",
+											color: "var(--appearance-ink-64748b)",
 											fontSize: "13px",
 										}}
 									>
@@ -495,14 +496,14 @@ export default function Topbar() {
 											key={job.id}
 											onClick={handleResultClick}
 											onMouseEnter={(e) =>
-												(e.currentTarget.style.background = "#f8fafc")
+												(e.currentTarget.style.background = "var(--appearance-surface-f8fafc)")
 											}
 											onMouseLeave={(e) =>
-												(e.currentTarget.style.background = "white")
+												(e.currentTarget.style.background = "var(--appearance-surface-white)")
 											}
 											style={{
 												padding: "12px 16px",
-												borderBottom: "1px solid #f1f5f9",
+												borderBottom: "1px solid var(--appearance-edge-f1f5f9)",
 												cursor: "pointer",
 												transition: "background 0.2s",
 											}}
@@ -520,16 +521,16 @@ export default function Topbar() {
 													style={{
 														background:
 															job.tier === 1
-																? "#dcfce7"
+																? "var(--appearance-surface-dcfce7)"
 																: job.tier === 2
-																	? "#e0f2fe"
-																	: "#f1f5f9",
+																	? "var(--appearance-surface-e0f2fe)"
+																	: "var(--appearance-surface-f1f5f9)",
 														color:
 															job.tier === 1
-																? "#15803d"
+																? "var(--appearance-ink-15803d)"
 																: job.tier === 2
-																	? "#0369a1"
-																	: "#64748b",
+																	? "var(--appearance-ink-0369a1)"
+																	: "var(--appearance-ink-64748b)",
 														fontSize: "9px",
 														padding: "3px 6px",
 														borderRadius: "4px",
@@ -545,13 +546,13 @@ export default function Topbar() {
 														style={{
 															fontSize: "13px",
 															fontWeight: 800,
-															color: "#0f172a",
+															color: "var(--appearance-ink-0f172a)",
 															marginBottom: "2px",
 														}}
 													>
 														{job.role}
 													</div>
-													<div style={{ fontSize: "11px", color: "#64748b" }}>
+													<div style={{ fontSize: "11px", color: "var(--appearance-ink-64748b)" }}>
 														{job.company} • {job.loc}
 													</div>
 												</div>
@@ -563,7 +564,7 @@ export default function Topbar() {
 										style={{
 											padding: "24px 16px",
 											textAlign: "center",
-											color: "#64748b",
+											color: "var(--appearance-ink-64748b)",
 											fontSize: "13px",
 										}}
 									>
@@ -575,9 +576,9 @@ export default function Topbar() {
 									<div
 										style={{
 											padding: "8px",
-											background: "#f8fafc",
+											background: "var(--appearance-surface-f8fafc)",
 											textAlign: "center",
-											borderTop: "1px solid #e2e8f0",
+											borderTop: "1px solid var(--appearance-edge-e2e8f0)",
 										}}
 									>
 										<button
@@ -585,7 +586,7 @@ export default function Topbar() {
 											style={{
 												background: "none",
 												border: "none",
-												color: "#1A8C7A", // 🚀 BRANDED LINK
+												color: "var(--appearance-ink-1a8c7a)", // 🚀 BRANDED LINK
 												fontSize: "12px",
 												fontWeight: 800,
 												cursor: "pointer",
@@ -601,13 +602,14 @@ export default function Topbar() {
 				</div>
 
 				<div className="topbar-actions" style={{ display: "flex", alignItems: "center", gap: "1.5rem" }}>
+					<AppearanceToggle />
 					<div
 						className="hide-mobile"
 						style={{
 							background: isOnline
-								? "rgba(236, 253, 245, 0.8)"
-								: "rgba(254, 242, 242, 0.8)",
-							color: isOnline ? "#15803d" : "#991b1b",
+								? "var(--appearance-surface-rgba23625324508)"
+								: "var(--appearance-surface-rgba25424224208)",
+							color: isOnline ? "var(--appearance-ink-15803d)" : "var(--appearance-ink-991b1b)",
 							padding: "8px 16px",
 							borderRadius: "30px",
 							fontSize: "12px",
@@ -647,7 +649,7 @@ export default function Topbar() {
 								height="22"
 								viewBox="0 0 24 24"
 								fill="none"
-								stroke="#475569"
+								stroke="var(--appearance-ink-475569)"
 								strokeWidth="2"
 								strokeLinecap="round"
 								strokeLinejoin="round"
@@ -665,7 +667,7 @@ export default function Topbar() {
 										height: "10px",
 										background: "#ef4444",
 										borderRadius: "50%",
-										border: "2px solid white",
+										border: "2px solid var(--appearance-edge-white)",
 									}}
 								></span>
 							)}
@@ -679,7 +681,7 @@ export default function Topbar() {
 									right: "-10px",
 									width: "340px",
 									maxWidth: "85vw",
-									background: "white",
+									background: "var(--appearance-surface-white)",
 									borderRadius: "16px",
 									border: "1px solid rgba(0,0,0,0.1)",
 									boxShadow: "0 20px 40px -10px rgba(0, 0, 0, 0.15)",
@@ -694,8 +696,8 @@ export default function Topbar() {
 								<div
 									style={{
 										padding: "16px 20px",
-										background: "#f8fafc",
-										borderBottom: "1px solid #e2e8f0",
+										background: "var(--appearance-surface-f8fafc)",
+										borderBottom: "1px solid var(--appearance-edge-e2e8f0)",
 										display: "flex",
 										justifyContent: "space-between",
 										alignItems: "center",
@@ -705,7 +707,7 @@ export default function Topbar() {
 										style={{
 											fontSize: "14px",
 											fontWeight: 800,
-											color: "#0f172a",
+											color: "var(--appearance-ink-0f172a)",
 										}}
 									>
 										Notifications
@@ -716,7 +718,7 @@ export default function Topbar() {
 											style={{
 												background: "none",
 												border: "none",
-												color: "#1A8C7A",
+												color: "var(--appearance-ink-1a8c7a)",
 												fontSize: "11px",
 												fontWeight: 800,
 												cursor: "pointer",
@@ -728,7 +730,7 @@ export default function Topbar() {
 									)}
 								</div>
 								<div style={{ overflowY: "auto" }}>
-                                    {notificationError && <p role="alert" style={{padding:"8px 20px",fontSize:12,color:"#b91c1c"}}>{notificationError}</p>}
+                                    {notificationError && <p role="alert" style={{padding:"8px 20px",fontSize:12,color:"var(--appearance-ink-b91c1c)"}}>{notificationError}</p>}
 									{/* 🚀 FIXED: Only map out UNREAD notifications dynamically */}
 									{notifications.filter((n) => !n.isRead).length > 0 ? (
 										notifications
@@ -743,9 +745,9 @@ export default function Topbar() {
                                                     width: "100%", border: "none", textAlign: "left", font: "inherit",
 														display: "flex",
 														gap: "12px",
-														background: "#f0fdf4",
+														background: "var(--appearance-surface-f0fdf4)",
 														borderLeft: "4px solid #1A8C7A",
-														borderBottom: "1px solid #e2e8f0",
+														borderBottom: "1px solid var(--appearance-edge-e2e8f0)",
 														cursor: "pointer",
 														transition: "background 0.2s",
 													}}
@@ -766,7 +768,7 @@ export default function Topbar() {
 																margin: 0,
 																fontSize: "13px",
 																fontWeight: 800,
-																color: "#0f172a",
+																color: "var(--appearance-ink-0f172a)",
 															}}
 														>
 															{notif.title}
@@ -775,7 +777,7 @@ export default function Topbar() {
 															style={{
 																margin: "4px 0 0 0",
 																fontSize: "13px",
-																color: "#475569",
+																color: "var(--appearance-ink-475569)",
 																lineHeight: "1.4",
 															}}
 														>
@@ -785,7 +787,7 @@ export default function Topbar() {
 															style={{
 																margin: "8px 0 0 0",
 																fontSize: "11px",
-																color: "#94a3b8",
+																color: "var(--appearance-ink-94a3b8)",
 																fontWeight: 600,
 															}}
 														>
@@ -801,7 +803,7 @@ export default function Topbar() {
 												height="32"
 												viewBox="0 0 24 24"
 												fill="none"
-												stroke="#cbd5e1"
+												stroke="var(--appearance-ink-cbd5e1)"
 												strokeWidth="1.5"
 												style={{ margin: "0 auto 12px auto" }}
 											>
@@ -812,7 +814,7 @@ export default function Topbar() {
 												style={{
 													margin: 0,
 													fontSize: "13px",
-													color: "#64748b",
+													color: "var(--appearance-ink-64748b)",
 													fontWeight: 600,
 												}}
 											>
@@ -827,6 +829,7 @@ export default function Topbar() {
 
 					<button
 						aria-label="Help"
+                        className="header-help"
                         onClick={handleHelpClick}
 						style={{
 							background: "none",
@@ -842,7 +845,7 @@ export default function Topbar() {
 							height="22"
 							viewBox="0 0 24 24"
 							fill="none"
-							stroke="#475569"
+							stroke="var(--appearance-ink-475569)"
 							strokeWidth="2"
 							strokeLinecap="round"
 							strokeLinejoin="round"
@@ -892,14 +895,14 @@ export default function Topbar() {
 								position: "absolute",
 								top: "85px",
 								right: "1rem",
-								background: "rgba(255, 255, 255, 0.98)",
+								background: "var(--appearance-surface-rgba255255255098)",
 								width: "400px",
 								maxWidth: "calc(100vw - 2rem)",
                                 maxHeight: "calc(100dvh - 100px)",
 								borderRadius: "20px",
 								overflowY: "auto",
 								boxShadow: "0 30px 60px -15px rgba(0, 0, 0, 0.3)",
-								border: "1px solid rgba(255,255,255,0.8)",
+								border: "1px solid var(--appearance-edge-rgba25525525508)",
 								display: "flex",
 								flexDirection: "column",
 								animation: "popIn 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
@@ -909,7 +912,7 @@ export default function Topbar() {
 							<div
 								style={{
 									padding: "1.5rem 2rem",
-									borderBottom: "1px solid #f1f5f9",
+									borderBottom: "1px solid var(--appearance-edge-f1f5f9)",
 									display: "flex",
 									justifyContent: "space-between",
 									alignItems: "center",
@@ -926,7 +929,7 @@ export default function Topbar() {
 												border: "none",
 												cursor: "pointer",
 												padding: 0,
-												color: "#64748b",
+												color: "var(--appearance-ink-64748b)",
 												display: "flex",
 												alignItems: "center",
 												justifyContent: "center",
@@ -950,7 +953,7 @@ export default function Topbar() {
 												margin: 0,
 												fontSize: "18px",
 												fontWeight: 800,
-												color: "#0f172a",
+												color: "var(--appearance-ink-0f172a)",
 												letterSpacing: "-0.5px",
 											}}
 										>
@@ -965,7 +968,7 @@ export default function Topbar() {
 												style={{
 													margin: "2px 0 0 0",
 													fontSize: "13px",
-													color: "#64748b",
+													color: "var(--appearance-ink-64748b)",
 													fontWeight: 500,
 												}}
 											>
@@ -978,23 +981,23 @@ export default function Topbar() {
 									aria-label="Close help"
 									onClick={() => setShowHelp(false)}
 									style={{
-										background: "#f1f5f9",
+										background: "var(--appearance-surface-f1f5f9)",
 										border: "none",
 										width: "32px",
 										height: "32px",
 										borderRadius: "50%",
 										cursor: "pointer",
-										color: "#64748b",
+										color: "var(--appearance-ink-64748b)",
 										display: "flex",
 										alignItems: "center",
 										justifyContent: "center",
 										transition: "background 0.2s",
 									}}
 									onMouseEnter={(e) =>
-										(e.currentTarget.style.background = "#e2e8f0")
+										(e.currentTarget.style.background = "var(--appearance-surface-e2e8f0)")
 									}
 									onMouseLeave={(e) =>
-										(e.currentTarget.style.background = "#f1f5f9")
+										(e.currentTarget.style.background = "var(--appearance-surface-f1f5f9)")
 									}
 								>
 									<svg
@@ -1033,8 +1036,8 @@ export default function Topbar() {
 												alignItems: "center",
 												justifyContent: "space-between",
 												width: "100%",
-												background: "white",
-												border: "1px solid #e2e8f0",
+												background: "var(--appearance-surface-white)",
+												border: "1px solid var(--appearance-edge-e2e8f0)",
 												padding: "16px",
 												borderRadius: "16px",
 												cursor: "pointer",
@@ -1047,7 +1050,7 @@ export default function Topbar() {
 													"0 4px 12px rgba(26,140,122,0.05)";
 											}}
 											onMouseLeave={(e) => {
-												e.currentTarget.style.borderColor = "#e2e8f0";
+												e.currentTarget.style.borderColor = "var(--appearance-edge-e2e8f0)";
 												e.currentTarget.style.boxShadow =
 													"0 2px 4px rgba(0,0,0,0.02)";
 											}}
@@ -1061,14 +1064,14 @@ export default function Topbar() {
 											>
 												<div
 													style={{
-														background: "#e6fcf5",
+														background: "var(--appearance-surface-e6fcf5)",
 														width: "40px",
 														height: "40px",
 														borderRadius: "10px",
 														display: "flex",
 														alignItems: "center",
 														justifyContent: "center",
-														color: "#1A8C7A",
+														color: "var(--appearance-ink-1a8c7a)",
 													}}
 												>
 													<svg
@@ -1087,7 +1090,7 @@ export default function Topbar() {
 														style={{
 															fontSize: "15px",
 															fontWeight: 800,
-															color: "#0f172a",
+															color: "var(--appearance-ink-0f172a)",
 														}}
 													>
 														Documentation
@@ -1095,7 +1098,7 @@ export default function Topbar() {
 													<div
 														style={{
 															fontSize: "12px",
-															color: "#64748b",
+															color: "var(--appearance-ink-64748b)",
 															marginTop: "2px",
 														}}
 													>
@@ -1108,7 +1111,7 @@ export default function Topbar() {
 												height="20"
 												viewBox="0 0 24 24"
 												fill="none"
-												stroke="#cbd5e1"
+												stroke="var(--appearance-ink-cbd5e1)"
 												strokeWidth="2"
 											>
 												<polyline points="9 18 15 12 9 6" />
@@ -1122,8 +1125,8 @@ export default function Topbar() {
 												alignItems: "center",
 												justifyContent: "space-between",
 												width: "100%",
-												background: "white",
-												border: "1px solid #e2e8f0",
+												background: "var(--appearance-surface-white)",
+												border: "1px solid var(--appearance-edge-e2e8f0)",
 												padding: "16px",
 												borderRadius: "16px",
 												cursor: "pointer",
@@ -1136,7 +1139,7 @@ export default function Topbar() {
 													"0 4px 12px rgba(26,140,122,0.05)";
 											}}
 											onMouseLeave={(e) => {
-												e.currentTarget.style.borderColor = "#e2e8f0";
+												e.currentTarget.style.borderColor = "var(--appearance-edge-e2e8f0)";
 												e.currentTarget.style.boxShadow =
 													"0 2px 4px rgba(0,0,0,0.02)";
 											}}
@@ -1150,14 +1153,14 @@ export default function Topbar() {
 											>
 												<div
 													style={{
-														background: "#f0fdf4",
+														background: "var(--appearance-surface-f0fdf4)",
 														width: "40px",
 														height: "40px",
 														borderRadius: "10px",
 														display: "flex",
 														alignItems: "center",
 														justifyContent: "center",
-														color: "#22c55e",
+														color: "var(--appearance-ink-22c55e)",
 													}}
 												>
 													<svg
@@ -1177,7 +1180,7 @@ export default function Topbar() {
 														style={{
 															fontSize: "15px",
 															fontWeight: 800,
-															color: "#0f172a",
+															color: "var(--appearance-ink-0f172a)",
 														}}
 													>
 														Service availability
@@ -1185,7 +1188,7 @@ export default function Topbar() {
 													<div
 														style={{
 															fontSize: "12px",
-															color: "#64748b",
+															color: "var(--appearance-ink-64748b)",
 															marginTop: "2px",
 														}}
 													>
@@ -1198,7 +1201,7 @@ export default function Topbar() {
 												height="20"
 												viewBox="0 0 24 24"
 												fill="none"
-												stroke="#cbd5e1"
+												stroke="var(--appearance-ink-cbd5e1)"
 												strokeWidth="2"
 											>
 												<polyline points="9 18 15 12 9 6" />
@@ -1210,7 +1213,7 @@ export default function Topbar() {
 									<div
 										style={{
 											fontSize: "14px",
-											color: "#475569",
+											color: "var(--appearance-ink-475569)",
 											lineHeight: "1.6",
 										}}
 									>
@@ -1222,7 +1225,7 @@ export default function Topbar() {
 										<div
 											style={{
 												marginTop: "1.5rem",
-												background: "#f8fafc",
+												background: "var(--appearance-surface-f8fafc)",
 												padding: "16px",
 												borderRadius: "12px",
 												borderLeft: "4px solid #15803d",
@@ -1231,7 +1234,7 @@ export default function Topbar() {
 											<div
 												style={{
 													fontWeight: 800,
-													color: "#15803d",
+													color: "var(--appearance-ink-15803d)",
 													marginBottom: "4px",
 												}}
 											>
@@ -1243,7 +1246,7 @@ export default function Topbar() {
 										<div
 											style={{
 												marginTop: "1rem",
-												background: "#f8fafc",
+												background: "var(--appearance-surface-f8fafc)",
 												padding: "16px",
 												borderRadius: "12px",
 												borderLeft: "4px solid #0284c7",
@@ -1252,7 +1255,7 @@ export default function Topbar() {
 											<div
 												style={{
 													fontWeight: 800,
-													color: "#0284c7",
+													color: "var(--appearance-ink-0284c7)",
 													marginBottom: "4px",
 												}}
 											>
@@ -1265,16 +1268,16 @@ export default function Topbar() {
 										<div
 											style={{
 												marginTop: "1rem",
-												background: "#f8fafc",
+												background: "var(--appearance-surface-f8fafc)",
 												padding: "16px",
 												borderRadius: "12px",
-												borderLeft: "4px solid #94a3b8",
+												borderLeft: "4px solid var(--appearance-edge-94a3b8)",
 											}}
 										>
 											<div
 												style={{
 													fontWeight: 800,
-													color: "#64748b",
+													color: "var(--appearance-ink-64748b)",
 													marginBottom: "4px",
 												}}
 											>
@@ -1287,62 +1290,14 @@ export default function Topbar() {
 									</div>
 								)}
 								{helpView === "api" && (
-                                    <div style={{ fontSize: 14, color: "#475569", lineHeight: 1.6 }}>
+                                    <div style={{ fontSize: 14, color: "var(--appearance-ink-475569)", lineHeight: 1.6 }}>
                                       <p>Scanning, AI tools, private document uploads, and email delivery are managed by BenchScout. You do not need to enter your own API keys or email password.</p>
                                       <p>If a service is unavailable, the app shows an explanation. Your saved profile and applications remain available.</p>
                                     </div>
                                 )}
 							</div>
 
-							{helpView === "menu" && (
-								<div
-									style={{
-										padding: "1.5rem 2rem",
-										background: "#f8fafc",
-										borderTop: "1px solid #f1f5f9",
-										textAlign: "center",
-									}}
-								>
-									<a
-										href="mailto:support@benchscout.com?subject=BenchScout%20Support%20Request"
-										style={{
-											display: "flex",
-											alignItems: "center",
-											justifyContent: "center",
-											gap: "8px",
-											width: "100%",
-											background: "#0B2444",
-											color: "white",
-											padding: "14px",
-											borderRadius: "12px",
-											fontSize: "14px",
-											fontWeight: 800,
-											textDecoration: "none",
-											transition: "background 0.2s",
-											boxShadow: "0 4px 14px 0 rgba(11, 36, 68, 0.3)",
-										}}
-										onMouseEnter={(e) =>
-											(e.currentTarget.style.background = "#05162a")
-										}
-										onMouseLeave={(e) =>
-											(e.currentTarget.style.background = "#0B2444")
-										}
-									>
-										<svg
-											width="18"
-											height="18"
-											viewBox="0 0 24 24"
-											fill="none"
-											stroke="currentColor"
-											strokeWidth="2.5"
-										>
-											<path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-											<polyline points="22,6 12,13 2,6"></polyline>
-										</svg>
-										Contact Technical Support
-									</a>
-								</div>
-							)}
+
 						</div>
 					</div>,
 					document.body,

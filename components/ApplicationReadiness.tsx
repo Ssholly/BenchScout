@@ -20,10 +20,10 @@ export default function ApplicationReadiness() {
     window.addEventListener("userStateChanged", load);
     return () => { controller.abort(); window.removeEventListener("userStateChanged", load); };
   }, []);
-  return <section className="application-readiness" aria-labelledby="readiness-title" style={{ background: "white", border: "1px solid #dbe7e3", borderRadius: 16, padding: "1.25rem", marginBottom: "1.5rem" }}>
+  return <section className="application-readiness" aria-labelledby="readiness-title" style={{ background: "var(--appearance-surface-white)", border: "1px solid var(--appearance-edge-dbe7e3)", borderRadius: 16, padding: "1.25rem", marginBottom: "1.5rem" }}>
     <div style={{ display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
-      <h2 id="readiness-title" style={{ margin: 0, fontSize: 18, color: "#0B2444" }}>{data?.careerPhase === "internship" ? data.placementStage === "training" ? "Your training documents" : "Your placement readiness" : "Your application readiness"}</h2>
-      {data && <span style={{ color: "#1A8C7A", fontWeight: 700 }}>{data.complete}/{data.total} complete</span>}
+      <h2 id="readiness-title" style={{ margin: 0, fontSize: 18, color: "var(--appearance-ink-0b2444)" }}>{data?.careerPhase === "internship" ? data.placementStage === "training" ? "Your training documents" : "Your placement readiness" : "Your application readiness"}</h2>
+      {data && <span style={{ color: "var(--appearance-ink-1a8c7a)", fontWeight: 700 }}>{data.complete}/{data.total} complete</span>}
     </div>
     {!data && <p role="status">{failed ? "Readiness is temporarily unavailable." : "Checking your profile…"}</p>}
     {data && <>

@@ -1,9 +1,13 @@
 import type { Viewport } from "next";
 import "./globals.css";
+import "./appearance-palette.css";
+import "./appearance.css";
+import { APPEARANCE_BOOTSTRAP } from "@/lib/appearance";
 import NavigationScrollReset from "@/components/NavigationScrollReset";
 import SessionGate from "@/components/SessionGate";
 import Sidebar from "@/components/Sidebar";
 import Topbar from "@/components/Topbar";
+import MobileSupportFooter from "@/components/FooterSupport";
 import ScanStatus from "@/components/ScanStatus";
 import ProfileModal from "@/components/ProfileModal";
 
@@ -11,10 +15,10 @@ export const metadata = {
 	title: "BenchScout",
 	description: "YOUR MLS CAREER HUB",
 	applicationName: "BenchScout",
-	appleWebApp: {
-		capable: true,
-		title: "BenchScout",
-		statusBarStyle: "default",
+	// Keep Home Screen capability without pinning the native status-bar style.
+	other: {
+		"apple-mobile-web-app-capable": "yes",
+		"apple-mobile-web-app-title": "BenchScout",
 	},
 };
 
@@ -23,7 +27,6 @@ export const viewport: Viewport = {
     width: "device-width",
     initialScale: 0.9,
     viewportFit: "cover",
-    themeColor: "#edf5fd",
 };
 
 export default function RootLayout({
@@ -32,7 +35,8 @@ export default function RootLayout({
 	children: React.ReactNode;
 }) {
 	return (
-		<html lang="en">
+		<html lang="en" suppressHydrationWarning>
+			<head><meta name="theme-color" content="#edf5fd" /><script dangerouslySetInnerHTML={{ __html: APPEARANCE_BOOTSTRAP }} /></head>
 			<body
 				style={{
 					margin: 0,
@@ -41,7 +45,7 @@ export default function RootLayout({
 					overflow: "hidden",
 					fontFamily:
 						"system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
-					backgroundColor: "#f8fafc",
+					backgroundColor: "var(--appearance-surface-f8fafc)",
 					position: "relative",
 				}}
 			>
@@ -97,7 +101,7 @@ export default function RootLayout({
 						zIndex: -1,
 						/* Slightly more transparent so colors bleed through nicely */
 						background:
-							"linear-gradient(rgba(248, 250, 252, 0.5), rgba(248, 250, 252, 0.85))",
+							"linear-gradient(var(--appearance-surface-rgba24825025205), var(--appearance-surface-rgba248250252085))",
 					}}
 				/>
 
@@ -144,6 +148,7 @@ export default function RootLayout({
 						>
 							<div style={{ width: "100%", maxWidth: "100%" }}>{children}</div>
 						</main>
+                        <MobileSupportFooter />
 					</div>
 				</div>
 			</SessionGate>

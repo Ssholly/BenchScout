@@ -226,7 +226,7 @@ export default function Dashboard() {
 	const iosSwitchStyle = (active: boolean) => ({
 		width: "32px",
 		height: "18px",
-		background: active ? "#1A8C7A" : "#cbd5e1", // 🚀 BRANDED TEAL TOGGLE
+		background: active ? "#1A8C7A" : "var(--appearance-surface-cbd5e1)", // 🚀 BRANDED TEAL TOGGLE
 		borderRadius: "20px",
 		position: "relative" as const,
 		cursor: "pointer",
@@ -237,7 +237,7 @@ export default function Dashboard() {
 	const iosKnobStyle = (active: boolean) => ({
 		width: "14px",
 		height: "14px",
-		background: "white",
+		background: "var(--appearance-surface-white)",
 		borderRadius: "50%",
 		position: "absolute" as const,
 		top: "2px",
@@ -263,10 +263,10 @@ export default function Dashboard() {
 					style={{
 						padding: "4rem",
 						textAlign: "center",
-						background: "rgba(255,255,255,0.5)",
+						background: "var(--appearance-surface-rgba25525525505)",
 						backdropFilter: "blur(16px)",
 						borderRadius: "16px",
-						border: "1px solid rgba(255, 255, 255, 0.3)",
+						border: "1px solid var(--appearance-edge-rgba25525525503)",
 						boxShadow: "0 4px 20px -2px rgba(0, 0, 0, 0.03)",
 						marginTop: "2rem",
 					}}
@@ -275,13 +275,13 @@ export default function Dashboard() {
 						style={{
 							width: "64px",
 							height: "64px",
-							background: "rgba(241, 245, 249, 0.8)",
+							background: "var(--appearance-surface-rgba24124524908)",
 							borderRadius: "50%",
 							display: "flex",
 							alignItems: "center",
 							justifyContent: "center",
 							margin: "0 auto 1rem auto",
-							color: "#64748b",
+							color: "var(--appearance-ink-64748b)",
 						}}
 					>
 						<svg
@@ -302,7 +302,7 @@ export default function Dashboard() {
 						style={{
 							margin: "0 0 8px 0",
 							fontSize: "18px",
-							color: "#0f172a",
+							color: "var(--appearance-ink-0f172a)",
 							fontWeight: 800,
 						}}
 					>
@@ -310,7 +310,7 @@ export default function Dashboard() {
 					</h2>
 					<p
 						style={{
-							color: "#64748b",
+							color: "var(--appearance-ink-64748b)",
 							fontSize: "14px",
 							maxWidth: "400px",
 							margin: "0 auto 24px auto",
@@ -347,8 +347,8 @@ export default function Dashboard() {
 					>
 						<div
 							style={{
-								background: "white",
-								border: "1px solid #f1f5f9",
+								background: "var(--appearance-surface-white)",
+								border: "1px solid var(--appearance-edge-f1f5f9)",
 								borderRadius: "12px",
 								padding: "1rem 1.25rem",
 								flex: 1,
@@ -360,7 +360,7 @@ export default function Dashboard() {
 								style={{
 									fontSize: "10px",
 									fontWeight: 800,
-									color: "#94a3b8",
+									color: "var(--appearance-ink-94a3b8)",
 									textTransform: "uppercase",
 									marginBottom: "8px",
 									letterSpacing: "0.5px",
@@ -375,7 +375,7 @@ export default function Dashboard() {
 									style={{
 										fontSize: "24px",
 										fontWeight: 800,
-										color: "#0f172a",
+										color: "var(--appearance-ink-0f172a)",
 									}}
 								>
 									{totalJobs}
@@ -385,7 +385,7 @@ export default function Dashboard() {
 										style={{
 											fontSize: "11px",
 											fontWeight: 700,
-											color: "#1A8C7A", // 🚀 BRANDED UP-TICK
+											color: "var(--appearance-ink-1a8c7a)", // 🚀 BRANDED UP-TICK
 										}}
 									>
 										Saved matches
@@ -395,8 +395,8 @@ export default function Dashboard() {
 						</div>
 						<div
 							style={{
-								background: "white",
-								border: "1px solid #f1f5f9",
+								background: "var(--appearance-surface-white)",
+								border: "1px solid var(--appearance-edge-f1f5f9)",
 								borderRadius: "12px",
 								padding: "1rem 1.25rem",
 								flex: 1,
@@ -408,7 +408,7 @@ export default function Dashboard() {
 								style={{
 									fontSize: "10px",
 									fontWeight: 800,
-									color: "#94a3b8",
+									color: "var(--appearance-ink-94a3b8)",
 									textTransform: "uppercase",
 									marginBottom: "8px",
 									letterSpacing: "0.5px",
@@ -423,7 +423,7 @@ export default function Dashboard() {
 									style={{
 										fontSize: "24px",
 										fontWeight: 800,
-										color: "#0f172a",
+										color: "var(--appearance-ink-0f172a)",
 									}}
 								>
 									{tier1Count}
@@ -435,8 +435,8 @@ export default function Dashboard() {
 										position: "absolute",
 										right: "1rem",
 										bottom: "1rem",
-										background: "#e6fcf5", // 🚀 BRANDED TIER 1 PILL
-										color: "#1A8C7A",
+										background: "var(--appearance-surface-e6fcf5)", // 🚀 BRANDED TIER 1 PILL
+										color: "var(--appearance-ink-1a8c7a)",
 										padding: "2px 8px",
 										borderRadius: "4px",
 										fontSize: "9px",
@@ -450,8 +450,8 @@ export default function Dashboard() {
 						</div>
 						<div
 							style={{
-								background: "white",
-								border: "1px solid #f1f5f9",
+								background: "var(--appearance-surface-white)",
+								border: "1px solid var(--appearance-edge-f1f5f9)",
 								borderRadius: "12px",
 								padding: "1rem 1.25rem",
 								flex: 1,
@@ -463,7 +463,7 @@ export default function Dashboard() {
 								style={{
 									fontSize: "10px",
 									fontWeight: 800,
-									color: "#94a3b8",
+									color: "var(--appearance-ink-94a3b8)",
 									textTransform: "uppercase",
 									marginBottom: "8px",
 									letterSpacing: "0.5px",
@@ -478,7 +478,7 @@ export default function Dashboard() {
 									style={{
 										fontSize: "24px",
 										fontWeight: 800,
-										color: "#0f172a",
+										color: "var(--appearance-ink-0f172a)",
 									}}
 								>
 									{tier2Count}
@@ -491,7 +491,7 @@ export default function Dashboard() {
 										right: "1rem",
 										bottom: "1rem",
 										background: "rgba(11, 36, 68, 0.05)", // 🚀 BRANDED TIER 2 PILL
-										color: "#0B2444",
+										color: "var(--appearance-ink-0b2444)",
 										padding: "2px 8px",
 										borderRadius: "4px",
 										fontSize: "9px",
@@ -505,8 +505,8 @@ export default function Dashboard() {
 						</div>
 						<div
 							style={{
-								background: "white",
-								border: "1px solid #f1f5f9",
+								background: "var(--appearance-surface-white)",
+								border: "1px solid var(--appearance-edge-f1f5f9)",
 								borderRadius: "12px",
 								padding: "1rem 1.25rem",
 								flex: 1,
@@ -518,7 +518,7 @@ export default function Dashboard() {
 								style={{
 									fontSize: "10px",
 									fontWeight: 800,
-									color: "#94a3b8",
+									color: "var(--appearance-ink-94a3b8)",
 									textTransform: "uppercase",
 									marginBottom: "8px",
 									letterSpacing: "0.5px",
@@ -534,10 +534,10 @@ export default function Dashboard() {
 										fontSize: "24px",
 										fontWeight: 800,
 										color: isScraping
-											? "#1A8C7A" // 🚀 BRANDED ACTIVE
+											? "var(--appearance-ink-1a8c7a)" // 🚀 BRANDED ACTIVE
 											: email
-												? "#0f172a"
-												: "#94a3b8",
+												? "var(--appearance-ink-0f172a)"
+												: "var(--appearance-ink-94a3b8)",
 									}}
 								>
 									{isScraping ? "Active" : email ? "Ready" : "Offline"}
@@ -546,8 +546,8 @@ export default function Dashboard() {
 						</div>
 						<div
 							style={{
-								background: "white",
-								border: "1px solid #f1f5f9",
+								background: "var(--appearance-surface-white)",
+								border: "1px solid var(--appearance-edge-f1f5f9)",
 								borderRadius: "12px",
 								padding: "1rem 1.25rem",
 								flex: 1,
@@ -559,7 +559,7 @@ export default function Dashboard() {
 								style={{
 									fontSize: "10px",
 									fontWeight: 800,
-									color: "#94a3b8",
+									color: "var(--appearance-ink-94a3b8)",
 									textTransform: "uppercase",
 									marginBottom: "8px",
 									letterSpacing: "0.5px",
@@ -574,7 +574,7 @@ export default function Dashboard() {
 									style={{
 										fontSize: "24px",
 										fontWeight: 800,
-										color: email ? "#0f172a" : "#94a3b8",
+										color: email ? "var(--appearance-ink-0f172a)" : "var(--appearance-ink-94a3b8)",
 									}}
 								>
 									{lastRun}
@@ -596,8 +596,8 @@ export default function Dashboard() {
 							className="digest-run-card"
 							style={{
 								flex: 1.3,
-								background: "white",
-								border: "1px solid #f1f5f9",
+								background: "var(--appearance-surface-white)",
+								border: "1px solid var(--appearance-edge-f1f5f9)",
 								borderRadius: "16px",
 								padding: "1.75rem",
 								boxShadow: "0 4px 6px -1px rgba(0,0,0,0.02)",
@@ -607,7 +607,7 @@ export default function Dashboard() {
 								style={{
 									fontSize: "18px",
 									fontWeight: 800,
-									color: "#0f172a",
+									color: "var(--appearance-ink-0f172a)",
 									margin: "0 0 4px 0",
 								}}
 							>
@@ -616,7 +616,7 @@ export default function Dashboard() {
 							<p
 								style={{
 									fontSize: "13px",
-									color: "#64748b",
+									color: "var(--appearance-ink-64748b)",
 									margin: "0 0 1.5rem 0",
 								}}
 							>
@@ -637,7 +637,7 @@ export default function Dashboard() {
 											display: "block",
 											fontSize: "10px",
 											fontWeight: 800,
-											color: "#94a3b8",
+											color: "var(--appearance-ink-94a3b8)",
 											marginBottom: "6px",
 											textTransform: "uppercase",
 										}}
@@ -652,12 +652,12 @@ export default function Dashboard() {
 										readOnly={!email}
 										style={{
 											width: "100%",
-											background: "#f8fafc",
-											border: "1px solid #e2e8f0",
+											background: "var(--appearance-surface-f8fafc)",
+											border: "1px solid var(--appearance-edge-e2e8f0)",
 											borderRadius: "8px",
 											padding: "10px 12px",
 											fontSize: "13px",
-											color: "#0f172a",
+											color: "var(--appearance-ink-0f172a)",
 											outline: "none",
 											cursor: email ? "text" : "not-allowed",
 										}}
@@ -669,7 +669,7 @@ export default function Dashboard() {
 											display: "block",
 											fontSize: "10px",
 											fontWeight: 800,
-											color: "#94a3b8",
+											color: "var(--appearance-ink-94a3b8)",
 											marginBottom: "6px",
 											textTransform: "uppercase",
 										}}
@@ -682,12 +682,12 @@ export default function Dashboard() {
 											disabled={!email || isScraping}
 										style={{
 											width: "100%",
-											background: "#f8fafc",
-											border: "1px solid #e2e8f0",
+											background: "var(--appearance-surface-f8fafc)",
+											border: "1px solid var(--appearance-edge-e2e8f0)",
 											borderRadius: "8px",
 											padding: "10px 12px",
 											fontSize: "13px",
-											color: "#0f172a",
+											color: "var(--appearance-ink-0f172a)",
 											outline: "none",
 											appearance: "none",
 											cursor: email ? "pointer" : "not-allowed",
@@ -727,7 +727,7 @@ export default function Dashboard() {
 										style={{
 											fontSize: "13px",
 											fontWeight: 600,
-											color: "#475569",
+											color: "var(--appearance-ink-475569)",
 											marginLeft: "8px",
 										}}
 									>
@@ -750,7 +750,7 @@ export default function Dashboard() {
 										style={{
 											fontSize: "13px",
 											fontWeight: 600,
-											color: "#475569",
+											color: "var(--appearance-ink-475569)",
 											marginLeft: "8px",
 										}}
 									>
@@ -766,12 +766,12 @@ export default function Dashboard() {
 										justifyContent: "space-between",
 										fontSize: "10px",
 										fontWeight: 800,
-										color: "#94a3b8",
+										color: "var(--appearance-ink-94a3b8)",
 										marginBottom: "6px",
 									}}
 								>
 									<span>SCAN PROGRESS</span>
-									<span style={{ color: progress > 0 ? "#1A8C7A" : "#94a3b8" }}>
+									<span style={{ color: progress > 0 ? "var(--appearance-ink-1a8c7a)" : "var(--appearance-ink-94a3b8)" }}>
 										{progress}%
 									</span>
 								</div>
@@ -779,7 +779,7 @@ export default function Dashboard() {
 									style={{
 										width: "100%",
 										height: "6px",
-										background: "#f1f5f9",
+										background: "var(--appearance-surface-f1f5f9)",
 										borderRadius: "4px",
 										overflow: "hidden",
 									}}
@@ -800,11 +800,11 @@ export default function Dashboard() {
 								style={{
 									width: "100%",
 									background: isScraping
-										? "#94a3b8"
+										? "var(--appearance-surface-94a3b8)"
 										: !email
-											? "#e2e8f0"
+											? "var(--appearance-surface-e2e8f0)"
 											: "#0B2444", // 🚀 BRANDED RUN BUTTON
-									color: !email ? "#94a3b8" : "white",
+									color: !email ? "var(--appearance-ink-94a3b8)" : "white",
 									border: "none",
 									padding: "12px",
 									borderRadius: "8px",
@@ -838,7 +838,7 @@ export default function Dashboard() {
 									style={{
 										fontSize: "13px",
 										fontWeight: 800,
-										color: "#0f172a",
+										color: "var(--appearance-ink-0f172a)",
 									}}
 								>
 									Search guidance
@@ -846,7 +846,7 @@ export default function Dashboard() {
 								<div
 									style={{
 										fontSize: "12px",
-										color: "#475569",
+										color: "var(--appearance-ink-475569)",
 										marginTop: "4px",
 									}}
 								>

@@ -483,11 +483,11 @@ export default function Sidebar() {
 
           @keyframes spin { 100% { transform: rotate(360deg); } } 
            .mobile-menu-overlay { display: none; }
-          @media (max-width: 900px) { .mobile-menu-overlay { display: block; } .mobile-close-btn { display: flex !important; margin-left: auto; } .sidebar-wrapper { position: fixed; top: 0; left: 0; transform: translateX(-100%); background: rgba(255, 255, 255, 0.95) !important; box-shadow: 20px 0 50px rgba(0,0,0,0.1); } .sidebar-wrapper.mobile-open { transform: translateX(0); } }
-          .sidebar-wrapper.home-navigation { position: fixed; top: 0; left: 0; transform: translateX(-100%); visibility: hidden; background: #f8fafc !important; box-shadow: 20px 0 50px rgba(0,0,0,.12) !important; }
+          @media (max-width: 900px) { .mobile-menu-overlay { display: block; } .mobile-close-btn { display: flex !important; margin-left: auto; } .sidebar-wrapper { position: fixed; top: 0; left: 0; transform: translateX(-100%); background: var(--appearance-surface-rgba255255255095) !important; box-shadow: 20px 0 50px rgba(0,0,0,0.1); } .sidebar-wrapper.mobile-open { transform: translateX(0); } }
+          .sidebar-wrapper.home-navigation { position: fixed; top: 0; left: 0; transform: translateX(-100%); visibility: hidden; background: var(--appearance-surface-f8fafc) !important; box-shadow: 20px 0 50px rgba(0,0,0,.12) !important; }
           .sidebar-wrapper.home-navigation.mobile-open { transform: translateX(0); visibility: visible; }
           .home-menu-overlay { display: block !important; }
-          .home-menu-close { flex-shrink: 0; align-self: flex-end; display: flex; align-items: center; gap: 6px; min-height: 44px; margin: 8px 12px 0; padding: 8px 12px; border: 1px solid #dce6ee; border-radius: 10px; background: white; color: #0B2444; font: inherit; cursor: pointer; }
+          .home-menu-close { flex-shrink: 0; align-self: flex-end; display: flex; align-items: center; gap: 6px; min-height: 44px; margin: 8px 12px 0; padding: 8px 12px; border: 1px solid var(--appearance-edge-dce6ee); border-radius: 10px; background: var(--appearance-surface-white); color: var(--appearance-ink-0b2444); font: inherit; cursor: pointer; }
           .home-navigation .sidebar-brand { height: 90px !important; }
           @media (prefers-reduced-motion: reduce) { .sidebar-wrapper.home-navigation { transition: none; } }
           
@@ -510,7 +510,7 @@ export default function Sidebar() {
             content: "";
             position: absolute;
             top: 0; left: -100%; width: 50%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            background: linear-gradient(90deg, transparent, var(--appearance-surface-rgba25525525504), transparent);
             transform: skewX(-20deg);
             animation: premiumShine 3s infinite;
           }
@@ -571,7 +571,7 @@ export default function Sidebar() {
 						right: 0,
 						height: "120px",
 						background:
-							"linear-gradient(to bottom, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0) 100%)",
+							"linear-gradient(to bottom, var(--appearance-surface-rgba25525525507) 0%, rgba(255,255,255,0) 100%)",
 						backdropFilter: "blur(24px)",
 						WebkitBackdropFilter: "blur(24px)",
 						maskImage:
@@ -623,12 +623,12 @@ export default function Sidebar() {
 									cx="26"
 									cy="22"
 									r="13.5"
-									stroke="#0B2444"
+									stroke="var(--appearance-ink-0b2444)"
 									strokeWidth="2.5"
 								/>
 								<path
 									d="M34.5 13.5 A13.5 13.5 0 0 1 39 22"
-									stroke="#1A8C7A"
+									stroke="var(--appearance-ink-1a8c7a)"
 									strokeWidth="2.5"
 									strokeLinecap="round"
 								/>
@@ -636,14 +636,14 @@ export default function Sidebar() {
 									cx="26"
 									cy="22"
 									r="3.5"
-									fill="#1A8C7A"
+									fill="var(--appearance-ink-1a8c7a)"
 									className="animated-specimen"
 								/>
 								<circle
 									cx="21.5"
 									cy="17.5"
 									r="1.5"
-									fill="#22B89F"
+									fill="var(--appearance-ink-22b89f)"
 									opacity="0.5"
 									className="animated-lens-shine"
 								/>
@@ -652,7 +652,7 @@ export default function Sidebar() {
 									y1="35.5"
 									x2="26"
 									y2="43"
-									stroke="#0B2444"
+									stroke="var(--appearance-ink-0b2444)"
 									strokeWidth="2.5"
 									strokeLinecap="round"
 								/>
@@ -661,7 +661,7 @@ export default function Sidebar() {
 									y1="43"
 									x2="35"
 									y2="43"
-									stroke="#0B2444"
+									stroke="var(--appearance-ink-0b2444)"
 									strokeWidth="2.5"
 									strokeLinecap="round"
 								/>
@@ -670,7 +670,7 @@ export default function Sidebar() {
 									y1="43"
 									x2="18.5"
 									y2="47"
-									stroke="#0B2444"
+									stroke="var(--appearance-ink-0b2444)"
 									strokeWidth="2"
 									strokeLinecap="round"
 								/>
@@ -679,7 +679,7 @@ export default function Sidebar() {
 									y1="43"
 									x2="33.5"
 									y2="47"
-									stroke="#0B2444"
+									stroke="var(--appearance-ink-0b2444)"
 									strokeWidth="2"
 									strokeLinecap="round"
 								/>
@@ -700,11 +700,11 @@ export default function Sidebar() {
 									fontSize: "32px",
 									fontWeight: 600,
 									letterSpacing: "-0.03em",
-									color: "#0B2444",
+									color: "var(--appearance-ink-0b2444)",
 									lineHeight: "1",
 								}}
 							>
-								Bench<span style={{ color: "#1A8C7A" }}>Scout</span>
+								Bench<span style={{ color: "var(--appearance-ink-1a8c7a)" }}>Scout</span>
 							</div>
 							<div
 								style={{
@@ -722,7 +722,7 @@ export default function Sidebar() {
 										fontWeight: 600,
 										letterSpacing: "0.22em",
 										textTransform: "uppercase",
-										color: "#4A6080",
+										color: "var(--appearance-ink-4a6080)",
 										whiteSpace: "nowrap",
 									}}
 								>
@@ -752,15 +752,15 @@ export default function Sidebar() {
 										marginBottom: "8px",
 										borderRadius: "12px",
 										background: isActive
-											? "rgba(255, 255, 255, 0.6)"
+											? "var(--appearance-surface-rgba25525525506)"
 											: "transparent",
 										border: isActive
-											? "1px solid rgba(255,255,255,0.8)"
+											? "1px solid var(--appearance-edge-rgba25525525508)"
 											: "1px solid transparent",
 										boxShadow: isActive
 											? "0 4px 12px rgba(0,0,0,0.03)"
 											: "none",
-										color: isActive ? "#0B2444" : "#4A6080",
+										color: isActive ? "var(--appearance-ink-0b2444)" : "var(--appearance-ink-4a6080)",
 										fontWeight: isActive ? 800 : 600,
 										transition: "all 0.2s",
 									}}
@@ -769,7 +769,7 @@ export default function Sidebar() {
 										style={{
 											marginRight: "12px",
 											display: "flex",
-											color: isActive ? "#1A8C7A" : "inherit",
+											color: isActive ? "var(--appearance-ink-1a8c7a)" : "inherit",
 										}}
 									>
 										{item.icon}
@@ -779,23 +779,23 @@ export default function Sidebar() {
 										<span
 											style={{
 												background: isActive
-													? "rgba(255,255,255,0.9)"
+													? "var(--appearance-surface-rgba25525525509)"
 													: item.badge === "NEW"
 														? "rgba(34, 184, 159, 0.15)"
 														: item.badge === "PORTAL"
 															? "rgba(11, 36, 68, 0.1)"
-															: "rgba(241, 245, 249, 0.8)",
+															: "var(--appearance-surface-rgba24124524908)",
 												padding: "2px 8px",
 												borderRadius: "12px",
 												fontSize: "11px",
 												fontWeight: 800,
 												color: isActive
-													? "#1A8C7A"
+													? "var(--appearance-ink-1a8c7a)"
 													: item.badge === "NEW"
-														? "#1A8C7A"
+														? "var(--appearance-ink-1a8c7a)"
 														: item.badge === "PORTAL"
-															? "#0B2444"
-															: "#94a3b8",
+															? "var(--appearance-ink-0b2444)"
+															: "var(--appearance-ink-94a3b8)",
 											}}
 										>
 											{item.badge}
@@ -826,7 +826,7 @@ export default function Sidebar() {
 								background: isScanning
 									? "rgba(26, 140, 122, 0.1)"
 									: "rgba(26, 140, 122, 0.05)",
-								color: "#1A8C7A",
+								color: "var(--appearance-ink-1a8c7a)",
 								border: "1px solid rgba(26, 140, 122, 0.15)",
 								padding: "7px 10px",
 								borderRadius: "8px",
@@ -950,7 +950,7 @@ export default function Sidebar() {
 								style={{
 									margin: 0,
 									fontSize: "14px",
-									color: "#0f172a",
+									color: "var(--appearance-ink-0f172a)",
 									fontWeight: 800,
 									whiteSpace: "nowrap",
 									textOverflow: "ellipsis",
@@ -966,7 +966,7 @@ export default function Sidebar() {
 								style={{
 									margin: 0,
 									fontSize: "11px",
-									color: "#64748b",
+									color: "var(--appearance-ink-64748b)",
 									whiteSpace: "nowrap",
 									overflow: "hidden",
 									textOverflow: "ellipsis",
@@ -981,7 +981,7 @@ export default function Sidebar() {
 						</div>
 					</div>
 
-					{logoutError && <p role="alert" style={{ color: "#b42318", fontSize: 13 }}>{logoutError}</p>}
+					{logoutError && <p role="alert" style={{ color: "var(--appearance-ink-b42318)", fontSize: 13 }}>{logoutError}</p>}
 					<button
 						className={employerNode ? "" : "premium-btn"}
 						onClick={() => {
@@ -1004,9 +1004,9 @@ export default function Sidebar() {
 							gap: "8px",
 							...(employerNode
 								? {
-										background: "#fef2f2",
-										border: "1px solid #fecaca",
-										color: "#ef4444",
+										background: "var(--appearance-surface-fef2f2)",
+										border: "1px solid var(--appearance-edge-fecaca)",
+										color: "var(--appearance-ink-ef4444)",
 										boxShadow: "none",
 									}
 								: {}),

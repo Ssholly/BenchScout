@@ -487,7 +487,7 @@ function MatchesPage() {
 					opacity: isApplied ? 0.6 : 1,
 					transition: "all 0.3s",
 					backgroundColor: isApplied
-						? "rgba(241, 245, 249, 0.4)"
+						? "var(--appearance-surface-rgba24124524904)"
 						: "transparent",
 				}}
 			>
@@ -514,7 +514,7 @@ function MatchesPage() {
 							<div
 								style={{
 									fontWeight: 800,
-									color: "#0f172a",
+									color: "var(--appearance-ink-0f172a)",
 									fontSize: "14.5px",
 									marginBottom: "4px",
 									display: "flex",
@@ -526,8 +526,8 @@ function MatchesPage() {
 								{j.isDirectPost && (
 									<span
 										style={{
-											background: "#e6fcf5",
-											color: "#1A8C7A",
+											background: "var(--appearance-surface-e6fcf5)",
+											color: "var(--appearance-ink-1a8c7a)",
 											border: "1px solid rgba(26, 140, 122, 0.2)",
 											fontSize: "9px",
 											fontWeight: 800,
@@ -555,7 +555,7 @@ function MatchesPage() {
 									</span>
 								)}
 							</div>
-							<div style={{ fontSize: "13px", color: "#64748b" }}>
+							<div style={{ fontSize: "13px", color: "var(--appearance-ink-64748b)" }}>
 								{j.company}
 								<ListingEvidence job={j} />
 							</div>
@@ -566,7 +566,7 @@ function MatchesPage() {
 					data-label="Location"
 					style={{
 						padding: "1.25rem 1rem",
-						color: "#64748b",
+						color: "var(--appearance-ink-64748b)",
 						fontSize: "13px",
 					}}
 				>
@@ -576,7 +576,7 @@ function MatchesPage() {
 							height="14"
 							viewBox="0 0 24 24"
 							fill="none"
-							stroke="#94a3b8"
+							stroke="var(--appearance-ink-94a3b8)"
 							strokeWidth="2"
 						>
 							<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
@@ -587,7 +587,7 @@ function MatchesPage() {
 				</td>
 				<td data-label="Salary" style={{ padding: "1.25rem 1rem" }}>
 					<div
-						style={{ fontWeight: 800, color: "#0f172a", fontSize: "13.5px" }}
+						style={{ fontWeight: 800, color: "var(--appearance-ink-0f172a)", fontSize: "13.5px" }}
 					>
 						{j.salary === "Competitive" ? "Competitive" : j.salary}
 					</div>
@@ -602,7 +602,7 @@ function MatchesPage() {
 									key={i}
 									style={{
 										background: "rgba(26, 140, 122, 0.1)",
-										color: "#1A8C7A",
+										color: "var(--appearance-ink-1a8c7a)",
 										padding: "4px 10px",
 										borderRadius: "6px",
 										fontSize: "10.5px",
@@ -629,7 +629,7 @@ function MatchesPage() {
 							fontWeight: 800,
 							fontSize: "15px",
 							color:
-								j.tier === 1 ? "#1A8C7A" : j.tier === 2 ? "#0B2444" : "#94a3b8",
+								j.tier === 1 ? "var(--appearance-ink-1a8c7a)" : j.tier === 2 ? "var(--appearance-ink-0b2444)" : "var(--appearance-ink-94a3b8)",
 						}}
 					>
 						{j.isDirectPost ? "—" : j.score}
@@ -644,7 +644,7 @@ function MatchesPage() {
 						disabled={isApplied}
 						style={{
 							background: "transparent",
-							color: isApplied ? "#94a3b8" : "#0B2444",
+							color: isApplied ? "var(--appearance-ink-94a3b8)" : "var(--appearance-ink-0b2444)",
 							border: "none",
 							fontWeight: 800,
 							fontSize: "14px",
@@ -699,7 +699,7 @@ function MatchesPage() {
 		<section className="pane active matches-page" style={{ paddingBottom: "2rem" }}>
 			<style
 				dangerouslySetInnerHTML={{
-					__html: `@keyframes slideDownToast { 0% { transform: translate(-50%, -20px) scale(0.95); opacity: 0; } 100% { transform: translate(-50%, 0) scale(1); opacity: 1; } } @keyframes shimmer { 0% { background-position: -1000px 0; } 100% { background-position: 1000px 0; } } .skeleton { background: rgba(255,255,255,0.4); background-image: linear-gradient(90deg, rgba(255,255,255,0) 0px, rgba(255,255,255,0.5) 40px, rgba(255,255,255,0) 80px); background-size: 1000px 100%; animation: shimmer 2s infinite linear; } @media screen and (max-width: 768px) { .responsive-table table, .responsive-table thead, .responsive-table tbody, .responsive-table th, .responsive-table td, .responsive-table tr { display: block; } .responsive-table thead tr { position: absolute; top: -9999px; left: -9999px; } .responsive-table tr { margin-bottom: 1.5rem; border: 1px solid rgba(255,255,255,0.5) !important; border-radius: 16px; background: rgba(255,255,255,0.6) !important; backdrop-filter: blur(16px); box-shadow: 0 4px 16px -2px rgba(0,0,0,0.03); overflow: hidden; } .responsive-table td { border: none !important; border-bottom: 1px solid rgba(0,0,0,0.03) !important; position: relative; padding: 1rem 1.25rem !important; display: flex; flex-direction: column; gap: 0.25rem; text-align: left !important; } .responsive-table td:last-child { border-bottom: 0 !important; } .responsive-table td::before { content: attr(data-label); font-size: 10px; font-weight: 800; text-transform: uppercase; color: #94a3b8; letter-spacing: 0.5px; margin-bottom: 4px; } .hide-mobile { display: none !important; } .responsive-table td:last-child > button { width: 100%; justify-content: center !important; background: rgba(255,255,255,0.8) !important; padding: 12px !important; border-radius: 8px !important; margin-top: 8px; border: 1px solid rgba(0,0,0,0.05) !important; } .responsive-table td:last-child > button:disabled { background: transparent !important; border: none !important; } }`,
+					__html: `@keyframes slideDownToast { 0% { transform: translate(-50%, -20px) scale(0.95); opacity: 0; } 100% { transform: translate(-50%, 0) scale(1); opacity: 1; } } @keyframes shimmer { 0% { background-position: -1000px 0; } 100% { background-position: 1000px 0; } } .skeleton { background: var(--appearance-surface-rgba25525525504); background-image: linear-gradient(90deg, rgba(255,255,255,0) 0px, var(--appearance-surface-rgba25525525505) 40px, rgba(255,255,255,0) 80px); background-size: 1000px 100%; animation: shimmer 2s infinite linear; } @media screen and (max-width: 768px) { .responsive-table table, .responsive-table thead, .responsive-table tbody, .responsive-table th, .responsive-table td, .responsive-table tr { display: block; } .responsive-table thead tr { position: absolute; top: -9999px; left: -9999px; } .responsive-table tr { margin-bottom: 1.5rem; border: 1px solid var(--appearance-edge-rgba25525525505) !important; border-radius: 16px; background: var(--appearance-surface-rgba25525525506) !important; backdrop-filter: blur(16px); box-shadow: 0 4px 16px -2px rgba(0,0,0,0.03); overflow: hidden; } .responsive-table td { border: none !important; border-bottom: 1px solid rgba(0,0,0,0.03) !important; position: relative; padding: 1rem 1.25rem !important; display: flex; flex-direction: column; gap: 0.25rem; text-align: left !important; } .responsive-table td:last-child { border-bottom: 0 !important; } .responsive-table td::before { content: attr(data-label); font-size: 10px; font-weight: 800; text-transform: uppercase; color: var(--appearance-ink-94a3b8); letter-spacing: 0.5px; margin-bottom: 4px; } .hide-mobile { display: none !important; } .responsive-table td:last-child > button { width: 100%; justify-content: center !important; background: var(--appearance-surface-rgba25525525508) !important; padding: 12px !important; border-radius: 8px !important; margin-top: 8px; border: 1px solid rgba(0,0,0,0.05) !important; } .responsive-table td:last-child > button:disabled { background: transparent !important; border: none !important; } }`,
 				}}
 			/>
 
@@ -713,7 +713,7 @@ function MatchesPage() {
 						left: 0,
 						width: "100vw",
 						height: "100dvh",
-						background: "rgba(248, 250, 252, 0.7)",
+						background: "var(--appearance-surface-rgba24825025207)",
 						backdropFilter: "blur(8px)",
 						zIndex: 9999,
 						display: "flex",
@@ -724,7 +724,7 @@ function MatchesPage() {
 				>
 					<div
 						style={{
-							background: "white",
+							background: "var(--appearance-surface-white)",
 							width: "100%",
 							maxWidth: "380px",
 							borderRadius: "20px",
@@ -736,7 +736,7 @@ function MatchesPage() {
 					>
 						<div
 							style={{
-								background: "#fef3c7",
+								background: "var(--appearance-surface-fef3c7)",
 								width: "64px",
 								height: "64px",
 								borderRadius: "50%",
@@ -744,7 +744,7 @@ function MatchesPage() {
 								alignItems: "center",
 								justifyContent: "center",
 								margin: "0 auto 20px auto",
-								color: "#d97706",
+								color: "var(--appearance-ink-d97706)",
 							}}
 						>
 							<svg
@@ -766,7 +766,7 @@ function MatchesPage() {
 							style={{
 								fontSize: "20px",
 								fontWeight: 800,
-								color: "#0f172a",
+								color: "var(--appearance-ink-0f172a)",
 								margin: "0 0 12px 0",
 							}}
 						>
@@ -775,7 +775,7 @@ function MatchesPage() {
 						<p
 							style={{
 								fontSize: "15px",
-								color: "#64748b",
+								color: "var(--appearance-ink-64748b)",
 								margin: "0 0 32px 0",
 								lineHeight: "1.5",
 							}}
@@ -789,9 +789,9 @@ function MatchesPage() {
 								width: "100%",
 								padding: "14px",
 								borderRadius: "12px",
-								border: "1px solid #e2e8f0",
-								background: "#f8fafc",
-								color: "#0f172a",
+								border: "1px solid var(--appearance-edge-e2e8f0)",
+								background: "var(--appearance-surface-f8fafc)",
+								color: "var(--appearance-ink-0f172a)",
 								fontWeight: 800,
 								fontSize: "15px",
 								cursor: "pointer",
@@ -829,15 +829,15 @@ function MatchesPage() {
 									display: "flex",
 									alignItems: "center",
 									gap: "6px",
-									background: "#e6fcf5",
-									color: "#1A8C7A",
+									background: "var(--appearance-surface-e6fcf5)",
+									color: "var(--appearance-ink-1a8c7a)",
 									padding: "4px 10px",
 									borderRadius: "20px",
 									fontSize: "11px",
 									fontWeight: 800,
 									letterSpacing: "0.5px",
 									cursor: "pointer",
-									border: "1px solid #a7f3d0",
+									border: "1px solid var(--appearance-edge-a7f3d0)",
 									transition: "0.2s",
 								}}
 								onClick={clearFilter}
@@ -856,9 +856,9 @@ function MatchesPage() {
 					onClick={() => setIsPreviewOpen(true)}
 					disabled={unappliedJobs.length === 0 || !isUserLoggedIn}
 					style={{
-						background: "rgba(255,255,255,0.7)",
-						border: "1px solid rgba(255,255,255,0.5)",
-						color: "#0B2444",
+						background: "var(--appearance-surface-rgba25525525507)",
+						border: "1px solid var(--appearance-edge-rgba25525525505)",
+						color: "var(--appearance-ink-0b2444)",
 						padding: "10px 20px",
 						borderRadius: "8px",
 						fontSize: "14px",
@@ -895,10 +895,10 @@ function MatchesPage() {
 					style={{
 						padding: "4rem",
 						textAlign: "center",
-						background: "rgba(255,255,255,0.5)",
+						background: "var(--appearance-surface-rgba25525525505)",
 						backdropFilter: "blur(16px)",
 						borderRadius: "16px",
-						border: "1px solid rgba(255, 255, 255, 0.3)",
+						border: "1px solid var(--appearance-edge-rgba25525525503)",
 						boxShadow: "0 4px 20px -2px rgba(0, 0, 0, 0.03)",
 						marginTop: "2rem",
 					}}
@@ -907,13 +907,13 @@ function MatchesPage() {
 						style={{
 							width: "64px",
 							height: "64px",
-							background: "rgba(241, 245, 249, 0.8)",
+							background: "var(--appearance-surface-rgba24124524908)",
 							borderRadius: "50%",
 							display: "flex",
 							alignItems: "center",
 							justifyContent: "center",
 							margin: "0 auto 1rem auto",
-							color: "#64748b",
+							color: "var(--appearance-ink-64748b)",
 						}}
 					>
 						<svg
@@ -934,7 +934,7 @@ function MatchesPage() {
 						style={{
 							margin: "0 0 8px 0",
 							fontSize: "18px",
-							color: "#0f172a",
+							color: "var(--appearance-ink-0f172a)",
 							fontWeight: 800,
 						}}
 					>
@@ -942,7 +942,7 @@ function MatchesPage() {
 					</h2>
 					<p
 						style={{
-							color: "#64748b",
+							color: "var(--appearance-ink-64748b)",
 							fontSize: "14px",
 							maxWidth: "400px",
 							margin: "0 auto 24px auto",
@@ -970,7 +970,7 @@ function MatchesPage() {
 				</div>
 			) : (
 				<>
-					{isRefreshing && <p role="status" style={{ color: "#4A6080", fontSize: 13 }}>Refreshing matches…</p>}
+					{isRefreshing && <p role="status" style={{ color: "var(--appearance-ink-4a6080)", fontSize: 13 }}>Refreshing matches…</p>}
 					{loadError && <div role="alert" className="page-load-error"><span>{loadError}</span><button onClick={loadData}>Retry</button></div>}
 					{isLoading ? (
 						<div
@@ -994,10 +994,10 @@ function MatchesPage() {
 								<div
 									className="responsive-table"
 									style={{
-										background: "rgba(255, 255, 255, 0.5)",
+										background: "var(--appearance-surface-rgba25525525505)",
 										backdropFilter: "blur(24px)",
 										borderRadius: "16px",
-										border: "1px solid rgba(255, 255, 255, 0.3)",
+										border: "1px solid var(--appearance-edge-rgba25525525503)",
 										overflow: "hidden",
 										boxShadow: "0 4px 20px -2px rgba(0, 0, 0, 0.03)",
 									}}
@@ -1018,8 +1018,8 @@ function MatchesPage() {
 							style={{
 								padding: "4rem",
 								textAlign: "center",
-								color: "#64748b",
-								background: "rgba(255,255,255,0.5)",
+								color: "var(--appearance-ink-64748b)",
+								background: "var(--appearance-surface-rgba25525525505)",
 								backdropFilter: "blur(16px)",
 								borderRadius: "16px",
 								minHeight: "40vh",
@@ -1039,9 +1039,9 @@ function MatchesPage() {
 										onClick={clearFilter}
 										style={{
 											marginTop: "1rem",
-											background: "#f1f5f9",
-											border: "1px solid #e2e8f0",
-											color: "#475569",
+											background: "var(--appearance-surface-f1f5f9)",
+											border: "1px solid var(--appearance-edge-e2e8f0)",
+											color: "var(--appearance-ink-475569)",
 											padding: "8px 16px",
 											borderRadius: "8px",
 											fontSize: "13px",
@@ -1075,7 +1075,7 @@ function MatchesPage() {
 											fontSize: "20px",
 											fontWeight: 800,
 											marginBottom: "1.25rem",
-											color: "#0f172a",
+											color: "var(--appearance-ink-0f172a)",
 										}}
 									>
 										<span
@@ -1126,7 +1126,7 @@ function MatchesPage() {
 													justifyContent: "space-between",
 													alignItems: "center",
 													boxShadow: "0 20px 40px -10px rgba(11, 36, 68, 0.4)",
-													border: "1px solid rgba(255,255,255,0.1)",
+													border: "1px solid var(--appearance-edge-rgba25525525501)",
 													position: "relative",
 													overflow: "hidden",
 													flexWrap: "wrap",
@@ -1161,7 +1161,7 @@ function MatchesPage() {
 															style={{
 																background: "rgba(26, 140, 122, 0.2)",
 																border: "1px solid rgba(26, 140, 122, 0.5)",
-																color: "#2dd4bf",
+																color: "var(--appearance-ink-2dd4bf)",
 																padding: "4px 10px",
 																borderRadius: "8px",
 																fontSize: "10px",
@@ -1174,7 +1174,7 @@ function MatchesPage() {
 														</div>
 														<span
 															style={{
-																color: "#94a3b8",
+																color: "var(--appearance-ink-94a3b8)",
 																fontSize: "13px",
 																fontWeight: 600,
 															}}
@@ -1195,7 +1195,7 @@ function MatchesPage() {
 													<p
 														style={{
 															fontSize: "16px",
-															color: "#94a3b8",
+															color: "var(--appearance-ink-94a3b8)",
 															margin: 0,
 															fontWeight: 500,
 														}}
@@ -1218,7 +1218,7 @@ function MatchesPage() {
 														style={{
 															fontSize: "20px",
 															fontWeight: 800,
-															color: "#2dd4bf",
+															color: "var(--appearance-ink-2dd4bf)",
 														}}
 													>
 														{j.salary === "Competitive"
@@ -1235,9 +1235,9 @@ function MatchesPage() {
 														<button
 															onClick={(e) => handleDeclinePlacement(e, j)}
 															style={{
-																background: "rgba(255,255,255,0.08)",
-																border: "1px solid rgba(255,255,255,0.15)",
-																color: "#cbd5e1",
+																background: "var(--appearance-surface-rgba255255255008)",
+																border: "1px solid var(--appearance-edge-rgba255255255015)",
+																color: "var(--appearance-ink-cbd5e1)",
 																padding: "12px 20px",
 																borderRadius: "12px",
 																fontSize: "13.5px",
@@ -1248,16 +1248,16 @@ function MatchesPage() {
 															onMouseEnter={(e) => {
 																e.currentTarget.style.background =
 																	"rgba(239, 68, 68, 0.15)";
-																e.currentTarget.style.color = "#fca5a5";
+																e.currentTarget.style.color = "var(--appearance-ink-fca5a5)";
 																e.currentTarget.style.borderColor =
-																	"rgba(239, 68, 68, 0.3)";
+																	"var(--appearance-edge-rgba239686803)";
 															}}
 															onMouseLeave={(e) => {
 																e.currentTarget.style.background =
-																	"rgba(255,255,255,0.08)";
-																e.currentTarget.style.color = "#cbd5e1";
+																	"var(--appearance-surface-rgba255255255008)";
+																e.currentTarget.style.color = "var(--appearance-ink-cbd5e1)";
 																e.currentTarget.style.borderColor =
-																	"rgba(255,255,255,0.15)";
+																	"var(--appearance-edge-rgba255255255015)";
 															}}
 														>
 															Decline Invite
@@ -1318,7 +1318,7 @@ function MatchesPage() {
 											fontSize: "20px",
 											fontWeight: 800,
 											marginBottom: "1.25rem",
-											color: "#0f172a",
+											color: "var(--appearance-ink-0f172a)",
 										}}
 									>
 										<span
@@ -1339,10 +1339,10 @@ function MatchesPage() {
 									<div
 										className="responsive-table"
 										style={{
-											background: "rgba(255, 255, 255, 0.5)",
+											background: "var(--appearance-surface-rgba25525525505)",
 											backdropFilter: "blur(24px)",
 											borderRadius: "16px",
-											border: "1px solid rgba(255, 255, 255, 0.3)",
+											border: "1px solid var(--appearance-edge-rgba25525525503)",
 											overflow: "hidden",
 											boxShadow: "0 4px 20px -2px rgba(0, 0, 0, 0.03)",
 										}}
@@ -1366,7 +1366,7 @@ function MatchesPage() {
 											fontSize: "20px",
 											fontWeight: 800,
 											marginBottom: "1.25rem",
-											color: "#0f172a",
+											color: "var(--appearance-ink-0f172a)",
 										}}
 									>
 										<span
@@ -1387,10 +1387,10 @@ function MatchesPage() {
 									<div
 										className="responsive-table"
 										style={{
-											background: "rgba(255, 255, 255, 0.5)",
+											background: "var(--appearance-surface-rgba25525525505)",
 											backdropFilter: "blur(24px)",
 											borderRadius: "16px",
-											border: "1px solid rgba(255, 255, 255, 0.3)",
+											border: "1px solid var(--appearance-edge-rgba25525525503)",
 											overflow: "hidden",
 											boxShadow: "0 4px 20px -2px rgba(0, 0, 0, 0.03)",
 										}}
@@ -1414,12 +1414,12 @@ function MatchesPage() {
 											fontSize: "20px",
 											fontWeight: 800,
 											marginBottom: "1.25rem",
-											color: "#0f172a",
+											color: "var(--appearance-ink-0f172a)",
 										}}
 									>
 										<span
 											style={{
-												background: "#94a3b8",
+												background: "var(--appearance-surface-94a3b8)",
 												color: "white",
 												padding: "4px 12px",
 												borderRadius: "20px",
@@ -1435,10 +1435,10 @@ function MatchesPage() {
 									<div
 										className="responsive-table"
 										style={{
-											background: "rgba(255, 255, 255, 0.5)",
+											background: "var(--appearance-surface-rgba25525525505)",
 											backdropFilter: "blur(24px)",
 											borderRadius: "16px",
-											border: "1px solid rgba(255, 255, 255, 0.3)",
+											border: "1px solid var(--appearance-edge-rgba25525525503)",
 											overflow: "hidden",
 											opacity: 0.85,
 										}}
@@ -1466,10 +1466,10 @@ function MatchesPage() {
 						>
 							<div
 								style={{
-									background: "rgba(255, 255, 255, 0.5)",
+									background: "var(--appearance-surface-rgba25525525505)",
 									backdropFilter: "blur(24px)",
 									borderRadius: "16px",
-									border: "1px solid rgba(255, 255, 255, 0.3)",
+									border: "1px solid var(--appearance-edge-rgba25525525503)",
 									padding: "1rem",
 									boxShadow: "0 4px 20px -2px rgba(0, 0, 0, 0.03)",
 									display: "flex",
@@ -1480,7 +1480,7 @@ function MatchesPage() {
 									style={{
 										fontSize: "14px",
 										fontWeight: 800,
-										color: "#0B2444",
+										color: "var(--appearance-ink-0b2444)",
 										margin: "0 0 8px 0",
 									}}
 								>
@@ -1489,7 +1489,7 @@ function MatchesPage() {
 								<p
 									style={{
 										fontSize: "13px",
-										color: "#475569",
+										color: "var(--appearance-ink-475569)",
 										lineHeight: "1.6",
 										margin: "0 0 1rem 0",
 										flex: 1,
@@ -1502,7 +1502,7 @@ function MatchesPage() {
 									style={{
 										fontSize: "12px",
 										fontWeight: 800,
-										color: "#1A8C7A",
+										color: "var(--appearance-ink-1a8c7a)",
 										textDecoration: "none",
 										display: "flex",
 										alignItems: "center",
@@ -1526,10 +1526,10 @@ function MatchesPage() {
 
 							<div
 								style={{
-									background: "rgba(255, 255, 255, 0.5)",
+									background: "var(--appearance-surface-rgba25525525505)",
 									backdropFilter: "blur(24px)",
 									borderRadius: "16px",
-									border: "1px solid rgba(255, 255, 255, 0.3)",
+									border: "1px solid var(--appearance-edge-rgba25525525503)",
 									padding: "1rem",
 									boxShadow: "0 4px 20px -2px rgba(0, 0, 0, 0.03)",
 									display: "flex",
@@ -1540,7 +1540,7 @@ function MatchesPage() {
 									style={{
 										fontSize: "14px",
 										fontWeight: 800,
-										color: "#1A8C7A",
+										color: "var(--appearance-ink-1a8c7a)",
 										margin: "0 0 8px 0",
 									}}
 								>
@@ -1554,7 +1554,7 @@ function MatchesPage() {
 											style={{
 												fontSize: "26px",
 												fontWeight: 900,
-												color: "#1A8C7A",
+												color: "var(--appearance-ink-1a8c7a)",
 												lineHeight: "1",
 											}}
 										>
@@ -1564,7 +1564,7 @@ function MatchesPage() {
 											style={{
 												fontSize: "10px",
 												fontWeight: 800,
-												color: "#94a3b8",
+												color: "var(--appearance-ink-94a3b8)",
 												textTransform: "uppercase",
 												letterSpacing: "0.5px",
 												marginTop: "4px",
@@ -1585,7 +1585,7 @@ function MatchesPage() {
 											style={{
 												fontSize: "26px",
 												fontWeight: 900,
-												color: "#1A8C7A",
+												color: "var(--appearance-ink-1a8c7a)",
 												lineHeight: "1",
 											}}
 										>
@@ -1595,7 +1595,7 @@ function MatchesPage() {
 											style={{
 												fontSize: "10px",
 												fontWeight: 800,
-												color: "#94a3b8",
+												color: "var(--appearance-ink-94a3b8)",
 												textTransform: "uppercase",
 												letterSpacing: "0.5px",
 												marginTop: "4px",
@@ -1609,10 +1609,10 @@ function MatchesPage() {
 
 							<div
 								style={{
-									background: "rgba(255, 255, 255, 0.5)",
+									background: "var(--appearance-surface-rgba25525525505)",
 									backdropFilter: "blur(24px)",
 									borderRadius: "16px",
-									border: "1px solid rgba(255, 255, 255, 0.3)",
+									border: "1px solid var(--appearance-edge-rgba25525525503)",
 									padding: "1rem",
 									boxShadow: "0 4px 20px -2px rgba(0, 0, 0, 0.03)",
 									display: "flex",
@@ -1623,7 +1623,7 @@ function MatchesPage() {
 									style={{
 										fontSize: "14px",
 										fontWeight: 800,
-										color: "#0f172a",
+										color: "var(--appearance-ink-0f172a)",
 										margin: "0 0 8px 0",
 									}}
 								>
@@ -1644,7 +1644,7 @@ function MatchesPage() {
 											flexShrink: 0,
 											fontSize: "28px",
 											fontWeight: 900,
-											color: "#1A8C7A",
+											color: "var(--appearance-ink-1a8c7a)",
 											lineHeight: "1",
 										}}
 									>
@@ -1653,7 +1653,7 @@ function MatchesPage() {
 									<div
 										style={{
 											fontSize: "13px",
-											color: "#64748b",
+											color: "var(--appearance-ink-64748b)",
 											lineHeight: "1.4",
 										}}
 									>
@@ -1670,7 +1670,7 @@ function MatchesPage() {
 										padding: 0,
 										fontSize: "12px",
 										fontWeight: 800,
-										color: "#0B2444",
+										color: "var(--appearance-ink-0b2444)",
 										textDecoration: "none",
 										display: "flex",
 										alignItems: "center",
@@ -1695,7 +1695,7 @@ function MatchesPage() {
 									left: 0,
 									width: "100vw",
 									height: "100dvh",
-									background: "rgba(248, 250, 252, 0.7)",
+									background: "var(--appearance-surface-rgba24825025207)",
 									backdropFilter: "blur(8px)",
 									zIndex: 10000,
 									display: "flex",
@@ -1709,7 +1709,7 @@ function MatchesPage() {
 									ref={applicationDialogRef} tabIndex={-1}
 									role="dialog" aria-modal="true" aria-labelledby="application-dialog-title"
 									style={{
-										background: "white",
+										background: "var(--appearance-surface-white)",
 										width: "100%",
 										maxWidth: "700px",
 										borderRadius: "24px",
@@ -1723,7 +1723,7 @@ function MatchesPage() {
 										className="application-dialog-header"
 										style={{
 											padding: "1.5rem 2rem",
-											borderBottom: "1px solid #f1f5f9",
+											borderBottom: "1px solid var(--appearance-edge-f1f5f9)",
 											display: "flex",
 											justifyContent: "space-between",
 											alignItems: "center",
@@ -1735,7 +1735,7 @@ function MatchesPage() {
 												style={{
 													fontSize: "20px",
 													fontWeight: 800,
-													color: "#0f172a",
+													color: "var(--appearance-ink-0f172a)",
 													margin: 0,
 													display: "flex",
 													alignItems: "center",
@@ -1747,7 +1747,7 @@ function MatchesPage() {
 													height="20"
 													viewBox="0 0 24 24"
 													fill="none"
-													stroke="#1A8C7A"
+													stroke="var(--appearance-ink-1a8c7a)"
 													strokeWidth="2.5"
 												>
 													<path d="M22 2L11 13"></path>
@@ -1758,7 +1758,7 @@ function MatchesPage() {
 											<p
 												style={{
 													fontSize: "13px",
-													color: "#64748b",
+													color: "var(--appearance-ink-64748b)",
 													margin: "4px 0 0 0",
 												}}
 											>
@@ -1769,7 +1769,7 @@ function MatchesPage() {
 											aria-label="Close application toolkit"
 											onClick={() => setToolkitJob(null)}
 											style={{
-												background: "#f1f5f9",
+												background: "var(--appearance-surface-f1f5f9)",
 												border: "none",
 												width: "32px",
 												height: "32px",
@@ -1778,7 +1778,7 @@ function MatchesPage() {
 												alignItems: "center",
 												justifyContent: "center",
 												cursor: "pointer",
-												color: "#64748b",
+												color: "var(--appearance-ink-64748b)",
 												transition: "0.2s",
 											}}
 										>
@@ -1805,7 +1805,7 @@ function MatchesPage() {
 										<div
 											style={{
 												padding: "1.5rem 2rem 0 2rem",
-												background: "#f8fafc",
+												background: "var(--appearance-surface-f8fafc)",
 											}}
 										>
 											<div
@@ -1821,7 +1821,7 @@ function MatchesPage() {
 														margin: "0 0 6px 0",
 														fontSize: "11px",
 														fontWeight: 800,
-														color: "#1A8C7A",
+														color: "var(--appearance-ink-1a8c7a)",
 														textTransform: "uppercase",
 														letterSpacing: "0.5px",
 													}}
@@ -1832,7 +1832,7 @@ function MatchesPage() {
 													style={{
 														margin: 0,
 														fontSize: "13px",
-														color: "#334155",
+														color: "var(--appearance-ink-334155)",
 														lineHeight: "1.6",
 														whiteSpace: "pre-wrap",
 													}}
@@ -1849,7 +1849,7 @@ function MatchesPage() {
 											padding: "2rem",
 											display: "flex",
 											gap: "2rem",
-											background: "#f8fafc",
+											background: "var(--appearance-surface-f8fafc)",
 										}}
 									>
 										<div
@@ -1865,7 +1865,7 @@ function MatchesPage() {
 													margin: 0,
 													fontSize: "12px",
 													fontWeight: 800,
-													color: "#475569",
+													color: "var(--appearance-ink-475569)",
 													letterSpacing: "0.5px",
 												}}
 											>
@@ -1875,10 +1875,10 @@ function MatchesPage() {
 												<div
 													key={doc.id}
 													style={{
-														background: "white",
+														background: "var(--appearance-surface-white)",
 														padding: "1rem",
 														borderRadius: "12px",
-														border: "1px solid #e2e8f0",
+														border: "1px solid var(--appearance-edge-e2e8f0)",
 														display: "flex",
 														alignItems: "center",
 														justifyContent: "space-between",
@@ -1896,8 +1896,8 @@ function MatchesPage() {
 																width: "32px",
 																height: "32px",
 																borderRadius: "8px",
-																background: doc.base64 ? "#e6fcf5" : "#f1f5f9",
-																color: doc.base64 ? "#1A8C7A" : "#94a3b8",
+																background: doc.base64 ? "var(--appearance-surface-e6fcf5)" : "var(--appearance-surface-f1f5f9)",
+																color: doc.base64 ? "var(--appearance-ink-1a8c7a)" : "var(--appearance-ink-94a3b8)",
 																display: "flex",
 																alignItems: "center",
 																justifyContent: "center",
@@ -1920,7 +1920,7 @@ function MatchesPage() {
 																style={{
 																	fontSize: "13px",
 																	fontWeight: 700,
-																	color: "#0f172a",
+																	color: "var(--appearance-ink-0f172a)",
 																}}
 															>
 																{doc.name}
@@ -1928,7 +1928,7 @@ function MatchesPage() {
 															<div
 																style={{
 																	fontSize: "11px",
-																color: doc.storageStatus === "private" ? "#1A8C7A" : "#b45309",
+																color: doc.storageStatus === "private" ? "var(--appearance-ink-1a8c7a)" : "var(--appearance-ink-b45309)",
 																	fontWeight: 600,
 																}}
 															>
@@ -1960,7 +1960,7 @@ function MatchesPage() {
 														margin: 0,
 														fontSize: "12px",
 														fontWeight: 800,
-														color: "#475569",
+														color: "var(--appearance-ink-475569)",
 														letterSpacing: "0.5px",
 													}}
 												>
@@ -1979,7 +1979,7 @@ function MatchesPage() {
 														style={{
 															background: "none",
 															border: "none",
-															color: "#0B2444",
+															color: "var(--appearance-ink-0b2444)",
 															fontSize: "12px",
 															fontWeight: 700,
 															cursor: isGeneratingLetter ? "wait" : "pointer",
@@ -2009,7 +2009,7 @@ function MatchesPage() {
 														style={{
 															background: "none",
 															border: "none",
-															color: "#0B2444",
+															color: "var(--appearance-ink-0b2444)",
 															fontSize: "12px",
 															fontWeight: 700,
 															cursor: "pointer",
@@ -2040,7 +2040,7 @@ function MatchesPage() {
 													</button>
 												</div>
 											</div>
-											<p style={{ fontSize: 12, color: "#64748b", lineHeight: 1.5 }}>Prepare a tailored cover letter for this opportunity. Review and personalise your draft before applying.</p>
+											<p style={{ fontSize: 12, color: "var(--appearance-ink-64748b)", lineHeight: 1.5 }}>Prepare a tailored cover letter for this opportunity. Review and personalise your draft before applying.</p>
                                             <details className="cover-letter-disclosure">
                                                 <summary>How drafting works</summary>
                                                 <p>Selecting Generate draft sends your saved CV text and this vacancy’s details to Google’s AI service to prepare a suggested letter. Review it for accuracy before use. You can also write your own letter without generating a draft.</p>
@@ -2069,7 +2069,7 @@ function MatchesPage() {
 													<div
 														style={{
 															animation: "spin 1s linear infinite",
-															border: "3px solid #e2e8f0",
+															border: "3px solid var(--appearance-edge-e2e8f0)",
 															borderTop: "3px solid #1A8C7A",
 															borderRadius: "50%",
 															width: "24px",
@@ -2079,7 +2079,7 @@ function MatchesPage() {
 													<span
 														style={{
 															fontSize: "13px",
-															color: "#1A8C7A",
+															color: "var(--appearance-ink-1a8c7a)",
 															fontWeight: 700,
 														}}
 													>
@@ -2098,11 +2098,11 @@ function MatchesPage() {
 														minHeight: "180px",
 														padding: "1rem",
 														borderRadius: "12px",
-														border: "1px solid #cbd5e1",
+														border: "1px solid var(--appearance-edge-cbd5e1)",
 														outline: "none",
 														resize: "none",
 														fontSize: "13px",
-														color: "#334155",
+														color: "var(--appearance-ink-334155)",
 														lineHeight: "1.5",
 														fontFamily: "inherit",
 													}}
@@ -2115,11 +2115,11 @@ function MatchesPage() {
 										className="application-dialog-footer"
 										style={{
 											padding: "1.5rem 2rem",
-											background: "white",
+											background: "var(--appearance-surface-white)",
 											display: "flex",
 											justifyContent: "space-between",
 											alignItems: "center",
-											borderTop: "1px solid #f1f5f9",
+											borderTop: "1px solid var(--appearance-edge-f1f5f9)",
 											borderRadius: "0 0 24px 24px",
 										}}
 									>
@@ -2127,7 +2127,7 @@ function MatchesPage() {
 											className="application-sharing-note"
 											style={{
 												fontSize: "12px",
-												color: "#64748b",
+												color: "var(--appearance-ink-64748b)",
 												fontWeight: 600,
 											}}
 										>
@@ -2182,7 +2182,7 @@ function MatchesPage() {
 									left: 0,
 									width: "100vw",
 									height: "100dvh",
-									background: "rgba(248, 250, 252, 0.7)",
+									background: "var(--appearance-surface-rgba24825025207)",
 									backdropFilter: "blur(8px)",
 									zIndex: 10000,
 									display: "flex",
@@ -2193,7 +2193,7 @@ function MatchesPage() {
 							>
 								<div className="digest-preview-dialog" role="dialog" aria-modal="true" aria-label="Email digest preview"
 									style={{
-										background: "white",
+										background: "var(--appearance-surface-white)",
 										width: "100%",
 										maxWidth: "650px",
 										maxHeight: "calc(100dvh - 2rem)",
@@ -2208,8 +2208,8 @@ function MatchesPage() {
 									<div className="digest-preview-header"
 										style={{
 											padding: "1.25rem 1.5rem",
-											background: "white",
-											borderBottom: "1px solid #e2e8f0",
+											background: "var(--appearance-surface-white)",
+											borderBottom: "1px solid var(--appearance-edge-e2e8f0)",
 											display: "flex",
 											justifyContent: "space-between",
 											alignItems: "center",
@@ -2220,7 +2220,7 @@ function MatchesPage() {
 												style={{
 													fontSize: "16px",
 													fontWeight: 800,
-													color: "#0f172a",
+													color: "var(--appearance-ink-0f172a)",
 													margin: 0,
 												}}
 											>
@@ -2229,7 +2229,7 @@ function MatchesPage() {
 											<p
 												style={{
 													fontSize: "12px",
-													color: "#64748b",
+													color: "var(--appearance-ink-64748b)",
 													margin: "2px 0 0 0",
 												}}
 											>
@@ -2240,7 +2240,7 @@ function MatchesPage() {
 											aria-label="Close digest preview"
 											onClick={() => setIsPreviewOpen(false)}
 											style={{
-												background: "#f1f5f9",
+												background: "var(--appearance-surface-f1f5f9)",
 												border: "none",
 												width: "32px",
 												height: "32px",
@@ -2249,7 +2249,7 @@ function MatchesPage() {
 												alignItems: "center",
 												justifyContent: "center",
 												cursor: "pointer",
-												color: "#64748b",
+												color: "var(--appearance-ink-64748b)",
 												transition: "background 0.2s",
 											}}
 										>
@@ -2266,7 +2266,7 @@ function MatchesPage() {
 											</svg>
 										</button>
 									</div>
-                                    <iframe title="BenchScout email digest preview" sandbox="allow-popups allow-popups-to-escape-sandbox" srcDoc={buildJobDigest(unappliedJobs.filter(job => !job.isDirectPost && job.status === "active" && listingUrl(job.url)).slice(0, 15), { appUrl: window.location.origin }).html} style={{ border: 0, width: "100%", minHeight: 0, flex: 1, height: "100%", background: "#eef3f7" }} />
+                                    <iframe title="BenchScout email digest preview" sandbox="allow-popups allow-popups-to-escape-sandbox" srcDoc={buildJobDigest(unappliedJobs.filter(job => !job.isDirectPost && job.status === "active" && listingUrl(job.url)).slice(0, 15), { appUrl: window.location.origin }).html} style={{ border: 0, width: "100%", minHeight: 0, flex: 1, height: "100%", background: "var(--appearance-surface-eef3f7)" }} />
 								</div>
 							</div>,
 							document.body,

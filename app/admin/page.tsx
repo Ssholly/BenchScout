@@ -179,13 +179,13 @@ export default function AdminCommandCenter() {
 
 	const inputStyle = {
 		width: "100%",
-		background: "white",
-		border: "1px solid #e2e8f0",
+		background: "var(--appearance-surface-white)",
+		border: "1px solid var(--appearance-edge-e2e8f0)",
 		borderRadius: "10px",
 		padding: "12px 14px",
 		fontSize: "14px",
 		outline: "none",
-		color: "#0f172a",
+		color: "var(--appearance-ink-0f172a)",
 		fontWeight: 600,
 		marginTop: "6px",
 		marginBottom: "16px",
@@ -217,8 +217,8 @@ export default function AdminCommandCenter() {
 					>
 						<div
 							style={{
-								background: "rgba(255, 255, 255, 0.95)",
-								border: "1px solid rgba(255, 255, 255, 0.5)",
+								background: "var(--appearance-surface-rgba255255255095)",
+								border: "1px solid var(--appearance-edge-rgba25525525505)",
 								width: "100%",
 								maxWidth: "500px",
 								borderRadius: "24px",
@@ -240,7 +240,7 @@ export default function AdminCommandCenter() {
 									style={{
 										fontSize: "19px",
 										fontWeight: 850,
-										color: "#0f172a",
+										color: "var(--appearance-ink-0f172a)",
 										margin: 0,
 										letterSpacing: "-0.2px",
 									}}
@@ -250,7 +250,7 @@ export default function AdminCommandCenter() {
 								<button
 									onClick={() => setEditModal({ ...editModal, isOpen: false })}
 									style={{
-										background: "#f1f5f9",
+										background: "var(--appearance-surface-f1f5f9)",
 										border: "none",
 										width: "32px",
 										height: "32px",
@@ -259,7 +259,7 @@ export default function AdminCommandCenter() {
 										alignItems: "center",
 										justifyContent: "center",
 										cursor: "pointer",
-										color: "#64748b",
+										color: "var(--appearance-ink-64748b)",
 										transition: "0.2s",
 									}}
 								>
@@ -289,7 +289,7 @@ export default function AdminCommandCenter() {
 											style={{
 												fontSize: "11px",
 												fontWeight: 800,
-												color: "#64748b",
+												color: "var(--appearance-ink-64748b)",
 												letterSpacing: "0.5px",
 											}}
 										>
@@ -310,7 +310,7 @@ export default function AdminCommandCenter() {
 											style={{
 												fontSize: "11px",
 												fontWeight: 800,
-												color: "#64748b",
+												color: "var(--appearance-ink-64748b)",
 												letterSpacing: "0.5px",
 											}}
 										>
@@ -339,7 +339,7 @@ export default function AdminCommandCenter() {
 											style={{
 												fontSize: "11px",
 												fontWeight: 800,
-												color: "#64748b",
+												color: "var(--appearance-ink-64748b)",
 												letterSpacing: "0.5px",
 											}}
 										>
@@ -360,7 +360,7 @@ export default function AdminCommandCenter() {
 											style={{
 												fontSize: "11px",
 												fontWeight: 800,
-												color: "#64748b",
+												color: "var(--appearance-ink-64748b)",
 												letterSpacing: "0.5px",
 											}}
 										>
@@ -380,7 +380,7 @@ export default function AdminCommandCenter() {
 									style={{
 										fontSize: "11px",
 										fontWeight: 800,
-										color: "#64748b",
+										color: "var(--appearance-ink-64748b)",
 										letterSpacing: "0.5px",
 									}}
 								>
@@ -399,7 +399,7 @@ export default function AdminCommandCenter() {
 									style={{
 										fontSize: "11px",
 										fontWeight: 800,
-										color: "#64748b",
+										color: "var(--appearance-ink-64748b)",
 										letterSpacing: "0.5px",
 									}}
 								>
@@ -453,13 +453,13 @@ export default function AdminCommandCenter() {
 					<div>
 						<div
 							className="page-title"
-							style={{ fontSize: "28px", fontWeight: 900, color: "#0f172a" }}
+							style={{ fontSize: "28px", fontWeight: 900, color: "var(--appearance-ink-0f172a)" }}
 						>
 							Admin Override
 						</div>
 						<div
 							className="page-sub"
-							style={{ color: "#64748b", marginTop: "4px" }}
+							style={{ color: "var(--appearance-ink-64748b)", marginTop: "4px" }}
 						>
 							Manually command the global network.
 						</div>
@@ -470,7 +470,7 @@ export default function AdminCommandCenter() {
 				<div
 					style={{
 						display: "flex",
-						background: "rgba(255, 255, 255, 0.4)",
+						background: "var(--appearance-surface-rgba25525525504)",
 						backdropFilter: "blur(12px)",
 						padding: "6px",
 						borderRadius: "14px",
@@ -494,8 +494,8 @@ export default function AdminCommandCenter() {
 							fontWeight: 800,
 							cursor: "pointer",
 							transition: "0.2s",
-							background: activeTab === "inject" ? "white" : "transparent",
-							color: activeTab === "inject" ? "#0B2444" : "#64748b",
+							background: activeTab === "inject" ? "var(--appearance-surface-white)" : "transparent",
+							color: activeTab === "inject" ? "var(--appearance-ink-0b2444)" : "var(--appearance-ink-64748b)",
 							boxShadow:
 								activeTab === "inject" ? "0 4px 12px rgba(0,0,0,0.05)" : "none",
 						}}
@@ -516,8 +516,8 @@ export default function AdminCommandCenter() {
 							fontWeight: 800,
 							cursor: "pointer",
 							transition: "0.2s",
-							background: activeTab === "manage" ? "white" : "transparent",
-							color: activeTab === "manage" ? "#0B2444" : "#64748b",
+							background: activeTab === "manage" ? "var(--appearance-surface-white)" : "transparent",
+							color: activeTab === "manage" ? "var(--appearance-ink-0b2444)" : "var(--appearance-ink-64748b)",
 							boxShadow:
 								activeTab === "manage" ? "0 4px 12px rgba(0,0,0,0.05)" : "none",
 						}}
@@ -528,10 +528,10 @@ export default function AdminCommandCenter() {
 
 				<div
 					style={{
-						background: "rgba(255, 255, 255, 0.6)",
+						background: "var(--appearance-surface-rgba25525525506)",
 						backdropFilter: "blur(24px)",
 						borderRadius: "24px",
-						border: "1px solid rgba(255, 255, 255, 0.5)",
+						border: "1px solid var(--appearance-edge-rgba25525525505)",
 						boxShadow: "0 10px 40px -10px rgba(11, 36, 68, 0.05)",
 						padding: "2.5rem",
 						width: "100%",
@@ -549,7 +549,7 @@ export default function AdminCommandCenter() {
 							style={{
 								fontSize: "11px",
 								fontWeight: 800,
-								color: "#1A8C7A",
+								color: "var(--appearance-ink-1a8c7a)",
 								letterSpacing: "0.5px",
 							}}
 						>
@@ -592,8 +592,8 @@ export default function AdminCommandCenter() {
 								textAlign: "center",
 								fontSize: "13px",
 								fontWeight: 700,
-								background: message.type === "success" ? "#dcfce7" : "#fef2f2",
-								color: message.type === "success" ? "#166534" : "#991b1b",
+								background: message.type === "success" ? "var(--appearance-surface-dcfce7)" : "var(--appearance-surface-fef2f2)",
+								color: message.type === "success" ? "var(--appearance-ink-166534)" : "var(--appearance-ink-991b1b)",
 								border: `1px solid ${message.type === "success" ? "#bbf7d0" : "#fca5a5"}`,
 							}}
 						>
@@ -615,7 +615,7 @@ export default function AdminCommandCenter() {
 										style={{
 											fontSize: "11px",
 											fontWeight: 800,
-											color: "#64748b",
+											color: "var(--appearance-ink-64748b)",
 											letterSpacing: "0.5px",
 										}}
 									>
@@ -635,7 +635,7 @@ export default function AdminCommandCenter() {
 										style={{
 											fontSize: "11px",
 											fontWeight: 800,
-											color: "#64748b",
+											color: "var(--appearance-ink-64748b)",
 											letterSpacing: "0.5px",
 										}}
 									>
@@ -664,7 +664,7 @@ export default function AdminCommandCenter() {
 										style={{
 											fontSize: "11px",
 											fontWeight: 800,
-											color: "#64748b",
+											color: "var(--appearance-ink-64748b)",
 											letterSpacing: "0.5px",
 										}}
 									>
@@ -684,7 +684,7 @@ export default function AdminCommandCenter() {
 										style={{
 											fontSize: "11px",
 											fontWeight: 800,
-											color: "#64748b",
+											color: "var(--appearance-ink-64748b)",
 											letterSpacing: "0.5px",
 										}}
 									>
@@ -704,7 +704,7 @@ export default function AdminCommandCenter() {
 								style={{
 									fontSize: "11px",
 									fontWeight: 800,
-									color: "#64748b",
+									color: "var(--appearance-ink-64748b)",
 									letterSpacing: "0.5px",
 								}}
 							>
@@ -723,7 +723,7 @@ export default function AdminCommandCenter() {
 								style={{
 									fontSize: "11px",
 									fontWeight: 800,
-									color: "#64748b",
+									color: "var(--appearance-ink-64748b)",
 									letterSpacing: "0.5px",
 								}}
 							>
@@ -773,8 +773,8 @@ export default function AdminCommandCenter() {
 										<div
 											key={idx}
 											style={{
-												background: "white",
-												border: "1px solid #e2e8f0",
+												background: "var(--appearance-surface-white)",
+												border: "1px solid var(--appearance-edge-e2e8f0)",
 												padding: "1.25rem",
 												borderRadius: "16px",
 												display: "flex",
@@ -786,7 +786,7 @@ export default function AdminCommandCenter() {
 												<div
 													style={{
 														fontWeight: 800,
-														color: "#0f172a",
+														color: "var(--appearance-ink-0f172a)",
 														fontSize: "15px",
 													}}
 												>
@@ -794,7 +794,7 @@ export default function AdminCommandCenter() {
 												</div>
 												<div
 													style={{
-														color: "#64748b",
+														color: "var(--appearance-ink-64748b)",
 														fontSize: "13px",
 														marginTop: "4px",
 													}}
@@ -818,9 +818,9 @@ export default function AdminCommandCenter() {
 														})
 													}
 													style={{
-														background: "#f8fafc",
-														color: "#475569",
-														border: "1px solid #e2e8f0",
+														background: "var(--appearance-surface-f8fafc)",
+														color: "var(--appearance-ink-475569)",
+														border: "1px solid var(--appearance-edge-e2e8f0)",
 														padding: "8px 16px",
 														borderRadius: "8px",
 														fontWeight: 700,
@@ -834,9 +834,9 @@ export default function AdminCommandCenter() {
 												<button
 													onClick={() => handleDeleteJob(job.role, job.company)}
 													style={{
-														background: "#fef2f2",
-														color: "#ef4444",
-														border: "1px solid #fecaca",
+														background: "var(--appearance-surface-fef2f2)",
+														color: "var(--appearance-ink-ef4444)",
+														border: "1px solid var(--appearance-edge-fecaca)",
 														padding: "8px 16px",
 														borderRadius: "8px",
 														fontWeight: 700,

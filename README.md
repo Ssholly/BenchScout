@@ -4,6 +4,8 @@ A career workspace for Nigerian medical laboratory scientists and employers: sou
 
 ## Current pilot
 
+[Light/dark appearance and mobile footer](docs/APPEARANCE-PUBLIC-2026-11-03.md) are live on the approved Production artifact. [Help & guidance](docs/HELP-GUIDANCE-2026-11-03.md) covers the inline mobile FAQs and temporary support contact. Source-only integration retains automatic Git deployment guards.
+
 The owner-approved controlled pilot is live at [bench-scout.vercel.app](https://bench-scout.vercel.app). [23 October cutover record and remaining checks](docs/CONTROLLED-PILOT-2026-10-23.md): public access checks passed and cleanup schedule registered; public browser sign-in persistence passed; actual scheduled execution remains pending. Main merge and older-file backup copying are separate.
 
 [87% mobile polish](docs/MOBILE-POLISH-2026-10-24.md): released publicly with corrected account input sizing, side-by-side Home actions and collapsible employer preview; native iPhone focus confirmation remains.

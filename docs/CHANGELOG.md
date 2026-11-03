@@ -1,3 +1,7 @@
+## 3 November 2026 — Released appearance source integration
+
+Integrated the accepted light/dark palette, mobile search/status-area/header blend and aligned footer guidance/contact into a guarded source branch. Live Production remains the separately promoted artifact; this Git integration requires no migration or hosting release. See [release evidence](APPEARANCE-PUBLIC-2026-11-03.md) and [integration record](APPEARANCE-INTEGRATION-2026-11-03.md).
+
 ## 24 October 2026 — Recovery copy created and sanitized
 
 Created the approved one-day historical copy in BenchScout Testing. Copied credentials expired; nine migration checksums, zero active copied credentials, integrity and preserved QA restrictions passed. Added a loopback-only private credential-entry helper with strict recovery/testing target guards and four passing tests; isolated app build passed. File/app recovery remains pending existing private testing credentials; no full-recovery/RTO claim. [Execution](TIMED-RECOVERY-DRILL-2026-10-24.md).

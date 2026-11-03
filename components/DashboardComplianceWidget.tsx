@@ -27,7 +27,7 @@ export default function DashboardComplianceWidget() {
 			return {
 				text: "#dc2626",
 				bg: "rgba(220, 38, 38, 0.05)",
-				border: "rgba(220, 38, 38, 0.15)",
+				border: "var(--appearance-edge-rgba2203838015)",
 				progressBg: "linear-gradient(90deg, #ef4444, #dc2626)",
 				message:
 					"CRITICAL ACTION REQUIRED: License renewal timeline overdue or critically low.",
@@ -37,7 +37,7 @@ export default function DashboardComplianceWidget() {
 			return {
 				text: "#d97706",
 				bg: "rgba(217, 119, 6, 0.05)",
-				border: "rgba(217, 119, 6, 0.15)",
+				border: "var(--appearance-edge-rgba2171196015)",
 				progressBg: "linear-gradient(90deg, #f59e0b, #d97706)",
 				message:
 					"URGENT NOTICE: Approaching renewal deadline. Check CPD requirements.",
@@ -93,7 +93,7 @@ export default function DashboardComplianceWidget() {
 								margin: 0,
 								fontSize: "16px",
 								fontWeight: 800,
-								color: "#0f172a",
+								color: "var(--appearance-ink-0f172a)",
 							}}
 						>
 							MLSCN License Status ({data.licenseNumber})
@@ -116,7 +116,7 @@ export default function DashboardComplianceWidget() {
 						style={{
 							margin: "4px 0 0 0",
 							fontSize: "13px",
-							color: "#64748b",
+							color: "var(--appearance-ink-64748b)",
 							lineHeight: "1.4",
 						}}
 					>
@@ -140,7 +140,7 @@ export default function DashboardComplianceWidget() {
 						style={{
 							fontSize: "11px",
 							fontWeight: 700,
-							color: "#94a3b8",
+							color: "var(--appearance-ink-94a3b8)",
 							letterSpacing: "0.5px",
 						}}
 					>
@@ -166,7 +166,7 @@ export default function DashboardComplianceWidget() {
 							justifyContent: "space-between",
 							fontSize: "11px",
 							fontWeight: 700,
-							color: "#64748b",
+							color: "var(--appearance-ink-64748b)",
 							marginBottom: "6px",
 						}}
 					>
@@ -202,12 +202,12 @@ export default function DashboardComplianceWidget() {
 							justifyContent: "space-between",
 							fontSize: "11px",
 							fontWeight: 700,
-							color: "#64748b",
+							color: "var(--appearance-ink-64748b)",
 							marginBottom: "6px",
 						}}
 					>
 						<span>CPD ANNUAL LOG</span>
-						<span style={{ color: "#0058bc" }}>
+						<span style={{ color: "var(--appearance-ink-0058bc)" }}>
 							{data.cpdPoints} credits recorded (tracking target: 30)
 						</span>
 					</div>

@@ -3,7 +3,7 @@
 import { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
+import BrandMark from "@/components/BrandMark";
 import styles from "../verify/verification.module.css";
 
 function ResetPasswordContent() {
@@ -37,7 +37,7 @@ function ResetPasswordContent() {
   }
 
   return <section className={styles.card} aria-labelledby="reset-heading">
-    <div className={styles.brand}><Image className={styles.logo} src="/icon.svg" width={30} height={40} unoptimized alt="" /><span>Bench<span>Scout</span></span></div>
+    <div className={styles.brand}><BrandMark /><span>Bench<span>Scout</span></span></div>
     <span className={styles.eyebrow}>PASSWORD RESET</span>
     <h1 id="reset-heading">{status === "success" ? "Password updated" : valid ? "Choose a new password" : "Let’s get you a new link"}</h1>
     <p className={styles.message}>{status === "success" ? message : valid ? "A fresh password for your BenchScout account." : "This reset link is incomplete. Request a new email to continue."}</p>

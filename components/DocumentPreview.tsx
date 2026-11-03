@@ -24,5 +24,5 @@ export default function DocumentPreview({ url, name }: { url: string; name: stri
     // Authenticated Blob URLs cannot be optimized by the remote image loader.
     // eslint-disable-next-line @next/next/no-img-element
     <img src={preview.source} alt={name} style={{ width: "100%", height: "55vh", objectFit: "contain" }} />
-  ) : <iframe src={preview.source} title={name} style={{ width: "100%", height: "55vh", border: "none", borderRadius: "12px", background: "white" }} />;
+  ) : <iframe src={preview.source} title={name} style={{ width: "100%", height: "55vh", border: "none", borderRadius: "12px", background: "var(--appearance-surface-white)" }} />;
 }

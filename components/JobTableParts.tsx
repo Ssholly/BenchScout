@@ -75,7 +75,7 @@ export const SkeletonRow = () => (
 export const TableHeader = () => (
 		<thead
 			style={{
-				background: "rgba(255, 255, 255, 0.4)",
+				background: "var(--appearance-surface-rgba25525525504)",
 				borderBottom: "1px solid rgba(0,0,0,0.05)",
 			}}
 		>
@@ -85,7 +85,7 @@ export const TableHeader = () => (
 						padding: "1rem 1.5rem",
 						fontSize: "11px",
 						fontWeight: 800,
-						color: "#94a3b8",
+						color: "var(--appearance-ink-94a3b8)",
 						textTransform: "uppercase",
 						letterSpacing: "1px",
 						textAlign: "left",
@@ -98,7 +98,7 @@ export const TableHeader = () => (
 						padding: "1rem",
 						fontSize: "11px",
 						fontWeight: 800,
-						color: "#94a3b8",
+						color: "var(--appearance-ink-94a3b8)",
 						textTransform: "uppercase",
 						letterSpacing: "1px",
 						textAlign: "left",
@@ -111,7 +111,7 @@ export const TableHeader = () => (
 						padding: "1rem",
 						fontSize: "11px",
 						fontWeight: 800,
-						color: "#94a3b8",
+						color: "var(--appearance-ink-94a3b8)",
 						textTransform: "uppercase",
 						letterSpacing: "1px",
 						textAlign: "left",
@@ -124,7 +124,7 @@ export const TableHeader = () => (
 						padding: "1rem",
 						fontSize: "11px",
 						fontWeight: 800,
-						color: "#94a3b8",
+						color: "var(--appearance-ink-94a3b8)",
 						textTransform: "uppercase",
 						letterSpacing: "1px",
 						textAlign: "left",
@@ -137,7 +137,7 @@ export const TableHeader = () => (
 						padding: "1rem",
 						fontSize: "11px",
 						fontWeight: 800,
-						color: "#94a3b8",
+						color: "var(--appearance-ink-94a3b8)",
 						textTransform: "uppercase",
 						letterSpacing: "1px",
 						textAlign: "left",
@@ -150,7 +150,7 @@ export const TableHeader = () => (
 						padding: "1rem 1.5rem",
 						fontSize: "11px",
 						fontWeight: 800,
-						color: "#94a3b8",
+						color: "var(--appearance-ink-94a3b8)",
 						textTransform: "uppercase",
 						letterSpacing: "1px",
 						textAlign: "right",

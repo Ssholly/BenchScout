@@ -9,7 +9,8 @@
   "git": {
     "deploymentEnabled": {
       "main": false,
-      "release/main-integration-20261027": false
+      "release/main-integration-20261027": false,
+      "release/appearance-integration-20261103": false
     }
   }
 }

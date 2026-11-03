@@ -400,13 +400,13 @@ export default function ProfileModal() {
 
 	const inputStyle = {
 		width: "100%",
-		background: "#f8fafc",
-		border: "1px solid #e2e8f0",
+		background: "var(--appearance-surface-f8fafc)",
+		border: "1px solid var(--appearance-edge-e2e8f0)",
 		borderRadius: "10px",
 		padding: "14px",
 		fontSize: "16px",
 		outline: "none",
-		color: "#0f172a",
+		color: "var(--appearance-ink-0f172a)",
 		fontWeight: 600,
 		marginBottom: "12px",
 		transition: "0.2s",
@@ -435,7 +435,7 @@ export default function ProfileModal() {
 			<div
                 className={`account-dialog ${view === "profile" ? "compact-profile-dialog" : ""}`}
 				style={{
-					background: "white",
+					background: "var(--appearance-surface-white)",
 					width: "100%",
 					maxWidth: "480px",
 					maxHeight: "calc(100dvh - 2rem)",
@@ -446,7 +446,7 @@ export default function ProfileModal() {
 					boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.15)",
 					position: "relative",
 					zIndex: 1,
-					border: "1px solid rgba(255,255,255,0.8)",
+					border: "1px solid var(--appearance-edge-rgba25525525508)",
 				}}
 			>
 				{view === "verify-sent" ? (
@@ -461,13 +461,13 @@ export default function ProfileModal() {
 							style={{
 								width: "64px",
 								height: "64px",
-								background: "#e6fcf5",
+								background: "var(--appearance-surface-e6fcf5)",
 								borderRadius: "50%",
 								display: "flex",
 								alignItems: "center",
 								justifyContent: "center",
 								margin: "0 auto 24px auto",
-								color: "#1A8C7A",
+								color: "var(--appearance-ink-1a8c7a)",
 							}}
 						>
 							<svg
@@ -488,7 +488,7 @@ export default function ProfileModal() {
 							style={{
 								fontSize: "24px",
 								fontWeight: 900,
-								color: "#0f172a",
+								color: "var(--appearance-ink-0f172a)",
 								margin: "0 0 12px 0",
 								letterSpacing: "-0.5px",
 							}}
@@ -497,14 +497,14 @@ export default function ProfileModal() {
 						</h2>
 						<p
 							style={{
-								color: "#64748b",
+								color: "var(--appearance-ink-64748b)",
 								fontSize: "15px",
 								marginBottom: "32px",
 								lineHeight: "1.5",
 							}}
 						>
 							Check your inbox for the confirmation link for <br />
-							<span style={{ color: "#0f172a", fontWeight: 700 }}>{email}</span>
+							<span style={{ color: "var(--appearance-ink-0f172a)", fontWeight: 700 }}>{email}</span>
 							.
 						</p>
 						<div
@@ -514,9 +514,9 @@ export default function ProfileModal() {
 								onClick={() => setView("login")}
 								style={{
 									width: "100%",
-									background: "#f8fafc",
-									color: "#0f172a",
-									border: "1px solid #e2e8f0",
+									background: "var(--appearance-surface-f8fafc)",
+									color: "var(--appearance-ink-0f172a)",
+									border: "1px solid var(--appearance-edge-e2e8f0)",
 									padding: "14px",
 									borderRadius: "12px",
 									fontSize: "15px",
@@ -529,12 +529,12 @@ export default function ProfileModal() {
 									transition: "0.2s",
 								}}
 								onMouseEnter={(e) => {
-									e.currentTarget.style.background = "#f1f5f9";
-									e.currentTarget.style.borderColor = "#cbd5e1";
+									e.currentTarget.style.background = "var(--appearance-surface-f1f5f9)";
+									e.currentTarget.style.borderColor = "var(--appearance-edge-cbd5e1)";
 								}}
 								onMouseLeave={(e) => {
-									e.currentTarget.style.background = "#f8fafc";
-									e.currentTarget.style.borderColor = "#e2e8f0";
+									e.currentTarget.style.background = "var(--appearance-surface-f8fafc)";
+									e.currentTarget.style.borderColor = "var(--appearance-edge-e2e8f0)";
 								}}
 							>
 								<svg
@@ -556,7 +556,7 @@ export default function ProfileModal() {
 								style={{
 									background: "none",
 									border: "none",
-									color: "#64748b",
+									color: "var(--appearance-ink-64748b)",
 									fontSize: "13px",
 									fontWeight: 700,
 									cursor: isAuthLoading ? "wait" : "pointer",
@@ -575,7 +575,7 @@ export default function ProfileModal() {
                             className="account-dialog-header"
 							style={{
 								padding: "2rem 2.5rem 1.5rem 2.5rem",
-								borderBottom: "1px solid #f1f5f9",
+								borderBottom: "1px solid var(--appearance-edge-f1f5f9)",
 								display: "flex",
 								justifyContent: "space-between",
 								alignItems: "flex-start",
@@ -604,21 +604,21 @@ export default function ProfileModal() {
 											cx="26"
 											cy="22"
 											r="13.5"
-											stroke="#0B2444"
+											stroke="var(--appearance-ink-0b2444)"
 											strokeWidth="2.5"
 										/>
 										<path
 											d="M34.5 13.5 A13.5 13.5 0 0 1 39 22"
-											stroke="#1A8C7A"
+											stroke="var(--appearance-ink-1a8c7a)"
 											strokeWidth="2.5"
 											strokeLinecap="round"
 										/>
-										<circle cx="26" cy="22" r="3.5" fill="#1A8C7A" />
+										<circle cx="26" cy="22" r="3.5" fill="var(--appearance-ink-1a8c7a)" />
 										<circle
 											cx="21.5"
 											cy="17.5"
 											r="1.5"
-											fill="#22B89F"
+											fill="var(--appearance-ink-22b89f)"
 											opacity="0.5"
 										/>
 										<line
@@ -626,7 +626,7 @@ export default function ProfileModal() {
 											y1="35.5"
 											x2="26"
 											y2="43"
-											stroke="#0B2444"
+											stroke="var(--appearance-ink-0b2444)"
 											strokeWidth="2.5"
 											strokeLinecap="round"
 										/>
@@ -635,7 +635,7 @@ export default function ProfileModal() {
 											y1="43"
 											x2="35"
 											y2="43"
-											stroke="#0B2444"
+											stroke="var(--appearance-ink-0b2444)"
 											strokeWidth="2.5"
 											strokeLinecap="round"
 										/>
@@ -644,7 +644,7 @@ export default function ProfileModal() {
 											y1="43"
 											x2="18.5"
 											y2="47"
-											stroke="#0B2444"
+											stroke="var(--appearance-ink-0b2444)"
 											strokeWidth="2"
 											strokeLinecap="round"
 										/>
@@ -653,7 +653,7 @@ export default function ProfileModal() {
 											y1="43"
 											x2="33.5"
 											y2="47"
-											stroke="#0B2444"
+											stroke="var(--appearance-ink-0b2444)"
 											strokeWidth="2"
 											strokeLinecap="round"
 										/>
@@ -663,7 +663,7 @@ export default function ProfileModal() {
 									style={{
 										margin: 0,
 										fontWeight: 900,
-										color: "#0f172a",
+										color: "var(--appearance-ink-0f172a)",
 										fontSize: "24px",
 										letterSpacing: "-0.5px",
 									}}
@@ -680,7 +680,7 @@ export default function ProfileModal() {
 									style={{
 										margin: "6px 0 0 0",
 										fontSize: "14px",
-										color: "#64748b",
+										color: "var(--appearance-ink-64748b)",
 									}}
 								>
 									{view === "profile"
@@ -694,23 +694,23 @@ export default function ProfileModal() {
 								onClick={() => setIsOpen(false)}
                                 aria-label="Close account dialog"
 								style={{
-									background: "#f1f5f9",
+									background: "var(--appearance-surface-f1f5f9)",
 									border: "none",
 									width: "36px",
 									height: "36px",
 									borderRadius: "50%",
 									cursor: "pointer",
-									color: "#64748b",
+									color: "var(--appearance-ink-64748b)",
 									display: "flex",
 									alignItems: "center",
 									justifyContent: "center",
 									transition: "0.2s",
 								}}
 								onMouseEnter={(e) =>
-									(e.currentTarget.style.background = "#e2e8f0")
+									(e.currentTarget.style.background = "var(--appearance-surface-e2e8f0)")
 								}
 								onMouseLeave={(e) =>
-									(e.currentTarget.style.background = "#f1f5f9")
+									(e.currentTarget.style.background = "var(--appearance-surface-f1f5f9)")
 								}
 							>
 								<svg
@@ -737,7 +737,7 @@ export default function ProfileModal() {
 												<div
 													style={{
 														fontSize: "11px",
-														color: "#94a3b8",
+														color: "var(--appearance-ink-94a3b8)",
 														fontWeight: 800,
 														letterSpacing: "0.5px",
 														textTransform: "uppercase",
@@ -751,10 +751,10 @@ export default function ProfileModal() {
 													style={{
 														display: "flex",
 														gap: "6px",
-														background: "#f8fafc",
+														background: "var(--appearance-surface-f8fafc)",
 														padding: "4px",
 														borderRadius: "12px",
-														border: "1px solid #e2e8f0",
+														border: "1px solid var(--appearance-edge-e2e8f0)",
 													}}
 												>
 													<button
@@ -771,12 +771,12 @@ export default function ProfileModal() {
 															transition: "0.2s",
 															background:
 																signupPhase === "licensed"
-																	? "white"
+																	? "var(--appearance-surface-white)"
 																	: "transparent",
 															color:
 																signupPhase === "licensed"
-																	? "#0B2444"
-																	: "#64748b",
+																	? "var(--appearance-ink-0b2444)"
+																	: "var(--appearance-ink-64748b)",
 															boxShadow:
 																signupPhase === "licensed"
 																	? "0 2px 8px rgba(0,0,0,0.05)"
@@ -799,12 +799,12 @@ export default function ProfileModal() {
 															transition: "0.2s",
 															background:
 																signupPhase === "internship"
-																	? "white"
+																	? "var(--appearance-surface-white)"
 																	: "transparent",
 															color:
 																signupPhase === "internship"
-																	? "#1A8C7A"
-																	: "#64748b",
+																	? "var(--appearance-ink-1a8c7a)"
+																	: "var(--appearance-ink-64748b)",
 															boxShadow:
 																signupPhase === "internship"
 																	? "0 2px 8px rgba(0,0,0,0.05)"
@@ -832,7 +832,7 @@ export default function ProfileModal() {
 															color:
 																signupPhase === "employer"
 																	? "white"
-																	: "#64748b",
+																	: "var(--appearance-ink-64748b)",
 															boxShadow:
 																signupPhase === "employer"
 																	? "0 4px 10px rgba(11, 36, 68, 0.2)"
@@ -881,7 +881,7 @@ export default function ProfileModal() {
 											<div
 												style={{
 													fontSize: "11px",
-													color: "#94a3b8",
+													color: "var(--appearance-ink-94a3b8)",
 													fontWeight: 800,
 													letterSpacing: "0.5px",
 													textTransform: "uppercase",
@@ -895,10 +895,10 @@ export default function ProfileModal() {
 												style={{
 													display: "flex",
 													gap: "8px",
-													background: "#f8fafc",
+													background: "var(--appearance-surface-f8fafc)",
 													padding: "4px",
 													borderRadius: "12px",
-													border: "1px solid #e2e8f0",
+													border: "1px solid var(--appearance-edge-e2e8f0)",
 												}}
 											>
 												<button
@@ -915,12 +915,12 @@ export default function ProfileModal() {
 														transition: "0.2s",
 														background:
 															loginPhase === "scientist"
-																? "white"
+																? "var(--appearance-surface-white)"
 																: "transparent",
 														color:
 															loginPhase === "scientist"
-																? "#0B2444"
-																: "#64748b",
+																? "var(--appearance-ink-0b2444)"
+																: "var(--appearance-ink-64748b)",
 														boxShadow:
 															loginPhase === "scientist"
 																? "0 2px 8px rgba(0,0,0,0.05)"
@@ -946,7 +946,7 @@ export default function ProfileModal() {
 																? "#0B2444"
 																: "transparent",
 														color:
-															loginPhase === "employer" ? "white" : "#64748b",
+															loginPhase === "employer" ? "white" : "var(--appearance-ink-64748b)",
 														boxShadow:
 															loginPhase === "employer"
 																? "0 4px 10px rgba(11, 36, 68, 0.2)"
@@ -998,14 +998,14 @@ export default function ProfileModal() {
 												background: "none",
 												border: "none",
 												cursor: "pointer",
-												color: "#94a3b8",
+												color: "var(--appearance-ink-94a3b8)",
 											}}
 										>
 											{showPassword ? "Hide" : "Show"}
 										</button>
 									</div>
 
-									{view === "signup" && <p style={{ fontSize: "12px", color: "#64748b", marginTop: "8px" }}>Use at least 12 characters for your password.</p>}
+									{view === "signup" && <p style={{ fontSize: "12px", color: "var(--appearance-ink-64748b)", marginTop: "8px" }}>Use at least 12 characters for your password.</p>}
                                     {view === "login" && (
 										<div
 											style={{
@@ -1024,7 +1024,7 @@ export default function ProfileModal() {
 												style={{
 													background: "none",
 													border: "none",
-													color: "#0B2444",
+													color: "var(--appearance-ink-0b2444)",
 													fontSize: "12px",
 													fontWeight: 700,
 													cursor: isAuthLoading ? "wait" : "pointer",
@@ -1040,7 +1040,7 @@ export default function ProfileModal() {
 												style={{
 													background: "none",
 													border: "none",
-													color: "#0B2444",
+													color: "var(--appearance-ink-0b2444)",
 													fontSize: "12px",
 													fontWeight: 700,
 													cursor: "pointer",
@@ -1052,14 +1052,14 @@ export default function ProfileModal() {
 										</div>
 									)}
 
-									{view === "signup" && signupPhase !== "employer" && <p style={{ color: "#64748b", fontSize: "12px", marginTop: "12px", lineHeight: 1.5 }}>Add your PDF CV and license documents after signing in.</p>}
+									{view === "signup" && signupPhase !== "employer" && <p style={{ color: "var(--appearance-ink-64748b)", fontSize: "12px", marginTop: "12px", lineHeight: 1.5 }}>Add your PDF CV and license documents after signing in.</p>}
 
 									<button
 										onClick={view === "signup" ? handleRegister : handleLogin}
 										disabled={isAuthLoading}
 										style={{
 											width: "100%",
-											background: isAuthLoading ? "#94a3b8" : "#0B2444",
+											background: isAuthLoading ? "var(--appearance-surface-94a3b8)" : "#0B2444",
 											color: "white",
 											border: "none",
 											padding: "16px",
@@ -1092,7 +1092,7 @@ export default function ProfileModal() {
 											fontSize: "14px",
 										}}
 									>
-										<span style={{ color: "#64748b" }}>
+										<span style={{ color: "var(--appearance-ink-64748b)" }}>
 											{view === "signup"
 												? "Already have an account? "
 												: "Need an account? "}
@@ -1103,7 +1103,7 @@ export default function ProfileModal() {
 											}
 											style={{
 												background: "none", border: "none", padding: 0, font: "inherit",
-                                                color: "#1A8C7A",
+                                                color: "var(--appearance-ink-1a8c7a)",
 												fontWeight: 800,
 												cursor: "pointer",
 											}}
@@ -1130,7 +1130,7 @@ export default function ProfileModal() {
 										disabled={isAuthLoading}
 										style={{
 											width: "100%",
-											background: isAuthLoading ? "#94a3b8" : "#0B2444",
+											background: isAuthLoading ? "var(--appearance-surface-94a3b8)" : "#0B2444",
 											color: "white",
 											border: "none",
 											padding: "16px",
@@ -1150,7 +1150,7 @@ export default function ProfileModal() {
 											style={{
 												background: "none",
 												border: "none",
-												color: "#64748b",
+												color: "var(--appearance-ink-64748b)",
 												fontSize: "14px",
 												fontWeight: 700,
 												cursor: "pointer",
@@ -1237,7 +1237,7 @@ export default function ProfileModal() {
 													position: "absolute",
 													bottom: 0,
 													right: "-4px",
-													background: "white",
+													background: "var(--appearance-surface-white)",
 													borderRadius: "50%",
 													padding: "4px",
 													boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
@@ -1252,7 +1252,7 @@ export default function ProfileModal() {
 													height="12"
 													viewBox="0 0 24 24"
 													fill="none"
-													stroke="#1A8C7A"
+													stroke="var(--appearance-ink-1a8c7a)"
 													strokeWidth="2.5"
 												>
 													<path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
@@ -1289,7 +1289,7 @@ export default function ProfileModal() {
 												style={{
 													margin: 0,
 													fontSize: "20px",
-													color: "#0f172a",
+													color: "var(--appearance-ink-0f172a)",
 													fontWeight: 800,
 													whiteSpace: "nowrap",
 													overflow: "hidden",
@@ -1301,7 +1301,7 @@ export default function ProfileModal() {
 											<p
 												style={{
 													margin: "2px 0 0 0",
-													color: "#64748b",
+													color: "var(--appearance-ink-64748b)",
 													fontSize: "14px",
 													whiteSpace: "nowrap",
 													overflow: "hidden",
@@ -1315,8 +1315,8 @@ export default function ProfileModal() {
 
 									<div
 										style={{
-											background: "#f8fafc",
-											border: "1px solid #e2e8f0",
+											background: "var(--appearance-surface-f8fafc)",
+											border: "1px solid var(--appearance-edge-e2e8f0)",
 											borderRadius: "16px",
 											padding: "16px",
 											marginBottom: "1rem",
@@ -1328,7 +1328,7 @@ export default function ProfileModal() {
 										<div
 											style={{
 												fontSize: "11px",
-												color: "#94a3b8",
+												color: "var(--appearance-ink-94a3b8)",
 												fontWeight: 800,
 												letterSpacing: "0.5px",
 												textTransform: "uppercase",
@@ -1340,7 +1340,7 @@ export default function ProfileModal() {
 											style={{
 												display: "flex",
 												gap: "8px",
-												background: "#e2e8f0",
+												background: "var(--appearance-surface-e2e8f0)",
 												padding: "4px",
 												borderRadius: "12px",
 											}}
@@ -1357,10 +1357,10 @@ export default function ProfileModal() {
 													cursor: "pointer",
 													background:
 														careerPhase === "licensed"
-															? "white"
+															? "var(--appearance-surface-white)"
 															: "transparent",
 													color:
-														careerPhase === "licensed" ? "#0B2444" : "#64748b",
+														careerPhase === "licensed" ? "var(--appearance-ink-0b2444)" : "var(--appearance-ink-64748b)",
 													boxShadow:
 														careerPhase === "licensed"
 															? "0 2px 8px rgba(0,0,0,0.1)"
@@ -1382,12 +1382,12 @@ export default function ProfileModal() {
 													cursor: "pointer",
 													background:
 														careerPhase === "internship"
-															? "white"
+															? "var(--appearance-surface-white)"
 															: "transparent",
 													color:
 														careerPhase === "internship"
-															? "#1A8C7A"
-															: "#64748b",
+															? "var(--appearance-ink-1a8c7a)"
+															: "var(--appearance-ink-64748b)",
 													boxShadow:
 														careerPhase === "internship"
 															? "0 2px 8px rgba(0,0,0,0.1)"
@@ -1402,8 +1402,8 @@ export default function ProfileModal() {
 
 									<div
 										style={{
-											background: "#f8fafc",
-											border: "1px solid #e2e8f0",
+											background: "var(--appearance-surface-f8fafc)",
+											border: "1px solid var(--appearance-edge-e2e8f0)",
 											borderRadius: "16px",
 											padding: "16px",
 											marginBottom: "1rem",
@@ -1416,7 +1416,7 @@ export default function ProfileModal() {
 											<div
 												style={{
 													fontSize: "11px",
-													color: "#94a3b8",
+													color: "var(--appearance-ink-94a3b8)",
 													fontWeight: 800,
 													letterSpacing: "0.5px",
 													marginBottom: "4px",
@@ -1428,7 +1428,7 @@ export default function ProfileModal() {
 												style={{
 													fontSize: "13px",
 													fontWeight: 700,
-													color: "#0f172a",
+													color: "var(--appearance-ink-0f172a)",
 													display: "flex",
 													alignItems: "center",
 													gap: "6px",
@@ -1439,7 +1439,7 @@ export default function ProfileModal() {
 													height="14"
 													viewBox="0 0 24 24"
 													fill="none"
-													stroke="#64748b"
+													stroke="var(--appearance-ink-64748b)"
 													strokeWidth="2.5"
 												>
 													<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
@@ -1468,9 +1468,9 @@ export default function ProfileModal() {
 												onClick={() => updateCvRef.current?.click()}
 												disabled={isUploadingResume}
 												style={{
-													background: "#e6fcf5",
-													color: "#1A8C7A",
-													border: "1px solid #a7f3d0",
+													background: "var(--appearance-surface-e6fcf5)",
+													color: "var(--appearance-ink-1a8c7a)",
+													border: "1px solid var(--appearance-edge-a7f3d0)",
 													padding: "8px 14px",
 													borderRadius: "8px",
 													fontSize: "12px",
@@ -1486,8 +1486,8 @@ export default function ProfileModal() {
 
 									<div
 										style={{
-											background: "#f8fafc",
-											border: "1px solid #e2e8f0",
+											background: "var(--appearance-surface-f8fafc)",
+											border: "1px solid var(--appearance-edge-e2e8f0)",
 											borderRadius: "16px",
 											padding: "16px",
 											marginBottom: "1.5rem",
@@ -1496,7 +1496,7 @@ export default function ProfileModal() {
 										<div
 											style={{
 												fontSize: "11px",
-												color: "#94a3b8",
+												color: "var(--appearance-ink-94a3b8)",
 												fontWeight: 800,
 												letterSpacing: "0.5px",
 												marginBottom: "10px",
@@ -1516,9 +1516,9 @@ export default function ProfileModal() {
 														<span
 															key={idx}
 															style={{
-																background: "white",
-																color: "#0B2444",
-																border: "1px solid #e2e8f0",
+																background: "var(--appearance-surface-white)",
+																color: "var(--appearance-ink-0b2444)",
+																border: "1px solid var(--appearance-edge-e2e8f0)",
 																padding: "6px 12px",
 																borderRadius: "8px",
 																fontSize: "12px",
@@ -1532,7 +1532,7 @@ export default function ProfileModal() {
 											) : (
 												<span
 													style={{
-														color: "#94a3b8",
+														color: "var(--appearance-ink-94a3b8)",
 														fontSize: "13px",
 														fontStyle: "italic",
 													}}
@@ -1541,16 +1541,16 @@ export default function ProfileModal() {
 												</span>
 											)}
                                         </div>
-                                        <a href="/settings#role-keywords" onClick={() => setIsOpen(false)} style={{display:"inline-block", marginTop:12, fontSize:13, color:"#176e61", fontWeight:700}}>Edit keywords / Extract CV skills</a>
+                                        <a href="/settings#role-keywords" onClick={() => setIsOpen(false)} style={{display:"inline-block", marginTop:12, fontSize:13, color:"var(--appearance-ink-176e61)", fontWeight:700}}>Edit keywords / Extract CV skills</a>
                                     </div>
 
                                     <button
                                         onClick={handleLogout}
 										style={{
 											width: "100%",
-											background: "#fef2f2",
-											color: "#ef4444",
-											border: "1px solid #fecaca",
+											background: "var(--appearance-surface-fef2f2)",
+											color: "var(--appearance-ink-ef4444)",
+											border: "1px solid var(--appearance-edge-fecaca)",
 											padding: "14px",
 											borderRadius: "12px",
 											fontSize: "14px",
@@ -1559,10 +1559,10 @@ export default function ProfileModal() {
 											transition: "0.2s",
 										}}
 										onMouseEnter={(e) =>
-											(e.currentTarget.style.background = "#fee2e2")
+											(e.currentTarget.style.background = "var(--appearance-surface-fee2e2)")
 										}
 										onMouseLeave={(e) =>
-											(e.currentTarget.style.background = "#fef2f2")
+											(e.currentTarget.style.background = "var(--appearance-surface-fef2f2)")
 										}
 									>
 										Securely Log Out

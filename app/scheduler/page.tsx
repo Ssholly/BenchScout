@@ -114,10 +114,10 @@ export default function SchedulerPage() {
 	const [editingEvent, setEditingEvent] = useState<ScheduledEvent | null>(null);
 
 	const eventConfig = {
-		interview: { color: "#eab308", bg: "#fef9c3", icon: "video" },
-		deadline: { color: "#ef4444", bg: "#fee2e2", icon: "alert" },
-		followup: { color: "#7e22ce", bg: "#f3e8ff", icon: "mail" },
-		action: { color: "#1A8C7A", bg: "#e6fcf5", icon: "map-pin" },
+		interview: { color: "var(--appearance-ink-eab308)", bg: "#fef9c3", icon: "video" },
+		deadline: { color: "var(--appearance-ink-ef4444)", bg: "#fee2e2", icon: "alert" },
+		followup: { color: "var(--appearance-ink-7e22ce)", bg: "#f3e8ff", icon: "mail" },
+		action: { color: "var(--appearance-ink-1a8c7a)", bg: "#e6fcf5", icon: "map-pin" },
 	};
 
 	const selectedDayEvents = events
@@ -539,7 +539,7 @@ export default function SchedulerPage() {
 						cursor: "pointer",
 						transition: "all 0.2s ease",
 						background: isSelected ? "#0B2444" : "transparent",
-						color: isSelected ? "white" : isToday ? "#0B2444" : "#475569",
+						color: isSelected ? "white" : isToday ? "var(--appearance-ink-0b2444)" : "var(--appearance-ink-475569)",
 						fontWeight: isSelected || isToday ? 800 : 600,
 						border:
 							isToday && !isSelected
@@ -548,7 +548,7 @@ export default function SchedulerPage() {
 					}}
 					onMouseEnter={(e) => {
 						if (!isSelected)
-							e.currentTarget.style.background = "rgba(255, 255, 255, 0.5)";
+							e.currentTarget.style.background = "var(--appearance-surface-rgba25525525505)";
 					}}
 					onMouseLeave={(e) => {
 						if (!isSelected) e.currentTarget.style.background = "transparent";
@@ -565,7 +565,7 @@ export default function SchedulerPage() {
 										height: "4px",
 										borderRadius: "50%",
 										background: isSelected
-											? "white"
+											? "var(--appearance-surface-white)"
 											: eventConfig[ev.type]?.color || "#1A8C7A",
 									}}
 								></div>
@@ -654,7 +654,7 @@ export default function SchedulerPage() {
 								margin: 0,
 								fontSize: "24px",
 								fontWeight: 900,
-								color: "#0f172a",
+								color: "var(--appearance-ink-0f172a)",
 								letterSpacing: "-0.5px",
 							}}
 						>
@@ -665,7 +665,7 @@ export default function SchedulerPage() {
 							style={{
 								margin: "4px 0 0 0",
 								fontSize: "13px",
-								color: "#64748b",
+								color: "var(--appearance-ink-64748b)",
 							}}
 						>
 							Track application deadlines, upcoming interviews, and personal
@@ -679,10 +679,10 @@ export default function SchedulerPage() {
 						style={{
 							padding: "4rem",
 							textAlign: "center",
-							background: "rgba(255,255,255,0.5)",
+							background: "var(--appearance-surface-rgba25525525505)",
 							backdropFilter: "blur(16px)",
 							borderRadius: "16px",
-							border: "1px solid rgba(255, 255, 255, 0.3)",
+							border: "1px solid var(--appearance-edge-rgba25525525503)",
 							boxShadow: "0 4px 20px -2px rgba(0, 0, 0, 0.03)",
 						}}
 					>
@@ -690,13 +690,13 @@ export default function SchedulerPage() {
 							style={{
 								width: "64px",
 								height: "64px",
-								background: "rgba(241, 245, 249, 0.8)",
+								background: "var(--appearance-surface-rgba24124524908)",
 								borderRadius: "50%",
 								display: "flex",
 								alignItems: "center",
 								justifyContent: "center",
 								margin: "0 auto 1rem auto",
-								color: "#64748b",
+								color: "var(--appearance-ink-64748b)",
 							}}
 						>
 							<svg
@@ -717,7 +717,7 @@ export default function SchedulerPage() {
 							style={{
 								margin: "0 0 8px 0",
 								fontSize: "18px",
-								color: "#0f172a",
+								color: "var(--appearance-ink-0f172a)",
 								fontWeight: 800,
 							}}
 						>
@@ -725,7 +725,7 @@ export default function SchedulerPage() {
 						</h2>
 						<p
 							style={{
-								color: "#64748b",
+								color: "var(--appearance-ink-64748b)",
 								fontSize: "14px",
 								maxWidth: "400px",
 								margin: "0 auto 24px auto",
@@ -769,11 +769,11 @@ export default function SchedulerPage() {
 									minWidth: 0,
 									width: "100%",
 									maxWidth: "300px",
-									background: "rgba(255, 255, 255, 0.4)",
+									background: "var(--appearance-surface-rgba25525525504)",
 									backdropFilter: "blur(24px)",
 									WebkitBackdropFilter: "blur(24px)",
 									borderRadius: "20px",
-									border: "1px solid rgba(255, 255, 255, 0.3)",
+									border: "1px solid var(--appearance-edge-rgba25525525503)",
 									padding: "16px",
 									boxShadow: "0 4px 20px -2px rgba(0,0,0,0.03)",
 								}}
@@ -791,7 +791,7 @@ export default function SchedulerPage() {
 											margin: 0,
 											fontSize: "15px",
 											fontWeight: 800,
-											color: "#0f172a",
+											color: "var(--appearance-ink-0f172a)",
 										}}
 									>
 										{currentMonthDate.toLocaleDateString("en-US", {
@@ -803,13 +803,13 @@ export default function SchedulerPage() {
 										<button
 											onClick={() => handleMonthChange(-1)}
 											style={{
-												background: "rgba(255,255,255,0.6)",
-												border: "1px solid rgba(255,255,255,0.4)",
+												background: "var(--appearance-surface-rgba25525525506)",
+												border: "1px solid var(--appearance-edge-rgba25525525504)",
 												width: "26px",
 												height: "26px",
 												borderRadius: "6px",
 												cursor: "pointer",
-												color: "#64748b",
+												color: "var(--appearance-ink-64748b)",
 												transition: "all 0.2s",
 												display: "flex",
 												alignItems: "center",
@@ -821,13 +821,13 @@ export default function SchedulerPage() {
 										<button
 											onClick={() => handleMonthChange(1)}
 											style={{
-												background: "rgba(255,255,255,0.6)",
-												border: "1px solid rgba(255,255,255,0.4)",
+												background: "var(--appearance-surface-rgba25525525506)",
+												border: "1px solid var(--appearance-edge-rgba25525525504)",
 												width: "26px",
 												height: "26px",
 												borderRadius: "6px",
 												cursor: "pointer",
-												color: "#64748b",
+												color: "var(--appearance-ink-64748b)",
 												transition: "all 0.2s",
 												display: "flex",
 												alignItems: "center",
@@ -848,7 +848,7 @@ export default function SchedulerPage() {
 										textAlign: "center",
 										fontSize: "9px",
 										fontWeight: 800,
-										color: "#94a3b8",
+										color: "var(--appearance-ink-94a3b8)",
 									}}
 								>
 									<div>SU</div>
@@ -887,7 +887,7 @@ export default function SchedulerPage() {
 											gap: "12px",
 											fontSize: "10px",
 											fontWeight: 600,
-											color: "#475569",
+											color: "var(--appearance-ink-475569)",
 										}}
 									>
 										<div
@@ -967,11 +967,11 @@ export default function SchedulerPage() {
 								style={{
 									flex: 1.2,
 									minWidth: 0,
-									background: "rgba(255, 255, 255, 0.5)",
+									background: "var(--appearance-surface-rgba25525525505)",
 									backdropFilter: "blur(24px)",
 									WebkitBackdropFilter: "blur(24px)",
 									borderRadius: "20px",
-									border: "1px solid rgba(255, 255, 255, 0.3)",
+									border: "1px solid var(--appearance-edge-rgba25525525503)",
 									padding: "16px",
 									boxShadow: "0 4px 20px -2px rgba(0,0,0,0.03)",
 									display: "flex",
@@ -998,7 +998,7 @@ export default function SchedulerPage() {
 												margin: 0,
 												fontSize: "18px",
 												fontWeight: 800,
-												color: "#0f172a",
+												color: "var(--appearance-ink-0f172a)",
 											}}
 										>
 											{selectedDay === new Date().getDate() &&
@@ -1010,7 +1010,7 @@ export default function SchedulerPage() {
 											style={{
 												margin: "2px 0 0 0",
 												fontSize: "12px",
-												color: "#64748b",
+												color: "var(--appearance-ink-64748b)",
 												fontWeight: 500,
 											}}
 										>
@@ -1047,7 +1047,7 @@ export default function SchedulerPage() {
 								<div
 									style={{ flex: 1, overflowY: "auto", paddingRight: "4px" }}
 								>
-									{calendarSyncUnavailable && <p role="status" style={{ fontSize: 12, color: "#92400e" }}>Interview updates could not be loaded. Personal events remain available; refresh to try again.</p>}
+									{calendarSyncUnavailable && <p role="status" style={{ fontSize: 12, color: "var(--appearance-ink-92400e)" }}>Interview updates could not be loaded. Personal events remain available; refresh to try again.</p>}
                                     {selectedDayEvents.length === 0 ? (
 										<div
 											style={{
@@ -1056,7 +1056,7 @@ export default function SchedulerPage() {
 												flexDirection: "column",
 												alignItems: "center",
 												justifyContent: "center",
-												color: "#94a3b8",
+												color: "var(--appearance-ink-94a3b8)",
 												padding: "12px 0",
 											}}
 										>
@@ -1112,7 +1112,7 @@ export default function SchedulerPage() {
 																style={{
 																	fontSize: "11px",
 																	fontWeight: 800,
-																	color: "#64748b",
+																	color: "var(--appearance-ink-64748b)",
 																}}
 															>
 																{event.time.split(" ")[0]}
@@ -1121,7 +1121,7 @@ export default function SchedulerPage() {
 																style={{
 																	fontSize: "9px",
 																	fontWeight: 700,
-																	color: "#94a3b8",
+																	color: "var(--appearance-ink-94a3b8)",
 																	marginLeft: "2px",
 																}}
 															>
@@ -1141,7 +1141,7 @@ export default function SchedulerPage() {
 																	width: "10px",
 																	height: "10px",
 																	borderRadius: "50%",
-																	background: "white",
+																	background: "var(--appearance-surface-white)",
 																	border: `2px solid ${config.color}`,
 																	zIndex: 2,
 																}}
@@ -1161,8 +1161,8 @@ export default function SchedulerPage() {
 															onClick={() => openEditEventModal(event)}
 															style={{
 																flex: 1,
-																background: "rgba(255,255,255,0.7)",
-																border: "1px solid rgba(255,255,255,0.5)",
+																background: "var(--appearance-surface-rgba25525525507)",
+																border: "1px solid var(--appearance-edge-rgba25525525505)",
 																borderRadius: "16px",
 																padding: "1rem",
 																boxShadow: "0 2px 8px -2px rgba(0,0,0,0.02)",
@@ -1208,7 +1208,7 @@ export default function SchedulerPage() {
 																	style={{
 																		fontSize: "10px",
 																		fontWeight: 700,
-																		color: "#94a3b8",
+																		color: "var(--appearance-ink-94a3b8)",
 																	}}
 																>
 																	Edit
@@ -1219,7 +1219,7 @@ export default function SchedulerPage() {
 																	margin: "0 0 2px 0",
 																	fontSize: "13px",
 																	fontWeight: 800,
-																	color: "#0f172a",
+																	color: "var(--appearance-ink-0f172a)",
 																}}
 															>
 																{event.title}
@@ -1228,7 +1228,7 @@ export default function SchedulerPage() {
 																style={{
 																	margin: "0 0 10px 0",
 																	fontSize: "11px",
-																	color: "#64748b",
+																	color: "var(--appearance-ink-64748b)",
 																	fontWeight: 600,
 																}}
 															>
@@ -1259,13 +1259,13 @@ export default function SchedulerPage() {
 								style={{
 									fontSize: "20px",
 									fontWeight: 800,
-									color: "#0f172a",
+									color: "var(--appearance-ink-0f172a)",
 									margin: "0 0 4px 0",
 								}}
 							>
 								Automation Configuration
 							</h2>
-							<p style={{ fontSize: "13px", color: "#64748b", margin: 0 }}>
+							<p style={{ fontSize: "13px", color: "var(--appearance-ink-64748b)", margin: 0 }}>
 								Configure when BenchScout should scan listings and notify you.
 							</p>
 						</div>
@@ -1291,10 +1291,10 @@ export default function SchedulerPage() {
 							>
 								<div
 									style={{
-										background: "rgba(255, 255, 255, 0.4)",
+										background: "var(--appearance-surface-rgba25525525504)",
 										backdropFilter: "blur(24px)",
 										borderRadius: "20px",
-										border: "1px solid rgba(255, 255, 255, 0.3)",
+										border: "1px solid var(--appearance-edge-rgba25525525503)",
 										padding: "16px",
 										boxShadow: "0 4px 20px -2px rgba(0,0,0,0.02)",
 									}}
@@ -1314,7 +1314,7 @@ export default function SchedulerPage() {
 												style={{
 													fontSize: "15px",
 													fontWeight: 800,
-													color: "#0f172a",
+													color: "var(--appearance-ink-0f172a)",
 													margin: "0 0 2px 0",
 												}}
 											>
@@ -1323,7 +1323,7 @@ export default function SchedulerPage() {
 											<p
 												style={{
 													fontSize: "12px",
-													color: "#64748b",
+													color: "var(--appearance-ink-64748b)",
 													margin: 0,
 												}}
 											>
@@ -1332,8 +1332,8 @@ export default function SchedulerPage() {
 										</div>
 										<div
 											style={{
-												background: "rgba(255,255,255,0.6)",
-												border: "1px solid rgba(226, 232, 240, 0.5)",
+												background: "var(--appearance-surface-rgba25525525506)",
+												border: "1px solid var(--appearance-edge-rgba22623224005)",
 												borderRadius: "30px",
 												padding: "4px 8px 4px 12px",
 												display: "flex",
@@ -1345,7 +1345,7 @@ export default function SchedulerPage() {
 												style={{
 													fontSize: "10px",
 													fontWeight: 800,
-													color: "#64748b",
+													color: "var(--appearance-ink-64748b)",
 													letterSpacing: "0.5px",
 												}}
 											>
@@ -1370,7 +1370,7 @@ export default function SchedulerPage() {
 											style={{
 												fontSize: "10px",
 												fontWeight: 800,
-												color: "#94a3b8",
+												color: "var(--appearance-ink-94a3b8)",
 												letterSpacing: "1px",
 												marginBottom: "8px",
 											}}
@@ -1391,13 +1391,13 @@ export default function SchedulerPage() {
 												value={time}
 												onChange={(e) => setTime(e.target.value)}
 												style={{
-													background: "rgba(255,255,255,0.7)",
+													background: "var(--appearance-surface-rgba25525525507)",
 													border: "2px solid rgba(26, 140, 122, 0.3)",
 													borderRadius: "12px",
 													padding: "10px 14px",
 													fontSize: "16px",
 													fontWeight: 800,
-													color: "#1A8C7A",
+													color: "var(--appearance-ink-1a8c7a)",
 													outline: "none",
 													cursor: "pointer",
 													fontFamily: "inherit",
@@ -1411,7 +1411,7 @@ export default function SchedulerPage() {
 												height="20"
 												viewBox="0 0 24 24"
 												fill="none"
-												stroke="#cbd5e1"
+												stroke="var(--appearance-ink-cbd5e1)"
 												strokeWidth="2"
 											>
 												<circle cx="12" cy="12" r="10" />
@@ -1420,8 +1420,8 @@ export default function SchedulerPage() {
 
 											<div
 												style={{
-													background: "rgba(255,255,255,0.7)",
-													border: "1px solid rgba(226, 232, 240, 0.5)",
+													background: "var(--appearance-surface-rgba25525525507)",
+													border: "1px solid var(--appearance-edge-rgba22623224005)",
 													borderRadius: "12px",
 													padding: "8px 12px",
 													display: "flex",
@@ -1437,7 +1437,7 @@ export default function SchedulerPage() {
 													style={{
 														fontSize: "9px",
 														fontWeight: 800,
-														color: "#1A8C7A",
+														color: "var(--appearance-ink-1a8c7a)",
 														textTransform: "uppercase",
 														letterSpacing: "1px",
 														marginBottom: "2px",
@@ -1460,7 +1460,7 @@ export default function SchedulerPage() {
 															border: "none",
 															fontSize: "13px",
 															fontWeight: 700,
-															color: "#0f172a",
+															color: "var(--appearance-ink-0f172a)",
 															outline: "none",
 															cursor: "pointer",
 															padding: 0,
@@ -1479,7 +1479,7 @@ export default function SchedulerPage() {
 														height="12"
 														viewBox="0 0 24 24"
 														fill="none"
-														stroke="#64748b"
+														stroke="var(--appearance-ink-64748b)"
 														strokeWidth="3"
 														style={{
 															position: "absolute",
@@ -1495,8 +1495,8 @@ export default function SchedulerPage() {
 
 											<div
 												style={{
-													background: "rgba(255,255,255,0.7)",
-													border: "1px solid rgba(226, 232, 240, 0.5)",
+													background: "var(--appearance-surface-rgba25525525507)",
+													border: "1px solid var(--appearance-edge-rgba22623224005)",
 													borderRadius: "12px",
 													padding: "8px 12px",
 													display: "flex",
@@ -1512,7 +1512,7 @@ export default function SchedulerPage() {
 													style={{
 														fontSize: "9px",
 														fontWeight: 800,
-														color: "#1A8C7A",
+														color: "var(--appearance-ink-1a8c7a)",
 														textTransform: "uppercase",
 														letterSpacing: "1px",
 														marginBottom: "2px",
@@ -1535,7 +1535,7 @@ export default function SchedulerPage() {
 															border: "none",
 															fontSize: "13px",
 															fontWeight: 700,
-															color: "#0f172a",
+															color: "var(--appearance-ink-0f172a)",
 															outline: "none",
 															cursor: "pointer",
 															padding: 0,
@@ -1554,7 +1554,7 @@ export default function SchedulerPage() {
 														height="12"
 														viewBox="0 0 24 24"
 														fill="none"
-														stroke="#64748b"
+														stroke="var(--appearance-ink-64748b)"
 														strokeWidth="3"
 														style={{
 															position: "absolute",
@@ -1575,7 +1575,7 @@ export default function SchedulerPage() {
 											style={{
 												fontSize: "10px",
 												fontWeight: 800,
-												color: "#94a3b8",
+												color: "var(--appearance-ink-94a3b8)",
 												letterSpacing: "1px",
 												marginBottom: "8px",
 											}}
@@ -1594,11 +1594,11 @@ export default function SchedulerPage() {
 														style={{
 															background: isSel
 																? "#0B2444"
-																: "rgba(255,255,255,0.7)",
-															color: isSel ? "white" : "#64748b",
+																: "var(--appearance-surface-rgba25525525507)",
+															color: isSel ? "white" : "var(--appearance-ink-64748b)",
 															border: isSel
 																? "1px solid #0B2444"
-																: "1px solid rgba(226, 232, 240, 0.8)",
+																: "1px solid var(--appearance-edge-rgba22623224008)",
 															padding: "6px 12px",
 															borderRadius: "16px",
 															fontSize: "11px",
@@ -1617,7 +1617,7 @@ export default function SchedulerPage() {
 
 								<div
 									style={{
-										background: "rgba(230, 252, 245, 0.5)",
+										background: "var(--appearance-surface-rgba23025224505)",
 										backdropFilter: "blur(16px)",
 										border: "1px solid rgba(26, 140, 122, 0.2)",
 										borderRadius: "20px",
@@ -1626,7 +1626,7 @@ export default function SchedulerPage() {
 										gap: "1rem",
 									}}
 								>
-									<div style={{ color: "#1A8C7A", marginTop: "2px" }}>
+									<div style={{ color: "var(--appearance-ink-1a8c7a)", marginTop: "2px" }}>
 										<svg
 											width="18"
 											height="18"
@@ -1645,7 +1645,7 @@ export default function SchedulerPage() {
 											style={{
 												fontSize: "13px",
 												fontWeight: 700,
-												color: "#0B2444",
+												color: "var(--appearance-ink-0b2444)",
 												margin: "0 0 8px 0",
 											}}
 										>
@@ -1655,7 +1655,7 @@ export default function SchedulerPage() {
 											style={{
 												margin: 0,
 												paddingLeft: "1.25rem",
-												color: "#0f172a",
+												color: "var(--appearance-ink-0f172a)",
 												fontSize: "12px",
 												lineHeight: "1.6",
 												display: "flex",
@@ -1719,10 +1719,10 @@ export default function SchedulerPage() {
 							>
 								<div
 									style={{
-										background: "rgba(255, 255, 255, 0.4)",
+										background: "var(--appearance-surface-rgba25525525504)",
 										backdropFilter: "blur(24px)",
 										borderRadius: "20px",
-										border: "1px solid rgba(226, 232, 240, 0.5)",
+										border: "1px solid var(--appearance-edge-rgba22623224005)",
 										overflow: "hidden",
 										boxShadow: "0 4px 20px -2px rgba(0,0,0,0.03)",
 									}}
@@ -1768,7 +1768,7 @@ export default function SchedulerPage() {
 												gap: "8px",
 												fontSize: "11px",
 												fontWeight: 800,
-												color: isActive ? "#15803d" : "#64748b",
+												color: isActive ? "var(--appearance-ink-15803d)" : "var(--appearance-ink-64748b)",
 												letterSpacing: "0.5px",
 												marginBottom: "1rem",
 											}}
@@ -1778,7 +1778,7 @@ export default function SchedulerPage() {
 													width: "6px",
 													height: "6px",
 													borderRadius: "50%",
-													background: isActive ? "#22c55e" : "#cbd5e1",
+													background: isActive ? "#22c55e" : "var(--appearance-surface-cbd5e1)",
 												}}
 											></span>
 											SYSTEM STATUS: {isActive ? "ACTIVE" : "STANDBY"}
@@ -1797,8 +1797,8 @@ export default function SchedulerPage() {
 													fontSize: "12px",
 												}}
 											>
-												<span style={{ color: "#64748b" }}>Date</span>
-												<span style={{ fontWeight: 700, color: "#0f172a" }}>
+												<span style={{ color: "var(--appearance-ink-64748b)" }}>Date</span>
+												<span style={{ fontWeight: 700, color: "var(--appearance-ink-0f172a)" }}>
 													{nextDate}
 												</span>
 											</div>
@@ -1816,8 +1816,8 @@ export default function SchedulerPage() {
 													fontSize: "12px",
 												}}
 											>
-												<span style={{ color: "#64748b" }}>Time</span>
-												<span style={{ fontWeight: 700, color: "#0f172a" }}>
+												<span style={{ color: "var(--appearance-ink-64748b)" }}>Time</span>
+												<span style={{ fontWeight: 700, color: "var(--appearance-ink-0f172a)" }}>
 													{nextTimeStr}
 												</span>
 											</div>
@@ -1827,10 +1827,10 @@ export default function SchedulerPage() {
 
 								<div
 									style={{
-										background: "rgba(255, 255, 255, 0.4)",
+										background: "var(--appearance-surface-rgba25525525504)",
 										backdropFilter: "blur(24px)",
 										borderRadius: "20px",
-										border: "1px solid rgba(226, 232, 240, 0.5)",
+										border: "1px solid var(--appearance-edge-rgba22623224005)",
 										padding: "16px",
 										boxShadow: "0 4px 20px -2px rgba(0,0,0,0.03)",
 									}}
@@ -1839,7 +1839,7 @@ export default function SchedulerPage() {
 										style={{
 											fontSize: "13px",
 											fontWeight: 800,
-											color: "#0f172a",
+											color: "var(--appearance-ink-0f172a)",
 											margin: "0 0 1rem 0",
 										}}
 									>
@@ -1847,7 +1847,7 @@ export default function SchedulerPage() {
 									</h3>
 									<div
 										style={{
-											background: "rgba(255,255,255,0.6)",
+											background: "var(--appearance-surface-rgba25525525506)",
 											borderRadius: "12px",
 											padding: "1rem",
 											height: "80px",
@@ -1864,7 +1864,7 @@ export default function SchedulerPage() {
 												title={data.label}
 												style={{
 													width: "100%",
-													background: i === activeIndex ? "#1A8C7A" : "#e2e8f0",
+													background: i === activeIndex ? "#1A8C7A" : "var(--appearance-surface-e2e8f0)",
 													height: data.height,
 													borderRadius: "4px",
 													transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
@@ -1876,7 +1876,7 @@ export default function SchedulerPage() {
 									<p
 										style={{
 											fontSize: "11px",
-											color: "#64748b",
+											color: "var(--appearance-ink-64748b)",
 											fontStyle: "italic",
 											margin: 0,
 											lineHeight: "1.5",
@@ -1894,7 +1894,7 @@ export default function SchedulerPage() {
 										borderRadius: "20px",
 										padding: "16px",
 										color: "white",
-										border: "1px solid rgba(255,255,255,0.1)",
+										border: "1px solid var(--appearance-edge-rgba25525525501)",
 										position: "relative",
 										overflow: "hidden",
 										boxShadow: "0 4px 20px -2px rgba(0,0,0,0.1)",
@@ -1940,7 +1940,7 @@ export default function SchedulerPage() {
 									<p
 										style={{
 											fontSize: "11px",
-											color: "#94a3b8",
+											color: "var(--appearance-ink-94a3b8)",
 											margin: "0 0 1rem 0",
 											lineHeight: "1.5",
 										}}
@@ -1956,7 +1956,7 @@ export default function SchedulerPage() {
 											color: "white",
 											border: isAlertsActive
 												? "none"
-												: "1px solid rgba(255,255,255,0.2)",
+												: "1px solid var(--appearance-edge-rgba25525525502)",
 											padding: "6px 12px",
 											borderRadius: "8px",
 											fontSize: "11px",
@@ -1998,8 +1998,8 @@ export default function SchedulerPage() {
 					>
 						<div
 							style={{
-								background: "rgba(255, 255, 255, 0.95)",
-								border: "1px solid rgba(255, 255, 255, 0.5)",
+								background: "var(--appearance-surface-rgba255255255095)",
+								border: "1px solid var(--appearance-edge-rgba25525525505)",
 								width: "100%",
 								maxWidth: "400px",
                                 maxHeight: "calc(100dvh - 2rem)",
@@ -2023,7 +2023,7 @@ export default function SchedulerPage() {
 									style={{
 										fontSize: "16px",
 										fontWeight: 850,
-										color: "#0f172a",
+										color: "var(--appearance-ink-0f172a)",
 										margin: 0,
 									}}
 								>
@@ -2043,7 +2043,7 @@ export default function SchedulerPage() {
 										alignItems: "center",
 										justifyContent: "center",
 										cursor: "pointer",
-										color: "#64748b",
+										color: "var(--appearance-ink-64748b)",
 									}}
 								>
 									<svg
@@ -2075,7 +2075,7 @@ export default function SchedulerPage() {
 											display: "block",
 											fontSize: "10px",
 											fontWeight: 800,
-											color: "#64748b",
+											color: "var(--appearance-ink-64748b)",
 											letterSpacing: "0.5px",
 											marginBottom: "4px",
 										}}
@@ -2097,10 +2097,10 @@ export default function SchedulerPage() {
 											width: "100%",
 											padding: "10px 12px",
 											borderRadius: "10px",
-											border: "1px solid #cbd5e1",
+											border: "1px solid var(--appearance-edge-cbd5e1)",
 											fontSize: "13px",
 											outline: "none",
-											background: "white",
+											background: "var(--appearance-surface-white)",
 											fontWeight: 600,
 										}}
 									/>
@@ -2112,7 +2112,7 @@ export default function SchedulerPage() {
 												display: "block",
 												fontSize: "10px",
 												fontWeight: 800,
-												color: "#64748b",
+												color: "var(--appearance-ink-64748b)",
 												letterSpacing: "0.5px",
 												marginBottom: "4px",
 											}}
@@ -2135,10 +2135,10 @@ export default function SchedulerPage() {
 												width: "100%",
 												padding: "10px 12px",
 												borderRadius: "10px",
-												border: "1px solid #cbd5e1",
+												border: "1px solid var(--appearance-edge-cbd5e1)",
 												fontSize: "13px",
 												outline: "none",
-												background: "white",
+												background: "var(--appearance-surface-white)",
 												fontWeight: 600,
 											}}
 										/>
@@ -2149,7 +2149,7 @@ export default function SchedulerPage() {
 												display: "block",
 												fontSize: "10px",
 												fontWeight: 800,
-												color: "#64748b",
+												color: "var(--appearance-ink-64748b)",
 												letterSpacing: "0.5px",
 												marginBottom: "4px",
 											}}
@@ -2170,10 +2170,10 @@ export default function SchedulerPage() {
 												width: "100%",
 												padding: "10px 12px",
 												borderRadius: "10px",
-												border: "1px solid #cbd5e1",
+												border: "1px solid var(--appearance-edge-cbd5e1)",
 												fontSize: "13px",
 												outline: "none",
-												background: "white",
+												background: "var(--appearance-surface-white)",
 												fontWeight: 600,
 											}}
 										/>
@@ -2186,7 +2186,7 @@ export default function SchedulerPage() {
 												display: "block",
 												fontSize: "10px",
 												fontWeight: 800,
-												color: "#64748b",
+												color: "var(--appearance-ink-64748b)",
 												letterSpacing: "0.5px",
 												marginBottom: "4px",
 											}}
@@ -2207,10 +2207,10 @@ export default function SchedulerPage() {
 												width: "100%",
 												padding: "10px 12px",
 												borderRadius: "10px",
-												border: "1px solid #cbd5e1",
+												border: "1px solid var(--appearance-edge-cbd5e1)",
 												fontSize: "13px",
 												outline: "none",
-												background: "white",
+												background: "var(--appearance-surface-white)",
 												fontWeight: 600,
 											}}
 										/>
@@ -2221,7 +2221,7 @@ export default function SchedulerPage() {
 												display: "block",
 												fontSize: "10px",
 												fontWeight: 800,
-												color: "#64748b",
+												color: "var(--appearance-ink-64748b)",
 												letterSpacing: "0.5px",
 												marginBottom: "4px",
 											}}
@@ -2240,10 +2240,10 @@ export default function SchedulerPage() {
 												width: "100%",
 												padding: "10px 12px",
 												borderRadius: "10px",
-												border: "1px solid #cbd5e1",
+												border: "1px solid var(--appearance-edge-cbd5e1)",
 												fontSize: "13px",
 												outline: "none",
-												background: "white",
+												background: "var(--appearance-surface-white)",
 												fontWeight: 600,
 												appearance: "none",
 											}}
@@ -2270,7 +2270,7 @@ export default function SchedulerPage() {
 											type="button"
 											onClick={handleDeleteEvent}
 											style={{
-												color: "#ef4444",
+												color: "var(--appearance-ink-ef4444)",
 												background: "transparent",
 												border: "none",
 												fontSize: "12px",
@@ -2290,9 +2290,9 @@ export default function SchedulerPage() {
 											style={{
 												padding: "10px 16px",
 												borderRadius: "10px",
-												border: "1px solid #cbd5e1",
-												background: "white",
-												color: "#475569",
+												border: "1px solid var(--appearance-edge-cbd5e1)",
+												background: "var(--appearance-surface-white)",
+												color: "var(--appearance-ink-475569)",
 												fontSize: "12px",
 												fontWeight: 700,
 												cursor: "pointer",
@@ -2345,8 +2345,8 @@ export default function SchedulerPage() {
 					>
 						<div
 							style={{
-								background: "rgba(255, 255, 255, 0.95)",
-								border: "1px solid rgba(255, 255, 255, 0.5)",
+								background: "var(--appearance-surface-rgba255255255095)",
+								border: "1px solid var(--appearance-edge-rgba25525525505)",
 								width: "100%",
 								maxWidth: "450px",
 								borderRadius: "24px",
@@ -2369,7 +2369,7 @@ export default function SchedulerPage() {
 									style={{
 										fontSize: "16px",
 										fontWeight: 850,
-										color: "#0f172a",
+										color: "var(--appearance-ink-0f172a)",
 										margin: 0,
 									}}
 								>
@@ -2387,7 +2387,7 @@ export default function SchedulerPage() {
 										alignItems: "center",
 										justifyContent: "center",
 										cursor: "pointer",
-										color: "#64748b",
+										color: "var(--appearance-ink-64748b)",
 									}}
 								>
 									<svg
@@ -2426,7 +2426,7 @@ export default function SchedulerPage() {
 									<div
 										style={{
 											fontWeight: 800,
-											color: "#0f172a",
+											color: "var(--appearance-ink-0f172a)",
 											fontSize: "13px",
 										}}
 									>
@@ -2450,7 +2450,7 @@ export default function SchedulerPage() {
 											display: "block",
 											fontSize: "10px",
 											fontWeight: 800,
-											color: "#64748b",
+											color: "var(--appearance-ink-64748b)",
 											letterSpacing: "0.5px",
 											marginBottom: "6px",
 										}}
@@ -2464,10 +2464,10 @@ export default function SchedulerPage() {
 											width: "100%",
 											padding: "10px",
 											borderRadius: "10px",
-											border: "1px solid #cbd5e1",
+											border: "1px solid var(--appearance-edge-cbd5e1)",
 											fontSize: "13px",
 											outline: "none",
-											background: "white",
+											background: "var(--appearance-surface-white)",
 											fontWeight: 600,
 											appearance: "none",
 										}}
@@ -2487,7 +2487,7 @@ export default function SchedulerPage() {
 											display: "block",
 											fontSize: "10px",
 											fontWeight: 800,
-											color: "#64748b",
+											color: "var(--appearance-ink-64748b)",
 											letterSpacing: "0.5px",
 											marginBottom: "6px",
 										}}
@@ -2502,11 +2502,11 @@ export default function SchedulerPage() {
 											width: "100%",
 											padding: "10px",
 											borderRadius: "10px",
-											border: "1px solid #cbd5e1",
+											border: "1px solid var(--appearance-edge-cbd5e1)",
 											fontSize: "13px",
 											outline: "none",
 											fontWeight: 600,
-											background: "white",
+											background: "var(--appearance-surface-white)",
 										}}
 									/>
 								</div>
@@ -2515,7 +2515,7 @@ export default function SchedulerPage() {
 							<div
 								style={{
 									padding: "16px",
-									background: "#f8fafc",
+									background: "var(--appearance-surface-f8fafc)",
 									borderTop: "1px solid rgba(0,0,0,0.05)",
 									display: "flex",
 									justifyContent: "flex-end",
@@ -2528,9 +2528,9 @@ export default function SchedulerPage() {
 									style={{
 										padding: "8px 16px",
 										borderRadius: "8px",
-										border: "1px solid #cbd5e1",
-										background: "white",
-										color: "#475569",
+										border: "1px solid var(--appearance-edge-cbd5e1)",
+										background: "var(--appearance-surface-white)",
+										color: "var(--appearance-ink-475569)",
 										fontSize: "12px",
 										fontWeight: 700,
 										cursor: "pointer",
@@ -2538,7 +2538,7 @@ export default function SchedulerPage() {
 								>
 									Cancel
 								</button>
-								{alertSaveError && <p role="alert" style={{ color: "#b91c1c", fontSize: 13, lineHeight: 1.5, flexBasis: "100%", order: -1, margin: 0 }}>{alertSaveError}</p>}
+								{alertSaveError && <p role="alert" style={{ color: "var(--appearance-ink-b91c1c)", fontSize: 13, lineHeight: 1.5, flexBasis: "100%", order: -1, margin: 0 }}>{alertSaveError}</p>}
                                     <button
 									onClick={handleSaveAlerts}
                                         disabled={isSavingAlerts}

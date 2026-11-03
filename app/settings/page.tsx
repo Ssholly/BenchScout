@@ -445,10 +445,10 @@ export default function SettingsPage() {
 		padding: "10px 14px",
 		borderRadius: "10px",
 		border: "1px solid rgba(0,0,0,0.1)",
-		background: "rgba(255,255,255,0.8)",
+		background: "var(--appearance-surface-rgba25525525508)",
 		boxShadow: "inset 0 2px 4px rgba(0,0,0,0.02)",
 		fontSize: "13px",
-		color: "#0f172a",
+		color: "var(--appearance-ink-0f172a)",
 		outline: "none",
 		transition: "0.2s",
 	};
@@ -456,7 +456,7 @@ export default function SettingsPage() {
 		display: "block",
 		fontSize: "10px",
 		fontWeight: 800,
-		color: "#64748b",
+		color: "var(--appearance-ink-64748b)",
 		letterSpacing: "1px",
 		marginBottom: "6px",
 		textTransform: "uppercase" as const,
@@ -483,7 +483,7 @@ export default function SettingsPage() {
 							left: 0,
 							right: 0,
 							bottom: 0,
-							background: "rgba(248, 250, 252, 0.8)",
+							background: "var(--appearance-surface-rgba24825025208)",
 							backdropFilter: "blur(12px)",
 							zIndex: 99999,
 							display: "flex",
@@ -494,7 +494,7 @@ export default function SettingsPage() {
 					>
 						<div
 							style={{
-								background: "white",
+								background: "var(--appearance-surface-white)",
 								width: "100%",
 								maxWidth: "450px",
 								borderRadius: "24px",
@@ -507,7 +507,7 @@ export default function SettingsPage() {
 							<div
 								style={{
 									padding: "2rem",
-									borderBottom: "1px solid #f1f5f9",
+									borderBottom: "1px solid var(--appearance-edge-f1f5f9)",
 									textAlign: "center",
 								}}
 							>
@@ -516,13 +516,13 @@ export default function SettingsPage() {
 									style={{
 										width: "64px",
 										height: "64px",
-										background: "#e6fcf5",
+										background: "var(--appearance-surface-e6fcf5)",
 										borderRadius: "50%",
 										display: "flex",
 										alignItems: "center",
 										justifyContent: "center",
 										margin: "0 auto 16px auto",
-										color: "#1A8C7A",
+										color: "var(--appearance-ink-1a8c7a)",
 									}}
 								>
 									<svg
@@ -543,7 +543,7 @@ export default function SettingsPage() {
 									style={{
 										fontSize: "20px",
 										fontWeight: 800,
-										color: "#0f172a",
+										color: "var(--appearance-ink-0f172a)",
 										margin: "0 0 8px 0",
 									}}
 								>
@@ -552,7 +552,7 @@ export default function SettingsPage() {
 								<p
 									style={{
 										fontSize: "14px",
-										color: "#64748b",
+										color: "var(--appearance-ink-64748b)",
 										margin: 0,
 										lineHeight: "1.5",
 									}}
@@ -561,7 +561,7 @@ export default function SettingsPage() {
 								</p>
 							</div>
 
-							<div style={{ padding: "2rem", background: "#f8fafc" }}>
+							<div style={{ padding: "2rem", background: "var(--appearance-surface-f8fafc)" }}>
 								<div style={{ marginBottom: "1.5rem" }}>
 									<label style={labelStyle}>Full Name on License</label>
 									<input
@@ -616,10 +616,10 @@ export default function SettingsPage() {
 										style={{
 											flex: 1,
 											padding: "12px",
-											background: "white",
-											border: "1px solid #cbd5e1",
+											background: "var(--appearance-surface-white)",
+											border: "1px solid var(--appearance-edge-cbd5e1)",
 											borderRadius: "10px",
-											color: "#475569",
+											color: "var(--appearance-ink-475569)",
 											fontWeight: 700,
 											cursor: "pointer",
 										}}
@@ -664,7 +664,7 @@ export default function SettingsPage() {
 							left: 0,
 							right: 0,
 							bottom: 0,
-							background: "rgba(248, 250, 252, 0.7)",
+							background: "var(--appearance-surface-rgba24825025207)",
 							backdropFilter: "blur(8px)",
 							zIndex: 99999,
 							display: "flex",
@@ -675,7 +675,7 @@ export default function SettingsPage() {
 					>
 						<div
 							style={{
-								background: "white",
+								background: "var(--appearance-surface-white)",
 								width: "100%",
 								maxWidth: "800px",
 								borderRadius: "20px",
@@ -690,7 +690,7 @@ export default function SettingsPage() {
 							<div
 								style={{
 									padding: "1.25rem 1.5rem",
-									borderBottom: "1px solid #f1f5f9",
+									borderBottom: "1px solid var(--appearance-edge-f1f5f9)",
 									display: "flex",
 									justifyContent: "space-between",
 									alignItems: "center",
@@ -705,8 +705,8 @@ export default function SettingsPage() {
 											width: "32px",
 											height: "32px",
 											borderRadius: "8px",
-											background: "#e6fcf5",
-											color: "#1A8C7A",
+											background: "var(--appearance-surface-e6fcf5)",
+											color: "var(--appearance-ink-1a8c7a)",
 											display: "flex",
 											alignItems: "center",
 											justifyContent: "center",
@@ -731,14 +731,14 @@ export default function SettingsPage() {
 											style={{
 												fontSize: "16px",
 												fontWeight: 800,
-												color: "#0f172a",
+												color: "var(--appearance-ink-0f172a)",
 												margin: "0 0 2px 0",
 											}}
 										>
 											{previewDoc.name}
 										</h3>
 										<p
-											style={{ fontSize: "12px", color: "#64748b", margin: 0 }}
+											style={{ fontSize: "12px", color: "var(--appearance-ink-64748b)", margin: 0 }}
 										>
 											Cloud Vault Preview
 										</p>
@@ -747,7 +747,7 @@ export default function SettingsPage() {
 								<button
 									onClick={() => setPreviewDoc(null)}
 									style={{
-										background: "#f1f5f9",
+										background: "var(--appearance-surface-f1f5f9)",
 										border: "none",
 										width: "32px",
 										height: "32px",
@@ -756,7 +756,7 @@ export default function SettingsPage() {
 										alignItems: "center",
 										justifyContent: "center",
 										cursor: "pointer",
-										color: "#64748b",
+										color: "var(--appearance-ink-64748b)",
 										transition: "0.2s",
 									}}
 								>
@@ -778,7 +778,7 @@ export default function SettingsPage() {
 									padding: "1rem",
 									flex: 1,
 									overflow: "hidden",
-									background: "#f8fafc",
+									background: "var(--appearance-surface-f8fafc)",
 									display: "flex",
 									justifyContent: "center",
 									alignItems: "center",
@@ -793,8 +793,8 @@ export default function SettingsPage() {
 									display: "flex",
 									justifyContent: "flex-end",
 									gap: "12px",
-									borderTop: "1px solid #f1f5f9",
-									background: "white",
+									borderTop: "1px solid var(--appearance-edge-f1f5f9)",
+									background: "var(--appearance-surface-white)",
 								}}
 							>
 								<button
@@ -802,9 +802,9 @@ export default function SettingsPage() {
 									style={{
 										padding: "10px 20px",
 										borderRadius: "8px",
-										border: "1px solid #e2e8f0",
-										background: "white",
-										color: "#475569",
+										border: "1px solid var(--appearance-edge-e2e8f0)",
+										background: "var(--appearance-surface-white)",
+										color: "var(--appearance-ink-475569)",
 										fontSize: "13px",
 										fontWeight: 700,
 										cursor: "pointer",
@@ -859,13 +859,13 @@ export default function SettingsPage() {
 						margin: 0,
 						fontSize: "24px",
 						fontWeight: 900,
-						color: "#0f172a",
+						color: "var(--appearance-ink-0f172a)",
 						letterSpacing: "-0.5px",
 					}}
 				>
 					System Settings
 				</h1>
-				<p style={{ margin: "2px 0 0 0", fontSize: "13px", color: "#64748b" }}>
+				<p style={{ margin: "2px 0 0 0", fontSize: "13px", color: "var(--appearance-ink-64748b)" }}>
 					Manage your documents, search preferences, and profile.
 				</p>
 			</div>
@@ -880,12 +880,12 @@ export default function SettingsPage() {
 						alignItems: "center",
 						justifyContent: "center",
 						minHeight: "40vh",
-						background: "rgba(255, 255, 255, 0.4)",
+						background: "var(--appearance-surface-rgba25525525504)",
 						backdropFilter: "blur(24px)",
 						borderRadius: "20px",
-						border: "1px solid rgba(255, 255, 255, 0.3)",
+						border: "1px solid var(--appearance-edge-rgba25525525503)",
 						gap: "12px",
-						color: "#64748b",
+						color: "var(--appearance-ink-64748b)",
 					}}
 				>
 					<svg
@@ -914,10 +914,10 @@ export default function SettingsPage() {
 					style={{
 						padding: "4rem",
 						textAlign: "center",
-						background: "rgba(255,255,255,0.5)",
+						background: "var(--appearance-surface-rgba25525525505)",
 						backdropFilter: "blur(16px)",
 						borderRadius: "16px",
-						border: "1px solid rgba(255, 255, 255, 0.3)",
+						border: "1px solid var(--appearance-edge-rgba25525525503)",
 						boxShadow: "0 4px 20px -2px rgba(0, 0, 0, 0.03)",
 					}}
 				>
@@ -925,13 +925,13 @@ export default function SettingsPage() {
 						style={{
 							width: "64px",
 							height: "64px",
-							background: "rgba(241, 245, 249, 0.8)",
+							background: "var(--appearance-surface-rgba24124524908)",
 							borderRadius: "50%",
 							display: "flex",
 							alignItems: "center",
 							justifyContent: "center",
 							margin: "0 auto 1rem auto",
-							color: "#64748b",
+							color: "var(--appearance-ink-64748b)",
 						}}
 					>
 						<svg
@@ -952,7 +952,7 @@ export default function SettingsPage() {
 						style={{
 							margin: "0 0 8px 0",
 							fontSize: "18px",
-							color: "#0f172a",
+							color: "var(--appearance-ink-0f172a)",
 							fontWeight: 800,
 						}}
 					>
@@ -960,7 +960,7 @@ export default function SettingsPage() {
 					</h2>
 					<p
 						style={{
-							color: "#64748b",
+							color: "var(--appearance-ink-64748b)",
 							fontSize: "14px",
 							maxWidth: "400px",
 							margin: "0 auto 24px auto",
@@ -989,11 +989,11 @@ export default function SettingsPage() {
 				<>
 					<div className="settings-preferences-card"
 						style={{
-							background: "rgba(255, 255, 255, 0.4)",
+							background: "var(--appearance-surface-rgba25525525504)",
 							backdropFilter: "blur(24px)",
 							WebkitBackdropFilter: "blur(24px)",
 							borderRadius: "20px",
-							border: "1px solid rgba(255, 255, 255, 0.3)",
+							border: "1px solid var(--appearance-edge-rgba25525525503)",
 							boxShadow: "0 4px 20px -2px rgba(0,0,0,0.03)",
 							overflow: "hidden",
 							marginBottom: "2rem",
@@ -1009,7 +1009,7 @@ export default function SettingsPage() {
 							}}
 						>
 							{/* 🚀 BRANDED PREFERENCES ICON */}
-							<div style={{ color: "#0B2444", marginTop: "2px" }}>
+							<div style={{ color: "var(--appearance-ink-0b2444)", marginTop: "2px" }}>
 								<svg
 									width="20"
 									height="20"
@@ -1029,13 +1029,13 @@ export default function SettingsPage() {
 									style={{
 										margin: "0 0 2px 0",
 										fontSize: "16px",
-										color: "#0f172a",
+										color: "var(--appearance-ink-0f172a)",
 										fontWeight: 800,
 									}}
 								>
 									Profile & Search Preferences
 								</h2>
-								<p style={{ margin: 0, fontSize: "12px", color: "#64748b" }}>
+								<p style={{ margin: 0, fontSize: "12px", color: "var(--appearance-ink-64748b)" }}>
 									Fine-tune how BenchScout identifies opportunities.
 								</p>
 							</div>
@@ -1087,7 +1087,7 @@ export default function SettingsPage() {
 								<div className="settings-keywords"
 									style={{
 										border: "1px solid rgba(0,0,0,0.1)",
-										background: "rgba(255,255,255,0.5)",
+										background: "var(--appearance-surface-rgba25525525505)",
 										borderRadius: "10px",
 										padding: "6px",
 										minHeight: "42px",
@@ -1152,7 +1152,7 @@ export default function SettingsPage() {
 											flex: 1,
 											minWidth: "120px",
 											fontSize: "13px",
-											color: "#0f172a",
+											color: "var(--appearance-ink-0f172a)",
 											padding: "4px 6px",
 											background: "transparent",
 											cursor: !userData.email ? "not-allowed" : "text",
@@ -1182,7 +1182,7 @@ export default function SettingsPage() {
 												left: "12px",
 												top: "50%",
 												transform: "translateY(-50%)",
-												color: "#64748b",
+												color: "var(--appearance-ink-64748b)",
 												pointerEvents: "none",
 											}}
 										>
@@ -1253,7 +1253,7 @@ export default function SettingsPage() {
 											style={{
 												fontSize: "20px",
 												fontWeight: 800,
-												color: "#0B2444", // 🚀 BRANDED PERCENTAGE
+												color: "var(--appearance-ink-0b2444)", // 🚀 BRANDED PERCENTAGE
 												width: "45px",
 												textAlign: "right",
 											}}
@@ -1277,7 +1277,7 @@ export default function SettingsPage() {
                                     onClick={() => { preferencesDirty.current = false; setKeywordDraft(""); setResumeGeneration(value => value + 1); invalidateSharedPageRequests(); void loadSettings(); }}
 									disabled={!userData.email || isSaving}
 									style={{
-										background: "rgba(255,255,255,0.8)",
+										background: "var(--appearance-surface-rgba25525525508)",
 										border: "1px solid rgba(0,0,0,0.1)",
 										padding: "8px 24px",
 										borderRadius: "8px",
@@ -1336,7 +1336,7 @@ export default function SettingsPage() {
 									style={{
 										fontSize: "16px",
 										fontWeight: 800,
-										color: "#0f172a",
+										color: "var(--appearance-ink-0f172a)",
 										margin: "0 0 4px 0",
 										display: "flex",
 										alignItems: "center",
@@ -1349,7 +1349,7 @@ export default function SettingsPage() {
 										height="16"
 										viewBox="0 0 24 24"
 										fill="none"
-										stroke="#0B2444"
+										stroke="var(--appearance-ink-0b2444)"
 										strokeWidth="2.5"
 										strokeLinecap="round"
 										strokeLinejoin="round"
@@ -1358,9 +1358,9 @@ export default function SettingsPage() {
 									</svg>{" "}
 									Secure Document Vault
 								</h2>
-								<p style={{ fontSize: "11px", color: "#64748b", margin: 0 }}>
+								<p style={{ fontSize: "11px", color: "var(--appearance-ink-64748b)", margin: 0 }}>
 									Upload documents for private sharing with employers you apply to.
-                                {uploadsAvailable === false && <span role="status" style={{ display: "block", marginTop: 8, color: "#92400e" }}>Document uploads are unavailable while private storage is being connected. Your existing files are preserved.</span>}
+                                {uploadsAvailable === false && <span role="status" style={{ display: "block", marginTop: 8, color: "var(--appearance-ink-92400e)" }}>Document uploads are unavailable while private storage is being connected. Your existing files are preserved.</span>}
 								</p>
 							</div>
 							<div
@@ -1375,9 +1375,9 @@ export default function SettingsPage() {
 										key={doc.id}
 										className="vault-card"
 										style={{
-											background: "rgba(255, 255, 255, 0.5)",
+											background: "var(--appearance-surface-rgba25525525505)",
 											backdropFilter: "blur(16px)",
-											border: "1px solid rgba(255, 255, 255, 0.4)",
+											border: "1px solid var(--appearance-edge-rgba25525525504)",
 											borderRadius: "12px",
 											padding: "1rem",
 											display: "flex",
@@ -1401,9 +1401,9 @@ export default function SettingsPage() {
 													height: "32px",
 													borderRadius: "8px",
 													background: doc.url
-														? "#e6fcf5" // 🚀 BRANDED DOCUMENT READY BG
-														: "rgba(241, 245, 249, 0.6)",
-													color: doc.url ? "#1A8C7A" : "#94a3b8", // 🚀 BRANDED DOCUMENT READY TEXT
+														? "var(--appearance-surface-e6fcf5)" // 🚀 BRANDED DOCUMENT READY BG
+														: "var(--appearance-surface-rgba24124524906)",
+													color: doc.url ? "var(--appearance-ink-1a8c7a)" : "var(--appearance-ink-94a3b8)", // 🚀 BRANDED DOCUMENT READY TEXT
 													display: "flex",
 													alignItems: "center",
 													justifyContent: "center",
@@ -1430,7 +1430,7 @@ export default function SettingsPage() {
 														margin: "0 0 2px 0",
 														fontSize: "12px",
 														fontWeight: 800,
-														color: "#0f172a",
+														color: "var(--appearance-ink-0f172a)",
 														whiteSpace: "nowrap",
 														overflow: "hidden",
 														textOverflow: "ellipsis",
@@ -1438,14 +1438,14 @@ export default function SettingsPage() {
 												>
 													{doc.name}
 												</h3>
-												{doc.id === "license" && doc.url && <button type="button" onClick={() => setShowVerificationModal(true)} style={{ margin: "6px 0", minHeight: 44, padding: "8px 12px", border: "1px solid #cbd5e1", borderRadius: 8, background: "white", color: "#0B2444", fontSize: 12, fontWeight: 700, cursor: "pointer" }}>Edit license details</button>}
+												{doc.id === "license" && doc.url && <button type="button" onClick={() => setShowVerificationModal(true)} style={{ margin: "6px 0", minHeight: 44, padding: "8px 12px", border: "1px solid var(--appearance-edge-cbd5e1)", borderRadius: 8, background: "var(--appearance-surface-white)", color: "var(--appearance-ink-0b2444)", fontSize: 12, fontWeight: 700, cursor: "pointer" }}>Edit license details</button>}
 												<div
 													style={{
 														display: "flex",
 														alignItems: "center",
 														gap: "6px",
 														fontSize: "10px",
-														color: "#64748b",
+														color: "var(--appearance-ink-64748b)",
 														fontWeight: 600,
 														flexWrap: "wrap",
 													}}
@@ -1458,7 +1458,7 @@ export default function SettingsPage() {
 																	width: "3px",
 																	height: "3px",
 																	borderRadius: "50%",
-																	background: "#cbd5e1",
+																	background: "var(--appearance-surface-cbd5e1)",
 																}}
 															></span>
 															<span>{doc.size}</span>
@@ -1467,10 +1467,10 @@ export default function SettingsPage() {
 																	width: "3px",
 																	height: "3px",
 																	borderRadius: "50%",
-																	background: "#cbd5e1",
+																	background: "var(--appearance-surface-cbd5e1)",
 																}}
 															></span>
-															<span style={{ color: "#1A8C7A" }}>
+															<span style={{ color: "var(--appearance-ink-1a8c7a)" }}>
 																Uploaded
 															</span>
 														</>
@@ -1481,10 +1481,10 @@ export default function SettingsPage() {
 																	width: "3px",
 																	height: "3px",
 																	borderRadius: "50%",
-																	background: "#cbd5e1",
+																	background: "var(--appearance-surface-cbd5e1)",
 																}}
 															></span>
-															<span style={{ color: "#ef4444" }}>Missing</span>
+															<span style={{ color: "var(--appearance-ink-ef4444)" }}>Missing</span>
 														</>
 													)}
 												</div>
@@ -1496,9 +1496,9 @@ export default function SettingsPage() {
 													<button
 														onClick={() => doc.size === "Re-upload required" ? (uploadsAvailable ? triggerUpload(doc.id) : showToast("Private uploads are temporarily unavailable. Your existing document has been kept.", "error")) : setPreviewDoc(doc)}
 														style={{
-															background: "rgba(255,255,255,0.8)",
+															background: "var(--appearance-surface-rgba25525525508)",
 															border: "1px solid rgba(0,0,0,0.05)",
-															color: "#0f172a",
+															color: "var(--appearance-ink-0f172a)",
 															padding: "6px 12px",
 															borderRadius: "6px",
 															fontSize: "11px",
@@ -1513,9 +1513,9 @@ export default function SettingsPage() {
 														disabled={isUploading || isDeleting}
                                                     onClick={() => handleDeleteDoc(doc.id)}
 														style={{
-															background: "rgba(254, 242, 242, 0.8)",
-															border: "1px solid rgba(254, 202, 202, 0.5)",
-															color: "#ef4444",
+															background: "var(--appearance-surface-rgba25424224208)",
+															border: "1px solid var(--appearance-edge-rgba25420220205)",
+															color: "var(--appearance-ink-ef4444)",
 															padding: "6px 12px",
 															borderRadius: "6px",
 															fontSize: "11px",
@@ -1534,7 +1534,7 @@ export default function SettingsPage() {
 													style={{
 														background:
 															!userData.email || isUploading
-																? "#94a3b8"
+																? "var(--appearance-surface-94a3b8)"
 																: "#0B2444", // 🚀 BRANDED BUTTON
 														border: "none",
 														color: "white",

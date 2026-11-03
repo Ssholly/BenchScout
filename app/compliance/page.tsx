@@ -20,17 +20,17 @@ export default function ComplianceHubPage() {
 
 	if (loading)
 		return (
-			<div style={{ padding: "2rem", color: "#64748b" }}>
+			<div style={{ padding: "2rem", color: "var(--appearance-ink-64748b)" }}>
 				Querying compliance vectors...
 			</div>
 		);
 	if (!metrics || metrics.status === "UNCONFIGURED") {
 		return (
 			<div style={{ padding: "3rem", textAlign: "center" }}>
-				<h2 style={{ fontSize: "18px", fontWeight: 800, color: "#0f172a" }}>
+				<h2 style={{ fontSize: "18px", fontWeight: 800, color: "var(--appearance-ink-0f172a)" }}>
 					No License Configured
 				</h2>
-				<p style={{ color: "#64748b", fontSize: "13px" }}>
+				<p style={{ color: "var(--appearance-ink-64748b)", fontSize: "13px" }}>
 					Please upload your practicing license in System Settings to trigger
 					tracking.
 				</p>
@@ -52,25 +52,25 @@ export default function ComplianceHubPage() {
 		EXPIRED: {
 			text: "#dc2626",
 			bg: "rgba(220,38,38,0.05)",
-			border: "rgba(220,38,38,0.1)",
+			border: "var(--appearance-edge-rgba220383801)",
 		},
 	}[metrics.status as "VALID" | "WARNING" | "EXPIRED"];
 
 	return (
 		<div style={{ padding: "0 1.5rem", width: "100%" }}>
 			<div style={{ marginBottom: "2rem", marginTop: "1rem" }}>
-                <p style={{ fontSize: 12, color: "#64748b" }}>Credential review: {metrics.isVerified ? "Reviewed" : "Self-reported"}. Recorded expiry is separate from independent verification.</p>
+                <p style={{ fontSize: 12, color: "var(--appearance-ink-64748b)" }}>Credential review: {metrics.isVerified ? "Reviewed" : "Self-reported"}. Recorded expiry is separate from independent verification.</p>
 				<h1
 					style={{
 						margin: 0,
 						fontSize: "24px",
 						fontWeight: 900,
-						color: "#0f172a",
+						color: "var(--appearance-ink-0f172a)",
 					}}
 				>
 					MLSCN Compliance Hub
 				</h1>
-				<p style={{ margin: "2px 0 0 0", fontSize: "13px", color: "#64748b" }}>
+				<p style={{ margin: "2px 0 0 0", fontSize: "13px", color: "var(--appearance-ink-64748b)" }}>
 					Recorded license expiry and learning activity.
 				</p>
 			</div>
@@ -86,10 +86,10 @@ export default function ComplianceHubPage() {
 				{/* Metric Card 1: Time Countdown */}
 				<div
 					style={{
-						background: "white",
+						background: "var(--appearance-surface-white)",
 						padding: "1.5rem",
 						borderRadius: "20px",
-						border: "1px solid #e2e8f0",
+						border: "1px solid var(--appearance-edge-e2e8f0)",
 						boxShadow: "0 4px 6px -1px rgba(0,0,0,0.01)",
 					}}
 				>
@@ -105,7 +105,7 @@ export default function ComplianceHubPage() {
 							style={{
 								fontSize: "11px",
 								fontWeight: 800,
-								color: "#64748b",
+								color: "var(--appearance-ink-64748b)",
 								letterSpacing: "0.5px",
 							}}
 						>
@@ -129,20 +129,20 @@ export default function ComplianceHubPage() {
 						style={{
 							fontSize: "36px",
 							fontWeight: 900,
-							color: "#0f172a",
+							color: "var(--appearance-ink-0f172a)",
 							marginBottom: "0.5rem",
 						}}
 					>
 						{metrics.status === "EXPIRED" ? "0" : metrics.daysLeft}{" "}
 						<span
-							style={{ fontSize: "14px", fontWeight: 600, color: "#64748b" }}
+							style={{ fontSize: "14px", fontWeight: 600, color: "var(--appearance-ink-64748b)" }}
 						>
 							Days Remaining
 						</span>
 					</div>
-					<p style={{ margin: 0, fontSize: "12px", color: "#475569" }}>
+					<p style={{ margin: 0, fontSize: "12px", color: "var(--appearance-ink-475569)" }}>
 						License ID:{" "}
-						<strong style={{ color: "#0f172a" }}>
+						<strong style={{ color: "var(--appearance-ink-0f172a)" }}>
 							{metrics.licenseNumber}
 						</strong>{" "}
 						expires on {metrics.expiryFormatted}.
@@ -152,10 +152,10 @@ export default function ComplianceHubPage() {
 				{/* Metric Card 2: CPD Progress */}
 				<div
 					style={{
-						background: "white",
+						background: "var(--appearance-surface-white)",
 						padding: "1.5rem",
 						borderRadius: "20px",
-						border: "1px solid #e2e8f0",
+						border: "1px solid var(--appearance-edge-e2e8f0)",
 						boxShadow: "0 4px 6px -1px rgba(0,0,0,0.01)",
 					}}
 				>
@@ -171,14 +171,14 @@ export default function ComplianceHubPage() {
 							style={{
 								fontSize: "11px",
 								fontWeight: 800,
-								color: "#64748b",
+								color: "var(--appearance-ink-64748b)",
 								letterSpacing: "0.5px",
 							}}
 						>
 							CPD ANNUAL LOG
 						</span>
 						<span
-							style={{ color: "#0058bc", fontSize: "11px", fontWeight: 700 }}
+							style={{ color: "var(--appearance-ink-0058bc)", fontSize: "11px", fontWeight: 700 }}
 						>
 							{metrics.cpdPoints} / 30 Credits
 						</span>
@@ -187,7 +187,7 @@ export default function ComplianceHubPage() {
 						style={{
 							width: "100%",
 							height: "12px",
-							background: "#f1f5f9",
+							background: "var(--appearance-surface-f1f5f9)",
 							borderRadius: "6px",
 							overflow: "hidden",
 							marginBottom: "1rem",
@@ -203,9 +203,9 @@ export default function ComplianceHubPage() {
 							}}
 						/>
 					</div>
-					<p style={{ margin: 0, fontSize: "12px", color: "#475569" }}>
+					<p style={{ margin: 0, fontSize: "12px", color: "var(--appearance-ink-475569)" }}>
 						You have achieved{" "}
-						<strong style={{ color: "#0f172a" }}>{metrics.cpdPercent}%</strong>{" "}
+						<strong style={{ color: "var(--appearance-ink-0f172a)" }}>{metrics.cpdPercent}%</strong>{" "}
 						of the app’s 30-credit tracking target. Points are self-reported.
 					</p>
 				</div>
